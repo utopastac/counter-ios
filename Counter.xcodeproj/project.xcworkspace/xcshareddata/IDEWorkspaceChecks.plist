@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildIndependentTargetsInParallel</key>
+	<true/>
+	<key>LastUpgradeCheck</key>
+	<string>1600</string>
+	<key>TargetAttributes</key>
+	<dict>
+		<key>A60000010000000000000001</key>
+		<dict>
+			<key>CreatedOnToolsVersion</key>
+			<string>16.0</string>
+		</dict>
+		<key>B60000010000000000000001</key>
+		<dict>
+			<key>CreatedOnToolsVersion</key>
+			<string>16.0</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

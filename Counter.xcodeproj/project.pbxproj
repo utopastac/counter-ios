@@ -1,0 +1,937 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000010000000000000001 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* CounterApp.swift */; };
+		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* ContentView.swift */; };
+		A10000010000000000000007 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* HealthKitManager.swift */; };
+		A10000010000000000000009 /* QuickAddButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* QuickAddButtonsView.swift */; };
+		A10000010000000000000010 /* PeriodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* PeriodPicker.swift */; };
+		A10000010000000000000011 /* StatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* StatCard.swift */; };
+		A10000010000000000000012 /* HistoryChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* HistoryChartView.swift */; };
+		A10000010000000000000013 /* CalorieHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013 /* CalorieHistoryView.swift */; };
+		A10000010000000000000014 /* CounterHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* CounterHistoryView.swift */; };
+		A10000010000000000000015 /* CalorieCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* CalorieCounterView.swift */; };
+		A10000010000000000000016 /* ButtonSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* ButtonSettingsView.swift */; };
+		A10000010000000000000017 /* CustomCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* CustomCountersListView.swift */; };
+		A10000010000000000000018 /* CreateCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* CreateCounterView.swift */; };
+		A10000010000000000000019 /* CustomCounterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000019 /* CustomCounterDetailView.swift */; };
+		A10000010000000000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* Assets.xcassets */; };
+		B10000010000000000000001 /* CounterWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000001 /* CounterWatchApp.swift */; };
+		B10000010000000000000002 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000002 /* WatchContentView.swift */; };
+		B10000010000000000000003 /* WatchCalorieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000003 /* WatchCalorieView.swift */; };
+		B10000010000000000000004 /* WatchQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000004 /* WatchQuickAddGrid.swift */; };
+		B10000010000000000000005 /* WatchCounterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000005 /* WatchCounterListView.swift */; };
+		B10000010000000000000006 /* WatchCounterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000006 /* WatchCounterDetailView.swift */; };
+		B10000010000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000007 /* Assets.xcassets */; };
+		B10000010000000000000008 /* CounterWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B30000010000000000000001 /* CounterWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
+		C10000010000000000000002 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
+		C10000010000000000000003 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
+		C10000010000000000000004 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
+		C10000010000000000000005 /* CalorieEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000005 /* CalorieEntry.swift */; };
+		C10000010000000000000006 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
+		C10000010000000000000007 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
+		C10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
+		C10000010000000000000009 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
+		C10000010000000000000011 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
+		C10000010000000000000012 /* PreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000012 /* PreviewModel.swift */; };
+		D10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
+		D10000010000000000000002 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
+		D10000010000000000000003 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
+		D10000010000000000000004 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
+		D10000010000000000000005 /* CalorieEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000005 /* CalorieEntry.swift */; };
+		D10000010000000000000006 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
+		D10000010000000000000007 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
+		D10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
+		D10000010000000000000009 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* HealthKitManager.swift */; };
+		D10000010000000000000010 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
+		D10000010000000000000012 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
+		F10000010000000000000001 /* CounterWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000001 /* CounterWidgetsBundle.swift */; };
+		F10000010000000000000002 /* CounterComplicationWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000002 /* CounterComplicationWidget.swift */; };
+		F10000010000000000000003 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
+		F10000010000000000000004 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
+		F10000010000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000005 /* Assets.xcassets */; };
+		F10000010000000000000006 /* CounterWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F30000010000000000000001 /* CounterWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		G10000010000000000000001 /* CounterTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000001 /* CounterTheme.swift */; };
+		G10000010000000000000002 /* CounterPageLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000002 /* CounterPageLayout.swift */; };
+		G10000010000000000000003 /* CaloriesPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000003 /* CaloriesPageContent.swift */; };
+		G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000004 /* CustomCounterPageContent.swift */; };
+		G10000010000000000000006 /* CounterPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000006 /* CounterPagerView.swift */; };
+		M10000010000000000000001 /* AllCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = M20000010000000000000001 /* AllCountersListView.swift */; };
+		G10000010000000000000007 /* WeatherStyleButtonGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000007 /* WeatherStyleButtonGrid.swift */; };
+		H10000010000000000000001 /* CustomAmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = H20000010000000000000001 /* CustomAmountInput.swift */; };
+		J10000010000000000000001 /* TodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = J20000010000000000000001 /* TodayLogView.swift */; };
+		K10000010000000000000001 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
+		K10000010000000000000002 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
+		L10000010000000000000001 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
+		L10000010000000000000002 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
+		L10000010000000000000003 /* GoalProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000002 /* GoalProgressView.swift */; };
+		N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000001 /* CompactQuickAddGrid.swift */; };
+		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
+		P10000010000000000000001 /* WeatherStyleListReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* WeatherStyleListReveal.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E10000010000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90000010000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B60000010000000000000001;
+			remoteInfo = CounterWatch;
+		};
+		E10000010000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90000010000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F60000010000000000000001;
+			remoteInfo = CounterWatchWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B70000010000000000000003 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				B10000010000000000000008 /* CounterWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F70000010000000000000004 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F10000010000000000000006 /* CounterWatchWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20000010000000000000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
+		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A20000010000000000000007 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		A20000010000000000000009 /* QuickAddButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddButtonsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000010 /* PeriodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodPicker.swift; sourceTree = "<group>"; };
+		A20000010000000000000011 /* StatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCard.swift; sourceTree = "<group>"; };
+		A20000010000000000000012 /* HistoryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartView.swift; sourceTree = "<group>"; };
+		A20000010000000000000013 /* CalorieHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieHistoryView.swift; sourceTree = "<group>"; };
+		A20000010000000000000014 /* CounterHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHistoryView.swift; sourceTree = "<group>"; };
+		A20000010000000000000015 /* CalorieCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieCounterView.swift; sourceTree = "<group>"; };
+		A20000010000000000000016 /* ButtonSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSettingsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000017 /* CustomCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCountersListView.swift; sourceTree = "<group>"; };
+		A20000010000000000000018 /* CreateCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCounterView.swift; sourceTree = "<group>"; };
+		A20000010000000000000019 /* CustomCounterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterDetailView.swift; sourceTree = "<group>"; };
+		A20000010000000000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000010000000000000021 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000010000000000000022 /* Counter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Counter.entitlements; sourceTree = "<group>"; };
+		A30000010000000000000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B20000010000000000000001 /* CounterWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWatchApp.swift; sourceTree = "<group>"; };
+		B20000010000000000000002 /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
+		B20000010000000000000003 /* WatchCalorieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCalorieView.swift; sourceTree = "<group>"; };
+		B20000010000000000000004 /* WatchQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddGrid.swift; sourceTree = "<group>"; };
+		B20000010000000000000005 /* WatchCounterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterListView.swift; sourceTree = "<group>"; };
+		B20000010000000000000006 /* WatchCounterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterDetailView.swift; sourceTree = "<group>"; };
+		B20000010000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B20000010000000000000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B20000010000000000000009 /* CounterWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWatch.entitlements; sourceTree = "<group>"; };
+		B30000010000000000000001 /* CounterWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CounterWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C20000010000000000000001 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
+		C20000010000000000000002 /* HistoryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTypes.swift; sourceTree = "<group>"; };
+		C20000010000000000000003 /* SharedModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModelContainer.swift; sourceTree = "<group>"; };
+		C20000010000000000000004 /* HistoryAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAggregator.swift; sourceTree = "<group>"; };
+		C20000010000000000000005 /* CalorieEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieEntry.swift; sourceTree = "<group>"; };
+		C20000010000000000000006 /* CustomCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounter.swift; sourceTree = "<group>"; };
+		C20000010000000000000007 /* CounterEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterEntry.swift; sourceTree = "<group>"; };
+		C20000010000000000000008 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		C20000010000000000000009 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
+		C20000010000000000000011 /* EntryActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActions.swift; sourceTree = "<group>"; };
+		C20000010000000000000012 /* PreviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModel.swift; sourceTree = "<group>"; };
+		F20000010000000000000001 /* CounterWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetsBundle.swift; sourceTree = "<group>"; };
+		F20000010000000000000002 /* CounterComplicationWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterComplicationWidget.swift; sourceTree = "<group>"; };
+		F20000010000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F20000010000000000000004 /* CounterWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWatchWidgets.entitlements; sourceTree = "<group>"; };
+		F20000010000000000000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F30000010000000000000001 /* CounterWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CounterWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		G20000010000000000000001 /* CounterTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTheme.swift; sourceTree = "<group>"; };
+		G20000010000000000000002 /* CounterPageLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageLayout.swift; sourceTree = "<group>"; };
+		G20000010000000000000003 /* CaloriesPageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaloriesPageContent.swift; sourceTree = "<group>"; };
+		G20000010000000000000004 /* CustomCounterPageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterPageContent.swift; sourceTree = "<group>"; };
+		G20000010000000000000006 /* CounterPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPagerView.swift; sourceTree = "<group>"; };
+		G20000010000000000000007 /* WeatherStyleButtonGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherStyleButtonGrid.swift; sourceTree = "<group>"; };
+		M20000010000000000000001 /* AllCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCountersListView.swift; sourceTree = "<group>"; };
+		H20000010000000000000001 /* CustomAmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountInput.swift; sourceTree = "<group>"; };
+		J20000010000000000000001 /* TodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayLogView.swift; sourceTree = "<group>"; };
+		K20000010000000000000001 /* CounterPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPeriod.swift; sourceTree = "<group>"; };
+		L20000010000000000000001 /* GoalDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDirection.swift; sourceTree = "<group>"; };
+		L20000010000000000000002 /* GoalProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressView.swift; sourceTree = "<group>"; };
+		N20000010000000000000001 /* CompactQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactQuickAddGrid.swift; sourceTree = "<group>"; };
+		N20000010000000000000002 /* CustomAmountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountSheet.swift; sourceTree = "<group>"; };
+		P20000010000000000000001 /* WeatherStyleListReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherStyleListReveal.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B40000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F40000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A50000010000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A50000010000000000000002 /* Counter */,
+				B50000010000000000000001 /* CounterWatch */,
+				F50000010000000000000001 /* CounterWatchWidgets */,
+				C50000010000000000000001 /* Shared */,
+				A50000010000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A50000010000000000000002 /* Counter */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000001 /* CounterApp.swift */,
+				A20000010000000000000002 /* ContentView.swift */,
+				A50000010000000000000005 /* Services */,
+				A50000010000000000000006 /* Views */,
+				A20000010000000000000020 /* Assets.xcassets */,
+				A20000010000000000000021 /* Info.plist */,
+				A20000010000000000000022 /* Counter.entitlements */,
+			);
+			path = Counter;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000010000000000000001 /* Counter.app */,
+				B30000010000000000000001 /* CounterWatch.app */,
+				F30000010000000000000001 /* CounterWatchWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000005 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000007 /* HealthKitManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				G50000010000000000000001 /* Pager */,
+				A50000010000000000000007 /* Calorie */,
+				A50000010000000000000008 /* CustomCounters */,
+				A50000010000000000000009 /* History */,
+				A50000010000000000000010 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000007 /* Calorie */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000015 /* CalorieCounterView.swift */,
+				A20000010000000000000016 /* ButtonSettingsView.swift */,
+			);
+			path = Calorie;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000008 /* CustomCounters */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000017 /* CustomCountersListView.swift */,
+				A20000010000000000000018 /* CreateCounterView.swift */,
+				A20000010000000000000019 /* CustomCounterDetailView.swift */,
+			);
+			path = CustomCounters;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000009 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000012 /* HistoryChartView.swift */,
+				A20000010000000000000013 /* CalorieHistoryView.swift */,
+				A20000010000000000000014 /* CounterHistoryView.swift */,
+				J20000010000000000000001 /* TodayLogView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000010 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000009 /* QuickAddButtonsView.swift */,
+				A20000010000000000000010 /* PeriodPicker.swift */,
+				A20000010000000000000011 /* StatCard.swift */,
+				G20000010000000000000007 /* WeatherStyleButtonGrid.swift */,
+				H20000010000000000000001 /* CustomAmountInput.swift */,
+				L20000010000000000000002 /* GoalProgressView.swift */,
+				N20000010000000000000001 /* CompactQuickAddGrid.swift */,
+				N20000010000000000000002 /* CustomAmountSheet.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		B50000010000000000000001 /* CounterWatch */ = {
+			isa = PBXGroup;
+			children = (
+				B20000010000000000000001 /* CounterWatchApp.swift */,
+				B20000010000000000000002 /* WatchContentView.swift */,
+				B20000010000000000000003 /* WatchCalorieView.swift */,
+				B20000010000000000000004 /* WatchQuickAddGrid.swift */,
+				B20000010000000000000005 /* WatchCounterListView.swift */,
+				B20000010000000000000006 /* WatchCounterDetailView.swift */,
+				B20000010000000000000007 /* Assets.xcassets */,
+				B20000010000000000000008 /* Info.plist */,
+				B20000010000000000000009 /* CounterWatch.entitlements */,
+			);
+			path = CounterWatch;
+			sourceTree = "<group>";
+		};
+		C50000010000000000000001 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C20000010000000000000001 /* AppGroup.swift */,
+				C20000010000000000000002 /* HistoryTypes.swift */,
+				C20000010000000000000003 /* SharedModelContainer.swift */,
+				C20000010000000000000004 /* HistoryAggregator.swift */,
+				K20000010000000000000001 /* CounterPeriod.swift */,
+				L20000010000000000000001 /* GoalDirection.swift */,
+				C20000010000000000000009 /* WidgetSnapshot.swift */,
+				C20000010000000000000011 /* EntryActions.swift */,
+				C20000010000000000000012 /* PreviewModel.swift */,
+				C50000010000000000000002 /* Models */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		C50000010000000000000002 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C20000010000000000000005 /* CalorieEntry.swift */,
+				C20000010000000000000006 /* CustomCounter.swift */,
+				C20000010000000000000007 /* CounterEntry.swift */,
+				C20000010000000000000008 /* AppSettings.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F50000010000000000000001 /* CounterWatchWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				F20000010000000000000001 /* CounterWidgetsBundle.swift */,
+				F20000010000000000000002 /* CounterComplicationWidget.swift */,
+				F20000010000000000000005 /* Assets.xcassets */,
+				F20000010000000000000003 /* Info.plist */,
+				F20000010000000000000004 /* CounterWatchWidgets.entitlements */,
+			);
+			path = CounterWatchWidgets;
+			sourceTree = "<group>";
+		};
+		G50000010000000000000001 /* Pager */ = {
+			isa = PBXGroup;
+			children = (
+				G20000010000000000000006 /* CounterPagerView.swift */,
+				P20000010000000000000001 /* WeatherStyleListReveal.swift */,
+				G20000010000000000000003 /* CaloriesPageContent.swift */,
+				G20000010000000000000004 /* CustomCounterPageContent.swift */,
+				M20000010000000000000001 /* AllCountersListView.swift */,
+				G20000010000000000000002 /* CounterPageLayout.swift */,
+				G20000010000000000000001 /* CounterTheme.swift */,
+			);
+			path = Pager;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000010000000000000001 /* Counter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000010000000000000003 /* Build configuration list for PBXNativeTarget "Counter" */;
+			buildPhases = (
+				A70000010000000000000001 /* Sources */,
+				A40000010000000000000001 /* Frameworks */,
+				A70000010000000000000002 /* Resources */,
+				B70000010000000000000003 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E20000010000000000000001 /* PBXTargetDependency */,
+			);
+			name = Counter;
+			productName = Counter;
+			productReference = A30000010000000000000001 /* Counter.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B60000010000000000000001 /* CounterWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWatch" */;
+			buildPhases = (
+				B70000010000000000000001 /* Sources */,
+				B40000010000000000000001 /* Frameworks */,
+				B70000010000000000000002 /* Resources */,
+				F70000010000000000000004 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E20000010000000000000002 /* PBXTargetDependency */,
+			);
+			name = CounterWatch;
+			productName = CounterWatch;
+			productReference = B30000010000000000000001 /* CounterWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F60000010000000000000001 /* CounterWatchWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWatchWidgets" */;
+			buildPhases = (
+				F70000010000000000000001 /* Sources */,
+				F40000010000000000000001 /* Frameworks */,
+				F70000010000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CounterWatchWidgets;
+			productName = CounterWatchWidgets;
+			productReference = F30000010000000000000001 /* CounterWatchWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A90000010000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					A60000010000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					B60000010000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					F60000010000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = A80000010000000000000001 /* Build configuration list for PBXProject "Counter" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A50000010000000000000001;
+			productRefGroup = A50000010000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000010000000000000001 /* Counter */,
+				B60000010000000000000001 /* CounterWatch */,
+				F60000010000000000000001 /* CounterWatchWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A70000010000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000020 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B70000010000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000010000000000000007 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F70000010000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F10000010000000000000005 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A70000010000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000001 /* CounterApp.swift in Sources */,
+				A10000010000000000000002 /* ContentView.swift in Sources */,
+				G10000010000000000000006 /* CounterPagerView.swift in Sources */,
+				P10000010000000000000001 /* WeatherStyleListReveal.swift in Sources */,
+				G10000010000000000000003 /* CaloriesPageContent.swift in Sources */,
+				M10000010000000000000001 /* AllCountersListView.swift in Sources */,
+				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
+				G10000010000000000000002 /* CounterPageLayout.swift in Sources */,
+				G10000010000000000000001 /* CounterTheme.swift in Sources */,
+				G10000010000000000000007 /* WeatherStyleButtonGrid.swift in Sources */,
+				H10000010000000000000001 /* CustomAmountInput.swift in Sources */,
+				L10000010000000000000003 /* GoalProgressView.swift in Sources */,
+				N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */,
+				N10000010000000000000002 /* CustomAmountSheet.swift in Sources */,
+				J10000010000000000000001 /* TodayLogView.swift in Sources */,
+				A10000010000000000000007 /* HealthKitManager.swift in Sources */,
+				A10000010000000000000009 /* QuickAddButtonsView.swift in Sources */,
+				A10000010000000000000010 /* PeriodPicker.swift in Sources */,
+				A10000010000000000000011 /* StatCard.swift in Sources */,
+				A10000010000000000000012 /* HistoryChartView.swift in Sources */,
+				A10000010000000000000013 /* CalorieHistoryView.swift in Sources */,
+				A10000010000000000000014 /* CounterHistoryView.swift in Sources */,
+				A10000010000000000000015 /* CalorieCounterView.swift in Sources */,
+				A10000010000000000000016 /* ButtonSettingsView.swift in Sources */,
+				A10000010000000000000017 /* CustomCountersListView.swift in Sources */,
+				A10000010000000000000018 /* CreateCounterView.swift in Sources */,
+				A10000010000000000000019 /* CustomCounterDetailView.swift in Sources */,
+				C10000010000000000000001 /* AppGroup.swift in Sources */,
+				C10000010000000000000002 /* HistoryTypes.swift in Sources */,
+				C10000010000000000000003 /* SharedModelContainer.swift in Sources */,
+				C10000010000000000000004 /* HistoryAggregator.swift in Sources */,
+				C10000010000000000000005 /* CalorieEntry.swift in Sources */,
+				C10000010000000000000006 /* CustomCounter.swift in Sources */,
+				C10000010000000000000007 /* CounterEntry.swift in Sources */,
+				C10000010000000000000008 /* AppSettings.swift in Sources */,
+				C10000010000000000000009 /* WidgetSnapshot.swift in Sources */,
+				C10000010000000000000011 /* EntryActions.swift in Sources */,
+				K10000010000000000000001 /* CounterPeriod.swift in Sources */,
+				L10000010000000000000001 /* GoalDirection.swift in Sources */,
+				C10000010000000000000012 /* PreviewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B70000010000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000010000000000000001 /* CounterWatchApp.swift in Sources */,
+				B10000010000000000000002 /* WatchContentView.swift in Sources */,
+				B10000010000000000000003 /* WatchCalorieView.swift in Sources */,
+				B10000010000000000000004 /* WatchQuickAddGrid.swift in Sources */,
+				B10000010000000000000005 /* WatchCounterListView.swift in Sources */,
+				B10000010000000000000006 /* WatchCounterDetailView.swift in Sources */,
+				D10000010000000000000001 /* AppGroup.swift in Sources */,
+				D10000010000000000000002 /* HistoryTypes.swift in Sources */,
+				D10000010000000000000003 /* SharedModelContainer.swift in Sources */,
+				D10000010000000000000004 /* HistoryAggregator.swift in Sources */,
+				D10000010000000000000005 /* CalorieEntry.swift in Sources */,
+				D10000010000000000000006 /* CustomCounter.swift in Sources */,
+				D10000010000000000000007 /* CounterEntry.swift in Sources */,
+				D10000010000000000000008 /* AppSettings.swift in Sources */,
+				D10000010000000000000009 /* HealthKitManager.swift in Sources */,
+				D10000010000000000000010 /* WidgetSnapshot.swift in Sources */,
+				D10000010000000000000012 /* EntryActions.swift in Sources */,
+				K10000010000000000000002 /* CounterPeriod.swift in Sources */,
+				L10000010000000000000002 /* GoalDirection.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F70000010000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F10000010000000000000001 /* CounterWidgetsBundle.swift in Sources */,
+				F10000010000000000000002 /* CounterComplicationWidget.swift in Sources */,
+				F10000010000000000000003 /* AppGroup.swift in Sources */,
+				F10000010000000000000004 /* WidgetSnapshot.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E20000010000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B60000010000000000000001 /* CounterWatch */;
+			targetProxy = E10000010000000000000001 /* PBXContainerItemProxy */;
+		};
+		E20000010000000000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F60000010000000000000001 /* CounterWatchWidgets */;
+			targetProxy = E10000010000000000000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AA0000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Debug;
+		};
+		AA0000010000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA0000010000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Counter/Counter.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F472GKBUAR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Counter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Counter reads your weight and calorie burn from Apple Health to show your daily balance.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Counter does not write health data.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000010000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Counter/Counter.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F472GKBUAR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Counter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Counter reads your weight and calorie burn from Apple Health to show your daily balance.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Counter does not write health data.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BB0000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CounterWatch/CounterWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F472GKBUAR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CounterWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Counter reads calorie burn from Apple Health.";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.becter.counter;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		BB0000010000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CounterWatch/CounterWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F472GKBUAR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CounterWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Counter;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Counter reads calorie burn from Apple Health.";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.becter.counter;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		FB0000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = CounterWatchWidgets/CounterWatchWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F472GKBUAR;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CounterWatchWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		FB0000010000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = CounterWatchWidgets/CounterWatchWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F472GKBUAR;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CounterWatchWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A80000010000000000000001 /* Build configuration list for PBXProject "Counter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000001 /* Debug */,
+				AA0000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A80000010000000000000003 /* Build configuration list for PBXNativeTarget "Counter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000010000000000000003 /* Debug */,
+				AA0000010000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB0000010000000000000001 /* Debug */,
+				BB0000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWatchWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB0000010000000000000001 /* Debug */,
+				FB0000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A90000010000000000000001 /* Project object */;
+}
