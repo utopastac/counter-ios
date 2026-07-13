@@ -9,10 +9,14 @@ struct WatchQuickAddGrid: View {
     GridItem(.flexible())
   ]
 
+  private var displayValues: [Int] {
+    QuickAddConfiguration.normalizedPresets(values)
+  }
+
   var body: some View {
     LazyVGrid(columns: columns, spacing: 6) {
-      ForEach(values, id: \.self) { value in
-        Button("+\(value)") {
+      ForEach(displayValues, id: \.self) { value in
+        Button("\(value)") {
           onTap(value)
         }
         .buttonStyle(.bordered)

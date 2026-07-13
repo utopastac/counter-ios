@@ -1,73 +1,96 @@
 import SwiftUI
 
-struct CounterPageLayout<Footer: View>: View {
+struct CounterPageLayout<Footer: View, EntryLog: View>: View {
   let title: String
   let heroValue: String
   let heroCaption: String
   let compactStat: String?
   let goalProgress: GoalProgress?
-  let palette: CounterTheme.Palette
+  @ViewBuilder var entryLog: () -> EntryLog
   @ViewBuilder var footer: () -> Footer
 
   var body: some View {
     GeometryReader { geometry in
       ZStack {
-        CounterPageBackground(palette: palette)
+        CounterPageBackground()
 
         VStack(alignment: .leading, spacing: 0) {
           Spacer()
-            .frame(height: 64)
+            .frame(height: SpaceToken.pageTopInset)
 
-          VStack(alignment: .leading, spacing: 4) {
+          VStack(alignment: .leading, spacing: SpaceToken.x1) {
             Text(title)
-              .font(.system(size: 30, weight: .thin, design: .rounded))
-              .foregroundStyle(.white.opacity(0.95))
+              .counterTextStyle(.heroTitle, color: .emphasis)
 
             Text(heroCaption.uppercased())
-              .font(.caption.weight(.semibold))
-              .tracking(1.1)
-              .foregroundStyle(.white.opacity(0.55))
+              .counterTextStyle(.sectionLabel, color: .secondary)
           }
 
           Spacer()
-            .frame(height: 20)
+            .frame(height: SpaceToken.x5)
 
-          HStack(alignment: .center, spacing: 20) {
+          HStack(alignment: .center, spacing: SpaceToken.x5) {
             Text(heroValue)
-              .font(.system(size: 72, weight: .ultraLight, design: .rounded))
-              .foregroundStyle(.white)
+              .counterTextStyle(.heroValue)
               .minimumScaleFactor(0.45)
               .lineLimit(1)
               .contentTransition(.numericText())
               .frame(maxWidth: .infinity, alignment: .leading)
 
             if let goalProgress {
-              GoalProgressRing(progress: goalProgress, size: 76, lineWidth: 8)
+              GoalProgressRing(
+                progress: goalProgress,
+                size: SizeToken.Ring.hero,
+                lineWidth: SizeToken.Ring.heroStroke
+              )
             }
           }
 
           if let compactStat {
             Text(compactStat)
-              .font(.subheadline)
-              .foregroundStyle(.white.opacity(0.65))
-              .padding(.top, 12)
+              .counterTextStyle(.bodyTertiary, color: .tertiary)
+              .padding(.top, SpaceToken.x3)
               .lineLimit(2)
           }
 
-          Spacer(minLength: 16)
+          entryLog()
+            .padding(.top, SpaceToken.x3)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .mask(BottomFadeMask())
 
           footer()
-            .padding(.bottom, 56)
+            .padding(.top, SpaceToken.x3)
+            .padding(.bottom, SpaceToken.pageFooterBottom)
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, SpaceToken.pageHorizontal)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
       }
     }
-    .preferredColorScheme(.dark)
+  }
+}
+
+extension CounterPageLayout where EntryLog == EmptyView {
+  init(
+    title: String,
+    heroValue: String,
+    heroCaption: String,
+    compactStat: String?,
+    goalProgress: GoalProgress?,
+    @ViewBuilder footer: @escaping () -> Footer
+  ) {
+    self.title = title
+    self.heroValue = heroValue
+    self.heroCaption = heroCaption
+    self.compactStat = compactStat
+    self.goalProgress = goalProgress
+    self.entryLog = { EmptyView() }
+    self.footer = footer
   }
 }
 
 struct PagerDotIndicator: View {
+  @Environment(\.semanticColors) private var colors
+
   let labels: [String]
   let selectedIndex: Int
 
@@ -75,28 +98,32 @@ struct PagerDotIndicator: View {
     HStack {
       Spacer()
 
-      VStack(spacing: 8) {
+      VStack(spacing: SpaceToken.x2) {
         ForEach(labels.indices, id: \.self) { index in
           Capsule()
-            .fill(index == selectedIndex ? Color.white : Color.white.opacity(0.35))
+            .fill(index == selectedIndex ? ComponentColor.pagerDotActive(colors) : ComponentColor.pagerDotInactive(colors))
             .frame(width: index == selectedIndex ? 6 : 5, height: index == selectedIndex ? 18 : 5)
-            .animation(.easeInOut(duration: 0.2), value: selectedIndex)
+            .animation(.easeInOut(duration: MotionToken.pagerDotDuration), value: selectedIndex)
         }
       }
       .padding(.horizontal, 10)
-      .padding(.vertical, 14)
+      .padding(.vertical, SpaceToken.x3 + 2)
       .background {
         Capsule()
-          .fill(.ultraThinMaterial)
+          .fill(colors.surfaceGlassFillSubtle)
           .overlay {
             Capsule()
-              .strokeBorder(.white.opacity(0.18), lineWidth: 1)
+              .strokeBorder(colors.surfaceGlassStrokeStrong, lineWidth: 1)
           }
       }
-      .shadow(color: .black.opacity(0.12), radius: 12, y: 4)
-      .padding(.trailing, 16)
+      .shadow(
+        color: ShadowToken.subtle().color,
+        radius: ShadowToken.subtleRadius,
+        y: ShadowToken.subtleY
+      )
+      .padding(.trailing, SpaceToken.x4)
     }
-    .padding(.bottom, 24)
+    .padding(.bottom, SpaceToken.x6)
     .allowsHitTesting(false)
   }
 }

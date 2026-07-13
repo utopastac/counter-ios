@@ -1,7 +1,17 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Calorie log
+
 struct CalorieTodayLogView: View {
+  var body: some View {
+    NavigationStack {
+      CaloriePeriodEntryLogScreen()
+    }
+  }
+}
+
+struct CaloriePeriodEntryLogScreen: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(HealthKitManager.self) private var healthKit
   @Environment(\.modelContext) private var modelContext
@@ -29,68 +39,27 @@ struct CalorieTodayLogView: View {
     CounterPeriodCalculator.totalCalories(from: entries, for: settings)
   }
 
-  private var logTitle: String {
-    switch settings.calorieResetPeriod {
-    case .daily: "Today's Log"
-    case .weekly: "This Week's Log"
-    case .monthly: "This Month's Log"
-    }
-  }
-
   var body: some View {
-    NavigationStack {
-      Group {
-        if periodEntries.isEmpty {
-          ContentUnavailableView(
-            "No Entries Yet",
-            systemImage: "list.bullet",
-            description: Text("Entries for the current period will appear here.")
-          )
-        } else {
-          List {
-            ForEach(periodEntries, id: \.id) { entry in
-              TodayLogRow(
-                timestamp: entry.timestamp,
-                valueText: "\(entry.value) kcal"
-              )
-              .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                Button(role: .destructive) {
-                  deleteEntry(id: entry.id)
-                } label: {
-                  Label("Delete", systemImage: "trash")
-                }
-              }
-              .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                Button {
-                  editingEntry = EntryEditContext(
-                    id: entry.id,
-                    value: entry.value
-                  )
-                } label: {
-                  Label("Edit", systemImage: "pencil")
-                }
-                .tint(.blue)
-              }
-            }
-          }
+    CaloriePeriodEntryLogContent(
+      entries: periodEntries,
+      onDelete: deleteEntry,
+      onEdit: { editingEntry = EntryEditContext(id: $0, value: $1) }
+    )
+    .navigationTitle(EntryLogTitles.full(for: settings.calorieResetPeriod))
+    .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+      ToolbarItem(placement: .confirmationAction) {
+        Button("Done") {
+          dismiss()
         }
       }
-      .navigationTitle(logTitle)
-      .navigationBarTitleDisplayMode(.inline)
-      .toolbar {
-        ToolbarItem(placement: .confirmationAction) {
-          Button("Done") {
-            dismiss()
-          }
-        }
-      }
-      .sheet(item: $editingEntry) { context in
-        EditEntrySheet(
-          title: "Edit Entry",
-          initialValue: context.value
-        ) { newValue in
-          updateEntry(id: context.id, value: newValue)
-        }
+    }
+    .sheet(item: $editingEntry) { context in
+      EditEntrySheet(
+        title: "Edit Entry",
+        initialValue: context.value
+      ) { newValue in
+        updateEntry(id: context.id, value: newValue)
       }
     }
   }
@@ -110,7 +79,58 @@ struct CalorieTodayLogView: View {
   }
 }
 
+struct CaloriePeriodEntryLogContent: View {
+  let entries: [CalorieEntry]
+  let onDelete: (UUID) -> Void
+  let onEdit: (UUID, Int) -> Void
+
+  var body: some View {
+    Group {
+      if entries.isEmpty {
+        ContentUnavailableView(
+          "No Entries Yet",
+          systemImage: "list.bullet",
+          description: Text("Entries for the current period will appear here.")
+        )
+      } else {
+        List {
+          ForEach(entries, id: \.id) { entry in
+            Button {
+              onEdit(entry.id, entry.value)
+            } label: {
+              TodayLogRow(
+                timestamp: entry.timestamp,
+                valueText: "\(entry.value) kcal"
+              )
+            }
+            .buttonStyle(.plain)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+              Button(role: .destructive) {
+                onDelete(entry.id)
+              } label: {
+                Label("Delete", systemImage: "trash")
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// MARK: - Custom counter log
+
 struct CounterTodayLogView: View {
+  @Bindable var counter: CustomCounter
+
+  var body: some View {
+    NavigationStack {
+      CounterPeriodEntryLogScreen(counter: counter)
+    }
+  }
+}
+
+struct CounterPeriodEntryLogScreen: View {
   @Bindable var counter: CustomCounter
 
   @Environment(\.dismiss) private var dismiss
@@ -129,68 +149,27 @@ struct CounterTodayLogView: View {
       .sorted { $0.timestamp > $1.timestamp }
   }
 
-  private var logTitle: String {
-    switch counter.resetPeriod {
-    case .daily: "Today's Log"
-    case .weekly: "This Week's Log"
-    case .monthly: "This Month's Log"
-    }
-  }
-
   var body: some View {
-    NavigationStack {
-      Group {
-        if periodEntries.isEmpty {
-          ContentUnavailableView(
-            "No Entries Yet",
-            systemImage: "list.bullet",
-            description: Text("Entries for the current period will appear here.")
-          )
-        } else {
-          List {
-            ForEach(periodEntries, id: \.id) { entry in
-              TodayLogRow(
-                timestamp: entry.timestamp,
-                valueText: "\(entry.value)"
-              )
-              .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                Button(role: .destructive) {
-                  deleteEntry(id: entry.id)
-                } label: {
-                  Label("Delete", systemImage: "trash")
-                }
-              }
-              .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                Button {
-                  editingEntry = EntryEditContext(
-                    id: entry.id,
-                    value: entry.value
-                  )
-                } label: {
-                  Label("Edit", systemImage: "pencil")
-                }
-                .tint(.blue)
-              }
-            }
-          }
+    CounterPeriodEntryLogContent(
+      entries: periodEntries,
+      onDelete: deleteEntry,
+      onEdit: { editingEntry = EntryEditContext(id: $0, value: $1) }
+    )
+    .navigationTitle(EntryLogTitles.full(for: counter.resetPeriod))
+    .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+      ToolbarItem(placement: .confirmationAction) {
+        Button("Done") {
+          dismiss()
         }
       }
-      .navigationTitle(logTitle)
-      .navigationBarTitleDisplayMode(.inline)
-      .toolbar {
-        ToolbarItem(placement: .confirmationAction) {
-          Button("Done") {
-            dismiss()
-          }
-        }
-      }
-      .sheet(item: $editingEntry) { context in
-        EditEntrySheet(
-          title: "Edit Entry",
-          initialValue: context.value
-        ) { newValue in
-          updateEntry(id: context.id, value: newValue)
-        }
+    }
+    .sheet(item: $editingEntry) { context in
+      EditEntrySheet(
+        title: "Edit Entry",
+        initialValue: context.value
+      ) { newValue in
+        updateEntry(id: context.id, value: newValue)
       }
     }
   }
@@ -204,73 +183,94 @@ struct CounterTodayLogView: View {
   }
 }
 
-private struct TodayLogRow: View {
+struct CounterPeriodEntryLogContent: View {
+  let entries: [CounterEntry]
+  let onDelete: (UUID) -> Void
+  let onEdit: (UUID, Int) -> Void
+
+  var body: some View {
+    Group {
+      if entries.isEmpty {
+        ContentUnavailableView(
+          "No Entries Yet",
+          systemImage: "list.bullet",
+          description: Text("Entries for the current period will appear here.")
+        )
+      } else {
+        List {
+          ForEach(entries, id: \.id) { entry in
+            Button {
+              onEdit(entry.id, entry.value)
+            } label: {
+              TodayLogRow(
+                timestamp: entry.timestamp,
+                valueText: "\(entry.value)"
+              )
+            }
+            .buttonStyle(.plain)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+              Button(role: .destructive) {
+                onDelete(entry.id)
+              } label: {
+                Label("Delete", systemImage: "trash")
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// MARK: - Shared
+
+enum EntryLogTitles {
+  static func full(for period: CounterResetPeriod) -> String {
+    switch period {
+    case .daily: "Today's Log"
+    case .weekly: "This Week's Log"
+    case .monthly: "This Month's Log"
+    }
+  }
+
+  static func preview(for period: CounterResetPeriod) -> String {
+    switch period {
+    case .daily: "Today"
+    case .weekly: "This Week"
+    case .monthly: "This Month"
+    }
+  }
+}
+
+struct TodayLogRow: View {
   let timestamp: Date
   let valueText: String
 
   var body: some View {
     HStack {
-      Text(timestamp, format: .dateTime.hour().minute())
-      Spacer()
       Text(valueText)
         .fontWeight(.semibold)
         .monospacedDigit()
+      Spacer()
+      Text(timestamp, format: .dateTime.hour().minute())
+        .foregroundStyle(.secondary)
     }
   }
 }
 
 struct EditEntrySheet: View {
-  @Environment(\.dismiss) private var dismiss
-
   let title: String
   let initialValue: Int
   let onSave: (Int) -> Void
 
-  @State private var valueText: String
-
-  init(
-    title: String,
-    initialValue: Int,
-    onSave: @escaping (Int) -> Void
-  ) {
-    self.title = title
-    self.initialValue = initialValue
-    self.onSave = onSave
-    _valueText = State(initialValue: String(initialValue))
-  }
-
   var body: some View {
-    NavigationStack {
-      Form {
-        TextField("Amount", text: $valueText)
-          .keyboardType(.numberPad)
-      }
-      .navigationTitle(title)
-      .navigationBarTitleDisplayMode(.inline)
-      .toolbar {
-        ToolbarItem(placement: .cancellationAction) {
-          Button("Cancel") {
-            dismiss()
-          }
-        }
-        ToolbarItem(placement: .confirmationAction) {
-          Button("Save") {
-            guard let value = parsedValue else { return }
-            onSave(value)
-            dismiss()
-          }
-          .disabled(parsedValue == nil)
-        }
-      }
-    }
-    .presentationDetents([.medium])
-  }
-
-  private var parsedValue: Int? {
-    guard let value = Int(valueText.trimmingCharacters(in: .whitespaces)), value > 0 else {
-      return nil
-    }
-    return value
+    AmountEntrySheet(
+      title: title,
+      actionTitle: "Save",
+      initialText: String(initialValue),
+      onSubmit: onSave
+    )
+    .counterDesignSystemFromColorScheme()
   }
 }
 

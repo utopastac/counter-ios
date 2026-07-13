@@ -2,9 +2,9 @@ import SwiftUI
 import SwiftData
 
 struct CounterPagerView: View {
-  @Environment(HealthKitManager.self) private var healthKit
   @Environment(\.modelContext) private var modelContext
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.semanticColors) private var colors
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
   @Query private var settingsList: [AppSettings]
 
@@ -12,7 +12,6 @@ struct CounterPagerView: View {
   @State private var showButtonSettings = false
   @State private var showHistory = false
   @State private var showCalorieHistory = false
-  @State private var showTodayLog = false
   @State private var showAddCounter = false
   @State private var isCounterListRevealed = false
   @State private var cardOffset: CGFloat = 0
@@ -45,10 +44,7 @@ struct CounterPagerView: View {
   }
 
   private var settleSpring: Animation {
-    if reduceMotion {
-      return .easeOut(duration: 0.22)
-    }
-    return .smooth(duration: 0.48, extraBounce: 0.08)
+    MotionToken.settle(reduceMotion: reduceMotion)
   }
 
   var body: some View {
@@ -92,13 +88,6 @@ struct CounterPagerView: View {
         CounterHistoryView(counter: counter)
       }
     }
-    .sheet(isPresented: $showTodayLog) {
-      if isCaloriesPage {
-        CalorieTodayLogView()
-      } else if let counter = activeCustomCounter {
-        CounterTodayLogView(counter: counter)
-      }
-    }
     .sheet(isPresented: $showAddCounter) {
       CreateCounterView { counter in
         selectedPageID = counter.id.uuidString
@@ -123,7 +112,7 @@ struct CounterPagerView: View {
         PagerDotIndicator(labels: pageLabels, selectedIndex: selectedIndex)
       }
     }
-    .background(Color.black)
+    .background(colors.surfaceBackdrop)
   }
 
   @ViewBuilder
@@ -181,21 +170,11 @@ struct CounterPagerView: View {
     HStack(spacing: 10) {
       Spacer()
 
-      glassIconButton("square.grid.2x2") {
+      GlassIconButton(systemName: "square.grid.2x2") {
         openCounterList()
       }
 
-      if isCaloriesPage {
-        glassIconButton("arrow.clockwise") {
-          Task { await healthKit.refreshToday() }
-        }
-      }
-
-      glassIconButton("list.bullet") {
-        showTodayLog = true
-      }
-
-      glassIconButton("chart.bar.xaxis") {
+      GlassIconButton(systemName: "chart.bar.xaxis") {
         if isCaloriesPage {
           showCalorieHistory = true
         } else {
@@ -203,16 +182,16 @@ struct CounterPagerView: View {
         }
       }
 
-      glassIconButton("slider.horizontal.3") {
+      GlassIconButton(systemName: "slider.horizontal.3") {
         showButtonSettings = true
       }
 
-      glassIconButton("plus") {
+      GlassIconButton(systemName: "plus") {
         showAddCounter = true
       }
     }
-    .padding(.horizontal, 20)
-    .padding(.top, 12)
+    .padding(.horizontal, SpaceToken.toolbarHorizontal)
+    .padding(.top, SpaceToken.toolbarTop)
   }
 
   @ViewBuilder
@@ -259,18 +238,6 @@ struct CounterPagerView: View {
         counter.goalDirection = save.goalDirection
       }
     }
-  }
-
-  private func glassIconButton(_ systemName: String, action: @escaping () -> Void) -> some View {
-    Button(action: action) {
-      Image(systemName: systemName)
-        .font(.body.weight(.semibold))
-        .foregroundStyle(.white)
-        .frame(width: 40, height: 40)
-        .background(.white.opacity(0.14), in: Circle())
-        .overlay(Circle().strokeBorder(.white.opacity(0.12), lineWidth: 1))
-    }
-    .buttonStyle(.plain)
   }
 }
 

@@ -9,7 +9,7 @@ struct CounterSettingsSave {
 }
 
 struct CounterSettingsView: View {
-  private static let maxQuickAddButtons = 8
+  private static let maxQuickAddButtons = QuickAddConfiguration.presetCount
 
   let title: String
   let includeGoalAndReset: Bool
@@ -97,7 +97,7 @@ struct CounterSettingsView: View {
         } header: {
           Text("Quick-add buttons")
         } footer: {
-          Text("Up to \(Self.maxQuickAddButtons) buttons. Use the … button on the counter for custom amounts.")
+          Text("Up to \(Self.maxQuickAddButtons) preset buttons. Use the … button on the counter for custom amounts.")
         }
 
         if values.count < Self.maxQuickAddButtons {

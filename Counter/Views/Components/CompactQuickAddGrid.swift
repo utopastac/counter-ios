@@ -2,61 +2,55 @@ import SwiftUI
 
 struct CompactQuickAddGrid: View {
   let values: [Int]
+  let defaultPresets: [Int]
   let onTap: (Int) -> Void
   let onCustom: () -> Void
 
-  private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 4)
+  private var columns: [GridItem] {
+    Array(repeating: GridItem(.flexible(), spacing: SizeToken.gridSpacing), count: SizeToken.gridColumnCount)
+  }
 
   private var displayValues: [Int] {
-    Array(values.prefix(8))
+    QuickAddConfiguration.filledPresets(from: values, defaults: defaultPresets)
   }
 
   var body: some View {
-    LazyVGrid(columns: columns, spacing: 8) {
+    LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
       ForEach(displayValues, id: \.self) { value in
-        quickAddButton(label: "+\(value)") {
+        GlassButton("\(value)") {
           onTap(value)
         }
       }
 
-      quickAddButton(label: nil, systemImage: "ellipsis") {
+      GlassButton(systemImage: "ellipsis") {
         onCustom()
       }
     }
   }
-
-  private func quickAddButton(
-    label: String?,
-    systemImage: String? = nil,
-    action: @escaping () -> Void
-  ) -> some View {
-    Button(action: action) {
-      Group {
-        if let systemImage {
-          Image(systemName: systemImage)
-            .font(.body.weight(.semibold))
-        } else {
-          Text(label ?? "")
-            .font(.subheadline.weight(.semibold).monospacedDigit())
-        }
-      }
-      .frame(maxWidth: .infinity)
-      .frame(height: 44)
-      .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-      .overlay(
-        RoundedRectangle(cornerRadius: 14, style: .continuous)
-          .strokeBorder(.white.opacity(0.12), lineWidth: 1)
-      )
-      .foregroundStyle(.white)
-    }
-    .buttonStyle(.plain)
-  }
 }
 
-#Preview {
+#Preview("Dark") {
   ZStack {
-    CounterPageBackground(palette: CounterTheme.calories)
-    CompactQuickAddGrid(values: [10, 20, 50, 100, 200, 500]) { _ in } onCustom: {}
+    CounterPageBackground()
+    CompactQuickAddGrid(
+      values: [10, 20, 50, 100, 200, 500, 1000],
+      defaultPresets: QuickAddConfiguration.defaultCaloriePresets
+    ) { _ in } onCustom: {}
       .padding()
   }
+  .counterDesignSystem(CounterDesignSystem(colorScheme: .dark, accent: .calories))
+  .preferredColorScheme(.dark)
+}
+
+#Preview("Light") {
+  ZStack {
+    CounterPageBackground()
+    CompactQuickAddGrid(
+      values: [10, 20, 50, 100, 200, 500, 1000],
+      defaultPresets: QuickAddConfiguration.defaultCaloriePresets
+    ) { _ in } onCustom: {}
+      .padding()
+  }
+  .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: .calories))
+  .preferredColorScheme(.light)
 }

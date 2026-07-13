@@ -9,9 +9,18 @@ struct CaloriesPageContent: View {
 
   @State private var buttonValues: [Int] = AppSettings().calorieButtonValues
   @State private var showCustomAmount = false
+  @State private var showsEntryLog = false
+
+  private let entryLogHeroID = "entry-log-calories"
 
   private var settings: AppSettings {
     settingsList.first ?? AppSettings()
+  }
+
+  private var periodEntries: [CalorieEntry] {
+    let range = CounterPeriodCalculator.currentRange(for: settings)
+    return CounterPeriodCalculator.calorieEntries(from: entries, in: range)
+      .sorted { $0.timestamp > $1.timestamp }
   }
 
   private var periodTotal: Int {
@@ -30,21 +39,49 @@ struct CaloriesPageContent: View {
     periodTotal - Int(healthKit.activeCalories)
   }
 
+  private var previewItems: [EntryLogPreviewItem] {
+    periodEntries.prefix(8).map { entry in
+      EntryLogPreviewItem(
+        id: entry.id,
+        timestamp: entry.timestamp,
+        valueText: "\(entry.value) kcal"
+      )
+    }
+  }
+
   var body: some View {
-    CounterPageLayout(
-      title: "Calories",
-      heroValue: heroValue,
-      heroCaption: heroCaption,
-      compactStat: compactStat,
-      goalProgress: goalProgress,
-      palette: CounterTheme.calories
-    ) {
-      CompactQuickAddGrid(values: buttonValues) { value in
-        addCaloriesQuick(value)
-      } onCustom: {
-        showCustomAmount = true
+    NavigationStack {
+      CounterPageLayout(
+        title: "Calories",
+        heroValue: heroValue,
+        heroCaption: heroCaption,
+        compactStat: compactStat,
+        goalProgress: goalProgress
+      ) {
+        EntryLogHeroLink(
+          isExpanded: $showsEntryLog,
+          heroID: entryLogHeroID
+        ) {
+          CompactEntryLogPreview(
+            title: EntryLogTitles.preview(for: settings.calorieResetPeriod),
+            items: previewItems,
+            emptyMessage: "No entries yet for this period."
+          )
+        } destination: {
+          CaloriePeriodEntryLogScreen()
+        }
+      } footer: {
+        CompactQuickAddGrid(
+          values: buttonValues,
+          defaultPresets: QuickAddConfiguration.defaultCaloriePresets
+        ) { value in
+          addCaloriesQuick(value)
+        } onCustom: {
+          showCustomAmount = true
+        }
       }
     }
+    .counterAccent(CounterAccent.calories)
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addCalories(value)
@@ -55,8 +92,8 @@ struct CaloriesPageContent: View {
       syncWidgetSnapshot()
     }
     .onChange(of: settingsList.first?.calorieButtonValues) { _, newValues in
-      if let newValues {
-        buttonValues = newValues
+      if let newValues, let settings = settingsList.first {
+        migratePresetButtons(for: settings)
       }
     }
     .onChange(of: periodTotal) { _, _ in syncWidgetSnapshot() }
@@ -100,12 +137,23 @@ struct CaloriesPageContent: View {
 
   private func ensureSettings() {
     if let settings = settingsList.first {
-      buttonValues = settings.calorieButtonValues
+      migratePresetButtons(for: settings)
     } else {
       let created = AppSettings()
       modelContext.insert(created)
       buttonValues = created.calorieButtonValues
     }
+  }
+
+  private func migratePresetButtons(for settings: AppSettings) {
+    let filled = QuickAddConfiguration.filledPresets(
+      from: settings.calorieButtonValues,
+      defaults: QuickAddConfiguration.defaultCaloriePresets
+    )
+    if filled != settings.calorieButtonValues {
+      settings.calorieButtonValues = filled
+    }
+    buttonValues = filled
   }
 
   private func formattedNet(_ value: Int) -> String {

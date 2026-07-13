@@ -17,7 +17,7 @@ final class CustomCounter {
 
   init(
     name: String,
-    buttonValues: [Int] = [10, 20, 50, 100, 200],
+    buttonValues: [Int]? = nil,
     sliderMax: Int = 100,
     goal: Int? = nil,
     resetPeriod: CounterResetPeriod = .daily,
@@ -26,7 +26,7 @@ final class CustomCounter {
   ) {
     self.id = UUID()
     self.name = name
-    self.buttonValues = buttonValues
+    self.buttonValues = buttonValues ?? [1, 2, 5, 10, 20, 50, 100]
     self.sliderMax = sliderMax
     self.createdAt = .now
     self.goal = goal

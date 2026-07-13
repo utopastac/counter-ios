@@ -39,6 +39,11 @@ struct GoalProgress {
     min(max(fractionComplete, 0), 1)
   }
 
+  var overflowRingFraction: Double {
+    guard fractionComplete > 1 else { return 0 }
+    return min(fractionComplete - 1, 1)
+  }
+
   var isOverGoal: Bool {
     current > goal
   }

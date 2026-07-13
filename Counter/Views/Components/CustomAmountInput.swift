@@ -58,8 +58,9 @@ struct CustomAmountInput: View {
 
 #Preview {
   ZStack {
-    CounterPageBackground(palette: CounterTheme.calories)
+    CounterPageBackground()
     CustomAmountInput { _ in }
       .padding()
   }
+  .counterDesignSystem(CounterDesignSystem(colorScheme: .dark, accent: .calories))
 }

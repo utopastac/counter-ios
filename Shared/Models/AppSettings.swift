@@ -12,7 +12,7 @@ final class AppSettings {
   var calorieGoalDirectionRaw: String = GoalDirection.countDown.rawValue
 
   init(
-    calorieButtonValues: [Int] = [10, 20, 50, 100, 200, 500],
+    calorieButtonValues: [Int]? = nil,
     calorieSliderMax: Int = 2000,
     calorieGoal: Int? = nil,
     calorieResetPeriod: CounterResetPeriod = .daily,
@@ -20,7 +20,7 @@ final class AppSettings {
     calorieGoalDirection: GoalDirection = .countDown
   ) {
     self.id = UUID()
-    self.calorieButtonValues = calorieButtonValues
+    self.calorieButtonValues = calorieButtonValues ?? [10, 20, 50, 100, 200, 500, 1000]
     self.calorieSliderMax = calorieSliderMax
     self.calorieGoal = calorieGoal
     self.calorieResetPeriodRaw = calorieResetPeriod.rawValue

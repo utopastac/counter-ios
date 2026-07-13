@@ -11,5 +11,6 @@ enum PreviewModel {
     content()
       .environment(HealthKitManager())
       .modelContainer(container)
+      .counterDesignSystemFromColorScheme()
   }
 }

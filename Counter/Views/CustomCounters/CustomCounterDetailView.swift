@@ -19,7 +19,7 @@ struct CustomCounterDetailView: View {
           title: counter.resetPeriod.periodCaption.capitalized,
           value: heroValue,
           subtitle: counter.name,
-          color: .accentColor
+          accent: .accentColor
         )
 
         QuickAddButtonsView(values: counter.buttonValues, unit: counter.name) { value in

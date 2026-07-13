@@ -58,23 +58,45 @@
 		F10000010000000000000004 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		F10000010000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000005 /* Assets.xcassets */; };
 		F10000010000000000000006 /* CounterWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F30000010000000000000001 /* CounterWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		G10000010000000000000001 /* CounterTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000001 /* CounterTheme.swift */; };
+		DS10000010000000000000001 /* BaseColorTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000001 /* BaseColorTokens.swift */; };
+		DS10000010000000000000002 /* SemanticColorTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000002 /* SemanticColorTokens.swift */; };
+		DS10000010000000000000003 /* TypographyTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000003 /* TypographyTokens.swift */; };
+		DS10000010000000000000004 /* LayoutTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000004 /* LayoutTokens.swift */; };
+		DS10000010000000000000005 /* CounterAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000005 /* CounterAppearance.swift */; };
+		DS10000010000000000000006 /* CounterPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000006 /* CounterPalette.swift */; };
+		DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000007 /* DesignSystemEnvironment.swift */; };
+		DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000008 /* CounterTextStyleModifier.swift */; };
+		DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000009 /* GlassSurfaceModifier.swift */; };
+		DS10000010000000000000010 /* CounterPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000010 /* CounterPageBackground.swift */; };
+		DS10000010000000000000011 /* GlassButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000011 /* GlassButton.swift */; };
+		DS10000010000000000000012 /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000012 /* GlassCard.swift */; };
+		DS10000010000000000000013 /* SectionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000013 /* SectionLabel.swift */; };
+		DS10000010000000000000014 /* PrimaryCapsuleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000014 /* PrimaryCapsuleButton.swift */; };
+		DS10000010000000000000016 /* LargeAmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000016 /* LargeAmountInput.swift */; };
+		DS10000010000000000000017 /* NumericKeypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000017 /* NumericKeypad.swift */; };
+		S10000010000000000000001 /* AmountEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = S20000010000000000000001 /* AmountEntrySheet.swift */; };
+		DS10000010000000000000015 /* CounterListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000015 /* CounterListRow.swift */; };
+		T10000010000000000000001 /* CompactEntryLogPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000001 /* CompactEntryLogPreview.swift */; };
+		T10000010000000000000002 /* EntryLogHeroLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000002 /* EntryLogHeroLink.swift */; };
+		T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000003 /* NoHighlightButtonStyle.swift */; };
 		G10000010000000000000002 /* CounterPageLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000002 /* CounterPageLayout.swift */; };
 		G10000010000000000000003 /* CaloriesPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000003 /* CaloriesPageContent.swift */; };
 		G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000004 /* CustomCounterPageContent.swift */; };
 		G10000010000000000000006 /* CounterPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000006 /* CounterPagerView.swift */; };
 		M10000010000000000000001 /* AllCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = M20000010000000000000001 /* AllCountersListView.swift */; };
-		G10000010000000000000007 /* WeatherStyleButtonGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000007 /* WeatherStyleButtonGrid.swift */; };
+		G10000010000000000000007 /* LargeQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000007 /* LargeQuickAddGrid.swift */; };
 		H10000010000000000000001 /* CustomAmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = H20000010000000000000001 /* CustomAmountInput.swift */; };
 		J10000010000000000000001 /* TodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = J20000010000000000000001 /* TodayLogView.swift */; };
 		K10000010000000000000001 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
 		K10000010000000000000002 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
 		L10000010000000000000001 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
 		L10000010000000000000002 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
+		Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
+		Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
 		L10000010000000000000003 /* GoalProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000002 /* GoalProgressView.swift */; };
 		N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000001 /* CompactQuickAddGrid.swift */; };
 		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
-		P10000010000000000000001 /* WeatherStyleListReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* WeatherStyleListReveal.swift */; };
+		P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* CounterUnderlayReveal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,21 +187,42 @@
 		F20000010000000000000004 /* CounterWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWatchWidgets.entitlements; sourceTree = "<group>"; };
 		F20000010000000000000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F30000010000000000000001 /* CounterWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CounterWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		G20000010000000000000001 /* CounterTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTheme.swift; sourceTree = "<group>"; };
+		DS20000010000000000000001 /* BaseColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseColorTokens.swift; sourceTree = "<group>"; };
+		DS20000010000000000000002 /* SemanticColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticColorTokens.swift; sourceTree = "<group>"; };
+		DS20000010000000000000003 /* TypographyTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypographyTokens.swift; sourceTree = "<group>"; };
+		DS20000010000000000000004 /* LayoutTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutTokens.swift; sourceTree = "<group>"; };
+		DS20000010000000000000005 /* CounterAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterAppearance.swift; sourceTree = "<group>"; };
+		DS20000010000000000000006 /* CounterPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPalette.swift; sourceTree = "<group>"; };
+		DS20000010000000000000007 /* DesignSystemEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemEnvironment.swift; sourceTree = "<group>"; };
+		DS20000010000000000000008 /* CounterTextStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextStyleModifier.swift; sourceTree = "<group>"; };
+		DS20000010000000000000009 /* GlassSurfaceModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassSurfaceModifier.swift; sourceTree = "<group>"; };
+		DS20000010000000000000010 /* CounterPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageBackground.swift; sourceTree = "<group>"; };
+		DS20000010000000000000011 /* GlassButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassButton.swift; sourceTree = "<group>"; };
+		DS20000010000000000000012 /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
+		DS20000010000000000000013 /* SectionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionLabel.swift; sourceTree = "<group>"; };
+		DS20000010000000000000014 /* PrimaryCapsuleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryCapsuleButton.swift; sourceTree = "<group>"; };
+		DS20000010000000000000016 /* LargeAmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeAmountInput.swift; sourceTree = "<group>"; };
+		DS20000010000000000000017 /* NumericKeypad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericKeypad.swift; sourceTree = "<group>"; };
+		S20000010000000000000001 /* AmountEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountEntrySheet.swift; sourceTree = "<group>"; };
+		DS20000010000000000000015 /* CounterListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterListRow.swift; sourceTree = "<group>"; };
+		T20000010000000000000001 /* CompactEntryLogPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactEntryLogPreview.swift; sourceTree = "<group>"; };
+		T20000010000000000000002 /* EntryLogHeroLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryLogHeroLink.swift; sourceTree = "<group>"; };
+		T20000010000000000000003 /* NoHighlightButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHighlightButtonStyle.swift; sourceTree = "<group>"; };
 		G20000010000000000000002 /* CounterPageLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageLayout.swift; sourceTree = "<group>"; };
 		G20000010000000000000003 /* CaloriesPageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaloriesPageContent.swift; sourceTree = "<group>"; };
 		G20000010000000000000004 /* CustomCounterPageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterPageContent.swift; sourceTree = "<group>"; };
 		G20000010000000000000006 /* CounterPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPagerView.swift; sourceTree = "<group>"; };
-		G20000010000000000000007 /* WeatherStyleButtonGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherStyleButtonGrid.swift; sourceTree = "<group>"; };
+		G20000010000000000000007 /* LargeQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeQuickAddGrid.swift; sourceTree = "<group>"; };
 		M20000010000000000000001 /* AllCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCountersListView.swift; sourceTree = "<group>"; };
 		H20000010000000000000001 /* CustomAmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountInput.swift; sourceTree = "<group>"; };
 		J20000010000000000000001 /* TodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayLogView.swift; sourceTree = "<group>"; };
 		K20000010000000000000001 /* CounterPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPeriod.swift; sourceTree = "<group>"; };
 		L20000010000000000000001 /* GoalDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDirection.swift; sourceTree = "<group>"; };
+		Q20000010000000000000001 /* QuickAddConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddConfiguration.swift; sourceTree = "<group>"; };
 		L20000010000000000000002 /* GoalProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressView.swift; sourceTree = "<group>"; };
 		N20000010000000000000001 /* CompactQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactQuickAddGrid.swift; sourceTree = "<group>"; };
 		N20000010000000000000002 /* CustomAmountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountSheet.swift; sourceTree = "<group>"; };
-		P20000010000000000000001 /* WeatherStyleListReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherStyleListReveal.swift; sourceTree = "<group>"; };
+		P20000010000000000000001 /* CounterUnderlayReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUnderlayReveal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,6 +266,7 @@
 			children = (
 				A20000010000000000000001 /* CounterApp.swift */,
 				A20000010000000000000002 /* ContentView.swift */,
+				DS50000010000000000000001 /* Design */,
 				A50000010000000000000005 /* Services */,
 				A50000010000000000000006 /* Views */,
 				A20000010000000000000020 /* Assets.xcassets */,
@@ -230,6 +274,71 @@
 				A20000010000000000000022 /* Counter.entitlements */,
 			);
 			path = Counter;
+			sourceTree = "<group>";
+		};
+		DS50000010000000000000001 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				DS50000010000000000000002 /* Tokens */,
+				DS50000010000000000000003 /* Theme */,
+				DS50000010000000000000004 /* System */,
+				DS50000010000000000000005 /* Modifiers */,
+				DS50000010000000000000006 /* Components */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		DS50000010000000000000002 /* Tokens */ = {
+			isa = PBXGroup;
+			children = (
+				DS20000010000000000000001 /* BaseColorTokens.swift */,
+				DS20000010000000000000002 /* SemanticColorTokens.swift */,
+				DS20000010000000000000003 /* TypographyTokens.swift */,
+				DS20000010000000000000004 /* LayoutTokens.swift */,
+			);
+			path = Tokens;
+			sourceTree = "<group>";
+		};
+		DS50000010000000000000003 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				DS20000010000000000000005 /* CounterAppearance.swift */,
+				DS20000010000000000000006 /* CounterPalette.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		DS50000010000000000000004 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				DS20000010000000000000007 /* DesignSystemEnvironment.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		DS50000010000000000000005 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				DS20000010000000000000008 /* CounterTextStyleModifier.swift */,
+				DS20000010000000000000009 /* GlassSurfaceModifier.swift */,
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
+		DS50000010000000000000006 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				DS20000010000000000000010 /* CounterPageBackground.swift */,
+				DS20000010000000000000011 /* GlassButton.swift */,
+				DS20000010000000000000012 /* GlassCard.swift */,
+				DS20000010000000000000013 /* SectionLabel.swift */,
+				DS20000010000000000000014 /* PrimaryCapsuleButton.swift */,
+				DS20000010000000000000016 /* LargeAmountInput.swift */,
+				DS20000010000000000000017 /* NumericKeypad.swift */,
+				DS20000010000000000000015 /* CounterListRow.swift */,
+				T20000010000000000000003 /* NoHighlightButtonStyle.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		A50000010000000000000003 /* Products */ = {
@@ -298,11 +407,14 @@
 				A20000010000000000000009 /* QuickAddButtonsView.swift */,
 				A20000010000000000000010 /* PeriodPicker.swift */,
 				A20000010000000000000011 /* StatCard.swift */,
-				G20000010000000000000007 /* WeatherStyleButtonGrid.swift */,
+				G20000010000000000000007 /* LargeQuickAddGrid.swift */,
 				H20000010000000000000001 /* CustomAmountInput.swift */,
 				L20000010000000000000002 /* GoalProgressView.swift */,
 				N20000010000000000000001 /* CompactQuickAddGrid.swift */,
 				N20000010000000000000002 /* CustomAmountSheet.swift */,
+				S20000010000000000000001 /* AmountEntrySheet.swift */,
+				T20000010000000000000001 /* CompactEntryLogPreview.swift */,
+				T20000010000000000000002 /* EntryLogHeroLink.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -332,6 +444,7 @@
 				C20000010000000000000004 /* HistoryAggregator.swift */,
 				K20000010000000000000001 /* CounterPeriod.swift */,
 				L20000010000000000000001 /* GoalDirection.swift */,
+				Q20000010000000000000001 /* QuickAddConfiguration.swift */,
 				C20000010000000000000009 /* WidgetSnapshot.swift */,
 				C20000010000000000000011 /* EntryActions.swift */,
 				C20000010000000000000012 /* PreviewModel.swift */,
@@ -367,12 +480,11 @@
 			isa = PBXGroup;
 			children = (
 				G20000010000000000000006 /* CounterPagerView.swift */,
-				P20000010000000000000001 /* WeatherStyleListReveal.swift */,
+				P20000010000000000000001 /* CounterUnderlayReveal.swift */,
 				G20000010000000000000003 /* CaloriesPageContent.swift */,
 				G20000010000000000000004 /* CustomCounterPageContent.swift */,
 				M20000010000000000000001 /* AllCountersListView.swift */,
 				G20000010000000000000002 /* CounterPageLayout.swift */,
-				G20000010000000000000001 /* CounterTheme.swift */,
 			);
 			path = Pager;
 			sourceTree = "<group>";
@@ -511,17 +623,37 @@
 				A10000010000000000000001 /* CounterApp.swift in Sources */,
 				A10000010000000000000002 /* ContentView.swift in Sources */,
 				G10000010000000000000006 /* CounterPagerView.swift in Sources */,
-				P10000010000000000000001 /* WeatherStyleListReveal.swift in Sources */,
+				P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */,
 				G10000010000000000000003 /* CaloriesPageContent.swift in Sources */,
 				M10000010000000000000001 /* AllCountersListView.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
 				G10000010000000000000002 /* CounterPageLayout.swift in Sources */,
-				G10000010000000000000001 /* CounterTheme.swift in Sources */,
-				G10000010000000000000007 /* WeatherStyleButtonGrid.swift in Sources */,
+				DS10000010000000000000001 /* BaseColorTokens.swift in Sources */,
+				DS10000010000000000000002 /* SemanticColorTokens.swift in Sources */,
+				DS10000010000000000000003 /* TypographyTokens.swift in Sources */,
+				DS10000010000000000000004 /* LayoutTokens.swift in Sources */,
+				DS10000010000000000000005 /* CounterAppearance.swift in Sources */,
+				DS10000010000000000000006 /* CounterPalette.swift in Sources */,
+				DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */,
+				DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */,
+				DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */,
+				DS10000010000000000000010 /* CounterPageBackground.swift in Sources */,
+				DS10000010000000000000011 /* GlassButton.swift in Sources */,
+				DS10000010000000000000012 /* GlassCard.swift in Sources */,
+				DS10000010000000000000013 /* SectionLabel.swift in Sources */,
+				DS10000010000000000000014 /* PrimaryCapsuleButton.swift in Sources */,
+				DS10000010000000000000016 /* LargeAmountInput.swift in Sources */,
+				DS10000010000000000000017 /* NumericKeypad.swift in Sources */,
+				DS10000010000000000000015 /* CounterListRow.swift in Sources */,
+				T10000010000000000000001 /* CompactEntryLogPreview.swift in Sources */,
+				T10000010000000000000002 /* EntryLogHeroLink.swift in Sources */,
+				T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */,
+				G10000010000000000000007 /* LargeQuickAddGrid.swift in Sources */,
 				H10000010000000000000001 /* CustomAmountInput.swift in Sources */,
 				L10000010000000000000003 /* GoalProgressView.swift in Sources */,
 				N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */,
 				N10000010000000000000002 /* CustomAmountSheet.swift in Sources */,
+				S10000010000000000000001 /* AmountEntrySheet.swift in Sources */,
 				J10000010000000000000001 /* TodayLogView.swift in Sources */,
 				A10000010000000000000007 /* HealthKitManager.swift in Sources */,
 				A10000010000000000000009 /* QuickAddButtonsView.swift in Sources */,
@@ -547,6 +679,7 @@
 				C10000010000000000000011 /* EntryActions.swift in Sources */,
 				K10000010000000000000001 /* CounterPeriod.swift in Sources */,
 				L10000010000000000000001 /* GoalDirection.swift in Sources */,
+				Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */,
 				C10000010000000000000012 /* PreviewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -574,6 +707,7 @@
 				D10000010000000000000012 /* EntryActions.swift in Sources */,
 				K10000010000000000000002 /* CounterPeriod.swift in Sources */,
 				L10000010000000000000002 /* GoalDirection.swift in Sources */,
+				Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

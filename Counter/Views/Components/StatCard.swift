@@ -1,40 +1,41 @@
 import SwiftUI
 
 struct StatCard: View {
+  @Environment(\.semanticColors) private var colors
+
   let title: String
   let value: String
   let subtitle: String?
-  let color: Color
+  let accent: Color
 
-  init(title: String, value: String, subtitle: String? = nil, color: Color = .accentColor) {
+  init(title: String, value: String, subtitle: String? = nil, accent: Color? = nil) {
     self.title = title
     self.value = value
     self.subtitle = subtitle
-    self.color = color
+    self.accent = accent ?? Color.accentColor
   }
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 4) {
+    VStack(alignment: .leading, spacing: SpaceToken.x1) {
       Text(title)
-        .font(.caption)
-        .foregroundStyle(.secondary)
+        .counterTextStyle(.caption, color: .secondary)
       Text(value)
         .font(.title2.bold())
-        .foregroundStyle(color)
+        .foregroundStyle(accent)
       if let subtitle {
         Text(subtitle)
-          .font(.caption2)
-          .foregroundStyle(.secondary)
+          .counterTextStyle(.caption2, color: .secondary)
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .padding()
-    .background(color.opacity(0.08))
-    .clipShape(RoundedRectangle(cornerRadius: 12))
+    .background(colors.surfaceTint)
+    .clipShape(RadiusToken.continuousSm)
   }
 }
 
 #Preview {
   StatCard(title: "Active", value: "420", subtitle: "kcal burned")
     .padding()
+    .counterDesignSystemFromColorScheme()
 }

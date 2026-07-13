@@ -113,7 +113,7 @@ struct CalorieCounterView: View {
         title: "Active",
         value: "\(Int(healthKit.activeCalories))",
         subtitle: "kcal from Apple Health",
-        color: .orange
+        accent: .orange
       )
     }
   }
@@ -123,7 +123,7 @@ struct CalorieCounterView: View {
       title: "Calories Added",
       value: "\(periodTotal)",
       subtitle: "tap buttons to log food",
-      color: .green
+      accent: .green
     )
   }
 
@@ -133,7 +133,7 @@ struct CalorieCounterView: View {
       title: "Net Today",
       value: String(format: "%+.0f", netCalories),
       subtitle: isSurplus ? "surplus (added > burned)" : "deficit (burned > added)",
-      color: isSurplus ? .red : .mint
+      accent: isSurplus ? .red : .mint
     )
   }
 

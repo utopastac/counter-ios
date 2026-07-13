@@ -15,9 +15,6 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   @State private var isDraggingReveal = false
 
   private let maxScaleReduction: CGFloat = 0.14
-  private let cornerRadius: CGFloat = 28
-  private let revealCommitThreshold: CGFloat = 0.34
-  /// How far left the list starts before easing to x = 0 when fully revealed.
   private let listParallaxFraction: CGFloat = 0.06
 
   var body: some View {
@@ -52,7 +49,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
               offset: cardOffset,
               maxOffset: maxOffset,
               maxScaleReduction: maxScaleReduction,
-              maxCornerRadius: cornerRadius
+              maxCornerRadius: RadiusToken.card
             )
           )
           .simultaneousGesture(revealGesture(maxOffset: maxOffset))
@@ -73,10 +70,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   }
 
   private var settleSpring: Animation {
-    if reduceMotion {
-      return .easeOut(duration: 0.22)
-    }
-    return .smooth(duration: 0.48, extraBounce: 0.08)
+    MotionToken.settle(reduceMotion: reduceMotion)
   }
 
   private func revealGesture(maxOffset: CGFloat) -> some Gesture {
@@ -101,23 +95,37 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
         }
       }
       .onEnded { value in
-        guard isDraggingReveal else { return }
+        let wasDragging = isDraggingReveal
+        isDraggingReveal = false
+        locksVerticalScroll = false
+
+        guard wasDragging else { return }
 
         let predicted = rubberBand(
           dragStartOffset + value.predictedEndTranslation.width,
           max: maxOffset
         )
-        let shouldOpen = cardOffset > maxOffset * revealCommitThreshold
-          || predicted > maxOffset * 0.5
-
-        isDraggingReveal = false
-        locksVerticalScroll = false
+        let shouldOpen = shouldSettleOpen(
+          predicted: predicted,
+          maxOffset: maxOffset,
+          startedOpen: dragStartOffset > maxOffset * 0.5
+        )
 
         withAnimation(settleSpring) {
           cardOffset = shouldOpen ? maxOffset : 0
           isRevealed = shouldOpen
         }
       }
+  }
+
+  private func shouldSettleOpen(
+    predicted: CGFloat,
+    maxOffset: CGFloat,
+    startedOpen: Bool
+  ) -> Bool {
+    guard maxOffset > 0 else { return false }
+    let threshold = maxOffset * (startedOpen ? 0.45 : 0.35)
+    return predicted > threshold
   }
 
   private func rubberBand(_ value: CGFloat, max: CGFloat) -> CGFloat {
@@ -138,17 +146,13 @@ private enum RevealMetrics {
   }
 }
 
-/// Keeps offset, scale, and corner radius in sync during interactive drags and spring settles.
-private struct CardRevealTransform: ViewModifier, Animatable {
-  var offset: CGFloat
+private struct CardRevealTransform: ViewModifier {
+  @Environment(\.semanticColors) private var colors
+
+  let offset: CGFloat
   let maxOffset: CGFloat
   let maxScaleReduction: CGFloat
   let maxCornerRadius: CGFloat
-
-  var animatableData: CGFloat {
-    get { offset }
-    set { offset = newValue }
-  }
 
   private var progress: CGFloat {
     RevealMetrics.progress(for: offset, maxOffset: maxOffset)
@@ -168,22 +172,21 @@ private struct CardRevealTransform: ViewModifier, Animatable {
       .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
       .overlay {
         RoundedRectangle(cornerRadius: radius, style: .continuous)
-          .strokeBorder(.white.opacity(0.1 * progress), lineWidth: 1)
+          .strokeBorder(ComponentColor.revealCardStroke(colors, progress: progress), lineWidth: 1)
       }
       .shadow(
-        color: .black.opacity(0.28 * progress),
-        radius: 28 * progress,
-        x: -12 * progress,
-        y: 6 * progress
+        color: ComponentColor.revealCardShadow(colors, progress: progress),
+        radius: ShadowToken.reveal(progress: progress).radius,
+        x: ShadowToken.reveal(progress: progress).x,
+        y: ShadowToken.reveal(progress: progress).y
       )
       .scaleEffect(scale, anchor: .trailing)
       .offset(x: offset)
   }
 }
 
-/// Underlay list drifts, scales up, and de-blurs as the card slides away.
-private struct ListRevealParallax: ViewModifier, Animatable {
-  var cardOffset: CGFloat
+private struct ListRevealParallax: ViewModifier {
+  let cardOffset: CGFloat
   let maxOffset: CGFloat
   let maxParallax: CGFloat
   let reduceMotion: Bool
@@ -191,11 +194,6 @@ private struct ListRevealParallax: ViewModifier, Animatable {
   private let hiddenScale: CGFloat = 0.94
   private let hiddenOpacity: Double = 0.74
   private let hiddenBlur: CGFloat = 7
-
-  var animatableData: CGFloat {
-    get { cardOffset }
-    set { cardOffset = newValue }
-  }
 
   private var progress: CGFloat {
     RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
