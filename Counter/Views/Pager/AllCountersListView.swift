@@ -84,6 +84,9 @@ struct AllCountersListView: View {
         listCards
           .padding(.horizontal, SpaceToken.pageMargin)
           .padding(.bottom, SpaceToken.componentPadding)
+          .background {
+            ScrollPanDisabler(isDisabled: scrollDisabled)
+          }
       }
       .scrollDisabled(scrollDisabled)
     }

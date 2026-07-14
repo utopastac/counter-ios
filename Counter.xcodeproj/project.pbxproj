@@ -67,6 +67,7 @@
 		DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000007 /* DesignSystemEnvironment.swift */; };
 		DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000008 /* CounterTextStyleModifier.swift */; };
 		DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000009 /* GlassSurfaceModifier.swift */; };
+		DS10000010000000000000080 /* HomeIndicatorVisibilityModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */; };
 		DS10000010000000000000010 /* CounterPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000010 /* CounterPageBackground.swift */; };
 		DS10000010000000000000011 /* GlassButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000011 /* GlassButton.swift */; };
 		DS10000010000000000000012 /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000012 /* GlassCard.swift */; };
@@ -104,6 +105,7 @@
 		N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000001 /* CompactQuickAddGrid.swift */; };
 		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
 		P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* CounterUnderlayReveal.swift */; };
+		P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000002 /* ScrollPanDisabler.swift */; };
 
 		IW10000010000000000000001 /* CounterHomeWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */; };
 		IW10000010000000000000002 /* CounterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000002 /* CounterWidget.swift */; };
@@ -266,6 +268,7 @@
 		DS20000010000000000000007 /* DesignSystemEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemEnvironment.swift; sourceTree = "<group>"; };
 		DS20000010000000000000008 /* CounterTextStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextStyleModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000009 /* GlassSurfaceModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassSurfaceModifier.swift; sourceTree = "<group>"; };
+		DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeIndicatorVisibilityModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000010 /* CounterPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageBackground.swift; sourceTree = "<group>"; };
 		DS20000010000000000000011 /* GlassButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassButton.swift; sourceTree = "<group>"; };
 		DS20000010000000000000012 /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
@@ -299,6 +302,7 @@
 		N20000010000000000000001 /* CompactQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactQuickAddGrid.swift; sourceTree = "<group>"; };
 		N20000010000000000000002 /* CustomAmountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountSheet.swift; sourceTree = "<group>"; };
 		P20000010000000000000001 /* CounterUnderlayReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUnderlayReveal.swift; sourceTree = "<group>"; };
+		P20000010000000000000002 /* ScrollPanDisabler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollPanDisabler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -407,6 +411,7 @@
 			children = (
 				DS20000010000000000000008 /* CounterTextStyleModifier.swift */,
 				DS20000010000000000000009 /* GlassSurfaceModifier.swift */,
+				DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */,
 			);
 			path = Modifiers;
 			sourceTree = "<group>";
@@ -578,6 +583,7 @@
 			children = (
 				G20000010000000000000006 /* CounterPagerView.swift */,
 				P20000010000000000000001 /* CounterUnderlayReveal.swift */,
+				P20000010000000000000002 /* ScrollPanDisabler.swift */,
 				G20000010000000000000003 /* CaloriesPageContent.swift */,
 				G20000010000000000000004 /* CustomCounterPageContent.swift */,
 				M20000010000000000000001 /* AllCountersListView.swift */,
@@ -773,6 +779,7 @@
 				A10000010000000000000002 /* ContentView.swift in Sources */,
 				G10000010000000000000006 /* CounterPagerView.swift in Sources */,
 				P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */,
+				P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */,
 				G10000010000000000000003 /* CaloriesPageContent.swift in Sources */,
 				M10000010000000000000001 /* AllCountersListView.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
@@ -786,6 +793,7 @@
 				DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */,
 				DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */,
 				DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */,
+				DS10000010000000000000080 /* HomeIndicatorVisibilityModifier.swift in Sources */,
 				DS10000010000000000000010 /* CounterPageBackground.swift in Sources */,
 				DS10000010000000000000011 /* GlassButton.swift in Sources */,
 				DS10000010000000000000012 /* GlassCard.swift in Sources */,

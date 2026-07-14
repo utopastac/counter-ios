@@ -12,6 +12,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
 
   @State private var dragStartOffset: CGFloat = 0
   @State private var isDraggingReveal = false
+  @State private var dragAxis: RevealDragAxis?
 
   private let listParallaxFraction: CGFloat = 0.06
 
@@ -59,6 +60,27 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
     }
   }
 
+  /// Locks pager/list scroll while a reveal animation is in flight.
+  static func lockRevealScrollForAnimation(
+    _ locksRevealScroll: Binding<Bool>,
+    reduceMotion: Bool
+  ) {
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      locksRevealScroll.wrappedValue = true
+    }
+
+    let duration = reduceMotion ? 0.2 : MotionToken.revealSettleDuration
+    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+      var unlockTransaction = Transaction()
+      unlockTransaction.disablesAnimations = true
+      withTransaction(unlockTransaction) {
+        locksRevealScroll.wrappedValue = false
+      }
+    }
+  }
+
   /// Horizontal offset when the list is fully revealed.
   static func openOffset(for width: CGFloat) -> CGFloat {
     RevealToken.openOffset(forScreenWidth: width)
@@ -71,39 +93,38 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   private func revealGesture(maxOffset: CGFloat) -> some Gesture {
     DragGesture(minimumDistance: 0, coordinateSpace: .local)
       .onChanged { value in
-        let horizontal = value.translation.width
-        let vertical = value.translation.height
+        if dragAxis == nil {
+          dragAxis = resolvedDragAxis(for: value)
+          guard let dragAxis else { return }
 
-        if !isDraggingReveal {
-          guard abs(horizontal) > abs(vertical), abs(horizontal) > 4 else { return }
-          isDraggingReveal = true
-          dragStartOffset = cardOffset
-          var transaction = Transaction()
-          transaction.disablesAnimations = true
-          withTransaction(transaction) {
-            locksRevealScroll = true
+          switch dragAxis {
+          case .horizontal:
+            isDraggingReveal = true
+            dragStartOffset = cardOffset
+            setRevealScrollLocked(true)
+          case .vertical:
+            return
           }
         }
 
-        guard isDraggingReveal else { return }
+        guard dragAxis == .horizontal, isDraggingReveal else { return }
 
         var transaction = Transaction()
         transaction.disablesAnimations = true
         withTransaction(transaction) {
-          cardOffset = rubberBand(dragStartOffset + horizontal, max: maxOffset)
+          cardOffset = rubberBand(dragStartOffset + value.translation.width, max: maxOffset)
         }
       }
       .onEnded { value in
         let wasDragging = isDraggingReveal
+        let axis = dragAxis
         isDraggingReveal = false
+        dragAxis = nil
 
-        var unlockTransaction = Transaction()
-        unlockTransaction.disablesAnimations = true
-        withTransaction(unlockTransaction) {
-          locksRevealScroll = false
+        guard wasDragging, axis == .horizontal else {
+          setRevealScrollLocked(false)
+          return
         }
-
-        guard wasDragging else { return }
 
         let predicted = rubberBand(
           dragStartOffset + value.predictedEndTranslation.width,
@@ -119,7 +140,30 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           cardOffset = shouldOpen ? maxOffset : 0
           isRevealed = shouldOpen
         }
+        scheduleRevealScrollUnlock()
       }
+  }
+
+  private func resolvedDragAxis(for value: DragGesture.Value) -> RevealDragAxis? {
+    let horizontal = abs(value.translation.width)
+    let vertical = abs(value.translation.height)
+    guard max(horizontal, vertical) >= RevealToken.axisDecisionDistance else { return nil }
+    return horizontal > vertical ? .horizontal : .vertical
+  }
+
+  private func setRevealScrollLocked(_ locked: Bool) {
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      locksRevealScroll = locked
+    }
+  }
+
+  private func scheduleRevealScrollUnlock() {
+    let duration = reduceMotion ? 0.2 : MotionToken.revealSettleDuration
+    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+      setRevealScrollLocked(false)
+    }
   }
 
   private func shouldSettleOpen(
@@ -141,6 +185,11 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
     }
     return value
   }
+}
+
+private enum RevealDragAxis {
+  case horizontal
+  case vertical
 }
 
 private enum RevealMetrics {

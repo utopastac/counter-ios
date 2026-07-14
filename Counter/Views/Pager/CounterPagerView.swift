@@ -162,6 +162,9 @@ struct CounterPagerView: View {
       }
       .scrollTargetLayout()
       .counterPagerBackground(accents: pageAccents, scrollProgress: scrollProgress)
+      .background {
+        ScrollPanDisabler(isDisabled: locksRevealScroll)
+      }
     }
     .scrollContentBackground(.hidden)
     .background(Color.clear)
@@ -187,6 +190,10 @@ struct CounterPagerView: View {
   private func openCounterList() {
     let width = max(containerWidth, 1)
     let maxOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(for: width)
+    CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
+      $locksRevealScroll,
+      reduceMotion: reduceMotion
+    )
     withAnimation(settleSpring) {
       cardOffset = maxOffset
       isCounterListRevealed = true
@@ -203,6 +210,10 @@ struct CounterPagerView: View {
   }
 
   private func collapseCounterList() {
+    CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
+      $locksRevealScroll,
+      reduceMotion: reduceMotion
+    )
     withAnimation(settleSpring) {
       cardOffset = 0
       isCounterListRevealed = false

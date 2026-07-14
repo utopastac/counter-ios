@@ -10,6 +10,7 @@ struct ContentView: View {
       if isBootstrapped {
         CounterPagerView()
           .counterDesignSystemFromColorScheme()
+          .homeIndicatorAlwaysVisible()
       }
     }
     .task {

@@ -223,6 +223,9 @@ enum RevealToken {
   static func openOffset(forScreenWidth screenWidth: CGFloat) -> CGFloat {
     openOffset(forCardWidth: cardContentWidth(forScreenWidth: screenWidth))
   }
+
+  /// Minimum drag distance before choosing horizontal reveal vs vertical scroll.
+  static let axisDecisionDistance: CGFloat = GridToken.unit
 }
 
 enum SheetToken {
