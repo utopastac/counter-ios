@@ -97,6 +97,7 @@ struct CounterPeriodEntryLogContent: View {
               VStack(spacing: 0) {
                 if index > 0 {
                   EntryLogRowDivider()
+                    .padding(.horizontal, SheetToken.horizontal)
                 }
 
                 EntryLogRow(valueText: "\(entry.value)", timestamp: entry.timestamp)

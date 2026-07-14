@@ -189,7 +189,9 @@ struct CounterPagerView: View {
 
   private func selectPageFromList(_ pageID: String) {
     if pageID != selectedPageID {
-      withAnimation(.easeInOut(duration: 0.25)) {
+      var transaction = Transaction()
+      transaction.disablesAnimations = true
+      withTransaction(transaction) {
         selectedPageID = pageID
       }
     }

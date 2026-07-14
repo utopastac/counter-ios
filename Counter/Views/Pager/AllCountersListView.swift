@@ -39,31 +39,20 @@ struct AllCountersListView: View {
   }
 
   private var embeddedListContent: some View {
-    VStack(spacing: 0) {
-      HStack {
-        Text("Counters")
-          .counterTextStyle(.pageTitle)
-        Spacer()
-        CounterIconButton(icon: .cog) {
-          showAppSettings = true
+    ScrollView {
+      listCards
+        .padding(.horizontal, SpaceToken.pageMargin)
+        .padding(.bottom, SpaceToken.pageFooterBottom)
+        .background {
+          ScrollPanDisabler(isDisabled: scrollDisabled)
         }
-      }
-      .padding(.horizontal, SpaceToken.pageMargin)
-      .padding(.top, SpaceToken.toolbarTop)
-      .padding(.bottom, SpaceToken.u2)
-
-      ScrollView {
-        listCards
-          .padding(.horizontal, SpaceToken.pageMargin)
-          .padding(.bottom, SpaceToken.pageFooterBottom)
-          .background {
-            ScrollPanDisabler(isDisabled: scrollDisabled)
-          }
-      }
-      .frame(maxHeight: .infinity)
-      .safeAreaPadding(.bottom, SpaceToken.componentPadding)
-      .scrollClipDisabled()
-      .scrollDisabled(scrollDisabled)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .safeAreaPadding(.bottom, SpaceToken.componentPadding)
+    .scrollClipDisabled()
+    .scrollDisabled(scrollDisabled)
+    .safeAreaInset(edge: .top, spacing: 0) {
+      listHeader
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(colors.surfacePrimary)
@@ -71,6 +60,21 @@ struct AllCountersListView: View {
       AppSettingsView()
     }
     .counterDesignSystemFromColorScheme()
+  }
+
+  private var listHeader: some View {
+    HStack {
+      Text("Counters")
+        .counterTextStyle(.pageTitle)
+      Spacer()
+      CounterIconButton(icon: .cog) {
+        showAppSettings = true
+      }
+    }
+    .padding(.horizontal, SpaceToken.pageMargin)
+    .padding(.top, SpaceToken.toolbarTop)
+    .padding(.bottom, SpaceToken.u2)
+    .background(colors.surfacePrimary)
   }
 
   private var listCards: some View {
