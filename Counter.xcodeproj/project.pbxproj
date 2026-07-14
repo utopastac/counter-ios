@@ -82,7 +82,6 @@
 		S10000010000000000000001 /* AmountEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = S20000010000000000000001 /* AmountEntrySheet.swift */; };
 		DS10000010000000000000015 /* CounterListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000015 /* CounterListRow.swift */; };
 		T10000010000000000000001 /* CompactEntryLogPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000001 /* CompactEntryLogPreview.swift */; };
-		T10000010000000000000002 /* EntryLogHeroLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000002 /* EntryLogHeroLink.swift */; };
 		T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000003 /* NoHighlightButtonStyle.swift */; };
 		G10000010000000000000002 /* CounterPageLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000002 /* CounterPageLayout.swift */; };
 		G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000004 /* CustomCounterPageContent.swift */; };
@@ -275,7 +274,6 @@
 		S20000010000000000000001 /* AmountEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountEntrySheet.swift; sourceTree = "<group>"; };
 		DS20000010000000000000015 /* CounterListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterListRow.swift; sourceTree = "<group>"; };
 		T20000010000000000000001 /* CompactEntryLogPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactEntryLogPreview.swift; sourceTree = "<group>"; };
-		T20000010000000000000002 /* EntryLogHeroLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryLogHeroLink.swift; sourceTree = "<group>"; };
 		T20000010000000000000003 /* NoHighlightButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHighlightButtonStyle.swift; sourceTree = "<group>"; };
 		G20000010000000000000002 /* CounterPageLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageLayout.swift; sourceTree = "<group>"; };
 		G20000010000000000000004 /* CustomCounterPageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterPageContent.swift; sourceTree = "<group>"; };
@@ -488,7 +486,6 @@
 				N20000010000000000000002 /* CustomAmountSheet.swift */,
 				S20000010000000000000001 /* AmountEntrySheet.swift */,
 				T20000010000000000000001 /* CompactEntryLogPreview.swift */,
-				T20000010000000000000002 /* EntryLogHeroLink.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -783,7 +780,6 @@
 				DS10000010000000000000022 /* CounterLucideIcon.swift in Sources */,
 				DS10000010000000000000015 /* CounterListRow.swift in Sources */,
 				T10000010000000000000001 /* CompactEntryLogPreview.swift in Sources */,
-				T10000010000000000000002 /* EntryLogHeroLink.swift in Sources */,
 				T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */,
 				G10000010000000000000007 /* LargeQuickAddGrid.swift in Sources */,
 				H10000010000000000000001 /* CustomAmountInput.swift in Sources */,

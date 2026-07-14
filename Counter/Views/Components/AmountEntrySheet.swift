@@ -20,8 +20,7 @@ struct AmountEntrySheet: View {
   let onSubmit: (Int) -> Void
 
   @State private var amountText: String
-  @State private var sheetHeight: CGFloat = 280
-  @FocusState private var isAmountFocused: Bool
+  @State private var sheetHeight: CGFloat = 520
 
   private let maxDigits = 6
 
@@ -39,7 +38,9 @@ struct AmountEntrySheet: View {
     self.actionTitle = actionTitle
     self.initialText = initialText
     self.onSubmit = onSubmit
-    _amountText = State(initialValue: initialText)
+    _amountText = State(
+      initialValue: String(initialText.filter(\.isWholeNumber).prefix(6))
+    )
   }
 
   var body: some View {
@@ -50,7 +51,7 @@ struct AmountEntrySheet: View {
         .padding(.horizontal, SheetToken.horizontal)
         .padding(.top, SheetToken.contentTop)
 
-      amountInput
+      amountDisplay
         .padding(.horizontal, SheetToken.horizontal)
         .padding(.top, SheetToken.amountTopSpacing)
 
@@ -61,7 +62,8 @@ struct AmountEntrySheet: View {
       }
       .padding(.horizontal, SheetToken.horizontal)
       .padding(.top, SheetToken.actionTop)
-      .padding(.bottom, SheetToken.contentBottom)
+
+      NumericKeypad(text: $amountText, maxDigits: maxDigits)
     }
     .background {
       GeometryReader { geometry in
@@ -79,30 +81,11 @@ struct AmountEntrySheet: View {
       SheetToken.halfSheetTopCornerShape
         .fill(colors.surfaceSheet)
     }
-    .onAppear {
-      isAmountFocused = true
-    }
-    .onChange(of: amountText) { _, newValue in
-      let filtered = String(newValue.filter(\.isWholeNumber).prefix(maxDigits))
-      if filtered != newValue {
-        amountText = filtered
-      }
-    }
   }
 
-  private var amountInput: some View {
-    ZStack {
-      LargeAmountInput(text: amountText)
-
-      TextField("", text: $amountText)
-        .keyboardType(.numberPad)
-        .focused($isAmountFocused)
-        .opacity(0.02)
-        .multilineTextAlignment(.leading)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: SheetToken.amountInputHeight)
-        .accessibilityLabel("Amount")
-    }
+  private var amountDisplay: some View {
+    LargeAmountInput(text: amountText)
+      .frame(height: SheetToken.amountInputHeight, alignment: .leading)
   }
 
   private var sheetHeader: some View {
@@ -141,6 +124,7 @@ struct AmountEntrySheet: View {
     .sheet(isPresented: .constant(true)) {
       AmountEntrySheet(
         title: "Add amount",
+        headerIcon: .plus,
         actionTitle: "Add"
       ) { _ in }
       .environment(\.counterAccent, nil)

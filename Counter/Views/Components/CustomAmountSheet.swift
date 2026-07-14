@@ -6,6 +6,7 @@ struct CustomAmountSheet: View {
   var body: some View {
     AmountEntrySheet(
       title: "Add amount",
+      headerIcon: .plus,
       actionTitle: "Add",
       onSubmit: onAdd
     )

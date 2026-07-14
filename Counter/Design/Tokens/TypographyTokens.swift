@@ -172,6 +172,14 @@ enum TypeStyle {
     monospacedDigits: false
   )
 
+  static let xlRegular = TypeStyleDefinition(
+    size: FontSizeToken.xl,
+    weight: FontWeightToken.regular,
+    lineHeight: FontSizeToken.xl,
+    trackingPercent: nil,
+    monospacedDigits: false
+  )
+
   static let xlRegularMono = TypeStyleDefinition(
     size: FontSizeToken.xl,
     weight: FontWeightToken.regular,
@@ -250,7 +258,7 @@ enum CounterTextStyle: CaseIterable {
     case .sheetAmount:
       return TypeStyle.x4xlBoldMono
     case .sheetKeypadDigit:
-      return TypeStyle.xlRegularMono
+      return TypeStyle.xxlSemibold
     }
   }
 

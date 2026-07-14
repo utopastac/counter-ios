@@ -33,6 +33,7 @@ enum BaseColor {
   enum Neutral {
     static let darkBackdrop = Color(red: 0.07, green: 0.07, blue: 0.08)
     static let lightBackdrop = Color(red: 0.96, green: 0.96, blue: 0.97)
+    static let keypadKey = Color(red: 0.90, green: 0.90, blue: 0.90)
   }
 
   /// White with fixed alpha steps — mirrors `color.base.white-alpha.*` in tokens.json.

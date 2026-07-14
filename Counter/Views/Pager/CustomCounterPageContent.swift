@@ -10,10 +10,6 @@ struct CustomCounterPageContent: View {
   @State private var showCustomAmount = false
   @State private var showsEntryLog = false
 
-  private var entryLogHeroID: String {
-    "entry-log-\(counter.id.uuidString)"
-  }
-
   private var periodEntries: [CounterEntry] {
     let range = CounterPeriodCalculator.currentRange(for: counter)
     return CounterPeriodCalculator.entries(from: counter.entries, in: range)
@@ -82,13 +78,8 @@ struct CustomCounterPageContent: View {
             emptyMessage: "No entries yet for this period."
           )
 
-          EntryLogHeroLink(
-            isExpanded: $showsEntryLog,
-            heroID: entryLogHeroID
-          ) {
-            EntryLogAllEntriesControl()
-          } destination: {
-            CounterPeriodEntryLogScreen(counter: counter)
+          EntryLogAllEntriesButton {
+            showsEntryLog = true
           }
         }
       } footer: {
@@ -106,6 +97,9 @@ struct CustomCounterPageContent: View {
       CustomAmountSheet { value in
         addEntry(value)
       }
+    }
+    .sheet(isPresented: $showsEntryLog) {
+      CounterTodayLogView(counter: counter)
     }
     .onAppear {
       migratePresetButtons(for: counter)

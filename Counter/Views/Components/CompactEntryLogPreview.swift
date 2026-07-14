@@ -21,6 +21,17 @@ struct EntryLogAllEntriesControl: View {
   }
 }
 
+struct EntryLogAllEntriesButton: View {
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      EntryLogAllEntriesControl()
+    }
+    .buttonStyle(.noHighlight)
+  }
+}
+
 struct EntryLogPreviewTableDivider: View {
   @Environment(\.semanticColors) private var colors
 

@@ -249,10 +249,11 @@ enum SheetToken {
   static let actionTop: CGFloat = SpaceToken.u2
   static let contentBottom: CGFloat = SpaceToken.u3
   static let amountInputHeight: CGFloat = FontSizeToken.x5xl
-  static let keypadTopSpacing: CGFloat = SpaceToken.x4
-  static let keypadKeySpacing: CGFloat = SpaceToken.x2
-  static let keypadKeyHeight: CGFloat = 56
-  static let keypadBottom: CGFloat = SpaceToken.x2
+  static let keypadTopSpacing: CGFloat = SpaceToken.u2
+  static let keypadKeySpacing: CGFloat = SpaceToken.u1
+  static let keypadKeyHeight: CGFloat = GridToken.units(6)
+  static let keypadKeyCornerRadius: CGFloat = RadiusToken.sm
+  static let keypadBottom: CGFloat = SpaceToken.u2
 
   /// Rounds only the top corners so the sheet bottom can follow the device edge.
   static var halfSheetTopCornerShape: UnevenRoundedRectangle {

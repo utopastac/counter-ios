@@ -37,7 +37,7 @@ struct NumericKeypad: View {
     .padding(.horizontal, SheetToken.horizontal)
     .padding(.top, SheetToken.keypadTopSpacing)
     .padding(.bottom, SheetToken.keypadBottom)
-    .background(colors.surfaceKeypad)
+    .safeAreaPadding(.bottom, SpaceToken.u1)
   }
 
   private func append(_ digit: String) {
@@ -79,7 +79,7 @@ private struct KeypadKeyButton: View {
     Button(action: action) {
       Group {
         if let icon {
-          CounterLucideIcon(icon: icon, color: colors.textPrimary)
+          CounterLucideIcon(icon: icon, color: colors.textPrimary, size: SizeToken.iconGlyph)
         } else if let title {
           Text(title)
             .counterTextStyle(.sheetKeypadDigit)
@@ -89,7 +89,10 @@ private struct KeypadKeyButton: View {
       }
       .frame(maxWidth: .infinity)
       .frame(height: SheetToken.keypadKeyHeight)
-      .background(colors.surfaceKeypadKey, in: RadiusToken.continuousMd)
+      .background(
+        colors.surfaceKeypadKey,
+        in: RadiusToken.continuous(SheetToken.keypadKeyCornerRadius)
+      )
       .foregroundStyle(colors.textPrimary)
     }
     .buttonStyle(.plain)
@@ -97,11 +100,15 @@ private struct KeypadKeyButton: View {
 }
 
 #Preview {
-  @Previewable @State var amount = "100"
+  @Previewable @State var amount = "70"
 
-  return VStack {
-    LargeAmountInput(text: amount)
-    NumericKeypad(text: $amount)
-  }
-  .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: nil))
+  return AmountEntrySheet(
+    title: "Add amount",
+    headerIcon: .plus,
+    actionTitle: "Add",
+    initialText: amount,
+    onSubmit: { _ in }
+  )
+  .environment(\.counterAccent, nil)
+  .counterDesignSystemFromColorScheme()
 }
