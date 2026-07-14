@@ -2,15 +2,18 @@ import SwiftUI
 
 struct CounterSheetHeader: View {
   let title: String
+  let trailingTitle: String
   let isDoneEnabled: Bool
   let onDone: () -> Void
 
   init(
     title: String,
+    trailingTitle: String = "Done",
     isDoneEnabled: Bool = true,
     onDone: @escaping () -> Void
   ) {
     self.title = title
+    self.trailingTitle = trailingTitle
     self.isDoneEnabled = isDoneEnabled
     self.onDone = onDone
   }
@@ -22,7 +25,7 @@ struct CounterSheetHeader: View {
 
       Spacer(minLength: SpaceToken.u1)
 
-      Button("Done", action: onDone)
+      Button(trailingTitle, action: onDone)
         .counterTextStyle(.settingsRowLabel, color: isDoneEnabled ? .primary : .disabled)
         .buttonStyle(.plain)
         .disabled(!isDoneEnabled)

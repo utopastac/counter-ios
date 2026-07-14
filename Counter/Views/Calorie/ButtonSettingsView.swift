@@ -359,14 +359,14 @@ private enum SettingsToken {
   static let sectionSpacing: CGFloat = SpaceToken.x5
 }
 
-private struct SettingsSectionDivider: View {
+struct SettingsSectionDivider: View {
   var body: some View {
     SettingsDivider()
       .padding(.vertical, SettingsToken.sectionSpacing)
   }
 }
 
-private struct SettingsSectionHeader: View {
+struct SettingsSectionHeader: View {
   @Environment(\.semanticColors) private var colors
 
   let title: String
@@ -380,7 +380,7 @@ private struct SettingsSectionHeader: View {
   }
 }
 
-private struct SettingsLabeledField: View {
+struct SettingsLabeledField: View {
   @Environment(\.semanticColors) private var colors
 
   let label: String
@@ -406,7 +406,7 @@ private struct SettingsLabeledField: View {
   }
 }
 
-private struct SettingsStaticRow: View {
+struct SettingsStaticRow: View {
   @Environment(\.semanticColors) private var colors
 
   let icon: CounterLucideIconName
@@ -429,7 +429,7 @@ private struct SettingsStaticRow: View {
   }
 }
 
-private struct SettingsPickerRow<Option: Hashable>: View {
+struct SettingsPickerRow<Option: Hashable>: View {
   @Environment(\.semanticColors) private var colors
 
   let icon: CounterLucideIconName
@@ -498,7 +498,7 @@ private struct SettingsPresetButton: View {
   }
 }
 
-private struct SettingsColorSwatchButton: View {
+struct SettingsColorSwatchButton: View {
   @Environment(\.semanticColors) private var colors
 
   let fill: Color
@@ -526,7 +526,7 @@ private struct SettingsColorSwatchButton: View {
   }
 }
 
-private struct SettingsColorSwatchGrid: View {
+struct SettingsColorSwatchGrid: View {
   @Environment(\.colorScheme) private var colorScheme
 
   @Binding var selection: Int
