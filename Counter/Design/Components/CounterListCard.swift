@@ -17,17 +17,17 @@ struct CounterListCard: View {
   var body: some View {
     Button(action: action) {
       HStack(alignment: .center, spacing: SpaceToken.x4) {
-        VStack(alignment: .leading, spacing: SpaceToken.x2) {
+        VStack(alignment: .leading, spacing: -SpaceToken.x1) {
           Text(title)
-            .counterTextStyle(.listCardTitle)
+            .counterTextStyle(.listCardTitle, compact: true)
 
           Text(value)
-            .counterTextStyle(.listCardNumber)
+            .counterTextStyle(.listCardNumber, compact: true)
             .minimumScaleFactor(0.7)
             .lineLimit(1)
 
           Text(caption)
-            .counterTextStyle(.rowLight)
+            .counterTextStyle(.listCardCaption, compact: true)
         }
 
         Spacer(minLength: SpaceToken.x4)

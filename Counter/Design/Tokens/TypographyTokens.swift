@@ -180,6 +180,7 @@ enum CounterTextStyle: CaseIterable {
   case mainNumber
   case listCardNumber
   case listCardTitle
+  case listCardCaption
   case pageTitle
   case sectionTitle
   case rowHeavy
@@ -214,7 +215,9 @@ enum CounterTextStyle: CaseIterable {
     case .listCardNumber:
       return TypeStyle.xxxlSemibold
     case .listCardTitle:
-      return TypeStyle.mdMedium
+      return TypeStyle.lgSemibold
+    case .listCardCaption:
+      return TypeStyle.smRegular
     case .pageTitle, .heroTitle, .sheetTitle:
       return TypeStyle.xxlMedium
     case .sectionTitle, .sectionLabel:

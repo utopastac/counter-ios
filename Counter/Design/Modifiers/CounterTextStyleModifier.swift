@@ -5,6 +5,7 @@ struct CounterTextStyleModifier: ViewModifier {
 
   let style: CounterTextStyle
   var colorRole: TextColorRole = .primary
+  var compact: Bool = false
 
   enum TextColorRole {
     case primary
@@ -18,12 +19,22 @@ struct CounterTextStyleModifier: ViewModifier {
   }
 
   func body(content: Content) -> some View {
-    content
-      .font(style.font)
-      .tracking(style.tracking ?? 0)
-      .lineSpacing(style.lineSpacing)
-      .frame(minHeight: style.lineHeight, alignment: .center)
-      .foregroundStyle(foregroundColor)
+    Group {
+      if compact {
+        content
+          .font(style.font)
+          .tracking(style.tracking ?? 0)
+          .foregroundStyle(foregroundColor)
+          .fixedSize(horizontal: false, vertical: true)
+      } else {
+        content
+          .font(style.font)
+          .tracking(style.tracking ?? 0)
+          .lineSpacing(style.lineSpacing)
+          .frame(minHeight: style.lineHeight, alignment: .center)
+          .foregroundStyle(foregroundColor)
+      }
+    }
   }
 
   private var foregroundColor: Color {
@@ -51,8 +62,9 @@ struct CounterTextStyleModifier: ViewModifier {
 extension View {
   func counterTextStyle(
     _ style: CounterTextStyle,
-    color role: CounterTextStyleModifier.TextColorRole = .primary
+    color role: CounterTextStyleModifier.TextColorRole = .primary,
+    compact: Bool = false
   ) -> some View {
-    modifier(CounterTextStyleModifier(style: style, colorRole: role))
+    modifier(CounterTextStyleModifier(style: style, colorRole: role, compact: compact))
   }
 }

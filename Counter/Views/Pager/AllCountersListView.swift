@@ -91,7 +91,7 @@ struct AllCountersListView: View {
   }
 
   private var listCards: some View {
-    VStack(alignment: .leading, spacing: SpaceToken.x4) {
+    VStack(alignment: .leading, spacing: SpaceToken.u1) {
       CounterListCard(
         accent: .calories,
         title: "Calories",
