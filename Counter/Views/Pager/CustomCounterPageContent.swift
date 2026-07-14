@@ -3,6 +3,8 @@ import SwiftData
 
 struct CustomCounterPageContent: View {
   @Bindable var counter: CustomCounter
+  let paletteIndex: Int
+
   @Environment(\.modelContext) private var modelContext
 
   @State private var showCustomAmount = false
@@ -22,8 +24,8 @@ struct CustomCounterPageContent: View {
     CounterPeriodCalculator.total(from: counter.entries, for: counter)
   }
 
-  private var goalProgress: GoalProgress? {
-    GoalProgressCalculator.progress(
+  private var ringProgress: GoalProgress {
+    GoalProgressCalculator.ringDisplay(
       current: periodTotal,
       goal: counter.effectiveGoal,
       direction: counter.goalDirection
@@ -31,7 +33,7 @@ struct CustomCounterPageContent: View {
   }
 
   private var previewItems: [EntryLogPreviewItem] {
-    periodEntries.prefix(8).map { entry in
+    periodEntries.prefix(EntryLogPreviewLimit.count).map { entry in
       EntryLogPreviewItem(
         id: entry.id,
         timestamp: entry.timestamp,
@@ -40,26 +42,54 @@ struct CustomCounterPageContent: View {
     }
   }
 
+  private var statRows: [CounterStatRow] {
+    var rows: [CounterStatRow] = []
+
+    if let goal = counter.effectiveGoal {
+      rows.append(CounterStatRow(id: "target", value: "\(goal)", label: "Target"))
+    }
+
+    rows.append(CounterStatRow(id: "added", value: "\(periodTotal)", label: "Added"))
+
+    if let goalProgress = GoalProgressCalculator.progress(
+      current: periodTotal,
+      goal: counter.effectiveGoal,
+      direction: counter.goalDirection
+    ) {
+      rows.append(
+        CounterStatRow(
+          id: "summary",
+          value: goalProgress.heroValue,
+          label: goalProgress.heroCaption.capitalized,
+          isEmphasized: true
+        )
+      )
+    }
+
+    return rows
+  }
+
   var body: some View {
     NavigationStack {
       CounterPageLayout(
-        title: counter.name,
         heroValue: heroValue,
-        heroCaption: heroCaption,
-        compactStat: CounterPeriodCalculator.resetSummary(for: counter),
-        goalProgress: goalProgress
+        statRows: statRows,
+        ringProgress: ringProgress
       ) {
-        EntryLogHeroLink(
-          isExpanded: $showsEntryLog,
-          heroID: entryLogHeroID
-        ) {
+        VStack(alignment: .leading, spacing: 0) {
+          EntryLogHeroLink(
+            isExpanded: $showsEntryLog,
+            heroID: entryLogHeroID
+          ) {
+            EntryLogAllEntriesControl()
+          } destination: {
+            CounterPeriodEntryLogScreen(counter: counter)
+          }
+
           CompactEntryLogPreview(
-            title: EntryLogTitles.preview(for: counter.resetPeriod),
             items: previewItems,
             emptyMessage: "No entries yet for this period."
           )
-        } destination: {
-          CounterPeriodEntryLogScreen(counter: counter)
         }
       } footer: {
         CompactQuickAddGrid(
@@ -72,7 +102,10 @@ struct CustomCounterPageContent: View {
         }
       }
     }
-    .counterAccent(CounterAccent.forCounter(named: counter.name))
+    .counterAccent(CounterAccent.forCustomCounter(at: paletteIndex))
+    .toolbarBackground(.hidden, for: .navigationBar)
+    .background(Color.clear)
+    .containerBackground(.clear, for: .navigation)
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addEntry(value)
@@ -81,6 +114,17 @@ struct CustomCounterPageContent: View {
     .onAppear {
       migratePresetButtons(for: counter)
     }
+    .onChange(of: periodTotal) { _, _ in
+      syncWidgets()
+    }
+  }
+
+  private var heroValue: String {
+    GoalProgressCalculator.progress(
+      current: periodTotal,
+      goal: counter.effectiveGoal,
+      direction: counter.goalDirection
+    )?.heroValue ?? "\(periodTotal)"
   }
 
   private func migratePresetButtons(for counter: CustomCounter) {
@@ -93,19 +137,17 @@ struct CustomCounterPageContent: View {
     }
   }
 
-  private var heroValue: String {
-    goalProgress?.heroValue ?? "\(periodTotal)"
-  }
-
-  private var heroCaption: String {
-    goalProgress?.heroCaption ?? counter.resetPeriod.periodCaption
-  }
-
   private func addEntry(_ value: Int) {
     EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
+    syncWidgets()
   }
 
   private func addEntryQuick(_ value: Int) {
     EntryActions.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
+    syncWidgets()
+  }
+
+  private func syncWidgets() {
+    WidgetSnapshot.reloadTimelines()
   }
 }

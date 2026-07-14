@@ -27,15 +27,21 @@ struct LargeAmountInput: View {
     HStack(alignment: .firstTextBaseline, spacing: SpaceToken.x1) {
       if let prefix {
         Text(prefix)
-          .counterTextStyle(.sheetAmount, color: isPlaceholder ? .disabled : .primary)
+          .font(CounterTextStyle.mainNumber.font)
+          .tracking(CounterTextStyle.mainNumber.tracking ?? 0)
+          .foregroundStyle(isPlaceholder ? colors.textDisabled : colors.textPrimary)
       }
 
       Text(displayText)
-        .counterTextStyle(.sheetAmount, color: isPlaceholder ? .disabled : .primary)
+        .font(CounterTextStyle.mainNumber.font)
+        .tracking(CounterTextStyle.mainNumber.tracking ?? 0)
+        .foregroundStyle(isPlaceholder ? colors.textDisabled : colors.textPrimary)
+        .minimumScaleFactor(0.45)
+        .lineLimit(1)
         .contentTransition(.numericText())
         .animation(.easeInOut(duration: 0.15), value: displayText)
     }
-    .frame(maxWidth: .infinity)
+    .frame(maxWidth: .infinity, alignment: .leading)
     .accessibilityLabel("Amount")
     .accessibilityValue(displayText)
   }

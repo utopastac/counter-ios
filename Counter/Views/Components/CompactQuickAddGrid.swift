@@ -17,40 +17,14 @@ struct CompactQuickAddGrid: View {
   var body: some View {
     LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
       ForEach(displayValues, id: \.self) { value in
-        GlassButton("\(value)") {
+        CounterActionButton("\(value)") {
           onTap(value)
         }
       }
 
-      GlassButton(systemImage: "ellipsis") {
+      CounterActionButton(icon: .ellipsis) {
         onCustom()
       }
     }
   }
-}
-
-#Preview("Dark") {
-  ZStack {
-    CounterPageBackground()
-    CompactQuickAddGrid(
-      values: [10, 20, 50, 100, 200, 500, 1000],
-      defaultPresets: QuickAddConfiguration.defaultCaloriePresets
-    ) { _ in } onCustom: {}
-      .padding()
-  }
-  .counterDesignSystem(CounterDesignSystem(colorScheme: .dark, accent: .calories))
-  .preferredColorScheme(.dark)
-}
-
-#Preview("Light") {
-  ZStack {
-    CounterPageBackground()
-    CompactQuickAddGrid(
-      values: [10, 20, 50, 100, 200, 500, 1000],
-      defaultPresets: QuickAddConfiguration.defaultCaloriePresets
-    ) { _ in } onCustom: {}
-      .padding()
-  }
-  .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: .calories))
-  .preferredColorScheme(.light)
 }

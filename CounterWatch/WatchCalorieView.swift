@@ -79,10 +79,7 @@ struct WatchCalorieView: View {
   }
 
   private func syncWidgetSnapshot() {
-    WidgetSnapshot.publish(
-      added: periodTotal,
-      burned: Int(healthKit.activeCalories)
-    )
+    WidgetSnapshotSync.publish(from: modelContext, burned: Int(healthKit.activeCalories))
   }
 }
 

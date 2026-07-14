@@ -5,8 +5,8 @@ struct GlassCard<Content: View>: View {
 
   var body: some View {
     content()
-      .padding(.horizontal, SpaceToken.x4)
-      .padding(.vertical, SpaceToken.x3 + 2)
+      .padding(.horizontal, SpaceToken.componentPadding)
+      .padding(.vertical, SpaceToken.componentPadding)
       .glassSurface(variant: .fillSubtle, cornerRadius: RadiusToken.lg)
   }
 }

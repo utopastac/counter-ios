@@ -6,59 +6,105 @@ struct GoalProgressRing: View {
   let progress: GoalProgress
   var size: CGFloat = SizeToken.Ring.default
   var lineWidth: CGFloat = SizeToken.Ring.progressStroke
+  var trackColor: Color?
+  var fillColor: Color?
 
   var body: some View {
     ZStack {
-      Circle()
-        .stroke(colors.progressRingTrack, lineWidth: lineWidth)
+      ProgressRingArc(fraction: 1, lineWidth: lineWidth)
+        .stroke(resolvedTrackColor, style: ringStrokeStyle)
 
       if progress.isOverGoal {
-        partialProgressRing(fraction: 1)
+        ProgressRingArc(fraction: 1, lineWidth: lineWidth)
+          .stroke(resolvedFillColor, style: ringStrokeStyle)
 
         if progress.overflowRingFraction > 0 {
           overfillOverflowArc
         }
-      } else {
-        partialProgressRing(fraction: progress.ringFraction)
+      } else if progress.ringFraction > 0 {
+        ProgressRingArc(fraction: progress.ringFraction, lineWidth: lineWidth)
+          .stroke(resolvedFillColor, style: ringStrokeStyle)
       }
     }
     .frame(width: size, height: size)
+    .accessibilityLabel(progress.progressLabel)
+    .accessibilityValue(progress.detailLabel)
+  }
+
+  private var ringStrokeStyle: StrokeStyle {
+    StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
   }
 
   private var overfillOverflowArc: some View {
     let outlineWidth = SizeToken.Ring.overfillOutlineWidth
     let overflow = progress.overflowRingFraction
+    let outlineStroke = StrokeStyle(
+      lineWidth: lineWidth + outlineWidth * 2,
+      lineCap: .round,
+      lineJoin: .round
+    )
 
     return ZStack {
-      partialProgressRing(
-        fraction: overflow,
-        fill: colors.progressRingOverfillOutline,
-        width: lineWidth + outlineWidth * 2
-      )
-      .mask {
-        ProgressRingBandMask(lineWidth: lineWidth)
-      }
+      ProgressRingArc(fraction: overflow, lineWidth: lineWidth)
+        .stroke(colors.progressRingOverfillOutline, style: outlineStroke)
+        .mask {
+          ProgressRingBandMask(lineWidth: lineWidth)
+        }
 
-      partialProgressRing(
-        fraction: overflow,
-        fill: colors.progressRingFill,
-        width: lineWidth
-      )
+      ProgressRingArc(fraction: overflow, lineWidth: lineWidth)
+        .stroke(resolvedFillColor, style: ringStrokeStyle)
     }
   }
 
-  private func partialProgressRing(
-    fraction: Double,
-    fill: Color? = nil,
-    width: CGFloat? = nil
-  ) -> some View {
-    Circle()
-      .trim(from: 0, to: fraction)
-      .stroke(
-        fill ?? colors.progressRingFill,
-        style: StrokeStyle(lineWidth: width ?? lineWidth, lineCap: .round)
+  private var resolvedTrackColor: Color {
+    trackColor ?? colors.progressRingTrack
+  }
+
+  private var resolvedFillColor: Color {
+    fillColor ?? colors.progressRingFill
+  }
+}
+
+/// Arc segment for a progress ring, starting at 12 o'clock.
+private struct ProgressRingArc: Shape {
+  var fraction: Double
+  var lineWidth: CGFloat
+
+  var animatableData: Double {
+    get { fraction }
+    set { fraction = newValue }
+  }
+
+  func path(in rect: CGRect) -> Path {
+    var path = Path()
+    let clamped = max(min(fraction, 1), 0)
+    guard clamped > 0 else { return path }
+
+    let insetRect = rect.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
+    let radius = min(insetRect.width, insetRect.height) / 2
+    let center = CGPoint(x: rect.midX, y: rect.midY)
+    let start = Angle.degrees(-90)
+    let end = Angle.degrees(-90 + (clamped * 360))
+
+    if clamped >= 0.999 {
+      path.addArc(
+        center: center,
+        radius: radius,
+        startAngle: start,
+        endAngle: .degrees(270 - 0.001),
+        clockwise: false
       )
-      .rotationEffect(.degrees(-90))
+    } else {
+      path.addArc(
+        center: center,
+        radius: radius,
+        startAngle: start,
+        endAngle: end,
+        clockwise: false
+      )
+    }
+
+    return path
   }
 }
 
@@ -106,7 +152,7 @@ struct GoalProgressView: View {
 
 #Preview {
   ZStack {
-    CounterPageBackground()
+    CounterPagerBackdrop(accents: [.calories], scrollProgress: 0)
     VStack(spacing: SpaceToken.x4) {
       GoalProgressView(
         progress: GoalProgress(current: 500, goal: 2000, direction: .countDown)

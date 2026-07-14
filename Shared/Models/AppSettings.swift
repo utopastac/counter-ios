@@ -3,6 +3,9 @@ import SwiftData
 
 @Model
 final class AppSettings {
+  static let defaultCalorieGoal = 2200
+  static let defaultCalorieButtonValues: [Int] = [5, 10, 25, 50, 50, 100, 200, 500, 1000]
+
   var id: UUID
   var calorieButtonValues: [Int]
   var calorieSliderMax: Int
@@ -14,13 +17,13 @@ final class AppSettings {
   init(
     calorieButtonValues: [Int]? = nil,
     calorieSliderMax: Int = 2000,
-    calorieGoal: Int? = nil,
+    calorieGoal: Int? = defaultCalorieGoal,
     calorieResetPeriod: CounterResetPeriod = .daily,
     calorieResetAnchorDay: Int = 1,
     calorieGoalDirection: GoalDirection = .countDown
   ) {
     self.id = UUID()
-    self.calorieButtonValues = calorieButtonValues ?? [10, 20, 50, 100, 200, 500, 1000]
+    self.calorieButtonValues = calorieButtonValues ?? Self.defaultCalorieButtonValues
     self.calorieSliderMax = calorieSliderMax
     self.calorieGoal = calorieGoal
     self.calorieResetPeriodRaw = calorieResetPeriod.rawValue

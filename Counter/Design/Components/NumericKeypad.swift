@@ -29,7 +29,7 @@ struct NumericKeypad: View {
         append("0")
       }
 
-      KeypadKeyButton(systemImage: "delete.backward") {
+      KeypadKeyButton(icon: .deleteBackward) {
         deleteLast()
       }
       .accessibilityLabel("Delete")
@@ -60,27 +60,26 @@ private struct KeypadKeyButton: View {
   @Environment(\.semanticColors) private var colors
 
   let title: String?
-  let systemImage: String?
+  let icon: CounterLucideIconName?
   let action: () -> Void
 
   init(title: String, action: @escaping () -> Void) {
     self.title = title
-    self.systemImage = nil
+    self.icon = nil
     self.action = action
   }
 
-  init(systemImage: String, action: @escaping () -> Void) {
+  init(icon: CounterLucideIconName, action: @escaping () -> Void) {
     self.title = nil
-    self.systemImage = systemImage
+    self.icon = icon
     self.action = action
   }
 
   var body: some View {
     Button(action: action) {
       Group {
-        if let systemImage {
-          Image(systemName: systemImage)
-            .counterTextStyle(.headline)
+        if let icon {
+          CounterLucideIcon(icon: icon, color: colors.textPrimary)
         } else if let title {
           Text(title)
             .counterTextStyle(.sheetKeypadDigit)

@@ -43,6 +43,20 @@ struct CounterPagerView: View {
     return counters.first { $0.id.uuidString == selectedPageID }
   }
 
+  private var activeAccent: CounterAccent {
+    if isCaloriesPage { return .calories }
+    if let counter = activeCustomCounter,
+       let index = counters.firstIndex(where: { $0.id == counter.id }) {
+      return .forCustomCounter(at: index)
+    }
+    return .calories
+  }
+
+  private var activePageTitle: String {
+    if isCaloriesPage { return "Calories" }
+    return activeCustomCounter?.name ?? "Counter"
+  }
+
   private var settleSpring: Animation {
     MotionToken.settle(reduceMotion: reduceMotion)
   }
@@ -52,16 +66,16 @@ struct CounterPagerView: View {
       CounterUnderlayReveal(
         cardOffset: $cardOffset,
         isRevealed: $isCounterListRevealed,
-        locksVerticalScroll: $locksVerticalScroll,
-        listWidthFraction: 0.90
+        locksVerticalScroll: $locksVerticalScroll
       ) {
         AllCountersListView(
           embedded: true,
           onSelectPage: selectPageFromList,
-          onClose: collapseCounterList
+          onClose: collapseCounterList,
+          onAddCounter: { showAddCounter = true }
         )
       } card: {
-        counterScreen(height: geometry.size.height)
+        counterScreen()
       }
       .onAppear {
         containerWidth = geometry.size.width
@@ -69,13 +83,14 @@ struct CounterPagerView: View {
       .onChange(of: geometry.size.width) { _, newWidth in
         containerWidth = newWidth
         if isCounterListRevealed {
-          cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
-            for: newWidth,
-            listWidthFraction: 0.90,
-            maxScaleReduction: 0.14
-          )
+          cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(for: newWidth)
         }
       }
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background {
+      colors.surfaceBackdrop
+        .ignoresSafeArea()
     }
     .sheet(isPresented: $showButtonSettings) {
       buttonSettingsSheet
@@ -101,18 +116,21 @@ struct CounterPagerView: View {
   }
 
   @ViewBuilder
-  private func counterScreen(height: CGFloat) -> some View {
-    ZStack(alignment: .top) {
-      verticalPager(height: height)
+  private func counterScreen() -> some View {
+    GeometryReader { geometry in
+      ZStack(alignment: .top) {
+        verticalPager(height: geometry.size.height)
 
-      pagerToolbar
+        pagerToolbar
 
-      VStack {
-        Spacer()
-        PagerDotIndicator(labels: pageLabels, selectedIndex: selectedIndex)
+        VStack {
+          Spacer()
+          PagerDotIndicator(labels: pageLabels, selectedIndex: selectedIndex)
+        }
       }
     }
-    .background(colors.surfaceBackdrop)
+    .counterAccent(activeAccent)
+    .counterDesignSystemFromColorScheme()
   }
 
   @ViewBuilder
@@ -123,14 +141,16 @@ struct CounterPagerView: View {
           .frame(height: height)
           .id(PageID.calories.rawValue)
 
-        ForEach(counters) { counter in
-          CustomCounterPageContent(counter: counter)
+        ForEach(Array(counters.enumerated()), id: \.element.id) { index, counter in
+          CustomCounterPageContent(counter: counter, paletteIndex: index)
             .frame(height: height)
             .id(counter.id.uuidString)
         }
       }
       .scrollTargetLayout()
     }
+    .scrollContentBackground(.hidden)
+    .background(Color.clear)
     .scrollTargetBehavior(.paging)
     .scrollPosition(id: $selectedPageID)
     .scrollIndicators(.hidden)
@@ -141,11 +161,7 @@ struct CounterPagerView: View {
 
   private func openCounterList() {
     let width = max(containerWidth, 1)
-    let maxOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
-      for: width,
-      listWidthFraction: 0.90,
-      maxScaleReduction: 0.14
-    )
+    let maxOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(for: width)
     withAnimation(settleSpring) {
       cardOffset = maxOffset
       isCounterListRevealed = true
@@ -167,31 +183,42 @@ struct CounterPagerView: View {
 
   @ViewBuilder
   private var pagerToolbar: some View {
-    HStack(spacing: 10) {
-      Spacer()
+    VStack(spacing: 0) {
+      HStack(spacing: SpaceToken.x3) {
+        CounterIconButton(icon: .listSortDescending) {
+          openCounterList()
+        }
 
-      GlassIconButton(systemName: "square.grid.2x2") {
-        openCounterList()
-      }
+        Text(activePageTitle)
+          .counterTextStyle(.pageTitle)
+          .lineLimit(1)
 
-      GlassIconButton(systemName: "chart.bar.xaxis") {
-        if isCaloriesPage {
-          showCalorieHistory = true
-        } else {
-          showHistory = true
+        Spacer(minLength: 0)
+
+        HStack(spacing: SpaceToken.x3) {
+          CounterIconButton(icon: .chartBar) {
+            if isCaloriesPage {
+              showCalorieHistory = true
+            } else {
+              showHistory = true
+            }
+          }
+
+          CounterIconButton(icon: .slidersHorizontal) {
+            showButtonSettings = true
+          }
         }
       }
+      .padding(.horizontal, SpaceToken.toolbarHorizontal)
+      .padding(.top, SpaceToken.toolbarTop)
+      .padding(.bottom, SpaceToken.toolbarBottom)
 
-      GlassIconButton(systemName: "slider.horizontal.3") {
-        showButtonSettings = true
-      }
-
-      GlassIconButton(systemName: "plus") {
-        showAddCounter = true
-      }
+      Rectangle()
+        .fill(colors.textPrimary)
+        .frame(height: BorderToken.toolbar)
+        .padding(.horizontal, SpaceToken.u1)
     }
-    .padding(.horizontal, SpaceToken.toolbarHorizontal)
-    .padding(.top, SpaceToken.toolbarTop)
+    .background(Color.clear)
   }
 
   @ViewBuilder

@@ -1,9 +1,21 @@
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+  @Environment(\.modelContext) private var modelContext
+  @State private var isBootstrapped = false
+
   var body: some View {
-    CounterPagerView()
-      .counterDesignSystemFromColorScheme()
+    Group {
+      if isBootstrapped {
+        CounterPagerView()
+          .counterDesignSystemFromColorScheme()
+      }
+    }
+    .task {
+      SampleDataSeeder.seedIfNeeded(in: modelContext)
+      isBootstrapped = true
+    }
   }
 }
 

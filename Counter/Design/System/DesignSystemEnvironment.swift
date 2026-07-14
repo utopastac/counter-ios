@@ -8,7 +8,7 @@ struct CounterDesignSystem: Equatable {
   var colors: SemanticColors {
     var resolved = colorScheme.counterSemanticColors
     if let accent {
-      resolved = resolved.withAccent(accent.accent)
+      resolved = resolved.withCounterTheme(accent.palette, colorScheme: colorScheme)
     }
     return resolved
   }
@@ -63,9 +63,13 @@ extension View {
 
 private struct CounterDesignSystemProvider: ViewModifier {
   @Environment(\.colorScheme) private var colorScheme
+  @Environment(\.counterAccent) private var counterAccent
 
   func body(content: Content) -> some View {
     content
-      .environment(\.designSystem, CounterDesignSystem.automatic(colorScheme: colorScheme))
+      .environment(
+        \.designSystem,
+        CounterDesignSystem(colorScheme: colorScheme, accent: counterAccent)
+      )
   }
 }

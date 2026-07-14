@@ -5,10 +5,11 @@ struct CustomAmountSheet: View {
 
   var body: some View {
     AmountEntrySheet(
-      title: "Custom Amount",
+      title: "Add amount",
       actionTitle: "Add",
       onSubmit: onAdd
     )
+    .environment(\.counterAccent, nil)
     .counterDesignSystemFromColorScheme()
   }
 }

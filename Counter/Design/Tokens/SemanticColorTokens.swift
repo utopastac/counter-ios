@@ -10,6 +10,7 @@ struct SemanticColors: Equatable {
   var textInverse: Color
 
   var surfaceBackdrop: Color
+  var surfaceCounterBackground: Color
   var surfacePrimary: Color
   var surfaceGlassFill: Color
   var surfaceGlassFillSubtle: Color
@@ -54,6 +55,7 @@ struct SemanticColors: Equatable {
     textDisabled: BaseColor.WhiteAlpha.a450,
     textInverse: BaseColor.black,
     surfaceBackdrop: BaseColor.Neutral.darkBackdrop,
+    surfaceCounterBackground: BaseColor.Neutral.darkBackdrop,
     surfacePrimary: BaseColor.WhiteAlpha.a100,
     surfaceGlassFill: BaseColor.WhiteAlpha.a140,
     surfaceGlassFillSubtle: BaseColor.WhiteAlpha.a100,
@@ -92,6 +94,7 @@ struct SemanticColors: Equatable {
     textDisabled: BaseColor.BlackAlpha.a100,
     textInverse: BaseColor.white,
     surfaceBackdrop: BaseColor.Neutral.lightBackdrop,
+    surfaceCounterBackground: BaseColor.Neutral.lightBackdrop,
     surfacePrimary: BaseColor.white,
     surfaceGlassFill: BaseColor.BlackAlpha.a060,
     surfaceGlassFillSubtle: BaseColor.BlackAlpha.a040,
@@ -132,6 +135,35 @@ struct SemanticColors: Equatable {
     copy.progressFill = accent
     return copy
   }
+
+  func withCounterTheme(_ palette: CounterPaletteSlot, colorScheme: ColorScheme) -> SemanticColors {
+    var copy = self
+    let foreground = palette.foreground(for: colorScheme)
+    let background = palette.background(for: colorScheme)
+
+    copy.surfaceCounterBackground = background
+    copy.surfaceBackdrop = background
+    copy.textPrimary = foreground
+    copy.textSecondary = palette.mutedForeground(for: colorScheme)
+    copy.textTertiary = palette.mutedForeground(for: colorScheme)
+    copy.textEmphasis = foreground
+    copy.textDisabled = foreground.opacity(0.35)
+    copy.textInverse = palette.buttonForeground(for: colorScheme)
+    copy.borderSubtle = foreground.opacity(0.14)
+    copy.borderStrong = foreground.opacity(0.22)
+    copy.interactivePrimaryFill = foreground
+    copy.interactivePrimaryForeground = background
+    copy.interactiveDisabledFill = foreground.opacity(0.18)
+    copy.interactiveDisabledForeground = palette.buttonForeground(for: colorScheme).opacity(0.45)
+    copy.progressRingFill = foreground
+    copy.progressRingTrack = palette.subtleForeground(for: colorScheme)
+    copy.progressRingOverfillOutline = foreground.opacity(colorScheme == .dark ? 0.45 : 0.28)
+    copy.surfaceGlassFill = foreground.opacity(0.08)
+    copy.surfaceGlassFillSubtle = foreground.opacity(0.05)
+    copy.surfaceGlassStroke = foreground.opacity(0.12)
+    copy.accentPrimary = foreground
+    return copy
+  }
 }
 
 /// Tier 3 — component-level color aliases.
@@ -166,6 +198,14 @@ enum ComponentColor {
 
   static func primaryButtonForeground(_ colors: SemanticColors, isEnabled: Bool) -> Color {
     isEnabled ? colors.interactivePrimaryForeground : colors.interactiveDisabledForeground
+  }
+
+  static func sheetPrimaryButtonFill(_ colors: SemanticColors, isEnabled: Bool) -> Color {
+    isEnabled ? BaseColor.black : colors.interactiveDisabledFill
+  }
+
+  static func sheetPrimaryButtonForeground(_ colors: SemanticColors, isEnabled: Bool) -> Color {
+    isEnabled ? BaseColor.white : colors.interactiveDisabledForeground
   }
 
   static func progressRingTrack(_ colors: SemanticColors) -> Color {

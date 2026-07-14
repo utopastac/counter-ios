@@ -27,48 +27,79 @@ struct CaloriesPageContent: View {
     CounterPeriodCalculator.totalCalories(from: entries, for: settings)
   }
 
-  private var goalProgress: GoalProgress? {
-    GoalProgressCalculator.progress(
+  private var ringProgress: GoalProgress {
+    GoalProgressCalculator.ringDisplay(
       current: periodTotal,
       goal: settings.effectiveCalorieGoal,
       direction: settings.calorieGoalDirection
     )
   }
 
-  private var netCalories: Int {
-    periodTotal - Int(healthKit.activeCalories)
-  }
-
   private var previewItems: [EntryLogPreviewItem] {
-    periodEntries.prefix(8).map { entry in
+    periodEntries.prefix(EntryLogPreviewLimit.count).map { entry in
       EntryLogPreviewItem(
         id: entry.id,
         timestamp: entry.timestamp,
-        valueText: "\(entry.value) kcal"
+        valueText: "\(entry.value)"
       )
     }
+  }
+
+  private var statRows: [CounterStatRow] {
+    var rows: [CounterStatRow] = []
+
+    if let goal = settings.effectiveCalorieGoal {
+      rows.append(CounterStatRow(id: "target", value: "\(goal)", label: "Target"))
+    }
+
+    rows.append(CounterStatRow(id: "added", value: "\(periodTotal)", label: "Added"))
+    rows.append(
+      CounterStatRow(
+        id: "active",
+        value: signedValue(Int(healthKit.activeCalories.rounded())),
+        label: "Active"
+      )
+    )
+
+    if let goalProgress = GoalProgressCalculator.progress(
+      current: periodTotal,
+      goal: settings.effectiveCalorieGoal,
+      direction: settings.calorieGoalDirection
+    ) {
+      rows.append(
+        CounterStatRow(
+          id: "summary",
+          value: goalProgress.heroValue,
+          label: goalProgress.heroCaption.capitalized,
+          isEmphasized: true
+        )
+      )
+    }
+
+    return rows
   }
 
   var body: some View {
     NavigationStack {
       CounterPageLayout(
-        title: "Calories",
         heroValue: heroValue,
-        heroCaption: heroCaption,
-        compactStat: compactStat,
-        goalProgress: goalProgress
+        statRows: statRows,
+        ringProgress: ringProgress
       ) {
-        EntryLogHeroLink(
-          isExpanded: $showsEntryLog,
-          heroID: entryLogHeroID
-        ) {
+        VStack(alignment: .leading, spacing: 0) {
+          EntryLogHeroLink(
+            isExpanded: $showsEntryLog,
+            heroID: entryLogHeroID
+          ) {
+            EntryLogAllEntriesControl()
+          } destination: {
+            CaloriePeriodEntryLogScreen()
+          }
+
           CompactEntryLogPreview(
-            title: EntryLogTitles.preview(for: settings.calorieResetPeriod),
             items: previewItems,
             emptyMessage: "No entries yet for this period."
           )
-        } destination: {
-          CaloriePeriodEntryLogScreen()
         }
       } footer: {
         CompactQuickAddGrid(
@@ -82,6 +113,9 @@ struct CaloriesPageContent: View {
       }
     }
     .counterAccent(CounterAccent.calories)
+    .toolbarBackground(.hidden, for: .navigationBar)
+    .background(Color.clear)
+    .containerBackground(.clear, for: .navigation)
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addCalories(value)
@@ -100,25 +134,16 @@ struct CaloriesPageContent: View {
     .onChange(of: healthKit.activeCalories) { _, _ in syncWidgetSnapshot() }
   }
 
-  func refreshHealth() async {
-    await healthKit.refreshToday()
-    syncWidgetSnapshot()
-  }
-
   private var heroValue: String {
-    goalProgress?.heroValue ?? "\(periodTotal)"
+    GoalProgressCalculator.progress(
+      current: periodTotal,
+      goal: settings.effectiveCalorieGoal,
+      direction: settings.calorieGoalDirection
+    )?.heroValue ?? "\(periodTotal)"
   }
 
-  private var heroCaption: String {
-    goalProgress?.heroCaption ?? settings.calorieResetPeriod.periodCaption
-  }
-
-  private var compactStat: String? {
-    var parts = ["Net \(formattedNet(netCalories)) kcal", "Active burned \(Int(healthKit.activeCalories)) kcal"]
-    if let weight = healthKit.weightKg {
-      parts.append(String(format: "%.1f kg", weight))
-    }
-    return parts.joined(separator: " · ")
+  private func signedValue(_ value: Int) -> String {
+    value >= 0 ? "+\(value)" : "\(value)"
   }
 
   private func addCalories(_ value: Int) {
@@ -132,7 +157,7 @@ struct CaloriesPageContent: View {
   }
 
   private func syncWidgetSnapshot() {
-    WidgetSnapshot.publish(added: periodTotal, burned: Int(healthKit.activeCalories))
+    WidgetSnapshotSync.publish(from: modelContext, burned: Int(healthKit.activeCalories))
   }
 
   private func ensureSettings() {
@@ -154,9 +179,5 @@ struct CaloriesPageContent: View {
       settings.calorieButtonValues = filled
     }
     buttonValues = filled
-  }
-
-  private func formattedNet(_ value: Int) -> String {
-    value >= 0 ? "+\(value)" : "\(value)"
   }
 }

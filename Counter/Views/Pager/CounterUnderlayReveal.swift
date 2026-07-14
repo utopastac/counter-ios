@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// List at fixed width underneath; counter card slides, scales, and rounds with spring physics.
+/// List at fixed width underneath; counter card slides right, scales, and rounds with spring physics.
 struct CounterUnderlayReveal<List: View, Card: View>: View {
   @Binding var cardOffset: CGFloat
   @Binding var isRevealed: Bool
   @Binding var locksVerticalScroll: Bool
-  var listWidthFraction: CGFloat = 0.90
   @ViewBuilder var list: () -> List
   @ViewBuilder var card: () -> Card
 
@@ -14,19 +13,17 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   @State private var dragStartOffset: CGFloat = 0
   @State private var isDraggingReveal = false
 
-  private let maxScaleReduction: CGFloat = 0.14
   private let listParallaxFraction: CGFloat = 0.06
 
   var body: some View {
     GeometryReader { geometry in
       let width = max(geometry.size.width, 1)
       let height = max(geometry.size.height, 1)
-      let listWidth = width * listWidthFraction
-      let maxOffset = Self.openOffset(
-        for: width,
-        listWidthFraction: listWidthFraction,
-        maxScaleReduction: maxScaleReduction
-      )
+      let inset = SpaceToken.scrollContainerInset
+      let cardWidth = RevealToken.cardContentWidth(forScreenWidth: width)
+      let listWidth = RevealToken.listWidth(for: width)
+      let maxScaleReduction = RevealToken.maxScaleReduction
+      let maxOffset = RevealToken.openOffset(forCardWidth: cardWidth)
       let progress = RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
 
       ZStack(alignment: .topLeading) {
@@ -43,30 +40,25 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           .allowsHitTesting(progress > 0.12)
 
         card()
+          .padding(.horizontal, inset)
           .frame(width: width, height: height, alignment: .topLeading)
           .modifier(
             CardRevealTransform(
-              offset: cardOffset,
               maxOffset: maxOffset,
+              cardOffset: cardOffset,
               maxScaleReduction: maxScaleReduction,
-              maxCornerRadius: RadiusToken.card
+              cornerRadius: RadiusToken.scrollContainer
             )
           )
           .simultaneousGesture(revealGesture(maxOffset: maxOffset))
       }
       .frame(width: width, height: height, alignment: .topLeading)
-      .clipped()
     }
   }
 
-  static func openOffset(
-    for width: CGFloat,
-    listWidthFraction: CGFloat,
-    maxScaleReduction: CGFloat = 0.14
-  ) -> CGFloat {
-    let peekFraction = 1 - listWidthFraction
-    let openScale = 1 - maxScaleReduction
-    return width * max(0, openScale - peekFraction)
+  /// Horizontal offset when the list is fully revealed.
+  static func openOffset(for width: CGFloat) -> CGFloat {
+    RevealToken.openOffset(forScreenWidth: width)
   }
 
   private var settleSpring: Animation {
@@ -80,7 +72,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
         let vertical = abs(value.translation.height)
 
         if !isDraggingReveal {
-          guard abs(horizontal) > vertical * 1.2, abs(horizontal) > 8 else { return }
+          guard abs(horizontal) > vertical * 1.2, abs(horizontal) > GridToken.unit else { return }
           isDraggingReveal = true
           dragStartOffset = cardOffset
           locksVerticalScroll = true
@@ -149,39 +141,29 @@ private enum RevealMetrics {
 private struct CardRevealTransform: ViewModifier {
   @Environment(\.semanticColors) private var colors
 
-  let offset: CGFloat
   let maxOffset: CGFloat
+  let cardOffset: CGFloat
   let maxScaleReduction: CGFloat
-  let maxCornerRadius: CGFloat
+  let cornerRadius: CGFloat
 
   private var progress: CGFloat {
-    RevealMetrics.progress(for: offset, maxOffset: maxOffset)
+    RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
   }
 
   private var scale: CGFloat {
     1 - progress * maxScaleReduction
   }
 
-  private var radius: CGFloat {
-    progress * maxCornerRadius
-  }
-
   func body(content: Content) -> some View {
     content
+      .scaleEffect(scale, anchor: .topTrailing)
+      .offset(x: cardOffset)
       .compositingGroup()
-      .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+      .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
       .overlay {
-        RoundedRectangle(cornerRadius: radius, style: .continuous)
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
           .strokeBorder(ComponentColor.revealCardStroke(colors, progress: progress), lineWidth: 1)
       }
-      .shadow(
-        color: ComponentColor.revealCardShadow(colors, progress: progress),
-        radius: ShadowToken.reveal(progress: progress).radius,
-        x: ShadowToken.reveal(progress: progress).x,
-        y: ShadowToken.reveal(progress: progress).y
-      )
-      .scaleEffect(scale, anchor: .trailing)
-      .offset(x: offset)
   }
 }
 

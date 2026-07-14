@@ -27,7 +27,7 @@ struct LargeQuickAddGrid: View {
 
 #Preview {
   ZStack {
-    CounterPageBackground()
+    CounterPagerBackdrop(accents: [.calories], scrollProgress: 0)
     LargeQuickAddGrid(values: [10, 20, 50, 100, 200, 500]) { _ in }
       .padding()
   }

@@ -36,7 +36,13 @@ struct GoalProgress {
   }
 
   var ringFraction: Double {
-    min(max(fractionComplete, 0), 1)
+    guard goal > 0 else { return 0 }
+    switch direction {
+    case .countUp:
+      return min(max(Double(current) / Double(goal), 0), 1)
+    case .countDown:
+      return min(max(Double(delta) / Double(goal), 0), 1)
+    }
   }
 
   var overflowRingFraction: Double {
@@ -137,5 +143,13 @@ enum GoalProgressCalculator {
   static func progress(current: Int, goal: Int?, direction: GoalDirection) -> GoalProgress? {
     guard let goal, goal > 0 else { return nil }
     return GoalProgress(current: current, goal: goal, direction: direction)
+  }
+
+  /// Always returns progress suitable for rendering a ring, even when no goal is set.
+  static func ringDisplay(current: Int, goal: Int?, direction: GoalDirection) -> GoalProgress {
+    if let goal, goal > 0 {
+      return GoalProgress(current: current, goal: goal, direction: direction)
+    }
+    return GoalProgress(current: 0, goal: 1, direction: .countUp)
   }
 }

@@ -10,16 +10,17 @@ struct PrimaryCapsuleButton: View {
   var body: some View {
     Button(action: action) {
       Text(title)
-        .font(CounterTextStyle.headline.font)
+        .counterTextStyle(.button, color: .onInteractiveFill)
         .frame(maxWidth: .infinity)
         .frame(height: SizeToken.primaryButtonHeight)
         .background(
-          ComponentColor.primaryButtonFill(colors, isEnabled: isEnabled),
+          ComponentColor.sheetPrimaryButtonFill(colors, isEnabled: isEnabled),
           in: Capsule()
         )
-        .foregroundStyle(ComponentColor.primaryButtonForeground(colors, isEnabled: isEnabled))
+        .foregroundStyle(ComponentColor.sheetPrimaryButtonForeground(colors, isEnabled: isEnabled))
     }
     .buttonStyle(.plain)
+    .tint(ComponentColor.sheetPrimaryButtonForeground(colors, isEnabled: isEnabled))
     .disabled(!isEnabled)
   }
 }

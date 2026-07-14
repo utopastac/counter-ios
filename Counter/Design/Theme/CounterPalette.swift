@@ -1,28 +1,34 @@
 import SwiftUI
 
-/// Optional per-counter accent used for progress rings and highlights.
+/// Per-counter theme derived from the shared 10-slot palette.
 struct CounterAccent: Equatable {
-  let accent: Color
+  let paletteIndex: Int
 
-  static let calories = CounterAccent(accent: BaseColor.Orange.orange500)
-  static let `default` = CounterAccent(accent: BaseColor.Brand.blue500)
+  var palette: CounterPaletteSlot {
+    CounterPaletteTokens.slot(at: paletteIndex)
+  }
 
-  static func forCounter(named name: String) -> CounterAccent {
-    let hash = abs(name.hashValue)
-    let hue = Double(hash % 360) / 360.0
-    return CounterAccent(
-      accent: Color(hue: hue, saturation: 0.42, brightness: 0.72)
-    )
+  static let calories = CounterAccent(paletteIndex: 0)
+
+  static func forCustomCounter(at index: Int) -> CounterAccent {
+    CounterAccent(paletteIndex: (index % 9) + 1)
+  }
+
+  /// Legacy accessor — prefer `palette`.
+  var accent: Color {
+    palette.lightBackground
   }
 }
 
-// Backward-compatible aliases used across the app.
 enum CounterTheme {
-  typealias Palette = CounterAccent
-
   static var calories: CounterAccent { CounterAccent.calories }
+
+  static func forCustomCounter(at index: Int) -> CounterAccent {
+    CounterAccent.forCustomCounter(at: index)
+  }
+
   static func forCounter(named name: String) -> CounterAccent {
-    CounterAccent.forCounter(named: name)
+    CounterAccent(paletteIndex: abs(name.hashValue) % CounterPaletteTokens.slotCount)
   }
 }
 
@@ -30,7 +36,12 @@ typealias CounterPalette = CounterAccent
 
 enum CounterPaletteLibrary {
   static var calories: CounterAccent { CounterAccent.calories }
+
+  static func forCustomCounter(at index: Int) -> CounterAccent {
+    CounterAccent.forCustomCounter(at: index)
+  }
+
   static func forCounter(named name: String) -> CounterAccent {
-    CounterAccent.forCounter(named: name)
+    CounterTheme.forCounter(named: name)
   }
 }

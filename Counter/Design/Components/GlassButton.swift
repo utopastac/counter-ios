@@ -42,14 +42,12 @@ struct GlassButton: View {
 struct GlassIconButton: View {
   @Environment(\.semanticColors) private var colors
 
-  let systemName: String
+  let icon: CounterLucideIconName
   let action: () -> Void
 
   var body: some View {
     Button(action: action) {
-      Image(systemName: systemName)
-        .counterTextStyle(.iconButton)
-        .foregroundStyle(colors.textPrimary)
+      CounterLucideIcon(icon: icon, color: colors.textPrimary)
         .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
         .glassSurface(cornerRadius: SizeToken.iconButton / 2, shape: .circle)
     }

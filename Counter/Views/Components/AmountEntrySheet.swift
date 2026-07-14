@@ -14,6 +14,7 @@ struct AmountEntrySheet: View {
 
   let title: String
   let subtitle: String?
+  let headerIcon: CounterLucideIconName
   let actionTitle: String
   let initialText: String
   let onSubmit: (Int) -> Void
@@ -27,12 +28,14 @@ struct AmountEntrySheet: View {
   init(
     title: String,
     subtitle: String? = nil,
+    headerIcon: CounterLucideIconName = .chartBar,
     actionTitle: String,
     initialText: String = "",
     onSubmit: @escaping (Int) -> Void
   ) {
     self.title = title
     self.subtitle = subtitle
+    self.headerIcon = headerIcon
     self.actionTitle = actionTitle
     self.initialText = initialText
     self.onSubmit = onSubmit
@@ -43,19 +46,9 @@ struct AmountEntrySheet: View {
     VStack(spacing: 0) {
       sheetHandle
 
-      VStack(spacing: SheetToken.headerSpacing) {
-        Text(title)
-          .counterTextStyle(.sheetTitle)
-          .multilineTextAlignment(.center)
-
-        if let subtitle {
-          Text(subtitle)
-            .counterTextStyle(.sheetSubtitle, color: .secondary)
-            .multilineTextAlignment(.center)
-        }
-      }
-      .padding(.horizontal, SheetToken.horizontal)
-      .padding(.top, SheetToken.contentTop)
+      sheetHeader
+        .padding(.horizontal, SheetToken.horizontal)
+        .padding(.top, SheetToken.contentTop)
 
       amountInput
         .padding(.horizontal, SheetToken.horizontal)
@@ -102,9 +95,27 @@ struct AmountEntrySheet: View {
         .keyboardType(.numberPad)
         .focused($isAmountFocused)
         .opacity(0.02)
+        .multilineTextAlignment(.leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: SheetToken.amountInputHeight)
         .accessibilityLabel("Amount")
     }
+  }
+
+  private var sheetHeader: some View {
+    VStack(alignment: .leading, spacing: SheetToken.headerSpacing) {
+      HStack(spacing: SheetToken.headerIconSpacing) {
+        CounterLucideIcon(icon: headerIcon, color: colors.textPrimary)
+        Text(title)
+          .counterTextStyle(.sheetTitle)
+      }
+
+      if let subtitle {
+        Text(subtitle)
+          .counterTextStyle(.sheetSubtitle, color: .secondary)
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
   }
 
   private var sheetHandle: some View {
@@ -126,9 +137,10 @@ struct AmountEntrySheet: View {
   Text("Preview")
     .sheet(isPresented: .constant(true)) {
       AmountEntrySheet(
-        title: "Custom Amount",
+        title: "Add amount",
         actionTitle: "Add"
       ) { _ in }
+      .environment(\.counterAccent, nil)
       .counterDesignSystemFromColorScheme()
     }
 }
@@ -137,10 +149,11 @@ struct AmountEntrySheet: View {
   Text("Preview")
     .sheet(isPresented: .constant(true)) {
       AmountEntrySheet(
-        title: "Edit Entry",
+        title: "Edit",
         actionTitle: "Save",
         initialText: "150"
       ) { _ in }
+      .environment(\.counterAccent, nil)
       .counterDesignSystemFromColorScheme()
     }
 }

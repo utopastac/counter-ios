@@ -3,6 +3,8 @@ import SwiftData
 
 @Model
 final class CustomCounter {
+  static let defaultButtonValues: [Int] = [1, 2, 5, 10, 20, 25, 50, 75, 100]
+
   var id: UUID
   var name: String
   var buttonValues: [Int]
@@ -26,7 +28,7 @@ final class CustomCounter {
   ) {
     self.id = UUID()
     self.name = name
-    self.buttonValues = buttonValues ?? [1, 2, 5, 10, 20, 50, 100]
+    self.buttonValues = buttonValues ?? Self.defaultButtonValues
     self.sliderMax = sliderMax
     self.createdAt = .now
     self.goal = goal

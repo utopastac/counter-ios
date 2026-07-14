@@ -55,10 +55,7 @@ struct CaloriePeriodEntryLogScreen: View {
       }
     }
     .sheet(item: $editingEntry) { context in
-      EditEntrySheet(
-        title: "Edit Entry",
-        initialValue: context.value
-      ) { newValue in
+      EditEntrySheet(initialValue: context.value) { newValue in
         updateEntry(id: context.id, value: newValue)
       }
     }
@@ -75,7 +72,7 @@ struct CaloriePeriodEntryLogScreen: View {
   }
 
   private func syncWidgetSnapshot() {
-    WidgetSnapshot.publish(added: periodTotal, burned: Int(healthKit.activeCalories))
+    WidgetSnapshotSync.publish(from: modelContext, burned: Int(healthKit.activeCalories))
   }
 }
 
@@ -165,10 +162,7 @@ struct CounterPeriodEntryLogScreen: View {
       }
     }
     .sheet(item: $editingEntry) { context in
-      EditEntrySheet(
-        title: "Edit Entry",
-        initialValue: context.value
-      ) { newValue in
+      EditEntrySheet(initialValue: context.value) { newValue in
         updateEntry(id: context.id, value: newValue)
       }
     }
@@ -259,17 +253,17 @@ struct TodayLogRow: View {
 }
 
 struct EditEntrySheet: View {
-  let title: String
   let initialValue: Int
   let onSave: (Int) -> Void
 
   var body: some View {
     AmountEntrySheet(
-      title: title,
+      title: "Edit",
       actionTitle: "Save",
       initialText: String(initialValue),
       onSubmit: onSave
     )
+    .environment(\.counterAccent, nil)
     .counterDesignSystemFromColorScheme()
   }
 }

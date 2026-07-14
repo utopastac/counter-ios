@@ -14,12 +14,15 @@ struct CounterTextStyleModifier: ViewModifier {
     case disabled
     case inverse
     case accent
+    case onInteractiveFill
   }
 
   func body(content: Content) -> some View {
     content
       .font(style.font)
       .tracking(style.tracking ?? 0)
+      .lineSpacing(style.lineSpacing)
+      .frame(minHeight: style.lineHeight, alignment: .center)
       .foregroundStyle(foregroundColor)
   }
 
@@ -39,6 +42,8 @@ struct CounterTextStyleModifier: ViewModifier {
       return colors.textInverse
     case .accent:
       return colors.accentPrimary
+    case .onInteractiveFill:
+      return colors.interactivePrimaryForeground
     }
   }
 }

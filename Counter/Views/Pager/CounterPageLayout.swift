@@ -1,13 +1,18 @@
 import SwiftUI
 
 struct CounterPageLayout<Footer: View, EntryLog: View>: View {
-  let title: String
+  @Environment(\.counterAccent) private var counterAccent
+  @Environment(\.colorScheme) private var colorScheme
+
   let heroValue: String
-  let heroCaption: String
-  let compactStat: String?
-  let goalProgress: GoalProgress?
+  let statRows: [CounterStatRow]
+  let ringProgress: GoalProgress
   @ViewBuilder var entryLog: () -> EntryLog
   @ViewBuilder var footer: () -> Footer
+
+  private var ringPalette: CounterPaletteSlot {
+    (counterAccent ?? .calories).palette
+  }
 
   var body: some View {
     GeometryReader { geometry in
@@ -18,71 +23,64 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
           Spacer()
             .frame(height: SpaceToken.pageTopInset)
 
-          VStack(alignment: .leading, spacing: SpaceToken.x1) {
-            Text(title)
-              .counterTextStyle(.heroTitle, color: .emphasis)
+          HStack(alignment: .center, spacing: SpaceToken.x4) {
+            HeroMainNumberText(value: heroValue)
+              .frame(maxWidth: .infinity, minHeight: FontSizeToken.x5xl, alignment: .leading)
+              .layoutPriority(1)
 
-            Text(heroCaption.uppercased())
-              .counterTextStyle(.sectionLabel, color: .secondary)
+            GoalProgressRing(
+              progress: ringProgress,
+              size: SizeToken.Ring.display,
+              lineWidth: SizeToken.Ring.displayStroke,
+              trackColor: ringPalette.progressRingTrack(for: colorScheme),
+              fillColor: ringPalette.foreground(for: colorScheme)
+            )
           }
 
-          Spacer()
-            .frame(height: SpaceToken.x5)
-
-          HStack(alignment: .center, spacing: SpaceToken.x5) {
-            Text(heroValue)
-              .counterTextStyle(.heroValue)
-              .minimumScaleFactor(0.45)
-              .lineLimit(1)
-              .contentTransition(.numericText())
-              .frame(maxWidth: .infinity, alignment: .leading)
-
-            if let goalProgress {
-              GoalProgressRing(
-                progress: goalProgress,
-                size: SizeToken.Ring.hero,
-                lineWidth: SizeToken.Ring.heroStroke
-              )
-            }
+          if !statRows.isEmpty {
+            CounterStatsTable(rows: statRows)
+              .padding(.top, SpaceToken.x5)
           }
 
-          if let compactStat {
-            Text(compactStat)
-              .counterTextStyle(.bodyTertiary, color: .tertiary)
-              .padding(.top, SpaceToken.x3)
-              .lineLimit(2)
-          }
+          Spacer(minLength: 0)
 
           entryLog()
-            .padding(.top, SpaceToken.x3)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .mask(BottomFadeMask())
+            .frame(maxWidth: .infinity, alignment: .bottomLeading)
 
           footer()
             .padding(.top, SpaceToken.x3)
             .padding(.bottom, SpaceToken.pageFooterBottom)
         }
-        .padding(.horizontal, SpaceToken.pageHorizontal)
+        .padding(.horizontal, SpaceToken.pageMargin)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
       }
     }
   }
 }
 
+private struct HeroMainNumberText: View {
+  let value: String
+
+  var body: some View {
+    Text(value)
+      .counterTextStyle(.mainNumber)
+      .minimumScaleFactor(0.6)
+      .lineLimit(1)
+      .fixedSize(horizontal: false, vertical: true)
+      .contentTransition(.numericText())
+  }
+}
+
 extension CounterPageLayout where EntryLog == EmptyView {
   init(
-    title: String,
     heroValue: String,
-    heroCaption: String,
-    compactStat: String?,
-    goalProgress: GoalProgress?,
+    statRows: [CounterStatRow],
+    ringProgress: GoalProgress,
     @ViewBuilder footer: @escaping () -> Footer
   ) {
-    self.title = title
     self.heroValue = heroValue
-    self.heroCaption = heroCaption
-    self.compactStat = compactStat
-    self.goalProgress = goalProgress
+    self.statRows = statRows
+    self.ringProgress = ringProgress
     self.entryLog = { EmptyView() }
     self.footer = footer
   }
@@ -101,7 +99,7 @@ struct PagerDotIndicator: View {
       VStack(spacing: SpaceToken.x2) {
         ForEach(labels.indices, id: \.self) { index in
           Capsule()
-            .fill(index == selectedIndex ? ComponentColor.pagerDotActive(colors) : ComponentColor.pagerDotInactive(colors))
+            .fill(index == selectedIndex ? colors.textPrimary : colors.textDisabled)
             .frame(width: index == selectedIndex ? 6 : 5, height: index == selectedIndex ? 18 : 5)
             .animation(.easeInOut(duration: MotionToken.pagerDotDuration), value: selectedIndex)
         }
@@ -110,20 +108,10 @@ struct PagerDotIndicator: View {
       .padding(.vertical, SpaceToken.x3 + 2)
       .background {
         Capsule()
-          .fill(colors.surfaceGlassFillSubtle)
-          .overlay {
-            Capsule()
-              .strokeBorder(colors.surfaceGlassStrokeStrong, lineWidth: 1)
-          }
+          .fill(colors.textPrimary.opacity(0.08))
       }
-      .shadow(
-        color: ShadowToken.subtle().color,
-        radius: ShadowToken.subtleRadius,
-        y: ShadowToken.subtleY
-      )
       .padding(.trailing, SpaceToken.x4)
     }
-    .padding(.bottom, SpaceToken.x6)
     .allowsHitTesting(false)
   }
 }

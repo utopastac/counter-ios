@@ -58,7 +58,7 @@ struct CustomAmountInput: View {
 
 #Preview {
   ZStack {
-    CounterPageBackground()
+    CounterPagerBackdrop(accents: [.calories], scrollProgress: 0)
     CustomAmountInput { _ in }
       .padding()
   }
