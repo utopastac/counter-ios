@@ -11,15 +11,13 @@ struct EntryLogAllEntriesControl: View {
 
   var body: some View {
     HStack(spacing: SpaceToken.x2) {
-      Spacer(minLength: 0)
-
       Text("All entries")
         .counterTextStyle(.sectionTitle)
 
       CounterLucideIcon(icon: .maximize2, color: colors.textPrimary)
     }
-    .padding(.bottom, SpaceToken.u2)
-    .frame(maxWidth: .infinity, alignment: .trailing)
+    .padding(.top, SpaceToken.u2)
+    .frame(maxWidth: .infinity, alignment: .center)
   }
 }
 

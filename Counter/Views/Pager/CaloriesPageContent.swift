@@ -86,6 +86,11 @@ struct CaloriesPageContent: View {
         ringProgress: ringProgress
       ) {
         VStack(alignment: .leading, spacing: 0) {
+          CompactEntryLogPreview(
+            items: previewItems,
+            emptyMessage: "No entries yet for this period."
+          )
+
           EntryLogHeroLink(
             isExpanded: $showsEntryLog,
             heroID: entryLogHeroID
@@ -94,11 +99,6 @@ struct CaloriesPageContent: View {
           } destination: {
             CaloriePeriodEntryLogScreen()
           }
-
-          CompactEntryLogPreview(
-            items: previewItems,
-            emptyMessage: "No entries yet for this period."
-          )
         }
       } footer: {
         CompactQuickAddGrid(

@@ -45,14 +45,14 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
               .padding(.top, CounterPageToken.heroToStatsSpacing)
           }
 
+          footer()
+            .padding(.top, CounterPageToken.statsToQuickActionsSpacing)
+
           Spacer(minLength: 0)
 
           entryLog()
             .frame(maxWidth: .infinity, alignment: .bottomLeading)
-
-          footer()
-            .padding(.top, SpaceToken.x3)
-            .padding(.bottom, SpaceToken.u1)
+            .padding(.bottom, SpaceToken.u3)
         }
         .padding(.horizontal, SpaceToken.pageMargin)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)

@@ -189,6 +189,8 @@ enum MotionToken {
 enum CounterPageToken {
   /// Overlap between the hero amount and the stats table (negative pulls the table up).
   static let heroToStatsSpacing: CGFloat = -SpaceToken.u1
+  /// Gap between the stats table and quick-add actions (3 grid units).
+  static let statsToQuickActionsSpacing: CGFloat = SpaceToken.u3
 }
 
 /// Counters list underlay reveal — card peeks on the trailing edge when open.

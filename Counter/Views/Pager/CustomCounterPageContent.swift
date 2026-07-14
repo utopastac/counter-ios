@@ -76,6 +76,11 @@ struct CustomCounterPageContent: View {
         ringProgress: ringProgress
       ) {
         VStack(alignment: .leading, spacing: 0) {
+          CompactEntryLogPreview(
+            items: previewItems,
+            emptyMessage: "No entries yet for this period."
+          )
+
           EntryLogHeroLink(
             isExpanded: $showsEntryLog,
             heroID: entryLogHeroID
@@ -84,11 +89,6 @@ struct CustomCounterPageContent: View {
           } destination: {
             CounterPeriodEntryLogScreen(counter: counter)
           }
-
-          CompactEntryLogPreview(
-            items: previewItems,
-            emptyMessage: "No entries yet for this period."
-          )
         }
       } footer: {
         CompactQuickAddGrid(
