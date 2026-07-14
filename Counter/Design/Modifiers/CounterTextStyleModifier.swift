@@ -16,6 +16,8 @@ struct CounterTextStyleModifier: ViewModifier {
     case inverse
     case accent
     case onInteractiveFill
+    case historyChartAxis
+    case danger
   }
 
   func body(content: Content) -> some View {
@@ -55,6 +57,10 @@ struct CounterTextStyleModifier: ViewModifier {
       return colors.accentPrimary
     case .onInteractiveFill:
       return colors.interactivePrimaryForeground
+    case .historyChartAxis:
+      return ComponentColor.historyChartAxisLabel(colors)
+    case .danger:
+      return colors.statusDanger
     }
   }
 }

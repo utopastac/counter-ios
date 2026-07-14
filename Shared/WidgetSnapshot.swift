@@ -33,6 +33,13 @@ enum WidgetSnapshot {
     reloadTimelines()
   }
 
+  static func clear() {
+    defaults?.removeObject(forKey: Keys.title)
+    defaults?.removeObject(forKey: Keys.heroValue)
+    defaults?.removeObject(forKey: Keys.updated)
+    reloadTimelines()
+  }
+
   static func reloadTimelines() {
     #if canImport(WidgetKit)
     WidgetCenter.shared.reloadAllTimelines()

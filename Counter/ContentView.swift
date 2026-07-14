@@ -3,6 +3,7 @@ import SwiftData
 
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
+  @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
   @State private var isBootstrapped = false
 
   var body: some View {
@@ -13,6 +14,7 @@ struct ContentView: View {
           .homeIndicatorAlwaysVisible()
       }
     }
+    .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
     .task {
       SampleDataSeeder.seedIfNeeded(in: modelContext)
       isBootstrapped = true

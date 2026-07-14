@@ -32,7 +32,7 @@ struct GlassButton: View {
       }
       .frame(maxWidth: .infinity)
       .frame(height: SizeToken.quickAddHeight)
-      .glassSurface(cornerRadius: RadiusToken.md)
+      .glassSurface(cornerRadius: RadiusToken.button)
       .foregroundStyle(colors.textPrimary)
     }
     .buttonStyle(.plain)

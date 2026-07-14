@@ -37,9 +37,7 @@ enum WidgetCounterLoader {
     counter: CustomCounter,
     context: ModelContext
   ) -> CounterWidgetSnapshot {
-    let counters = fetchCounters(in: context)
-    let paletteIndex = counters.firstIndex(where: { $0.id == counter.id })
-      .map { WidgetPalette.paletteIndex(forCustomCounterAt: $0) } ?? 0
+    let paletteIndex = counter.effectivePaletteIndex
     let total = CounterPeriodCalculator.total(from: counter.entries, for: counter)
     let progress = GoalProgressCalculator.progress(
       current: total,

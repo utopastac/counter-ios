@@ -4,6 +4,7 @@ import SwiftData
 struct CreateCounterView: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.dismiss) private var dismiss
+  @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
 
   var onCreated: ((CustomCounter) -> Void)?
 
@@ -84,7 +85,9 @@ struct CreateCounterView: View {
       .onChange(of: resetPeriod) { _, newPeriod in
         resetAnchorDay = defaultAnchor(for: newPeriod)
       }
+      .contentMargins(.horizontal, SheetToken.horizontal, for: .scrollContent)
     }
+    .counterSheetPresentation()
   }
 
   private var canCreate: Bool {
@@ -121,7 +124,8 @@ struct CreateCounterView: View {
       goal: parsedGoal,
       resetPeriod: resetPeriod,
       resetAnchorDay: resetPeriod == .daily ? 1 : resetAnchorDay,
-      goalDirection: goalDirection
+      goalDirection: goalDirection,
+      paletteIndex: counters.count % CustomCounter.paletteSlotCount
     )
     modelContext.insert(counter)
     onCreated?(counter)

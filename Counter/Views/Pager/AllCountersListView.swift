@@ -3,12 +3,14 @@ import SwiftData
 
 struct AllCountersListView: View {
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.semanticColors) private var colors
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
+
+  @State private var showAppSettings = false
 
   var embedded = false
   var scrollDisabled = false
   let onSelectPage: (String) -> Void
-  var onClose: (() -> Void)?
   var onAddCounter: (() -> Void)?
 
   var body: some View {
@@ -42,13 +44,9 @@ struct AllCountersListView: View {
         Text("Counters")
           .counterTextStyle(.pageTitle)
         Spacer()
-        Button {
-          close()
-        } label: {
-          CounterLucideIcon(icon: .chevronRight)
-            .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
+        CounterIconButton(icon: .cog) {
+          showAppSettings = true
         }
-        .buttonStyle(.plain)
       }
       .padding(.horizontal, SpaceToken.pageMargin)
       .padding(.top, SpaceToken.toolbarTop)
@@ -57,20 +55,27 @@ struct AllCountersListView: View {
       ScrollView {
         listCards
           .padding(.horizontal, SpaceToken.pageMargin)
-          .padding(.bottom, SpaceToken.componentPadding)
+          .padding(.bottom, SpaceToken.pageFooterBottom)
           .background {
             ScrollPanDisabler(isDisabled: scrollDisabled)
           }
       }
+      .frame(maxHeight: .infinity)
+      .safeAreaPadding(.bottom, SpaceToken.componentPadding)
+      .scrollClipDisabled()
       .scrollDisabled(scrollDisabled)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-    .background(Color.white)
+    .background(colors.surfacePrimary)
+    .sheet(isPresented: $showAppSettings) {
+      AppSettingsView()
+    }
+    .counterDesignSystemFromColorScheme()
   }
 
   private var listCards: some View {
     VStack(alignment: .leading, spacing: SpaceToken.u1) {
-      ForEach(Array(counters.enumerated()), id: \.element.id) { index, counter in
+      ForEach(counters) { counter in
         let total = CounterPeriodCalculator.total(from: counter.entries, for: counter)
         let ringProgress = GoalProgressCalculator.ringDisplay(
           current: total,
@@ -84,7 +89,7 @@ struct AllCountersListView: View {
         )
 
         CounterListCard(
-          accent: .forCustomCounter(at: index),
+          accent: .forCounter(counter),
           title: counter.name,
           value: cardValue(for: progress, total: total),
           caption: cardCaption(for: progress, counter: counter),
@@ -105,15 +110,7 @@ struct AllCountersListView: View {
   }
 
   private func cardCaption(for progress: GoalProgress?, counter: CustomCounter) -> String {
-    progress?.heroCaption.capitalized ?? counter.resetPeriod.periodCaption
-  }
-
-  private func close() {
-    if embedded {
-      onClose?()
-    } else {
-      dismiss()
-    }
+    progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption
   }
 }
 

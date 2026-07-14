@@ -9,6 +9,8 @@ enum SampleDataSeeder {
   @MainActor
   static func seedIfNeeded(in context: ModelContext) {
     CalorieMigration.migrateIfNeeded(in: context)
+    migratePaletteIndicesIfNeeded(in: context)
+    guard !UserDefaults.standard.bool(forKey: AppDataReset.suppressSampleSeedingKey) else { return }
     guard !hasAnyCounters(in: context) else { return }
 
     seedCaloriesCounter(in: context)
@@ -34,6 +36,7 @@ enum SampleDataSeeder {
       goalDirection: .countDown
     )
     counter.createdAt = .distantPast
+    counter.paletteIndex = 0
     context.insert(counter)
 
     let timestamps = sampleTimestamps(count: 5)
@@ -52,6 +55,7 @@ enum SampleDataSeeder {
       goalDirection: .countUp
     )
     counter.createdAt = .now.addingTimeInterval(-120)
+    counter.paletteIndex = 1
     context.insert(counter)
 
     let timestamps = sampleTimestamps(count: 7)
@@ -70,6 +74,7 @@ enum SampleDataSeeder {
       goalDirection: .countDown
     )
     counter.createdAt = .now.addingTimeInterval(-60)
+    counter.paletteIndex = 2
     context.insert(counter)
 
     let timestamps = sampleTimestamps(count: 5)
@@ -83,5 +88,24 @@ enum SampleDataSeeder {
     (0..<count).map { index in
       base.addingTimeInterval(TimeInterval(-index * 60))
     }
+  }
+
+  private static let paletteMigrationKey = "counterPaletteIndexMigrated"
+
+  @MainActor
+  private static func migratePaletteIndicesIfNeeded(in context: ModelContext) {
+    guard !UserDefaults.standard.bool(forKey: paletteMigrationKey) else { return }
+
+    var descriptor = FetchDescriptor<CustomCounter>(
+      sortBy: [SortDescriptor(\.createdAt)]
+    )
+    let counters = (try? context.fetch(descriptor)) ?? []
+
+    for (index, counter) in counters.enumerated() {
+      counter.paletteIndex = CustomCounter.normalizedPaletteIndex(index)
+    }
+
+    try? context.save()
+    UserDefaults.standard.set(true, forKey: paletteMigrationKey)
   }
 }

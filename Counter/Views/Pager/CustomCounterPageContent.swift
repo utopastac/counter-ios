@@ -3,7 +3,6 @@ import SwiftData
 
 struct CustomCounterPageContent: View {
   @Bindable var counter: CustomCounter
-  let paletteIndex: Int
 
   @Environment(\.modelContext) private var modelContext
 
@@ -73,14 +72,21 @@ struct CustomCounterPageContent: View {
         ringProgress: ringProgress
       ) {
         VStack(alignment: .leading, spacing: 0) {
-          CompactEntryLogPreview(
-            items: previewItems,
-            emptyMessage: "No entries yet for this period."
-          )
-
-          EntryLogAllEntriesButton {
+          Button {
             showsEntryLog = true
+          } label: {
+            VStack(alignment: .leading, spacing: 0) {
+              CompactEntryLogPreview(
+                items: previewItems,
+                emptyMessage: "No entries yet for this period."
+              )
+
+              EntryLogAllEntriesControl()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
           }
+          .buttonStyle(.noHighlight)
         }
       } footer: {
         CompactQuickAddGrid(
@@ -92,7 +98,7 @@ struct CustomCounterPageContent: View {
           showCustomAmount = true
         }
       }
-    .counterAccent(CounterAccent.forCustomCounter(at: paletteIndex))
+    .counterAccent(CounterAccent.forCounter(counter))
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addEntry(value)

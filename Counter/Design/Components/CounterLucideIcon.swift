@@ -9,6 +9,11 @@ enum CounterLucideIconName: String {
   case ellipsis = "lucide-ellipsis"
   case deleteBackward = "lucide-delete"
   case maximize2 = "lucide-maximize-2"
+  case arrowUpToLine = "lucide-arrow-up-to-line"
+  case calendar = "lucide-calendar"
+  case listRestart = "lucide-list-restart"
+  case chevronsUpDown = "lucide-chevrons-up-down"
+  case cog = "lucide-cog"
 }
 
 struct CounterLucideIcon: View {

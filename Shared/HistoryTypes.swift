@@ -22,6 +22,14 @@ enum HistoryPeriod: String, CaseIterable, Identifiable {
     }
   }
 
+  var segmentTitle: String {
+    switch self {
+    case .daily: "Day"
+    case .weekly: "Week"
+    case .monthly: "Month"
+    }
+  }
+
   var dayCount: Int {
     switch self {
     case .daily: 7

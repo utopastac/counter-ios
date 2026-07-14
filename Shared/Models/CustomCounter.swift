@@ -15,6 +15,7 @@ final class CustomCounter {
   var resetPeriodRaw: String = CounterResetPeriod.daily.rawValue
   var resetAnchorDay: Int = 1
   var goalDirectionRaw: String = GoalDirection.countUp.rawValue
+  var paletteIndex: Int = 0
   @Relationship(deleteRule: .cascade, inverse: \CounterEntry.counter)
   var entries: [CounterEntry]
 
@@ -25,7 +26,8 @@ final class CustomCounter {
     goal: Int? = nil,
     resetPeriod: CounterResetPeriod = .daily,
     resetAnchorDay: Int = 1,
-    goalDirection: GoalDirection = .countUp
+    goalDirection: GoalDirection = .countUp,
+    paletteIndex: Int = 0
   ) {
     self.id = UUID()
     self.name = name
@@ -36,7 +38,19 @@ final class CustomCounter {
     self.resetPeriodRaw = resetPeriod.rawValue
     self.resetAnchorDay = resetAnchorDay
     self.goalDirectionRaw = goalDirection.rawValue
+    self.paletteIndex = Self.normalizedPaletteIndex(paletteIndex)
     self.entries = []
+  }
+
+  var effectivePaletteIndex: Int {
+    Self.normalizedPaletteIndex(paletteIndex)
+  }
+
+  static let paletteSlotCount = 20
+
+  static func normalizedPaletteIndex(_ index: Int) -> Int {
+    let count = paletteSlotCount
+    return ((index % count) + count) % count
   }
 
   var goalDirection: GoalDirection {

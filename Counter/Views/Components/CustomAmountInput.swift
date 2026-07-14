@@ -35,7 +35,7 @@ struct CustomAmountInput: View {
             .font(.headline)
             .frame(width: 76)
             .padding(.vertical, 16)
-            .background(canAdd ? Color.white : Color.white.opacity(0.25), in: Capsule())
+            .background(canAdd ? Color.white : Color.white.opacity(0.25), in: RadiusToken.continuousButton)
             .foregroundStyle(canAdd ? Color.black : Color.white.opacity(0.45))
         }
         .buttonStyle(.plain)

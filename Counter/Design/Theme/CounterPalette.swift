@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Per-counter theme derived from the shared 10-slot palette.
+/// Per-counter theme derived from the shared 20-slot palette.
 struct CounterAccent: Equatable {
   let paletteIndex: Int
 
@@ -12,6 +12,10 @@ struct CounterAccent: Equatable {
 
   static func forCustomCounter(at index: Int) -> CounterAccent {
     CounterAccent(paletteIndex: index % CounterPaletteTokens.slotCount)
+  }
+
+  static func forCounter(_ counter: CustomCounter) -> CounterAccent {
+    CounterAccent(paletteIndex: counter.effectivePaletteIndex)
   }
 
   /// Legacy accessor — prefer `palette`.

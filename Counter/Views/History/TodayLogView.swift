@@ -7,9 +7,8 @@ struct CounterTodayLogView: View {
   @Bindable var counter: CustomCounter
 
   var body: some View {
-    NavigationStack {
-      CounterPeriodEntryLogScreen(counter: counter)
-    }
+    CounterPeriodEntryLogScreen(counter: counter)
+      .counterSheetPresentation()
   }
 }
 
@@ -18,6 +17,7 @@ struct CounterPeriodEntryLogScreen: View {
 
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
+  @Environment(\.semanticColors) private var colors
 
   @State private var editingEntry: EntryEditContext?
 
@@ -33,20 +33,20 @@ struct CounterPeriodEntryLogScreen: View {
   }
 
   var body: some View {
-    CounterPeriodEntryLogContent(
-      entries: periodEntries,
-      onDelete: deleteEntry,
-      onEdit: { editingEntry = EntryEditContext(id: $0, value: $1) }
-    )
-    .navigationTitle(EntryLogTitles.full(for: counter.resetPeriod))
-    .navigationBarTitleDisplayMode(.inline)
-    .toolbar {
-      ToolbarItem(placement: .confirmationAction) {
-        Button("Done") {
-          dismiss()
-        }
-      }
+    VStack(spacing: 0) {
+      CounterSheetHeader(
+        title: "\(counter.name) entries",
+        onDone: { dismiss() }
+      )
+
+      CounterPeriodEntryLogContent(
+        entries: periodEntries,
+        onDelete: deleteEntry,
+        onEdit: { editingEntry = EntryEditContext(id: $0, value: $1) }
+      )
     }
+    .background(colors.surfaceSheet)
+    .counterDesignSystemFromColorScheme()
     .sheet(item: $editingEntry) { context in
       EditEntrySheet(initialValue: context.value) { newValue in
         updateEntry(id: context.id, value: newValue)
@@ -90,16 +90,24 @@ struct CounterPeriodEntryLogContent: View {
         )
       } else {
         List {
-          ForEach(entries, id: \.id) { entry in
+          ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
             Button {
               onEdit(entry.id, entry.value)
             } label: {
-              TodayLogRow(
-                timestamp: entry.timestamp,
-                valueText: "\(entry.value)"
-              )
+              VStack(spacing: 0) {
+                if index > 0 {
+                  EntryLogRowDivider()
+                }
+
+                EntryLogRow(valueText: "\(entry.value)", timestamp: entry.timestamp)
+                  .frame(height: SheetToken.tableRowHeight)
+                  .frame(maxWidth: .infinity, alignment: .leading)
+                  .padding(.horizontal, SheetToken.horizontal)
+              }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.noHighlight)
+            .listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
             .transition(rowTransition)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
               Button(role: .destructive) {
@@ -110,6 +118,7 @@ struct CounterPeriodEntryLogContent: View {
             }
           }
         }
+        .listStyle(.plain)
         .animation(insertAnimation, value: entries.map(\.id))
       }
     }
@@ -132,22 +141,6 @@ enum EntryLogTitles {
     case .daily: "Today"
     case .weekly: "This Week"
     case .monthly: "This Month"
-    }
-  }
-}
-
-struct TodayLogRow: View {
-  let timestamp: Date
-  let valueText: String
-
-  var body: some View {
-    HStack {
-      Text(valueText)
-        .fontWeight(.semibold)
-        .monospacedDigit()
-      Spacer()
-      Text(timestamp, format: .dateTime.hour().minute())
-        .foregroundStyle(.secondary)
     }
   }
 }

@@ -71,7 +71,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
         }
         .padding(.horizontal, SpaceToken.pageMargin)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
-        .disabled(counterPagerIsDragging)
+        .allowsHitTesting(!counterPagerIsDragging)
       }
     }
   }
@@ -87,25 +87,17 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
   }
 }
 
-/// Wraps pager page content in a navigation stack with a fully transparent chrome.
+/// Wraps pager page content without navigation chrome so system overlays stay visible.
 struct CounterPagerPageRoot<Content: View>: View {
   @ViewBuilder var content: () -> Content
 
   var body: some View {
-    NavigationStack {
-      ZStack {
-        Color.clear
-        content()
-      }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    .toolbar(.hidden, for: .navigationBar)
-    .toolbarBackground(.hidden, for: .navigationBar)
-    .background {
+    ZStack {
       Color.clear
-        .ignoresSafeArea()
+      content()
     }
-    .containerBackground(.clear, for: .navigation)
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .homeIndicatorAlwaysVisible()
   }
 }
 

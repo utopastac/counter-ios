@@ -39,11 +39,11 @@ struct CounterWidgetEntityQuery: EntityQuery {
     )
     let counters = try context.fetch(descriptor)
 
-    return counters.enumerated().map { index, counter in
+    return counters.map { counter in
       CounterWidgetEntity(
         id: counter.id.uuidString,
         title: counter.name,
-        paletteIndex: WidgetPalette.paletteIndex(forCustomCounterAt: index)
+        paletteIndex: counter.effectivePaletteIndex
       )
     }
   }

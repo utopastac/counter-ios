@@ -31,7 +31,7 @@ struct CounterActionButton: View {
       }
       .frame(maxWidth: .infinity)
       .frame(height: SizeToken.quickAddHeight)
-      .background(colors.interactivePrimaryFill, in: RoundedRectangle(cornerRadius: RadiusToken.sm, style: .continuous))
+      .background(colors.interactivePrimaryFill, in: RadiusToken.continuousButton)
     }
     .buttonStyle(.plain)
     .tint(colors.interactivePrimaryForeground)
@@ -72,7 +72,7 @@ struct NewCounterButton: View {
       .padding(.horizontal, SpaceToken.u2)
       .frame(maxWidth: .infinity)
       .frame(height: SizeToken.quickAddHeight)
-      .background(ComponentColor.listActionButtonFill(colors), in: RadiusToken.continuousListCard)
+      .background(ComponentColor.listActionButtonFill(colors), in: RadiusToken.continuousButton)
     }
     .buttonStyle(.plain)
   }

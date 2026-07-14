@@ -95,6 +95,12 @@ extension View {
   func counterDesignSystemFromColorScheme() -> some View {
     modifier(CounterDesignSystemProvider())
   }
+
+  /// Syncs semantic tokens with the in-app dark mode preference.
+  /// Use on sheets that must update immediately when toggling appearance.
+  func counterDesignSystemFromAppearancePreference() -> some View {
+    modifier(CounterAppearancePreferenceProvider())
+  }
 }
 
 private struct CounterDesignSystemProvider: ViewModifier {
@@ -107,5 +113,22 @@ private struct CounterDesignSystemProvider: ViewModifier {
         \.designSystem,
         CounterDesignSystem(colorScheme: colorScheme, accent: counterAccent)
       )
+  }
+}
+
+private struct CounterAppearancePreferenceProvider: ViewModifier {
+  @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
+
+  private var colorScheme: ColorScheme {
+    isDarkModeEnabled ? .dark : .light
+  }
+
+  func body(content: Content) -> some View {
+    content
+      .environment(
+        \.designSystem,
+        CounterDesignSystem(colorScheme: colorScheme, accent: nil)
+      )
+      .preferredColorScheme(colorScheme)
   }
 }

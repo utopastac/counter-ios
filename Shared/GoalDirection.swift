@@ -59,12 +59,7 @@ struct GoalProgress {
   }
 
   var heroValue: String {
-    switch direction {
-    case .countUp:
-      return "\(current)"
-    case .countDown:
-      return "\(delta)"
-    }
+    "\(current)"
   }
 
   var heroCaption: String {

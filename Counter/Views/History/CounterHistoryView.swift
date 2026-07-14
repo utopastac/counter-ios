@@ -4,51 +4,47 @@ struct CounterHistoryView: View {
   let counter: CustomCounter
 
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.semanticColors) private var colors
   @State private var period: HistoryPeriod = .daily
 
   private var chartData: [DailyValue] {
     HistoryAggregator.groupedCounterTotals(from: counter.entries, period: period)
   }
 
+  private var listItems: [HistoryListItem] {
+    chartData.reversed().map { item in
+      HistoryListItem(date: item.date, value: Int(item.value))
+    }
+  }
+
   var body: some View {
-    NavigationStack {
+    VStack(spacing: 0) {
+      CounterSheetHeader(
+        title: "\(counter.name) history",
+        onDone: { dismiss() }
+      )
+
       ScrollView {
-        VStack(spacing: 20) {
-          PeriodPicker(selection: $period)
+        VStack(alignment: .leading, spacing: HistoryToken.sectionSpacing) {
+          HistoryPeriodPicker(selection: $period)
 
-          VStack(alignment: .leading, spacing: 8) {
-            Text(counter.name)
-              .font(.headline)
-            HistoryChartView(data: chartData, unit: counter.name, period: period)
-          }
+          HistoryBarChart(data: chartData, period: period)
 
-          if !chartData.isEmpty {
-            List {
-              ForEach(chartData.reversed()) { item in
-                HStack {
-                  Text(item.date, format: .dateTime.weekday(.abbreviated).month().day())
-                  Spacer()
-                  Text("\(Int(item.value))")
-                    .fontWeight(.semibold)
-                }
-              }
-            }
-            .frame(minHeight: 200)
+          if !listItems.isEmpty {
+            HistoryList(items: listItems)
           }
         }
-        .padding()
-      }
-      .navigationTitle("\(counter.name) History")
-      .navigationBarTitleDisplayMode(.inline)
-      .toolbar {
-        ToolbarItem(placement: .confirmationAction) {
-          Button("Done") { dismiss() }
-        }
+        .padding(.horizontal, SheetToken.horizontal)
+        .padding(.top, SpaceToken.u1)
+        .padding(.bottom, SpaceToken.u4)
       }
     }
+    .background(colors.surfaceSheet)
+    .counterDesignSystemFromColorScheme()
+    .counterSheetPresentation()
   }
 }
 
 #Preview {
-  CounterHistoryView(counter: CustomCounter(name: "Protein"))
+  CounterHistoryView(counter: CustomCounter(name: "Calories"))
 }

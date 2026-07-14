@@ -71,4 +71,9 @@ enum EntryActions {
     guard quickAddSessions[scope]?.entryID == entryID else { return }
     quickAddSessions.removeValue(forKey: scope)
   }
+
+  @MainActor
+  static func clearAllQuickAddSessions() {
+    quickAddSessions.removeAll()
+  }
 }

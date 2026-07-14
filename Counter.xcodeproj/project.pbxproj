@@ -7,12 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AP10000010000000000000001 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000001 /* AppSettingsView.swift */; };
+		ADR10000010000000000000001 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
+		ADR10000010000000000000002 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
+		AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
 		A10000010000000000000001 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* CounterApp.swift */; };
 		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* ContentView.swift */; };
 		A10000010000000000000009 /* QuickAddButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* QuickAddButtonsView.swift */; };
 		A10000010000000000000010 /* PeriodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* PeriodPicker.swift */; };
 		A10000010000000000000011 /* StatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* StatCard.swift */; };
-		A10000010000000000000012 /* HistoryChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012 /* HistoryChartView.swift */; };
+		DS10000010000000000000023 /* HistoryPeriodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000023 /* HistoryPeriodPicker.swift */; };
+		DS10000010000000000000024 /* HistoryBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000024 /* HistoryBarChart.swift */; };
+		DS10000010000000000000026 /* CounterSheetHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000026 /* CounterSheetHeader.swift */; };
+		DS10000010000000000000027 /* CounterToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000027 /* CounterToggle.swift */; };
+		DS10000010000000000000025 /* HistoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000025 /* HistoryList.swift */; };
 		A10000010000000000000014 /* CounterHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* CounterHistoryView.swift */; };
 		A10000010000000000000016 /* ButtonSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* ButtonSettingsView.swift */; };
 		A10000010000000000000017 /* CustomCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* CustomCountersListView.swift */; };
@@ -62,6 +70,7 @@
 		DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000007 /* DesignSystemEnvironment.swift */; };
 		DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000008 /* CounterTextStyleModifier.swift */; };
 		DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000009 /* GlassSurfaceModifier.swift */; };
+		DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */; };
 		DS10000010000000000000080 /* HomeIndicatorVisibilityModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */; };
 		DS10000010000000000000010 /* CounterPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000010 /* CounterPageBackground.swift */; };
 		DS10000010000000000000011 /* GlassButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000011 /* GlassButton.swift */; };
@@ -191,12 +200,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AP20000010000000000000001 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
+		ADR20000010000000000000001 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
+		AP20000010000000000000002 /* AppAppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreference.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A20000010000000000000009 /* QuickAddButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddButtonsView.swift; sourceTree = "<group>"; };
 		A20000010000000000000010 /* PeriodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodPicker.swift; sourceTree = "<group>"; };
 		A20000010000000000000011 /* StatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCard.swift; sourceTree = "<group>"; };
-		A20000010000000000000012 /* HistoryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartView.swift; sourceTree = "<group>"; };
+		DS20000010000000000000023 /* HistoryPeriodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPeriodPicker.swift; sourceTree = "<group>"; };
+		DS20000010000000000000024 /* HistoryBarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryBarChart.swift; sourceTree = "<group>"; };
+		DS20000010000000000000026 /* CounterSheetHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetHeader.swift; sourceTree = "<group>"; };
+		DS20000010000000000000027 /* CounterToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterToggle.swift; sourceTree = "<group>"; };
+		DS20000010000000000000025 /* HistoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryList.swift; sourceTree = "<group>"; };
 		A20000010000000000000014 /* CounterHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHistoryView.swift; sourceTree = "<group>"; };
 		A20000010000000000000016 /* ButtonSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSettingsView.swift; sourceTree = "<group>"; };
 		A20000010000000000000017 /* CustomCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCountersListView.swift; sourceTree = "<group>"; };
@@ -256,6 +272,7 @@
 		DS20000010000000000000007 /* DesignSystemEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemEnvironment.swift; sourceTree = "<group>"; };
 		DS20000010000000000000008 /* CounterTextStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextStyleModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000009 /* GlassSurfaceModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassSurfaceModifier.swift; sourceTree = "<group>"; };
+		DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetPresentationModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeIndicatorVisibilityModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000010 /* CounterPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageBackground.swift; sourceTree = "<group>"; };
 		DS20000010000000000000011 /* GlassButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassButton.swift; sourceTree = "<group>"; };
@@ -397,6 +414,7 @@
 			children = (
 				DS20000010000000000000008 /* CounterTextStyleModifier.swift */,
 				DS20000010000000000000009 /* GlassSurfaceModifier.swift */,
+				DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */,
 				DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */,
 			);
 			path = Modifiers;
@@ -416,6 +434,11 @@
 				DS20000010000000000000020 /* CounterActionButton.swift */,
 				DS20000010000000000000021 /* CounterListCard.swift */,
 				DS20000010000000000000022 /* CounterLucideIcon.swift */,
+				DS20000010000000000000023 /* HistoryPeriodPicker.swift */,
+				DS20000010000000000000024 /* HistoryBarChart.swift */,
+				DS20000010000000000000026 /* CounterSheetHeader.swift */,
+				DS20000010000000000000027 /* CounterToggle.swift */,
+				DS20000010000000000000025 /* HistoryList.swift */,
 				DS20000010000000000000015 /* CounterListRow.swift */,
 				T20000010000000000000003 /* NoHighlightButtonStyle.swift */,
 			);
@@ -437,12 +460,21 @@
 			isa = PBXGroup;
 			children = (
 				G50000010000000000000001 /* Pager */,
+				AP50000010000000000000001 /* Settings */,
 				A50000010000000000000007 /* Calorie */,
 				A50000010000000000000008 /* CustomCounters */,
 				A50000010000000000000009 /* History */,
 				A50000010000000000000010 /* Components */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		AP50000010000000000000001 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				AP20000010000000000000001 /* AppSettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		A50000010000000000000007 /* Calorie */ = {
@@ -466,7 +498,6 @@
 		A50000010000000000000009 /* History */ = {
 			isa = PBXGroup;
 			children = (
-				A20000010000000000000012 /* HistoryChartView.swift */,
 				A20000010000000000000014 /* CounterHistoryView.swift */,
 				J20000010000000000000001 /* TodayLogView.swift */,
 			);
@@ -524,6 +555,8 @@
 				C20000010000000000000012 /* PreviewModel.swift */,
 				SD20000010000000000000001 /* SampleDataSeeder.swift */,
 				CM20000010000000000000001 /* CalorieMigration.swift */,
+				AP20000010000000000000002 /* AppAppearancePreference.swift */,
+				ADR20000010000000000000001 /* AppDataReset.swift */,
 				C50000010000000000000002 /* Models */,
 			);
 			path = Shared;
@@ -754,6 +787,8 @@
 				P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */,
 				P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */,
 				M10000010000000000000001 /* AllCountersListView.swift in Sources */,
+				AP10000010000000000000001 /* AppSettingsView.swift in Sources */,
+				AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
 				G10000010000000000000002 /* CounterPageLayout.swift in Sources */,
 				DS10000010000000000000001 /* BaseColorTokens.swift in Sources */,
@@ -765,6 +800,7 @@
 				DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */,
 				DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */,
 				DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */,
+				DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */,
 				DS10000010000000000000080 /* HomeIndicatorVisibilityModifier.swift in Sources */,
 				DS10000010000000000000010 /* CounterPageBackground.swift in Sources */,
 				DS10000010000000000000011 /* GlassButton.swift in Sources */,
@@ -791,7 +827,11 @@
 				A10000010000000000000009 /* QuickAddButtonsView.swift in Sources */,
 				A10000010000000000000010 /* PeriodPicker.swift in Sources */,
 				A10000010000000000000011 /* StatCard.swift in Sources */,
-				A10000010000000000000012 /* HistoryChartView.swift in Sources */,
+				DS10000010000000000000023 /* HistoryPeriodPicker.swift in Sources */,
+				DS10000010000000000000024 /* HistoryBarChart.swift in Sources */,
+				DS10000010000000000000026 /* CounterSheetHeader.swift in Sources */,
+				DS10000010000000000000027 /* CounterToggle.swift in Sources */,
+				DS10000010000000000000025 /* HistoryList.swift in Sources */,
 				A10000010000000000000014 /* CounterHistoryView.swift in Sources */,
 				A10000010000000000000016 /* ButtonSettingsView.swift in Sources */,
 				A10000010000000000000017 /* CustomCountersListView.swift in Sources */,
@@ -812,6 +852,7 @@
 				L10000010000000000000001 /* GoalDirection.swift in Sources */,
 				Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */,
 				SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */,
+				ADR10000010000000000000001 /* AppDataReset.swift in Sources */,
 				CM10000010000000000000001 /* CalorieMigration.swift in Sources */,
 				C10000010000000000000012 /* PreviewModel.swift in Sources */,
 			);
@@ -841,6 +882,7 @@
 				L10000010000000000000002 /* GoalDirection.swift in Sources */,
 				Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */,
 				SD10000010000000000000002 /* SampleDataSeeder.swift in Sources */,
+				ADR10000010000000000000002 /* AppDataReset.swift in Sources */,
 				CM10000010000000000000002 /* CalorieMigration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

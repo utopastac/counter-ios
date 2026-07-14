@@ -55,6 +55,9 @@ enum RadiusToken {
   static let xl: CGFloat = 18
   static let xxl: CGFloat = 28
 
+  /// Standard corner radius for interactive buttons (8pt).
+  static let button: CGFloat = xs
+
   /// Counter list cards and matching list actions (12pt).
   static let listCard: CGFloat = sm
 
@@ -69,6 +72,10 @@ enum RadiusToken {
 
   static var continuousXs: RoundedRectangle {
     RoundedRectangle(cornerRadius: xs, style: .continuous)
+  }
+
+  static var continuousButton: RoundedRectangle {
+    RoundedRectangle(cornerRadius: button, style: .continuous)
   }
 
   static var continuousSm: RoundedRectangle {
@@ -96,6 +103,7 @@ enum BorderToken {
   static let toolbar: CGFloat = 2
   static let statsRow: CGFloat = 0.5
   static let statsRowStrong: CGFloat = 3
+  static let colourSwatch: CGFloat = 2
 }
 
 enum EntryLogPreviewLimit {
@@ -111,6 +119,9 @@ enum SizeToken {
   static let primaryButtonHeight: CGFloat = 56
   static let gridColumnCount: Int = 5
   static let gridSpacing: CGFloat = SpaceToken.x2
+  static let toggleWidth: CGFloat = 51
+  static let toggleHeight: CGFloat = 31
+  static let toggleThumbPadding: CGFloat = 2
 
   enum Ring {
     static let display: CGFloat = GridToken.units(8)
@@ -236,10 +247,26 @@ enum RevealToken {
   static let axisDecisionDistance: CGFloat = GridToken.unit
 }
 
+enum HistoryToken {
+  static let chartHeight: CGFloat = GridToken.units(28)
+  static let chartPadding: CGFloat = SpaceToken.u2
+  static let chartCornerRadius: CGFloat = RadiusToken.lg
+  static let chartBarCornerRadius: CGFloat = RadiusToken.xs
+  static let periodPickerHeight: CGFloat = GridToken.units(5)
+  static let periodPickerInset: CGFloat = SpaceToken.x1
+  static let sectionSpacing: CGFloat = SpaceToken.u3
+  static let listRowHeight: CGFloat = 49
+}
+
 enum SheetToken {
-  static let horizontal: CGFloat = SpaceToken.pageMargin
-  /// Top corner radius for half-height sheet presentations (20pt).
-  static let cornerRadius: CGFloat = SpaceToken.x5
+  /// Gap between the top of the screen and modal sheets (5 grid units / 40pt).
+  static let topOffset: CGFloat = GridToken.units(5)
+  /// Entry log row height in modal sheet presentations (6 grid units / 48pt).
+  static let tableRowHeight: CGFloat = GridToken.units(6)
+  /// Horizontal inset for modal sheet content (2 grid units / 16pt).
+  static let horizontal: CGFloat = SpaceToken.u2
+  /// Top corner radius for modal sheet presentations (16pt).
+  static let cornerRadius: CGFloat = RadiusToken.lg
   static let handleWidth: CGFloat = 36
   static let handleHeight: CGFloat = 5
   static let contentTop: CGFloat = SpaceToken.componentPadding
@@ -252,7 +279,7 @@ enum SheetToken {
   static let keypadTopSpacing: CGFloat = SpaceToken.u2
   static let keypadKeySpacing: CGFloat = SpaceToken.u1
   static let keypadKeyHeight: CGFloat = GridToken.units(6)
-  static let keypadKeyCornerRadius: CGFloat = RadiusToken.sm
+  static let keypadKeyCornerRadius: CGFloat = RadiusToken.button
   static let keypadBottom: CGFloat = SpaceToken.u2
 
   /// Rounds only the top corners so the sheet bottom can follow the device edge.

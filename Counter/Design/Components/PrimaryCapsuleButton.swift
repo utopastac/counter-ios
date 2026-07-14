@@ -15,7 +15,7 @@ struct PrimaryCapsuleButton: View {
         .frame(height: SizeToken.primaryButtonHeight)
         .background(
           ComponentColor.sheetPrimaryButtonFill(colors, isEnabled: isEnabled),
-          in: Capsule()
+          in: RadiusToken.continuousButton
         )
         .foregroundStyle(ComponentColor.sheetPrimaryButtonForeground(colors, isEnabled: isEnabled))
     }

@@ -70,6 +70,46 @@ enum WidgetPalette {
     WidgetPaletteSlot(
       lightBackground: Color(red: 0.93, green: 0.88, blue: 0.78),
       darkBackground: Color(red: 0.24, green: 0.20, blue: 0.16)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.99, green: 0.99, blue: 1.0),
+      darkBackground: Color(red: 0.22, green: 0.22, blue: 0.24)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.90, green: 0.91, blue: 0.93),
+      darkBackground: Color(red: 0.26, green: 0.27, blue: 0.29)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.86, green: 0.84, blue: 0.80),
+      darkBackground: Color(red: 0.22, green: 0.20, blue: 0.18)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.62, green: 0.88, blue: 0.84),
+      darkBackground: Color(red: 0.10, green: 0.24, blue: 0.22)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.72, green: 0.74, blue: 0.96),
+      darkBackground: Color(red: 0.16, green: 0.14, blue: 0.32)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.88, green: 0.72, blue: 0.88),
+      darkBackground: Color(red: 0.26, green: 0.14, blue: 0.26)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.92, green: 0.68, blue: 0.82),
+      darkBackground: Color(red: 0.28, green: 0.12, blue: 0.22)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.82, green: 0.86, blue: 0.62),
+      darkBackground: Color(red: 0.18, green: 0.22, blue: 0.10)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 1.0, green: 0.82, blue: 0.68),
+      darkBackground: Color(red: 0.32, green: 0.20, blue: 0.14)
+    ),
+    WidgetPaletteSlot(
+      lightBackground: Color(red: 0.68, green: 0.92, blue: 0.96),
+      darkBackground: Color(red: 0.10, green: 0.22, blue: 0.26)
     )
   ]
 

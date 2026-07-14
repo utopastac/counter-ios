@@ -4,6 +4,7 @@ import SwiftData
 struct CustomCounterDetailView: View {
   @Bindable var counter: CustomCounter
 
+  @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
   @State private var showButtonSettings = false
   @State private var showHistory = false
@@ -49,18 +50,33 @@ struct CustomCounterDetailView: View {
       CounterSettingsView(
         title: "\(counter.name) Settings",
         values: counter.buttonValues,
-        counter: counter
-      ) { save in
-        if let name = save.name {
-          counter.name = name
+        counter: counter,
+        onSave: { save in
+          if let name = save.name {
+            counter.name = name
+          }
+          counter.buttonValues = save.buttonValues
+          counter.goal = save.goal
+          counter.resetPeriod = save.resetPeriod
+          counter.resetAnchorDay = save.resetAnchorDay
+          counter.goalDirection = save.goalDirection
+          if let paletteIndex = save.paletteIndex {
+            counter.paletteIndex = paletteIndex
+          }
+          WidgetSnapshot.reloadTimelines()
+        },
+        onDelete: {
+          modelContext.delete(counter)
+          WidgetSnapshot.reloadTimelines()
+          DispatchQueue.main.async {
+            dismiss()
+          }
+        },
+        onPaletteChange: { index in
+          counter.paletteIndex = index
+          WidgetSnapshotSync.publish(counter: counter, in: modelContext)
         }
-        counter.buttonValues = save.buttonValues
-        counter.goal = save.goal
-        counter.resetPeriod = save.resetPeriod
-        counter.resetAnchorDay = save.resetAnchorDay
-        counter.goalDirection = save.goalDirection
-        WidgetSnapshot.reloadTimelines()
-      }
+      )
     }
     .sheet(isPresented: $showHistory) {
       CounterHistoryView(counter: counter)

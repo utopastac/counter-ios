@@ -23,7 +23,7 @@ struct QuickAddButtonsView: View {
             .padding(.vertical, 16)
             .background(Color.accentColor.opacity(0.15))
             .foregroundStyle(.primary)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RadiusToken.continuousButton)
         }
         .buttonStyle(.plain)
       }

@@ -34,6 +34,9 @@ enum BaseColor {
     static let darkBackdrop = Color(red: 0.07, green: 0.07, blue: 0.08)
     static let lightBackdrop = Color(red: 0.96, green: 0.96, blue: 0.97)
     static let keypadKey = Color(red: 0.90, green: 0.90, blue: 0.90)
+    static let mutedSurface = Color(red: 0.94, green: 0.94, blue: 0.94)
+    static let darkMutedSurface = Color(red: 0.14, green: 0.14, blue: 0.15)
+    static let toggleTrack = Color(red: 224 / 255, green: 224 / 255, blue: 224 / 255)
   }
 
   /// White with fixed alpha steps — mirrors `color.base.white-alpha.*` in tokens.json.
@@ -44,6 +47,7 @@ enum BaseColor {
     static let a750 = Color.white.opacity(0.75)
     static let a650 = Color.white.opacity(0.65)
     static let a550 = Color.white.opacity(0.55)
+    static let a500 = Color.white.opacity(0.50)
     static let a450 = Color.white.opacity(0.45)
     static let a350 = Color.white.opacity(0.35)
     static let a250 = Color.white.opacity(0.25)
@@ -54,6 +58,7 @@ enum BaseColor {
   }
 
   enum BlackAlpha {
+    static let a500 = Color.black.opacity(0.50)
     static let a280 = Color.black.opacity(0.28)
     static let a180 = Color.black.opacity(0.18)
     static let a140 = Color.black.opacity(0.14)

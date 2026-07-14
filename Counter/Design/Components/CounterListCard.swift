@@ -58,16 +58,16 @@ struct CounterListCard: View {
     CounterListCard(
       accent: .forCustomCounter(at: 0),
       title: "Calories",
-      value: "2424",
-      caption: "Remaining",
+      value: "1800",
+      caption: "420 remaining",
       ringProgress: GoalProgress(current: 1800, goal: 2200, direction: .countDown)
     ) {}
 
     CounterListCard(
       accent: .forCustomCounter(at: 0),
       title: "Protein",
-      value: "80",
-      caption: "To go",
+      value: "70",
+      caption: "80 to go",
       ringProgress: GoalProgress(current: 70, goal: 150, direction: .countUp)
     ) {}
   }

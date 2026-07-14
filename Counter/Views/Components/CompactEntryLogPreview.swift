@@ -18,6 +18,7 @@ struct EntryLogAllEntriesControl: View {
     }
     .padding(.top, SpaceToken.u2)
     .frame(maxWidth: .infinity, alignment: .center)
+    .contentShape(Rectangle())
   }
 }
 
@@ -40,6 +41,39 @@ struct EntryLogPreviewTableDivider: View {
       .fill(colors.textPrimary)
       .frame(height: BorderToken.toolbar)
   }
+}
+
+struct EntryLogRowDivider: View {
+  @Environment(\.semanticColors) private var colors
+
+  var body: some View {
+    Rectangle()
+      .fill(colors.textPrimary)
+      .frame(height: BorderToken.statsRow)
+  }
+}
+
+struct EntryLogRow: View {
+  let valueText: String
+  let timestamp: Date
+
+  var body: some View {
+    HStack(alignment: .center, spacing: SpaceToken.x3) {
+      Text(valueText)
+        .counterTextStyle(.rowHeavy)
+
+      Spacer(minLength: 0)
+
+      Text(timestamp, format: Self.timestampFormat)
+        .counterTextStyle(.meta, color: .secondary)
+    }
+  }
+
+  static let timestampFormat = Date.FormatStyle()
+    .month(.abbreviated)
+    .day(.twoDigits)
+    .hour(.defaultDigits(amPM: .abbreviated))
+    .minute(.twoDigits)
 }
 
 struct CompactEntryLogPreview: View {
@@ -70,19 +104,19 @@ struct CompactEntryLogPreview: View {
           .counterTextStyle(.meta, color: .secondary)
           .frame(maxWidth: .infinity, alignment: .leading)
           .frame(height: SizeToken.tableRowHeight)
+          .contentShape(Rectangle())
           .transition(.opacity)
       } else {
         ForEach(Array(displayItems.enumerated()), id: \.element.id) { index, item in
           VStack(spacing: 0) {
             if index > 0 {
-              Rectangle()
-                .fill(colors.textPrimary)
-                .frame(height: BorderToken.statsRow)
+              EntryLogRowDivider()
             }
 
-            EntryLogPreviewRow(item: item)
+            EntryLogRow(valueText: item.valueText, timestamp: item.timestamp)
               .frame(height: SizeToken.tableRowHeight)
               .frame(maxWidth: .infinity, alignment: .leading)
+              .contentShape(Rectangle())
           }
           .transition(rowTransition)
         }
@@ -96,28 +130,6 @@ struct CompactEntryLogPreview: View {
     .animation(insertAnimation, value: displayItems)
     .clipped()
   }
-}
-
-private struct EntryLogPreviewRow: View {
-  let item: EntryLogPreviewItem
-
-  var body: some View {
-    HStack(alignment: .center, spacing: SpaceToken.x3) {
-      Text(item.valueText)
-        .counterTextStyle(.rowHeavy)
-
-      Spacer(minLength: 0)
-
-      Text(item.timestamp, format: EntryLogPreviewRow.timestampFormat)
-        .counterTextStyle(.meta, color: .secondary)
-    }
-  }
-
-  private static let timestampFormat = Date.FormatStyle()
-    .month(.abbreviated)
-    .day(.twoDigits)
-    .hour(.defaultDigits(amPM: .abbreviated))
-    .minute(.twoDigits)
 }
 
 struct BottomFadeMask: View {

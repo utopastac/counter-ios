@@ -8,6 +8,7 @@ struct SemanticColors: Equatable {
   var textEmphasis: Color
   var textDisabled: Color
   var textInverse: Color
+  var textHistoryChartAxis: Color
 
   var surfaceBackdrop: Color
   var surfaceCounterBackground: Color
@@ -20,6 +21,8 @@ struct SemanticColors: Equatable {
 
   var borderSubtle: Color
   var borderStrong: Color
+  var borderSettingsDivider: Color
+  var borderColourSwatch: Color
 
   var accentPrimary: Color
   var accentOnAccent: Color
@@ -29,9 +32,13 @@ struct SemanticColors: Equatable {
   var interactiveDisabledFill: Color
   var interactiveDisabledForeground: Color
 
+  var toggleTrack: Color
+  var toggleThumb: Color
+
   var surfaceSheet: Color
   var surfaceKeypad: Color
   var surfaceKeypadKey: Color
+  var surfaceHistoryMuted: Color
 
   var progressTrack: Color
   var progressFill: Color
@@ -54,9 +61,10 @@ struct SemanticColors: Equatable {
     textEmphasis: BaseColor.WhiteAlpha.a950,
     textDisabled: BaseColor.WhiteAlpha.a450,
     textInverse: BaseColor.black,
+    textHistoryChartAxis: BaseColor.WhiteAlpha.a500,
     surfaceBackdrop: BaseColor.Neutral.darkBackdrop,
     surfaceCounterBackground: BaseColor.Neutral.darkBackdrop,
-    surfacePrimary: BaseColor.WhiteAlpha.a100,
+    surfacePrimary: BaseColor.Neutral.darkBackdrop,
     surfaceGlassFill: BaseColor.WhiteAlpha.a140,
     surfaceGlassFillSubtle: BaseColor.WhiteAlpha.a100,
     surfaceGlassStroke: BaseColor.WhiteAlpha.a120,
@@ -64,15 +72,20 @@ struct SemanticColors: Equatable {
     surfaceTint: BaseColor.WhiteAlpha.a100,
     borderSubtle: BaseColor.WhiteAlpha.a100,
     borderStrong: BaseColor.WhiteAlpha.a180,
+    borderSettingsDivider: BaseColor.WhiteAlpha.a180,
+    borderColourSwatch: BaseColor.WhiteAlpha.a250,
     accentPrimary: BaseColor.Brand.blue500,
     accentOnAccent: BaseColor.white,
     interactivePrimaryFill: BaseColor.white,
     interactivePrimaryForeground: BaseColor.black,
     interactiveDisabledFill: BaseColor.WhiteAlpha.a250,
     interactiveDisabledForeground: BaseColor.WhiteAlpha.a450,
+    toggleTrack: BaseColor.Neutral.toggleTrack,
+    toggleThumb: BaseColor.white,
     surfaceSheet: BaseColor.Neutral.darkBackdrop,
     surfaceKeypad: BaseColor.WhiteAlpha.a100,
     surfaceKeypadKey: BaseColor.WhiteAlpha.a140,
+    surfaceHistoryMuted: BaseColor.Neutral.darkMutedSurface,
     progressTrack: BaseColor.WhiteAlpha.a140,
     progressFill: BaseColor.Brand.blue500,
     progressOverGoal: BaseColor.Orange.orange500.opacity(0.95),
@@ -93,6 +106,7 @@ struct SemanticColors: Equatable {
     textEmphasis: BaseColor.black,
     textDisabled: BaseColor.BlackAlpha.a100,
     textInverse: BaseColor.white,
+    textHistoryChartAxis: BaseColor.BlackAlpha.a500,
     surfaceBackdrop: BaseColor.Neutral.lightBackdrop,
     surfaceCounterBackground: BaseColor.Neutral.lightBackdrop,
     surfacePrimary: BaseColor.white,
@@ -103,15 +117,20 @@ struct SemanticColors: Equatable {
     surfaceTint: BaseColor.BlackAlpha.a040,
     borderSubtle: BaseColor.BlackAlpha.a080,
     borderStrong: BaseColor.BlackAlpha.a140,
+    borderSettingsDivider: BaseColor.BlackAlpha.a140,
+    borderColourSwatch: BaseColor.Neutral.keypadKey,
     accentPrimary: BaseColor.Brand.blue500,
     accentOnAccent: BaseColor.white,
     interactivePrimaryFill: BaseColor.black,
     interactivePrimaryForeground: BaseColor.white,
     interactiveDisabledFill: BaseColor.BlackAlpha.a060,
     interactiveDisabledForeground: BaseColor.BlackAlpha.a100,
+    toggleTrack: BaseColor.Neutral.toggleTrack,
+    toggleThumb: BaseColor.white,
     surfaceSheet: BaseColor.white,
     surfaceKeypad: BaseColor.white,
     surfaceKeypadKey: BaseColor.Neutral.keypadKey,
+    surfaceHistoryMuted: BaseColor.Neutral.mutedSurface,
     progressTrack: BaseColor.BlackAlpha.a080,
     progressFill: BaseColor.Brand.blue500,
     progressOverGoal: BaseColor.Orange.orange500,
@@ -149,8 +168,11 @@ struct SemanticColors: Equatable {
     copy.textEmphasis = foreground
     copy.textDisabled = foreground.opacity(0.35)
     copy.textInverse = palette.buttonForeground(for: colorScheme)
+    copy.textHistoryChartAxis = foreground.opacity(0.5)
     copy.borderSubtle = foreground.opacity(0.14)
     copy.borderStrong = foreground.opacity(0.22)
+    copy.borderSettingsDivider = foreground.opacity(0.22)
+    copy.borderColourSwatch = foreground.opacity(colorScheme == .dark ? 0.28 : 0.18)
     copy.interactivePrimaryFill = foreground
     copy.interactivePrimaryForeground = background
     copy.interactiveDisabledFill = foreground.opacity(0.18)
@@ -161,6 +183,7 @@ struct SemanticColors: Equatable {
     copy.surfaceGlassFill = foreground.opacity(0.08)
     copy.surfaceGlassFillSubtle = foreground.opacity(0.05)
     copy.surfaceGlassStroke = foreground.opacity(0.12)
+    copy.surfaceHistoryMuted = foreground.opacity(0.08)
     copy.accentPrimary = foreground
     return copy
   }
@@ -178,6 +201,25 @@ enum ComponentColor {
 
   static func listActionButtonFill(_ colors: SemanticColors) -> Color {
     colors.borderSubtle
+  }
+
+  static func settingsDividerFill(_ colors: SemanticColors) -> Color {
+    colors.borderSettingsDivider
+  }
+
+  static func colourSwatchBorderDefault(_ colors: SemanticColors) -> Color {
+    colors.borderColourSwatch
+  }
+
+  static func colourSwatchBorderSelected(_ colors: SemanticColors) -> Color {
+    colors.textPrimary
+  }
+
+  static func colourSwatchFill(
+    _ palette: CounterPaletteSlot,
+    colorScheme: ColorScheme
+  ) -> Color {
+    palette.background(for: colorScheme)
   }
 
   static func pagerDotActive(_ colors: SemanticColors) -> Color {
@@ -205,11 +247,19 @@ enum ComponentColor {
   }
 
   static func sheetPrimaryButtonFill(_ colors: SemanticColors, isEnabled: Bool) -> Color {
-    isEnabled ? BaseColor.black : colors.interactiveDisabledFill
+    isEnabled ? colors.interactivePrimaryFill : colors.interactiveDisabledFill
   }
 
   static func sheetPrimaryButtonForeground(_ colors: SemanticColors, isEnabled: Bool) -> Color {
-    isEnabled ? BaseColor.white : colors.interactiveDisabledForeground
+    isEnabled ? colors.interactivePrimaryForeground : colors.interactiveDisabledForeground
+  }
+
+  static func toggleTrackFill(_ colors: SemanticColors) -> Color {
+    colors.toggleTrack
+  }
+
+  static func toggleThumbFill(_ colors: SemanticColors) -> Color {
+    colors.toggleThumb
   }
 
   static func progressRingTrack(_ colors: SemanticColors) -> Color {
@@ -222,5 +272,29 @@ enum ComponentColor {
 
   static func progressRingOverfillOutline(_ colors: SemanticColors) -> Color {
     colors.progressRingOverfillOutline
+  }
+
+  static func historyChartBackground(_ colors: SemanticColors) -> Color {
+    colors.surfaceHistoryMuted
+  }
+
+  static func historyChartBarFill(_ colors: SemanticColors) -> Color {
+    colors.textPrimary
+  }
+
+  static func historyChartGridLine(_ colors: SemanticColors) -> Color {
+    colors.borderSubtle
+  }
+
+  static func historySegmentTrack(_ colors: SemanticColors) -> Color {
+    colors.surfaceHistoryMuted
+  }
+
+  static func historySegmentActiveFill(_ colors: SemanticColors) -> Color {
+    colors.interactivePrimaryFill
+  }
+
+  static func historyChartAxisLabel(_ colors: SemanticColors) -> Color {
+    colors.textHistoryChartAxis
   }
 }

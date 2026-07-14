@@ -3,7 +3,7 @@ import SwiftUI
 enum WidgetTheme {
   static let buttonHeight: CGFloat = 34
   static let buttonSpacing: CGFloat = 8
-  static let buttonCornerRadius: CGFloat = 10
+  static let buttonCornerRadius: CGFloat = 8
 }
 
 struct WidgetProgressRing: View {

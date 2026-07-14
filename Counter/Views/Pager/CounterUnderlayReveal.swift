@@ -9,6 +9,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   @ViewBuilder var card: () -> Card
 
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.semanticColors) private var colors
 
   @State private var dragStartOffset: CGFloat = 0
   @State private var isDraggingReveal = false
@@ -28,7 +29,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       let progress = RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
 
       ZStack(alignment: .topLeading) {
-        Color.white
+        colors.surfacePrimary
           .frame(width: width, height: height)
 
         list()
@@ -259,7 +260,7 @@ private struct ListRevealParallax: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .scaleEffect(scale, anchor: .leading)
+      .scaleEffect(x: scale, y: 1, anchor: .leading)
       .opacity(opacity)
       .blur(radius: blur)
       .offset(x: -maxParallax * (1 - progress))

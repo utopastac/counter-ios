@@ -28,17 +28,14 @@ struct CounterPagerView: View {
   }
 
   private var pageAccents: [CounterAccent] {
-    counters.enumerated().map { CounterAccent.forCustomCounter(at: $0.offset) }
+    counters.map { CounterAccent.forCounter($0) }
   }
 
   private var activeAccent: CounterAccent {
-    guard
-      let counter = activeCounter,
-      let index = counters.firstIndex(where: { $0.id == counter.id })
-    else {
+    guard let counter = activeCounter else {
       return CounterAccent.forCustomCounter(at: 0)
     }
-    return .forCustomCounter(at: index)
+    return CounterAccent.forCounter(counter)
   }
 
   private var activePageTitle: String {
@@ -72,7 +69,6 @@ struct CounterPagerView: View {
           embedded: true,
           scrollDisabled: locksRevealScroll || !isRevealSettledOpen,
           onSelectPage: selectPageFromList,
-          onClose: collapseCounterList,
           onAddCounter: { showAddCounter = true }
         )
       } card: {
@@ -90,8 +86,8 @@ struct CounterPagerView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background {
-      Color.white
-        .ignoresSafeArea()
+      colors.surfacePrimary
+        .ignoresSafeArea(edges: [.top, .horizontal])
     }
     .sheet(isPresented: $showButtonSettings) {
       buttonSettingsSheet
@@ -140,8 +136,8 @@ struct CounterPagerView: View {
   private func verticalPager(height: CGFloat) -> some View {
     ScrollView(.vertical) {
       VStack(spacing: 0) {
-        ForEach(Array(counters.enumerated()), id: \.element.id) { index, counter in
-          CustomCounterPageContent(counter: counter, paletteIndex: index)
+        ForEach(counters) { counter in
+          CustomCounterPageContent(counter: counter)
             .frame(height: height)
             .background(Color.clear)
             .id(counter.id.uuidString)
@@ -160,6 +156,7 @@ struct CounterPagerView: View {
     .scrollIndicators(.hidden)
     .scrollDisabled(locksRevealScroll || isRevealActive)
     .scrollClipDisabled(!isRevealActive)
+    .homeIndicatorAlwaysVisible()
     .onScrollGeometryChange(for: CGFloat.self) { geometry in
       geometry.contentOffset.y + geometry.contentInsets.top
     } action: { _, offset in
@@ -244,7 +241,7 @@ struct CounterPagerView: View {
         .padding(.horizontal, SpaceToken.u1)
     }
     .background(Color.clear)
-    .disabled(isPagerDragging)
+    .allowsHitTesting(!isPagerDragging)
   }
 
   @ViewBuilder
@@ -253,18 +250,30 @@ struct CounterPagerView: View {
       CounterSettingsView(
         title: "\(counter.name) Settings",
         values: counter.buttonValues,
-        counter: counter
-      ) { save in
-        if let name = save.name {
-          counter.name = name
+        counter: counter,
+        onSave: { save in
+          if let name = save.name {
+            counter.name = name
+          }
+          counter.buttonValues = save.buttonValues
+          counter.goal = save.goal
+          counter.resetPeriod = save.resetPeriod
+          counter.resetAnchorDay = save.resetAnchorDay
+          counter.goalDirection = save.goalDirection
+          if let paletteIndex = save.paletteIndex {
+            counter.paletteIndex = paletteIndex
+          }
+          WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+        },
+        onDelete: {
+          modelContext.delete(counter)
+          WidgetSnapshot.reloadTimelines()
+        },
+        onPaletteChange: { index in
+          counter.paletteIndex = index
+          WidgetSnapshotSync.publish(counter: counter, in: modelContext)
         }
-        counter.buttonValues = save.buttonValues
-        counter.goal = save.goal
-        counter.resetPeriod = save.resetPeriod
-        counter.resetAnchorDay = save.resetAnchorDay
-        counter.goalDirection = save.goalDirection
-        WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-      }
+      )
     }
   }
 }

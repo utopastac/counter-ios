@@ -10,6 +10,7 @@ enum FontSizeToken {
   static let lg: CGFloat = 18
   static let xl: CGFloat = 20
   static let xxl: CGFloat = 24
+  static let x3xl: CGFloat = 32
   static let xxxl: CGFloat = 40
   static let x4xl: CGFloat = 56
   static let x5xl: CGFloat = 80
@@ -100,6 +101,14 @@ enum TypeStyle {
     monospacedDigits: false
   )
 
+  static let x3xlBold = TypeStyleDefinition(
+    size: FontSizeToken.x3xl,
+    weight: FontWeightToken.bold,
+    lineHeight: FontSizeToken.x3xl,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
   static let lgSemibold = TypeStyleDefinition(
     size: FontSizeToken.lg,
     weight: FontWeightToken.semibold,
@@ -127,6 +136,22 @@ enum TypeStyle {
   static let mdMedium = TypeStyleDefinition(
     size: FontSizeToken.md,
     weight: FontWeightToken.medium,
+    lineHeight: FontSizeToken.md,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
+  static let mdSemibold = TypeStyleDefinition(
+    size: FontSizeToken.md,
+    weight: FontWeightToken.semibold,
+    lineHeight: FontSizeToken.md,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
+  static let mdRegular = TypeStyleDefinition(
+    size: FontSizeToken.md,
+    weight: FontWeightToken.regular,
     lineHeight: FontSizeToken.md,
     trackingPercent: FontTrackingToken.tight2,
     monospacedDigits: false
@@ -206,6 +231,13 @@ enum CounterTextStyle: CaseIterable {
   case buttonCompact
   case meta
 
+  // History screen
+  case historyTitle
+  case historyListDate
+  case historyListValue
+  case historyChartAxis
+  case historySegment
+
   // Legacy aliases — mapped to the new ramp.
   case heroTitle
   case heroValue
@@ -224,6 +256,11 @@ enum CounterTextStyle: CaseIterable {
   case sheetSubtitle
   case sheetAmount
   case sheetKeypadDigit
+  case settingsSheetTitle
+  case settingsSectionHeader
+  case settingsFieldValue
+  case settingsRowLabel
+  case settingsRowValue
 
   var definition: TypeStyleDefinition {
     switch self {
@@ -237,7 +274,7 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.lgSemibold
     case .listCardCaption:
       return TypeStyle.smRegular
-    case .pageTitle, .heroTitle, .sheetTitle:
+    case .pageTitle, .heroTitle, .sheetTitle, .settingsSheetTitle:
       return TypeStyle.xxlMedium
     case .sectionTitle, .sectionLabel:
       return TypeStyle.lgSemibold
@@ -251,6 +288,16 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.smSemibold
     case .meta, .caption:
       return TypeStyle.smRegular
+    case .historyTitle:
+      return TypeStyle.x3xlBold
+    case .historyListDate:
+      return TypeStyle.lgRegular
+    case .historyListValue:
+      return TypeStyle.xxlSemibold
+    case .historyChartAxis:
+      return TypeStyle.xsRegular
+    case .historySegment:
+      return TypeStyle.mdMedium
     case .caption2:
       return TypeStyle.xsRegular
     case .numericRing:
@@ -259,6 +306,14 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.x4xlBoldMono
     case .sheetKeypadDigit:
       return TypeStyle.xxlSemibold
+    case .settingsSectionHeader:
+      return TypeStyle.lgSemibold
+    case .settingsFieldValue:
+      return TypeStyle.xxxlSemibold
+    case .settingsRowLabel:
+      return TypeStyle.mdSemibold
+    case .settingsRowValue:
+      return TypeStyle.mdRegular
     }
   }
 
