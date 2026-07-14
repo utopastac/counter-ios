@@ -35,12 +35,21 @@ struct EntryLogPreviewTableDivider: View {
 
 struct CompactEntryLogPreview: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   let items: [EntryLogPreviewItem]
   let emptyMessage: String
 
   private var displayItems: [EntryLogPreviewItem] {
     Array(items.prefix(EntryLogPreviewLimit.count))
+  }
+
+  private var insertAnimation: Animation {
+    MotionToken.entryInsert(reduceMotion: reduceMotion)
+  }
+
+  private var rowTransition: AnyTransition {
+    MotionToken.entryRowTransition(reduceMotion: reduceMotion)
   }
 
   var body: some View {
@@ -52,17 +61,21 @@ struct CompactEntryLogPreview: View {
           .counterTextStyle(.meta, color: .secondary)
           .frame(maxWidth: .infinity, alignment: .leading)
           .frame(height: SizeToken.tableRowHeight)
+          .transition(.opacity)
       } else {
         ForEach(Array(displayItems.enumerated()), id: \.element.id) { index, item in
-          if index > 0 {
-            Rectangle()
-              .fill(colors.textPrimary)
-              .frame(height: BorderToken.statsRow)
-          }
+          VStack(spacing: 0) {
+            if index > 0 {
+              Rectangle()
+                .fill(colors.textPrimary)
+                .frame(height: BorderToken.statsRow)
+            }
 
-          EntryLogPreviewRow(item: item)
-            .frame(height: SizeToken.tableRowHeight)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            EntryLogPreviewRow(item: item)
+              .frame(height: SizeToken.tableRowHeight)
+              .frame(maxWidth: .infinity, alignment: .leading)
+          }
+          .transition(rowTransition)
         }
 
         Rectangle()
@@ -71,6 +84,8 @@ struct CompactEntryLogPreview: View {
       }
     }
     .frame(maxWidth: .infinity, alignment: .bottomLeading)
+    .animation(insertAnimation, value: displayItems)
+    .clipped()
   }
 }
 

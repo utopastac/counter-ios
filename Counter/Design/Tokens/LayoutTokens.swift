@@ -162,6 +162,27 @@ enum MotionToken {
   static func settle(reduceMotion: Bool) -> Animation {
     reduceMotion ? reduceMotionSettle : revealSettle
   }
+
+  static let entryInsertDuration: Double = 0.32
+  static let entryInsertBounce: Double = 0.1
+
+  static var entryInsert: Animation {
+    .smooth(duration: entryInsertDuration, extraBounce: entryInsertBounce)
+  }
+
+  static func entryInsert(reduceMotion: Bool) -> Animation {
+    reduceMotion ? reduceMotionSettle : entryInsert
+  }
+
+  static func entryRowTransition(reduceMotion: Bool) -> AnyTransition {
+    if reduceMotion {
+      return .opacity
+    }
+    return .asymmetric(
+      insertion: .move(edge: .top).combined(with: .opacity),
+      removal: .opacity
+    )
+  }
 }
 
 /// Counter pager page layout spacing.

@@ -77,9 +77,19 @@ struct CaloriePeriodEntryLogScreen: View {
 }
 
 struct CaloriePeriodEntryLogContent: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
   let entries: [CalorieEntry]
   let onDelete: (UUID) -> Void
   let onEdit: (UUID, Int) -> Void
+
+  private var insertAnimation: Animation {
+    MotionToken.entryInsert(reduceMotion: reduceMotion)
+  }
+
+  private var rowTransition: AnyTransition {
+    MotionToken.entryRowTransition(reduceMotion: reduceMotion)
+  }
 
   var body: some View {
     Group {
@@ -101,6 +111,7 @@ struct CaloriePeriodEntryLogContent: View {
               )
             }
             .buttonStyle(.plain)
+            .transition(rowTransition)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
               Button(role: .destructive) {
                 onDelete(entry.id)
@@ -110,6 +121,7 @@ struct CaloriePeriodEntryLogContent: View {
             }
           }
         }
+        .animation(insertAnimation, value: entries.map(\.id))
       }
     }
   }
@@ -178,9 +190,19 @@ struct CounterPeriodEntryLogScreen: View {
 }
 
 struct CounterPeriodEntryLogContent: View {
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
   let entries: [CounterEntry]
   let onDelete: (UUID) -> Void
   let onEdit: (UUID, Int) -> Void
+
+  private var insertAnimation: Animation {
+    MotionToken.entryInsert(reduceMotion: reduceMotion)
+  }
+
+  private var rowTransition: AnyTransition {
+    MotionToken.entryRowTransition(reduceMotion: reduceMotion)
+  }
 
   var body: some View {
     Group {
@@ -202,6 +224,7 @@ struct CounterPeriodEntryLogContent: View {
               )
             }
             .buttonStyle(.plain)
+            .transition(rowTransition)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
               Button(role: .destructive) {
                 onDelete(entry.id)
@@ -211,6 +234,7 @@ struct CounterPeriodEntryLogContent: View {
             }
           }
         }
+        .animation(insertAnimation, value: entries.map(\.id))
       }
     }
   }
