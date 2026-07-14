@@ -15,7 +15,6 @@ struct CounterPagerView: View {
   @State private var showAddCounter = false
   @State private var isCounterListRevealed = false
   @State private var cardOffset: CGFloat = 0
-  @State private var locksVerticalScroll = false
   @State private var containerWidth: CGFloat = 0
 
   enum PageID: String {
@@ -57,8 +56,7 @@ struct CounterPagerView: View {
     GeometryReader { geometry in
       CounterUnderlayReveal(
         cardOffset: $cardOffset,
-        isRevealed: $isCounterListRevealed,
-        locksVerticalScroll: $locksVerticalScroll
+        isRevealed: $isCounterListRevealed
       ) {
         AllCountersListView(
           embedded: true,
@@ -123,7 +121,7 @@ struct CounterPagerView: View {
   @ViewBuilder
   private func verticalPager(height: CGFloat) -> some View {
     ScrollView(.vertical) {
-      LazyVStack(spacing: 0) {
+      VStack(spacing: 0) {
         CaloriesPageContent()
           .frame(height: height)
           .id(PageID.calories.rawValue)
@@ -139,11 +137,9 @@ struct CounterPagerView: View {
     .scrollContentBackground(.hidden)
     .background(Color.clear)
     .scrollTargetBehavior(.paging)
-    .scrollPosition(id: $selectedPageID)
+    .scrollPosition(id: $selectedPageID, anchor: .top)
     .scrollIndicators(.hidden)
-    .scrollDisabled(locksVerticalScroll)
-    .animation(.easeInOut(duration: 0.25), value: selectedPageID)
-    .animation(.easeInOut(duration: 0.25), value: counters.count)
+    .scrollClipDisabled()
   }
 
   private func openCounterList() {
@@ -156,8 +152,11 @@ struct CounterPagerView: View {
   }
 
   private func selectPageFromList(_ pageID: String) {
-    locksVerticalScroll = false
-    selectedPageID = pageID
+    if pageID != selectedPageID {
+      withAnimation(.easeInOut(duration: 0.25)) {
+        selectedPageID = pageID
+      }
+    }
     collapseCounterList()
   }
 

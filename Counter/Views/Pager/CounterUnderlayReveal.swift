@@ -4,7 +4,6 @@ import SwiftUI
 struct CounterUnderlayReveal<List: View, Card: View>: View {
   @Binding var cardOffset: CGFloat
   @Binding var isRevealed: Bool
-  @Binding var locksVerticalScroll: Bool
   @ViewBuilder var list: () -> List
   @ViewBuilder var card: () -> Card
 
@@ -53,10 +52,9 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
             )
           )
           .offset(x: inset)
+          .simultaneousGesture(revealGesture(maxOffset: maxOffset))
       }
       .frame(width: width, height: height, alignment: .topLeading)
-      .contentShape(Rectangle())
-      .simultaneousGesture(revealGesture(maxOffset: maxOffset))
     }
   }
 
@@ -79,7 +77,6 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           guard abs(horizontal) > vertical * 1.2, abs(horizontal) > GridToken.unit else { return }
           isDraggingReveal = true
           dragStartOffset = cardOffset
-          locksVerticalScroll = true
         }
 
         guard isDraggingReveal else { return }
@@ -93,7 +90,6 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       .onEnded { value in
         let wasDragging = isDraggingReveal
         isDraggingReveal = false
-        locksVerticalScroll = false
 
         guard wasDragging else { return }
 
