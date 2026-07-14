@@ -26,14 +26,6 @@ struct CounterPagerView: View {
     [PageID.calories.rawValue] + counters.map(\.id.uuidString)
   }
 
-  private var pageLabels: [String] {
-    ["Calories"] + counters.map(\.name)
-  }
-
-  private var selectedIndex: Int {
-    pageIDs.firstIndex(of: selectedPageID ?? PageID.calories.rawValue) ?? 0
-  }
-
   private var isCaloriesPage: Bool {
     (selectedPageID ?? PageID.calories.rawValue) == PageID.calories.rawValue
   }
@@ -89,7 +81,7 @@ struct CounterPagerView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background {
-      colors.surfaceBackdrop
+      Color.white
         .ignoresSafeArea()
     }
     .sheet(isPresented: $showButtonSettings) {
@@ -122,11 +114,6 @@ struct CounterPagerView: View {
         verticalPager(height: geometry.size.height)
 
         pagerToolbar
-
-        VStack {
-          Spacer()
-          PagerDotIndicator(labels: pageLabels, selectedIndex: selectedIndex)
-        }
       }
     }
     .counterAccent(activeAccent)

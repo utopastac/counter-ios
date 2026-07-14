@@ -27,6 +27,9 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       let progress = RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
 
       ZStack(alignment: .topLeading) {
+        Color.white
+          .frame(width: width, height: height)
+
         list()
           .frame(width: listWidth, height: height, alignment: .topLeading)
           .modifier(
@@ -40,8 +43,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           .allowsHitTesting(progress > 0.12)
 
         card()
-          .padding(.horizontal, inset)
-          .frame(width: width, height: height, alignment: .topLeading)
+          .frame(width: cardWidth, height: height, alignment: .topLeading)
           .modifier(
             CardRevealTransform(
               maxOffset: maxOffset,
@@ -50,9 +52,11 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
               cornerRadius: RadiusToken.scrollContainer
             )
           )
-          .simultaneousGesture(revealGesture(maxOffset: maxOffset))
+          .offset(x: inset)
       }
       .frame(width: width, height: height, alignment: .topLeading)
+      .contentShape(Rectangle())
+      .simultaneousGesture(revealGesture(maxOffset: maxOffset))
     }
   }
 
@@ -155,15 +159,17 @@ private struct CardRevealTransform: ViewModifier {
   }
 
   func body(content: Content) -> some View {
+    let shadow = ShadowToken.reveal(progress: progress)
+
     content
-      .scaleEffect(scale, anchor: .topTrailing)
-      .offset(x: cardOffset)
-      .compositingGroup()
       .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
       .overlay {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
           .strokeBorder(ComponentColor.revealCardStroke(colors, progress: progress), lineWidth: 1)
       }
+      .shadow(color: shadow.color, radius: shadow.radius, x: shadow.x, y: shadow.y)
+      .scaleEffect(scale, anchor: .topTrailing)
+      .offset(x: cardOffset)
   }
 }
 
@@ -174,7 +180,6 @@ private struct ListRevealParallax: ViewModifier {
   let reduceMotion: Bool
 
   private let hiddenScale: CGFloat = 0.94
-  private let hiddenOpacity: Double = 0.74
   private let hiddenBlur: CGFloat = 7
 
   private var progress: CGFloat {
@@ -187,8 +192,7 @@ private struct ListRevealParallax: ViewModifier {
   }
 
   private var opacity: Double {
-    guard !reduceMotion else { return 1 }
-    return hiddenOpacity + Double(progress) * (1 - hiddenOpacity)
+    Double(progress)
   }
 
   private var blur: CGFloat {

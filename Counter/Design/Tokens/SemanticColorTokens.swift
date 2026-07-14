@@ -189,7 +189,7 @@ enum ComponentColor {
   }
 
   static func revealCardShadow(_ colors: SemanticColors, progress: CGFloat) -> Color {
-    BaseColor.BlackAlpha.a280.opacity(progress)
+    Color.black.opacity(0.15 * min(max(progress, 0), 1))
   }
 
   static func primaryButtonFill(_ colors: SemanticColors, isEnabled: Bool) -> Color {

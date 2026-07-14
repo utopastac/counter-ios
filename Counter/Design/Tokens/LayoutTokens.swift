@@ -134,11 +134,12 @@ enum ShadowToken {
   }
 
   static func reveal(progress: CGFloat) -> (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
-    (
-      BaseColor.BlackAlpha.a280.opacity(progress),
-      28 * progress,
-      -12 * progress,
-      6 * progress
+    let amount = min(max(progress, 0), 1)
+    return (
+      Color.black.opacity(0.15 * amount),
+      20 * amount,
+      -4 * amount,
+      4 * amount
     )
   }
 }
@@ -176,7 +177,7 @@ enum RevealToken {
   }
 
   static func listWidth(for screenWidth: CGFloat) -> CGFloat {
-    max(0, screenWidth - cardPeekWidth - listGap)
+    max(0, screenWidth - cardPeekWidth - listGap - SpaceToken.scrollContainerInset)
   }
 
   static func cardContentWidth(forScreenWidth screenWidth: CGFloat) -> CGFloat {

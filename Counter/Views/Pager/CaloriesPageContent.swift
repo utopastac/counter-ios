@@ -113,7 +113,7 @@ struct CaloriesPageContent: View {
       }
     }
     .counterAccent(CounterAccent.calories)
-    .toolbarBackground(.hidden, for: .navigationBar)
+    .toolbar(.hidden, for: .navigationBar)
     .background(Color.clear)
     .containerBackground(.clear, for: .navigation)
     .sheet(isPresented: $showCustomAmount) {

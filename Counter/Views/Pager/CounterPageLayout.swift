@@ -25,7 +25,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
 
           HStack(alignment: .center, spacing: SpaceToken.x4) {
             HeroMainNumberText(value: heroValue)
-              .frame(maxWidth: .infinity, minHeight: FontSizeToken.x5xl, alignment: .leading)
+              .frame(maxWidth: .infinity, alignment: .leading)
               .layoutPriority(1)
 
             GoalProgressRing(
@@ -36,10 +36,11 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
               fillColor: ringPalette.foreground(for: colorScheme)
             )
           }
+          .padding(.top, SpaceToken.u2)
 
           if !statRows.isEmpty {
             CounterStatsTable(rows: statRows)
-              .padding(.top, SpaceToken.x5)
+              .padding(.top, SpaceToken.u1)
           }
 
           Spacer(minLength: 0)
@@ -49,7 +50,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
 
           footer()
             .padding(.top, SpaceToken.x3)
-            .padding(.bottom, SpaceToken.pageFooterBottom)
+            .padding(.bottom, SpaceToken.u1)
         }
         .padding(.horizontal, SpaceToken.pageMargin)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
@@ -83,35 +84,5 @@ extension CounterPageLayout where EntryLog == EmptyView {
     self.ringProgress = ringProgress
     self.entryLog = { EmptyView() }
     self.footer = footer
-  }
-}
-
-struct PagerDotIndicator: View {
-  @Environment(\.semanticColors) private var colors
-
-  let labels: [String]
-  let selectedIndex: Int
-
-  var body: some View {
-    HStack {
-      Spacer()
-
-      VStack(spacing: SpaceToken.x2) {
-        ForEach(labels.indices, id: \.self) { index in
-          Capsule()
-            .fill(index == selectedIndex ? colors.textPrimary : colors.textDisabled)
-            .frame(width: index == selectedIndex ? 6 : 5, height: index == selectedIndex ? 18 : 5)
-            .animation(.easeInOut(duration: MotionToken.pagerDotDuration), value: selectedIndex)
-        }
-      }
-      .padding(.horizontal, 10)
-      .padding(.vertical, SpaceToken.x3 + 2)
-      .background {
-        Capsule()
-          .fill(colors.textPrimary.opacity(0.08))
-      }
-      .padding(.trailing, SpaceToken.x4)
-    }
-    .allowsHitTesting(false)
   }
 }

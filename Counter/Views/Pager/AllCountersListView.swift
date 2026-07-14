@@ -86,9 +86,8 @@ struct AllCountersListView: View {
           .padding(.bottom, SpaceToken.componentPadding)
       }
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(Color.white)
-    .safeAreaPadding(.vertical)
   }
 
   private var listCards: some View {
