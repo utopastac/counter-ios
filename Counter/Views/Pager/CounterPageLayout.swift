@@ -40,7 +40,6 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
 
           if !statRows.isEmpty {
             CounterStatsTable(rows: statRows)
-              .padding(.top, SpaceToken.u1)
           }
 
           Spacer(minLength: 0)

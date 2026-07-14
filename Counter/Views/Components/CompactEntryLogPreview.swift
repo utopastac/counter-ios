@@ -50,7 +50,7 @@ struct CompactEntryLogPreview: View {
         Text(emptyMessage)
           .counterTextStyle(.meta, color: .secondary)
           .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.vertical, SpaceToken.x3)
+          .frame(height: SizeToken.tableRowHeight)
       } else {
         ForEach(Array(displayItems.enumerated()), id: \.element.id) { index, item in
           if index > 0 {
@@ -60,7 +60,8 @@ struct CompactEntryLogPreview: View {
           }
 
           EntryLogPreviewRow(item: item)
-            .padding(.vertical, SpaceToken.x3)
+            .frame(height: SizeToken.tableRowHeight)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
 
         Rectangle()
@@ -76,7 +77,7 @@ private struct EntryLogPreviewRow: View {
   let item: EntryLogPreviewItem
 
   var body: some View {
-    HStack(spacing: SpaceToken.x3) {
+    HStack(alignment: .center, spacing: SpaceToken.x3) {
       Text(item.valueText)
         .counterTextStyle(.rowHeavy)
 

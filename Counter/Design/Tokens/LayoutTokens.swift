@@ -107,6 +107,7 @@ enum SizeToken {
   static let iconGlyph: CGFloat = 20
   static let iconStroke: CGFloat = 2
   static let quickAddHeight: CGFloat = 44
+  static let tableRowHeight: CGFloat = GridToken.units(4)
   static let primaryButtonHeight: CGFloat = 56
   static let gridColumnCount: Int = 5
   static let gridSpacing: CGFloat = SpaceToken.x2

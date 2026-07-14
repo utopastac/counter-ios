@@ -21,7 +21,7 @@ struct CounterStatsTable: View {
             .frame(height: index == rows.count - 1 ? BorderToken.statsRowStrong : BorderToken.statsRow)
         }
 
-        HStack(alignment: .firstTextBaseline) {
+        HStack(alignment: .center, spacing: 0) {
           Text(row.value)
             .counterTextStyle(.rowHeavy)
             .fontWeight(row.isEmphasized ? .bold : .semibold)
@@ -32,7 +32,8 @@ struct CounterStatsTable: View {
             .counterTextStyle(.rowLight, color: .secondary)
             .fontWeight(index == rows.count - 1 ? .semibold : .regular)
         }
-        .padding(.vertical, SpaceToken.x3)
+        .frame(height: SizeToken.tableRowHeight)
+        .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }
