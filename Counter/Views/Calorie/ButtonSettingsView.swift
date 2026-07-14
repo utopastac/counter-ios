@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CounterSettingsSave {
+  let name: String?
   let buttonValues: [Int]
   let goal: Int?
   let resetPeriod: CounterResetPeriod
@@ -13,8 +14,10 @@ struct CounterSettingsView: View {
 
   let title: String
   let includeGoalAndReset: Bool
+  let includeNameField: Bool
   let locksGoalDirection: Bool
   @State private var values: [Int]
+  @State private var nameText: String
   @State private var hasGoal: Bool
   @State private var goalText: String
   @State private var resetPeriod: CounterResetPeriod
@@ -33,8 +36,10 @@ struct CounterSettingsView: View {
   ) {
     self.title = title
     self.includeGoalAndReset = true
+    self.includeNameField = false
     self.locksGoalDirection = true
     self._values = State(initialValue: Array(values.sorted().prefix(Self.maxQuickAddButtons)))
+    self._nameText = State(initialValue: "")
     self._hasGoal = State(initialValue: settings.effectiveCalorieGoal != nil)
     self._goalText = State(initialValue: settings.effectiveCalorieGoal.map(String.init) ?? "")
     self._resetPeriod = State(initialValue: settings.calorieResetPeriod)
@@ -50,8 +55,10 @@ struct CounterSettingsView: View {
   ) {
     self.title = title
     self.includeGoalAndReset = false
+    self.includeNameField = false
     self.locksGoalDirection = false
     self._values = State(initialValue: Array(values.sorted().prefix(Self.maxQuickAddButtons)))
+    self._nameText = State(initialValue: "")
     self._hasGoal = State(initialValue: false)
     self._goalText = State(initialValue: "")
     self._resetPeriod = State(initialValue: .daily)
@@ -68,8 +75,10 @@ struct CounterSettingsView: View {
   ) {
     self.title = title
     self.includeGoalAndReset = true
+    self.includeNameField = true
     self.locksGoalDirection = false
     self._values = State(initialValue: Array(values.sorted().prefix(Self.maxQuickAddButtons)))
+    self._nameText = State(initialValue: counter.name)
     self._hasGoal = State(initialValue: counter.effectiveGoal != nil)
     self._goalText = State(initialValue: counter.effectiveGoal.map(String.init) ?? "")
     self._resetPeriod = State(initialValue: counter.resetPeriod)
@@ -81,6 +90,12 @@ struct CounterSettingsView: View {
   var body: some View {
     NavigationStack {
       List {
+        if includeNameField {
+          Section("Name") {
+            TextField("e.g. Protein", text: $nameText)
+          }
+        }
+
         Section {
           ForEach(values, id: \.self) { value in
             HStack {
@@ -117,7 +132,7 @@ struct CounterSettingsView: View {
           goalAndResetSections
         }
       }
-      .navigationTitle(title)
+      .navigationTitle(navigationTitle)
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .cancellationAction) {
@@ -127,6 +142,7 @@ struct CounterSettingsView: View {
           Button("Save") {
             onSave(
               CounterSettingsSave(
+                name: includeNameField ? trimmedName : nil,
                 buttonValues: Array(values.sorted().prefix(Self.maxQuickAddButtons)),
                 goal: hasGoal ? parsedGoal : nil,
                 resetPeriod: resetPeriod,
@@ -136,7 +152,7 @@ struct CounterSettingsView: View {
             )
             dismiss()
           }
-          .disabled(hasGoal && parsedGoal == nil)
+          .disabled(!canSave)
         }
       }
       .onChange(of: resetPeriod) { _, newPeriod in
@@ -200,6 +216,27 @@ struct CounterSettingsView: View {
         }
       }
     }
+  }
+
+  private var navigationTitle: String {
+    if includeNameField, !trimmedName.isEmpty {
+      return "\(trimmedName) Settings"
+    }
+    return title
+  }
+
+  private var trimmedName: String {
+    nameText.trimmingCharacters(in: .whitespaces)
+  }
+
+  private var canSave: Bool {
+    if includeNameField, trimmedName.isEmpty {
+      return false
+    }
+    if hasGoal, parsedGoal == nil {
+      return false
+    }
+    return true
   }
 
   private var parsedNewValue: Int? {

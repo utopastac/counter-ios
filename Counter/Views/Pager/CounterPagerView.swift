@@ -66,10 +66,8 @@ struct CounterPagerView: View {
     maxRevealOffset > 0 && cardOffset >= maxRevealOffset - 1
   }
 
-  private var isRevealInTransition: Bool {
-    let maxOffset = maxRevealOffset
-    guard maxOffset > 0 else { return false }
-    return cardOffset > 1 && cardOffset < maxOffset - 1
+  private var isRevealActive: Bool {
+    isCounterListRevealed || cardOffset > 0.5
   }
 
   var body: some View {
@@ -170,12 +168,12 @@ struct CounterPagerView: View {
     .scrollTargetBehavior(.paging)
     .scrollPosition(id: $selectedPageID, anchor: .top)
     .scrollIndicators(.hidden)
-    .scrollDisabled(locksRevealScroll || isRevealInTransition)
-    .scrollClipDisabled()
+    .scrollDisabled(locksRevealScroll || isRevealActive)
+    .scrollClipDisabled(!isRevealActive)
     .onScrollGeometryChange(for: CGFloat.self) { geometry in
       geometry.contentOffset.y + geometry.contentInsets.top
     } action: { _, offset in
-      guard height > 0 else { return }
+      guard height > 0, !isRevealActive else { return }
       scrollProgress = offset / height
     }
   }
@@ -288,11 +286,15 @@ struct CounterPagerView: View {
         values: counter.buttonValues,
         counter: counter
       ) { save in
+        if let name = save.name {
+          counter.name = name
+        }
         counter.buttonValues = save.buttonValues
         counter.goal = save.goal
         counter.resetPeriod = save.resetPeriod
         counter.resetAnchorDay = save.resetAnchorDay
         counter.goalDirection = save.goalDirection
+        WidgetSnapshot.reloadTimelines()
       }
     }
   }

@@ -42,6 +42,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
 
           if !statRows.isEmpty {
             CounterStatsTable(rows: statRows)
+              .padding(.top, CounterPageToken.heroToStatsSpacing)
           }
 
           Spacer(minLength: 0)

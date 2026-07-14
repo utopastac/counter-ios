@@ -63,7 +63,6 @@ struct AmountEntrySheet: View {
       .padding(.top, SheetToken.actionTop)
       .padding(.bottom, SheetToken.contentBottom)
     }
-    .background(colors.surfaceSheet)
     .background {
       GeometryReader { geometry in
         Color.clear.preference(key: SheetHeightKey.self, value: geometry.size.height)
@@ -76,6 +75,10 @@ struct AmountEntrySheet: View {
     }
     .presentationDetents([.height(sheetHeight)])
     .presentationDragIndicator(.hidden)
+    .presentationBackground {
+      SheetToken.halfSheetTopCornerShape
+        .fill(colors.surfaceSheet)
+    }
     .onAppear {
       isAmountFocused = true
     }

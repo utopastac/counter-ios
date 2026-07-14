@@ -164,6 +164,12 @@ enum MotionToken {
   }
 }
 
+/// Counter pager page layout spacing.
+enum CounterPageToken {
+  /// Overlap between the hero amount and the stats table (negative pulls the table up).
+  static let heroToStatsSpacing: CGFloat = -SpaceToken.u1
+}
+
 /// Counters list underlay reveal — card peeks on the trailing edge when open.
 enum RevealToken {
   /// Space between the counters list and the scaled counter card.
@@ -198,6 +204,8 @@ enum RevealToken {
 
 enum SheetToken {
   static let horizontal: CGFloat = SpaceToken.pageMargin
+  /// Top corner radius for half-height sheet presentations (20pt).
+  static let cornerRadius: CGFloat = SpaceToken.x5
   static let handleWidth: CGFloat = 36
   static let handleHeight: CGFloat = 5
   static let contentTop: CGFloat = SpaceToken.componentPadding
@@ -211,4 +219,15 @@ enum SheetToken {
   static let keypadKeySpacing: CGFloat = SpaceToken.x2
   static let keypadKeyHeight: CGFloat = 56
   static let keypadBottom: CGFloat = SpaceToken.x2
+
+  /// Rounds only the top corners so the sheet bottom can follow the device edge.
+  static var halfSheetTopCornerShape: UnevenRoundedRectangle {
+    UnevenRoundedRectangle(
+      cornerRadii: RectangleCornerRadii(
+        topLeading: cornerRadius,
+        topTrailing: cornerRadius
+      ),
+      style: .continuous
+    )
+  }
 }

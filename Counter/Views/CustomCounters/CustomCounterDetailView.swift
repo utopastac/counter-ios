@@ -51,11 +51,15 @@ struct CustomCounterDetailView: View {
         values: counter.buttonValues,
         counter: counter
       ) { save in
+        if let name = save.name {
+          counter.name = name
+        }
         counter.buttonValues = save.buttonValues
         counter.goal = save.goal
         counter.resetPeriod = save.resetPeriod
         counter.resetAnchorDay = save.resetAnchorDay
         counter.goalDirection = save.goalDirection
+        WidgetSnapshot.reloadTimelines()
       }
     }
     .sheet(isPresented: $showHistory) {
