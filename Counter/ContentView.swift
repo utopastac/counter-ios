@@ -11,7 +11,8 @@ struct ContentView: View {
       if isBootstrapped {
         CounterPagerView()
           .counterDesignSystemFromColorScheme()
-          .homeIndicatorAlwaysVisible()
+      } else {
+        Color.clear
       }
     }
     .preferredColorScheme(isDarkModeEnabled ? .dark : .light)

@@ -356,7 +356,7 @@ private struct PresetEditItem: Identifiable {
 
 private enum SettingsToken {
   static let sectionHeaderOpacity: CGFloat = 0.5
-  static let sectionSpacing: CGFloat = SpaceToken.u3
+  static let sectionSpacing: CGFloat = SpaceToken.x5
 }
 
 private struct SettingsSectionDivider: View {

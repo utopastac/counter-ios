@@ -87,7 +87,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
   }
 }
 
-/// Wraps pager page content without navigation chrome so system overlays stay visible.
+/// Wraps pager page content without navigation chrome.
 struct CounterPagerPageRoot<Content: View>: View {
   @ViewBuilder var content: () -> Content
 
@@ -97,7 +97,6 @@ struct CounterPagerPageRoot<Content: View>: View {
       content()
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .homeIndicatorAlwaysVisible()
   }
 }
 

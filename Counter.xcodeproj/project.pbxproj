@@ -71,7 +71,6 @@
 		DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000008 /* CounterTextStyleModifier.swift */; };
 		DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000009 /* GlassSurfaceModifier.swift */; };
 		DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */; };
-		DS10000010000000000000080 /* HomeIndicatorVisibilityModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */; };
 		DS10000010000000000000010 /* CounterPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000010 /* CounterPageBackground.swift */; };
 		DS10000010000000000000011 /* GlassButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000011 /* GlassButton.swift */; };
 		DS10000010000000000000012 /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000012 /* GlassCard.swift */; };
@@ -273,7 +272,6 @@
 		DS20000010000000000000008 /* CounterTextStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextStyleModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000009 /* GlassSurfaceModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassSurfaceModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetPresentationModifier.swift; sourceTree = "<group>"; };
-		DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeIndicatorVisibilityModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000010 /* CounterPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageBackground.swift; sourceTree = "<group>"; };
 		DS20000010000000000000011 /* GlassButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassButton.swift; sourceTree = "<group>"; };
 		DS20000010000000000000012 /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
@@ -415,7 +413,6 @@
 				DS20000010000000000000008 /* CounterTextStyleModifier.swift */,
 				DS20000010000000000000009 /* GlassSurfaceModifier.swift */,
 				DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */,
-				DS20000010000000000000080 /* HomeIndicatorVisibilityModifier.swift */,
 			);
 			path = Modifiers;
 			sourceTree = "<group>";
@@ -801,7 +798,6 @@
 				DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */,
 				DS10000010000000000000009 /* GlassSurfaceModifier.swift in Sources */,
 				DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */,
-				DS10000010000000000000080 /* HomeIndicatorVisibilityModifier.swift in Sources */,
 				DS10000010000000000000010 /* CounterPageBackground.swift in Sources */,
 				DS10000010000000000000011 /* GlassButton.swift in Sources */,
 				DS10000010000000000000012 /* GlassCard.swift in Sources */,

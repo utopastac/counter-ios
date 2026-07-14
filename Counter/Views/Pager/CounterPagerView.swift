@@ -156,7 +156,6 @@ struct CounterPagerView: View {
     .scrollIndicators(.hidden)
     .scrollDisabled(locksRevealScroll || isRevealActive)
     .scrollClipDisabled(!isRevealActive)
-    .homeIndicatorAlwaysVisible()
     .onScrollGeometryChange(for: CGFloat.self) { geometry in
       geometry.contentOffset.y + geometry.contentInsets.top
     } action: { _, offset in
