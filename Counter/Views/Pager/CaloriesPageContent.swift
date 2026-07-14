@@ -80,8 +80,7 @@ struct CaloriesPageContent: View {
   }
 
   var body: some View {
-    NavigationStack {
-      CounterPageLayout(
+    CounterPageLayout(
         heroValue: heroValue,
         statRows: statRows,
         ringProgress: ringProgress
@@ -111,11 +110,7 @@ struct CaloriesPageContent: View {
           showCustomAmount = true
         }
       }
-    }
     .counterAccent(CounterAccent.calories)
-    .toolbar(.hidden, for: .navigationBar)
-    .background(Color.clear)
-    .containerBackground(.clear, for: .navigation)
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addCalories(value)

@@ -144,8 +144,8 @@ struct SemanticColors: Equatable {
     copy.surfaceCounterBackground = background
     copy.surfaceBackdrop = background
     copy.textPrimary = foreground
-    copy.textSecondary = palette.mutedForeground(for: colorScheme)
-    copy.textTertiary = palette.mutedForeground(for: colorScheme)
+    copy.textSecondary = foreground
+    copy.textTertiary = foreground
     copy.textEmphasis = foreground
     copy.textDisabled = foreground.opacity(0.35)
     copy.textInverse = palette.buttonForeground(for: colorScheme)
@@ -174,6 +174,10 @@ enum ComponentColor {
 
   static func glassButtonStroke(_ colors: SemanticColors) -> Color {
     colors.surfaceGlassStroke
+  }
+
+  static func listActionButtonFill(_ colors: SemanticColors) -> Color {
+    colors.borderSubtle
   }
 
   static func pagerDotActive(_ colors: SemanticColors) -> Color {

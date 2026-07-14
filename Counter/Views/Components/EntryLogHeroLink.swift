@@ -14,10 +14,7 @@ struct EntryLogHeroLink<Preview: View, Destination: View>: View {
       isExpanded = true
     } label: {
       preview()
-        .matchedTransitionSource(id: heroID, in: heroNamespace) { source in
-          source
-            .clipShape(RoundedRectangle(cornerRadius: RadiusToken.lg, style: .continuous))
-        }
+        .matchedTransitionSource(id: heroID, in: heroNamespace)
     }
     .buttonStyle(.noHighlight)
     .navigationDestination(isPresented: $isExpanded) {

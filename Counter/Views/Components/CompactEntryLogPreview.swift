@@ -10,27 +10,26 @@ struct EntryLogAllEntriesControl: View {
   @Environment(\.semanticColors) private var colors
 
   var body: some View {
-    VStack(spacing: 0) {
-      HStack(spacing: SpaceToken.x2) {
-        Spacer(minLength: 0)
+    HStack(spacing: SpaceToken.x2) {
+      Spacer(minLength: 0)
 
-        Text("All entries")
-          .counterTextStyle(.sectionTitle)
+      Text("All entries")
+        .counterTextStyle(.sectionTitle)
 
-        Image(systemName: "arrow.up.left.and.arrow.down.right")
-          .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
-          .foregroundStyle(colors.textPrimary)
-          .accessibilityHidden(true)
-      }
-      .padding(.bottom, SpaceToken.u2)
-
-      Rectangle()
-        .fill(colors.textPrimary)
-        .frame(height: BorderToken.toolbar)
-        .padding(.horizontal, SpaceToken.u1)
+      CounterLucideIcon(icon: .maximize2, color: colors.textPrimary)
     }
+    .padding(.bottom, SpaceToken.u2)
     .frame(maxWidth: .infinity, alignment: .trailing)
-    .contentShape(Rectangle())
+  }
+}
+
+struct EntryLogPreviewTableDivider: View {
+  @Environment(\.semanticColors) private var colors
+
+  var body: some View {
+    Rectangle()
+      .fill(colors.textPrimary)
+      .frame(height: BorderToken.toolbar)
   }
 }
 
@@ -46,6 +45,8 @@ struct CompactEntryLogPreview: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
+      EntryLogPreviewTableDivider()
+
       if displayItems.isEmpty {
         Text(emptyMessage)
           .counterTextStyle(.meta, color: .secondary)

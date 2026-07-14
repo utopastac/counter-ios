@@ -53,3 +53,27 @@ struct CounterIconButton: View {
     .buttonStyle(.plain)
   }
 }
+
+struct NewCounterButton: View {
+  @Environment(\.semanticColors) private var colors
+
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      HStack {
+        Text("New counter")
+          .counterTextStyle(.sectionTitle)
+
+        Spacer(minLength: SpaceToken.u1)
+
+        CounterLucideIcon(icon: .plus, color: colors.textPrimary)
+      }
+      .padding(.horizontal, SpaceToken.u2)
+      .frame(maxWidth: .infinity)
+      .frame(height: SizeToken.quickAddHeight)
+      .background(ComponentColor.listActionButtonFill(colors), in: RadiusToken.continuousListCard)
+    }
+    .buttonStyle(.plain)
+  }
+}

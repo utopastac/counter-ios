@@ -26,6 +26,14 @@ private struct CounterAccentKey: EnvironmentKey {
   static let defaultValue: CounterAccent? = nil
 }
 
+private struct CounterPagerScrollProgressKey: EnvironmentKey {
+  static let defaultValue: CGFloat? = nil
+}
+
+private struct CounterPagerAccentsKey: EnvironmentKey {
+  static let defaultValue: [CounterAccent]? = nil
+}
+
 extension EnvironmentValues {
   var designSystem: CounterDesignSystem {
     get {
@@ -44,6 +52,16 @@ extension EnvironmentValues {
     get { self[CounterAccentKey.self] }
     set { self[CounterAccentKey.self] = newValue }
   }
+
+  var counterPagerScrollProgress: CGFloat? {
+    get { self[CounterPagerScrollProgressKey.self] }
+    set { self[CounterPagerScrollProgressKey.self] = newValue }
+  }
+
+  var counterPagerAccents: [CounterAccent]? {
+    get { self[CounterPagerAccentsKey.self] }
+    set { self[CounterPagerAccentsKey.self] = newValue }
+  }
 }
 
 extension View {
@@ -53,6 +71,11 @@ extension View {
 
   func counterAccent(_ accent: CounterAccent) -> some View {
     environment(\.counterAccent, accent)
+  }
+
+  func counterPagerBackground(accents: [CounterAccent], scrollProgress: CGFloat) -> some View {
+    environment(\.counterPagerAccents, accents)
+      .environment(\.counterPagerScrollProgress, scrollProgress)
   }
 
   /// Syncs semantic tokens with the current system light/dark mode.

@@ -4,6 +4,7 @@ import SwiftUI
 struct CounterUnderlayReveal<List: View, Card: View>: View {
   @Binding var cardOffset: CGFloat
   @Binding var isRevealed: Bool
+  @Binding var locksRevealScroll: Bool
   @ViewBuilder var list: () -> List
   @ViewBuilder var card: () -> Card
 
@@ -68,15 +69,20 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   }
 
   private func revealGesture(maxOffset: CGFloat) -> some Gesture {
-    DragGesture(minimumDistance: 10, coordinateSpace: .local)
+    DragGesture(minimumDistance: 0, coordinateSpace: .local)
       .onChanged { value in
         let horizontal = value.translation.width
-        let vertical = abs(value.translation.height)
+        let vertical = value.translation.height
 
         if !isDraggingReveal {
-          guard abs(horizontal) > vertical * 1.2, abs(horizontal) > GridToken.unit else { return }
+          guard abs(horizontal) > abs(vertical), abs(horizontal) > 4 else { return }
           isDraggingReveal = true
           dragStartOffset = cardOffset
+          var transaction = Transaction()
+          transaction.disablesAnimations = true
+          withTransaction(transaction) {
+            locksRevealScroll = true
+          }
         }
 
         guard isDraggingReveal else { return }
@@ -90,6 +96,12 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       .onEnded { value in
         let wasDragging = isDraggingReveal
         isDraggingReveal = false
+
+        var unlockTransaction = Transaction()
+        unlockTransaction.disablesAnimations = true
+        withTransaction(unlockTransaction) {
+          locksRevealScroll = false
+        }
 
         guard wasDragging else { return }
 

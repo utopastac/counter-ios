@@ -2,6 +2,8 @@ import SwiftUI
 
 struct CounterPageLayout<Footer: View, EntryLog: View>: View {
   @Environment(\.counterAccent) private var counterAccent
+  @Environment(\.counterPagerAccents) private var pagerAccents
+  @Environment(\.counterPagerScrollProgress) private var pagerScrollProgress
   @Environment(\.colorScheme) private var colorScheme
 
   let heroValue: String
@@ -17,7 +19,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
   var body: some View {
     GeometryReader { geometry in
       ZStack {
-        CounterPageBackground()
+        pagerBackground
 
         VStack(alignment: .leading, spacing: 0) {
           Spacer()
@@ -55,6 +57,38 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
       }
     }
+  }
+
+  @ViewBuilder
+  private var pagerBackground: some View {
+    if let pagerAccents, let pagerScrollProgress {
+      CounterPagerBackdrop(accents: pagerAccents, scrollProgress: pagerScrollProgress)
+    } else {
+      (counterAccent ?? .calories).palette.background(for: colorScheme)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+  }
+}
+
+/// Wraps pager page content in a navigation stack with a fully transparent chrome.
+struct CounterPagerPageRoot<Content: View>: View {
+  @ViewBuilder var content: () -> Content
+
+  var body: some View {
+    NavigationStack {
+      ZStack {
+        Color.clear
+        content()
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    .toolbar(.hidden, for: .navigationBar)
+    .toolbarBackground(.hidden, for: .navigationBar)
+    .background {
+      Color.clear
+        .ignoresSafeArea()
+    }
+    .containerBackground(.clear, for: .navigation)
   }
 }
 

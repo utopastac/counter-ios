@@ -3,12 +3,12 @@ import SwiftData
 
 struct AllCountersListView: View {
   @Environment(\.dismiss) private var dismiss
-  @Environment(\.colorScheme) private var colorScheme
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
   @Query(sort: \CalorieEntry.timestamp, order: .reverse) private var calorieEntries: [CalorieEntry]
   @Query private var settingsList: [AppSettings]
 
   var embedded = false
+  var scrollDisabled = false
   let onSelectPage: (String) -> Void
   var onClose: (() -> Void)?
   var onAddCounter: (() -> Void)?
@@ -85,6 +85,7 @@ struct AllCountersListView: View {
           .padding(.horizontal, SpaceToken.pageMargin)
           .padding(.bottom, SpaceToken.componentPadding)
       }
+      .scrollDisabled(scrollDisabled)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(Color.white)
@@ -127,20 +128,7 @@ struct AllCountersListView: View {
       }
 
       if let onAddCounter {
-        Button(action: onAddCounter) {
-          HStack(spacing: SpaceToken.x2) {
-            CounterLucideIcon(icon: .plus)
-            Text("New counter")
-              .counterTextStyle(.rowLight)
-          }
-          .frame(maxWidth: .infinity)
-          .padding(.vertical, SpaceToken.componentPadding)
-          .background(
-            SemanticColors.forColorScheme(colorScheme).surfaceGlassFillSubtle,
-            in: RadiusToken.continuousListCard
-          )
-        }
-        .buttonStyle(.plain)
+        NewCounterButton(action: onAddCounter)
       }
     }
   }

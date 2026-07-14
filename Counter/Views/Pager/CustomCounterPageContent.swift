@@ -70,8 +70,7 @@ struct CustomCounterPageContent: View {
   }
 
   var body: some View {
-    NavigationStack {
-      CounterPageLayout(
+    CounterPageLayout(
         heroValue: heroValue,
         statRows: statRows,
         ringProgress: ringProgress
@@ -101,11 +100,7 @@ struct CustomCounterPageContent: View {
           showCustomAmount = true
         }
       }
-    }
     .counterAccent(CounterAccent.forCustomCounter(at: paletteIndex))
-    .toolbar(.hidden, for: .navigationBar)
-    .background(Color.clear)
-    .containerBackground(.clear, for: .navigation)
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addEntry(value)

@@ -4,16 +4,6 @@ import SwiftUI
 import UIKit
 #endif
 
-/// Per-page counter backdrop that scrolls with its counter.
-struct CounterPageBackground: View {
-  @Environment(\.semanticColors) private var colors
-
-  var body: some View {
-    colors.surfaceCounterBackground
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-  }
-}
-
 /// Full-screen counter backdrop that cross-fades between page palette colors.
 struct CounterPagerBackdrop: View {
   @Environment(\.colorScheme) private var colorScheme

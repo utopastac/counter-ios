@@ -15,7 +15,9 @@ struct CounterPagerView: View {
   @State private var showAddCounter = false
   @State private var isCounterListRevealed = false
   @State private var cardOffset: CGFloat = 0
+  @State private var locksRevealScroll = false
   @State private var containerWidth: CGFloat = 0
+  @State private var scrollProgress: CGFloat = 0
 
   enum PageID: String {
     case calories
@@ -32,6 +34,10 @@ struct CounterPagerView: View {
   private var activeCustomCounter: CustomCounter? {
     guard let selectedPageID else { return nil }
     return counters.first { $0.id.uuidString == selectedPageID }
+  }
+
+  private var pageAccents: [CounterAccent] {
+    [.calories] + counters.enumerated().map { CounterAccent.forCustomCounter(at: $0.offset) }
   }
 
   private var activeAccent: CounterAccent {
@@ -52,14 +58,30 @@ struct CounterPagerView: View {
     MotionToken.settle(reduceMotion: reduceMotion)
   }
 
+  private var maxRevealOffset: CGFloat {
+    RevealToken.openOffset(forScreenWidth: max(containerWidth, 1))
+  }
+
+  private var isRevealSettledOpen: Bool {
+    maxRevealOffset > 0 && cardOffset >= maxRevealOffset - 1
+  }
+
+  private var isRevealInTransition: Bool {
+    let maxOffset = maxRevealOffset
+    guard maxOffset > 0 else { return false }
+    return cardOffset > 1 && cardOffset < maxOffset - 1
+  }
+
   var body: some View {
     GeometryReader { geometry in
       CounterUnderlayReveal(
         cardOffset: $cardOffset,
-        isRevealed: $isCounterListRevealed
+        isRevealed: $isCounterListRevealed,
+        locksRevealScroll: $locksRevealScroll
       ) {
         AllCountersListView(
           embedded: true,
+          scrollDisabled: locksRevealScroll || !isRevealSettledOpen,
           onSelectPage: selectPageFromList,
           onClose: collapseCounterList,
           onAddCounter: { showAddCounter = true }
@@ -102,6 +124,10 @@ struct CounterPagerView: View {
       if let selectedPageID, !pageIDs.contains(selectedPageID) {
         self.selectedPageID = PageID.calories.rawValue
       }
+      syncScrollProgressToSelectedPage()
+    }
+    .onAppear {
+      syncScrollProgressToSelectedPage()
     }
   }
 
@@ -109,7 +135,9 @@ struct CounterPagerView: View {
   private func counterScreen() -> some View {
     GeometryReader { geometry in
       ZStack(alignment: .top) {
-        verticalPager(height: geometry.size.height)
+        CounterPagerPageRoot {
+          verticalPager(height: geometry.size.height)
+        }
 
         pagerToolbar
       }
@@ -124,22 +152,38 @@ struct CounterPagerView: View {
       VStack(spacing: 0) {
         CaloriesPageContent()
           .frame(height: height)
+          .background(Color.clear)
           .id(PageID.calories.rawValue)
 
         ForEach(Array(counters.enumerated()), id: \.element.id) { index, counter in
           CustomCounterPageContent(counter: counter, paletteIndex: index)
             .frame(height: height)
+            .background(Color.clear)
             .id(counter.id.uuidString)
         }
       }
       .scrollTargetLayout()
+      .counterPagerBackground(accents: pageAccents, scrollProgress: scrollProgress)
     }
     .scrollContentBackground(.hidden)
     .background(Color.clear)
     .scrollTargetBehavior(.paging)
     .scrollPosition(id: $selectedPageID, anchor: .top)
     .scrollIndicators(.hidden)
+    .scrollDisabled(locksRevealScroll || isRevealInTransition)
     .scrollClipDisabled()
+    .onScrollGeometryChange(for: CGFloat.self) { geometry in
+      geometry.contentOffset.y + geometry.contentInsets.top
+    } action: { _, offset in
+      guard height > 0 else { return }
+      scrollProgress = offset / height
+    }
+  }
+
+  private func syncScrollProgressToSelectedPage() {
+    guard let selectedPageID,
+          let index = pageIDs.firstIndex(of: selectedPageID) else { return }
+    scrollProgress = CGFloat(index)
   }
 
   private func openCounterList() {
