@@ -44,19 +44,6 @@ enum CounterPeriodCalculator {
   }
 
   static func currentRange(
-    for settings: AppSettings,
-    on date: Date = .now,
-    calendar: Calendar = .current
-  ) -> CounterPeriodRange {
-    currentRange(
-      resetPeriod: settings.calorieResetPeriod,
-      resetAnchorDay: settings.effectiveCalorieResetAnchorDay,
-      on: date,
-      calendar: calendar
-    )
-  }
-
-  static func currentRange(
     resetPeriod: CounterResetPeriod,
     resetAnchorDay: Int,
     on date: Date = .now,
@@ -112,14 +99,6 @@ enum CounterPeriodCalculator {
     )
   }
 
-  static func resetSummary(for settings: AppSettings, calendar: Calendar = .current) -> String {
-    resetSummary(
-      resetPeriod: settings.calorieResetPeriod,
-      resetAnchorDay: settings.effectiveCalorieResetAnchorDay,
-      calendar: calendar
-    )
-  }
-
   static func resetSummary(
     resetPeriod: CounterResetPeriod,
     resetAnchorDay: Int,
@@ -143,13 +122,6 @@ enum CounterPeriodCalculator {
     allEntries.filter { $0.timestamp >= range.start && $0.timestamp < range.end }
   }
 
-  static func calorieEntries(
-    from allEntries: [CalorieEntry],
-    in range: CounterPeriodRange
-  ) -> [CalorieEntry] {
-    allEntries.filter { $0.timestamp >= range.start && $0.timestamp < range.end }
-  }
-
   static func total(
     from allEntries: [CounterEntry],
     for counter: CustomCounter,
@@ -158,16 +130,6 @@ enum CounterPeriodCalculator {
   ) -> Int {
     let range = currentRange(for: counter, on: date, calendar: calendar)
     return entries(from: allEntries, in: range).reduce(0) { $0 + $1.value }
-  }
-
-  static func totalCalories(
-    from allEntries: [CalorieEntry],
-    for settings: AppSettings,
-    on date: Date = .now,
-    calendar: Calendar = .current
-  ) -> Int {
-    let range = currentRange(for: settings, on: date, calendar: calendar)
-    return calorieEntries(from: allEntries, in: range).reduce(0) { $0 + $1.value }
   }
 
   private static func clampedAnchorDay(

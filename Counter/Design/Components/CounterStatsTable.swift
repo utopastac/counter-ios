@@ -22,15 +22,15 @@ struct CounterStatsTable: View {
         }
 
         HStack(alignment: .center, spacing: 0) {
-          Text(row.value)
-            .counterTextStyle(.rowHeavy)
-            .fontWeight(row.isEmphasized ? .bold : .semibold)
-
-          Spacer(minLength: SpaceToken.x3)
-
           Text(row.label)
             .counterTextStyle(.rowLight, color: .secondary)
             .fontWeight(index == rows.count - 1 ? .semibold : .regular)
+
+          Spacer(minLength: SpaceToken.x3)
+
+          Text(row.value)
+            .counterTextStyle(.rowHeavy)
+            .fontWeight(row.isEmphasized ? .bold : .semibold)
         }
         .frame(height: SizeToken.tableRowHeight)
         .frame(maxWidth: .infinity, alignment: .leading)

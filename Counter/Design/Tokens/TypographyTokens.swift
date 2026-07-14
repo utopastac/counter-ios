@@ -92,6 +92,14 @@ enum TypeStyle {
     monospacedDigits: false
   )
 
+  static let xxlSemibold = TypeStyleDefinition(
+    size: FontSizeToken.xxl,
+    weight: FontWeightToken.semibold,
+    lineHeight: FontSizeToken.xxl,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
   static let lgSemibold = TypeStyleDefinition(
     size: FontSizeToken.lg,
     weight: FontWeightToken.semibold,
@@ -178,6 +186,7 @@ enum TypeStyle {
 /// Semantic text styles for product UI — each maps to a `TypeStyle` ramp entry.
 enum CounterTextStyle: CaseIterable {
   case mainNumber
+  case heroSubtitle
   case listCardNumber
   case listCardTitle
   case listCardCaption
@@ -212,6 +221,8 @@ enum CounterTextStyle: CaseIterable {
     switch self {
     case .mainNumber, .heroValue:
       return TypeStyle.x5xlSemibold
+    case .heroSubtitle:
+      return TypeStyle.xxlSemibold
     case .listCardNumber:
       return TypeStyle.xxxlSemibold
     case .listCardTitle:

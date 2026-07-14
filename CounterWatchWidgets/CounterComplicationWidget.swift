@@ -3,15 +3,13 @@ import SwiftUI
 
 struct CounterComplicationEntry: TimelineEntry {
   let date: Date
-  let added: Int
-  let burned: Int
-
-  var net: Int { added - burned }
+  let title: String
+  let heroValue: String
 }
 
 struct CounterComplicationProvider: TimelineProvider {
   func placeholder(in context: Context) -> CounterComplicationEntry {
-    CounterComplicationEntry(date: .now, added: 1200, burned: 1800)
+    CounterComplicationEntry(date: .now, title: "Counter", heroValue: "1200")
   }
 
   func getSnapshot(in context: Context, completion: @escaping (CounterComplicationEntry) -> Void) {
@@ -27,8 +25,8 @@ struct CounterComplicationProvider: TimelineProvider {
   private func currentEntry() -> CounterComplicationEntry {
     CounterComplicationEntry(
       date: .now,
-      added: WidgetSnapshot.added,
-      burned: WidgetSnapshot.burned
+      title: WidgetSnapshot.title,
+      heroValue: WidgetSnapshot.heroValue
     )
   }
 }
@@ -42,7 +40,7 @@ struct CounterComplicationWidget: Widget {
         .containerBackground(.fill.tertiary, for: .widget)
     }
     .configurationDisplayName("Counter")
-    .description("Today's calorie balance.")
+    .description("Shows your default counter total.")
     .supportedFamilies([
       .accessoryCircular,
       .accessoryRectangular,
@@ -67,15 +65,15 @@ struct CounterComplicationView: View {
     case .accessoryCorner:
       cornerView
     default:
-      Text("\(entry.net)")
+      Text(entry.heroValue)
     }
   }
 
   private var circularView: some View {
     VStack(spacing: 0) {
-      Image(systemName: "flame.fill")
+      Image(systemName: "number.square.fill")
         .font(.caption2)
-      Text(formattedNet(entry.net))
+      Text(entry.heroValue)
         .font(.system(.body, design: .rounded, weight: .semibold))
         .minimumScaleFactor(0.6)
     }
@@ -83,41 +81,33 @@ struct CounterComplicationView: View {
 
   private var rectangularView: some View {
     VStack(alignment: .leading, spacing: 2) {
-      Label("Counter", systemImage: "flame.fill")
+      Label(entry.title, systemImage: "number.square.fill")
         .font(.caption2)
         .foregroundStyle(.secondary)
-      Text("+\(entry.added) added")
-        .font(.caption2)
-      Text("-\(entry.burned) burned")
-        .font(.caption2)
-      Text("Net \(formattedNet(entry.net))")
+      Text(entry.heroValue)
         .font(.caption.bold())
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }
 
   private var inlineView: some View {
-    Text("Net \(formattedNet(entry.net)) kcal")
+    Text("\(entry.title) \(entry.heroValue)")
   }
 
   private var cornerView: some View {
-    Text(formattedNet(entry.net))
+    Text(entry.heroValue)
       .font(.system(.title3, design: .rounded, weight: .bold))
-  }
-
-  private func formattedNet(_ value: Int) -> String {
-    value >= 0 ? "+\(value)" : "\(value)"
   }
 }
 
 #Preview(as: .accessoryCircular) {
   CounterComplicationWidget()
 } timeline: {
-  CounterComplicationEntry(date: .now, added: 1450, burned: 2100)
+  CounterComplicationEntry(date: .now, title: "Calories", heroValue: "1450")
 }
 
 #Preview(as: .accessoryRectangular) {
   CounterComplicationWidget()
 } timeline: {
-  CounterComplicationEntry(date: .now, added: 1450, burned: 2100)
+  CounterComplicationEntry(date: .now, title: "Calories", heroValue: "1450")
 }

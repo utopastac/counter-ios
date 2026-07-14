@@ -79,7 +79,7 @@ enum WidgetPalette {
   }
 
   static func paletteIndex(forCustomCounterAt index: Int) -> Int {
-    (index % 9) + 1
+    index % slots.count
   }
 }
 

@@ -11,8 +11,8 @@ struct CounterWidgetSnapshot {
   let lastUpdated: Date?
 
   static let placeholder = CounterWidgetSnapshot(
-    counterID: WidgetCounterID.calories,
-    title: "Calories",
+    counterID: "preview",
+    title: "Counter",
     paletteIndex: 0,
     heroValue: "2424",
     heroCaption: "remaining",

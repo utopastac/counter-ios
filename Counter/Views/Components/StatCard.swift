@@ -35,7 +35,7 @@ struct StatCard: View {
 }
 
 #Preview {
-  StatCard(title: "Active", value: "420", subtitle: "kcal burned")
+  StatCard(title: "Added", value: "420", subtitle: "logged today")
     .padding()
     .counterDesignSystemFromColorScheme()
 }

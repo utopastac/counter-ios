@@ -12,7 +12,7 @@ struct AddCounterEntryIntent: AppIntent {
   var amount: Int
 
   init() {
-    self.counterID = WidgetCounterID.calories
+    self.counterID = ""
     self.amount = 0
   }
 
@@ -24,7 +24,9 @@ struct AddCounterEntryIntent: AppIntent {
   @MainActor
   func perform() async throws -> some IntentResult {
     guard amount > 0 else { return .result() }
-    WidgetCounterLoader.addEntryQuick(counterID: counterID, amount: amount)
+    let resolvedID = counterID.isEmpty ? WidgetCounterLoader.defaultCounterID() : counterID
+    guard let resolvedID else { return .result() }
+    WidgetCounterLoader.addEntryQuick(counterID: resolvedID, amount: amount)
     return .result()
   }
 }
@@ -32,13 +34,13 @@ struct AddCounterEntryIntent: AppIntent {
 struct CounterWidgetShortcuts: AppShortcutsProvider {
   static var appShortcuts: [AppShortcut] {
     AppShortcut(
-      intent: AddCounterEntryIntent(counterID: WidgetCounterID.calories, amount: 100),
+      intent: AddCounterEntryIntent(counterID: "", amount: 100),
       phrases: [
-        "Add calories in \(.applicationName)",
-        "Log calories in \(.applicationName)"
+        "Add to counter in \(.applicationName)",
+        "Log counter in \(.applicationName)"
       ],
-      shortTitle: "Add Calories",
-      systemImageName: "flame.fill"
+      shortTitle: "Add to Counter",
+      systemImageName: "plus.circle.fill"
     )
   }
 }

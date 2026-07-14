@@ -33,7 +33,7 @@ struct QuickAddButtonsView: View {
 
 #Preview("Interactive") {
   PreviewModel.appRoot {
-    CalorieCounterView()
+    CounterPagerView()
   }
 }
 

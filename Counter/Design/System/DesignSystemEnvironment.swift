@@ -34,6 +34,10 @@ private struct CounterPagerAccentsKey: EnvironmentKey {
   static let defaultValue: [CounterAccent]? = nil
 }
 
+private struct CounterPagerIsDraggingKey: EnvironmentKey {
+  static let defaultValue = false
+}
+
 extension EnvironmentValues {
   var designSystem: CounterDesignSystem {
     get {
@@ -62,6 +66,11 @@ extension EnvironmentValues {
     get { self[CounterPagerAccentsKey.self] }
     set { self[CounterPagerAccentsKey.self] = newValue }
   }
+
+  var counterPagerIsDragging: Bool {
+    get { self[CounterPagerIsDraggingKey.self] }
+    set { self[CounterPagerIsDraggingKey.self] = newValue }
+  }
 }
 
 extension View {
@@ -76,6 +85,10 @@ extension View {
   func counterPagerBackground(accents: [CounterAccent], scrollProgress: CGFloat) -> some View {
     environment(\.counterPagerAccents, accents)
       .environment(\.counterPagerScrollProgress, scrollProgress)
+  }
+
+  func counterPagerDragging(_ isDragging: Bool) -> some View {
+    environment(\.counterPagerIsDragging, isDragging)
   }
 
   /// Syncs semantic tokens with the current system light/dark mode.

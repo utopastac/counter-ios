@@ -1,63 +1,45 @@
 import Foundation
 import SwiftData
 
-/// Seeds mock counters and entries from the design mockups when no custom counters exist.
+/// Seeds mock counters and entries from the design mockups when no counters exist.
 enum SampleDataSeeder {
   /// Quick-add presets shown in the design mockups.
   static let mockQuickAddPresets: [Int] = QuickAddConfiguration.defaultCaloriePresets
 
   @MainActor
   static func seedIfNeeded(in context: ModelContext) {
-    guard !hasCustomCounters(in: context) else { return }
+    CalorieMigration.migrateIfNeeded(in: context)
+    guard !hasAnyCounters(in: context) else { return }
 
-    seedSettings(in: context)
-
-    if !hasCalorieEntries(in: context) {
-      seedCalorieEntries(in: context)
-    }
-
+    seedCaloriesCounter(in: context)
     seedProteinCounter(in: context)
     seedMoneyCounter(in: context)
 
     try? context.save()
   }
 
-  private static func hasCustomCounters(in context: ModelContext) -> Bool {
+  private static func hasAnyCounters(in context: ModelContext) -> Bool {
     var descriptor = FetchDescriptor<CustomCounter>()
     descriptor.fetchLimit = 1
     return (try? context.fetch(descriptor).isEmpty == false) ?? false
   }
 
-  private static func hasCalorieEntries(in context: ModelContext) -> Bool {
-    var descriptor = FetchDescriptor<CalorieEntry>()
-    descriptor.fetchLimit = 1
-    return (try? context.fetch(descriptor).isEmpty == false) ?? false
-  }
-
-  private static func seedSettings(in context: ModelContext) {
-    var descriptor = FetchDescriptor<AppSettings>()
-    descriptor.fetchLimit = 1
-
-    if let settings = try? context.fetch(descriptor).first {
-      settings.calorieGoal = AppSettings.defaultCalorieGoal
-      settings.calorieGoalDirection = .countDown
-      settings.calorieButtonValues = mockQuickAddPresets
-    } else {
-      context.insert(
-        AppSettings(
-          calorieButtonValues: mockQuickAddPresets,
-          calorieGoal: AppSettings.defaultCalorieGoal,
-          calorieGoalDirection: .countDown
-        )
-      )
-    }
-  }
-
   /// Calories mockup: target 2200, added −200, remaining 2420.
-  private static func seedCalorieEntries(in context: ModelContext) {
+  private static func seedCaloriesCounter(in context: ModelContext) {
+    let counter = CustomCounter(
+      name: "Calories",
+      buttonValues: mockQuickAddPresets,
+      sliderMax: 2000,
+      goal: CustomCounter.defaultCalorieGoal,
+      goalDirection: .countDown
+    )
+    counter.createdAt = .distantPast
+    context.insert(counter)
+
     let timestamps = sampleTimestamps(count: 5)
     for timestamp in timestamps {
-      context.insert(CalorieEntry(value: -40, timestamp: timestamp))
+      let entry = CounterEntry(value: -40, timestamp: timestamp, counter: counter)
+      context.insert(entry)
     }
   }
 

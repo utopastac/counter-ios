@@ -3,6 +3,7 @@ import SwiftData
 
 @Model
 final class CustomCounter {
+  static let defaultCalorieGoal = 2200
   static let defaultButtonValues: [Int] = [1, 2, 5, 10, 20, 25, 50, 75, 100]
 
   var id: UUID

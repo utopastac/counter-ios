@@ -187,10 +187,18 @@ enum MotionToken {
 
 /// Counter pager page layout spacing.
 enum CounterPageToken {
-  /// Overlap between the hero amount and the stats table (negative pulls the table up).
-  static let heroToStatsSpacing: CGFloat = -SpaceToken.u1
-  /// Gap between the stats table and quick-add actions (3 grid units).
+  /// Fixed header block height (15 grid units).
+  static let headerContentHeight: CGFloat = GridToken.units(15)
+  /// Height of the hero number band that the progress ring is centered within.
+  static let heroBandHeight: CGFloat = TypeStyle.x5xlSemibold.lineHeight
+  /// Pulls the hero subtitle closer to the main number.
+  static let heroSubtitleSpacing: CGFloat = -SpaceToken.u1
+  /// Vertical offset for the ring and expanded stats table.
+  static let headerContentOffset: CGFloat = SpaceToken.u1
+  /// Gap between the header and quick-add actions (3 grid units).
   static let statsToQuickActionsSpacing: CGFloat = SpaceToken.u3
+
+  static let headerToggleAnimation: Animation = .spring(response: 0.38, dampingFraction: 0.86)
 }
 
 /// Counters list underlay reveal — card peeks on the trailing edge when open.

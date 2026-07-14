@@ -31,26 +31,6 @@ struct CounterSettingsView: View {
   init(
     title: String,
     values: [Int],
-    settings: AppSettings,
-    onSave: @escaping (CounterSettingsSave) -> Void
-  ) {
-    self.title = title
-    self.includeGoalAndReset = true
-    self.includeNameField = false
-    self.locksGoalDirection = true
-    self._values = State(initialValue: Array(values.sorted().prefix(Self.maxQuickAddButtons)))
-    self._nameText = State(initialValue: "")
-    self._hasGoal = State(initialValue: settings.effectiveCalorieGoal != nil)
-    self._goalText = State(initialValue: settings.effectiveCalorieGoal.map(String.init) ?? "")
-    self._resetPeriod = State(initialValue: settings.calorieResetPeriod)
-    self._resetAnchorDay = State(initialValue: settings.effectiveCalorieResetAnchorDay)
-    self._goalDirection = State(initialValue: .countDown)
-    self.onSave = onSave
-  }
-
-  init(
-    title: String,
-    values: [Int],
     onSave: @escaping (CounterSettingsSave) -> Void
   ) {
     self.title = title

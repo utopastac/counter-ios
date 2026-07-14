@@ -56,7 +56,7 @@ struct CounterListCard: View {
 #Preview {
   VStack(spacing: SpaceToken.x4) {
     CounterListCard(
-      accent: .calories,
+      accent: .forCustomCounter(at: 0),
       title: "Calories",
       value: "2424",
       caption: "Remaining",

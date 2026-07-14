@@ -1,132 +1,6 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Calorie log
-
-struct CalorieTodayLogView: View {
-  var body: some View {
-    NavigationStack {
-      CaloriePeriodEntryLogScreen()
-    }
-  }
-}
-
-struct CaloriePeriodEntryLogScreen: View {
-  @Environment(\.dismiss) private var dismiss
-  @Environment(HealthKitManager.self) private var healthKit
-  @Environment(\.modelContext) private var modelContext
-  @Query(sort: \CalorieEntry.timestamp, order: .reverse) private var entries: [CalorieEntry]
-  @Query private var settingsList: [AppSettings]
-
-  @State private var editingEntry: EntryEditContext?
-
-  private struct EntryEditContext: Identifiable {
-    let id: UUID
-    let value: Int
-  }
-
-  private var settings: AppSettings {
-    settingsList.first ?? AppSettings()
-  }
-
-  private var periodEntries: [CalorieEntry] {
-    let range = CounterPeriodCalculator.currentRange(for: settings)
-    return CounterPeriodCalculator.calorieEntries(from: entries, in: range)
-      .sorted { $0.timestamp > $1.timestamp }
-  }
-
-  private var periodTotal: Int {
-    CounterPeriodCalculator.totalCalories(from: entries, for: settings)
-  }
-
-  var body: some View {
-    CaloriePeriodEntryLogContent(
-      entries: periodEntries,
-      onDelete: deleteEntry,
-      onEdit: { editingEntry = EntryEditContext(id: $0, value: $1) }
-    )
-    .navigationTitle(EntryLogTitles.full(for: settings.calorieResetPeriod))
-    .navigationBarTitleDisplayMode(.inline)
-    .toolbar {
-      ToolbarItem(placement: .confirmationAction) {
-        Button("Done") {
-          dismiss()
-        }
-      }
-    }
-    .sheet(item: $editingEntry) { context in
-      EditEntrySheet(initialValue: context.value) { newValue in
-        updateEntry(id: context.id, value: newValue)
-      }
-    }
-  }
-
-  private func deleteEntry(id: UUID) {
-    EntryActions.deleteCalorieEntry(id: id, in: modelContext)
-    syncWidgetSnapshot()
-  }
-
-  private func updateEntry(id: UUID, value: Int) {
-    EntryActions.updateCalorieEntry(id: id, value: value, in: modelContext)
-    syncWidgetSnapshot()
-  }
-
-  private func syncWidgetSnapshot() {
-    WidgetSnapshotSync.publish(from: modelContext, burned: Int(healthKit.activeCalories))
-  }
-}
-
-struct CaloriePeriodEntryLogContent: View {
-  @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-  let entries: [CalorieEntry]
-  let onDelete: (UUID) -> Void
-  let onEdit: (UUID, Int) -> Void
-
-  private var insertAnimation: Animation {
-    MotionToken.entryInsert(reduceMotion: reduceMotion)
-  }
-
-  private var rowTransition: AnyTransition {
-    MotionToken.entryRowTransition(reduceMotion: reduceMotion)
-  }
-
-  var body: some View {
-    Group {
-      if entries.isEmpty {
-        ContentUnavailableView(
-          "No Entries Yet",
-          systemImage: "list.bullet",
-          description: Text("Entries for the current period will appear here.")
-        )
-      } else {
-        List {
-          ForEach(entries, id: \.id) { entry in
-            Button {
-              onEdit(entry.id, entry.value)
-            } label: {
-              TodayLogRow(
-                timestamp: entry.timestamp,
-                valueText: "\(entry.value) kcal"
-              )
-            }
-            .buttonStyle(.plain)
-            .transition(rowTransition)
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-              Button(role: .destructive) {
-                onDelete(entry.id)
-              } label: {
-                Label("Delete", systemImage: "trash")
-              }
-            }
-          }
-        }
-        .animation(insertAnimation, value: entries.map(\.id))
-      }
-    }
-  }
-}
-
 // MARK: - Custom counter log
 
 struct CounterTodayLogView: View {
@@ -182,10 +56,12 @@ struct CounterPeriodEntryLogScreen: View {
 
   private func deleteEntry(id: UUID) {
     EntryActions.deleteCounterEntry(id: id, in: modelContext)
+    WidgetSnapshotSync.publish(counter: counter, in: modelContext)
   }
 
   private func updateEntry(id: UUID, value: Int) {
     EntryActions.updateCounterEntry(id: id, value: value, in: modelContext)
+    WidgetSnapshotSync.publish(counter: counter, in: modelContext)
   }
 }
 
@@ -293,7 +169,6 @@ struct EditEntrySheet: View {
 }
 
 #Preview {
-  CalorieTodayLogView()
-    .environment(HealthKitManager())
-    .modelContainer(for: [CalorieEntry.self, AppSettings.self], inMemory: true)
+  CounterTodayLogView(counter: CustomCounter(name: "Calories"))
+    .modelContainer(for: [CustomCounter.self, CounterEntry.self], inMemory: true)
 }

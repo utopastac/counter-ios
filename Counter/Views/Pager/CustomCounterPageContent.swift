@@ -59,8 +59,8 @@ struct CustomCounterPageContent: View {
       rows.append(
         CounterStatRow(
           id: "summary",
-          value: goalProgress.heroValue,
-          label: goalProgress.heroCaption.capitalized,
+          value: goalProgress.statsSummaryValue,
+          label: goalProgress.statsSummaryLabel,
           isEmphasized: true
         )
       )
@@ -72,6 +72,7 @@ struct CustomCounterPageContent: View {
   var body: some View {
     CounterPageLayout(
         heroValue: heroValue,
+        heroSubtitle: heroSubtitle,
         statRows: statRows,
         ringProgress: ringProgress
       ) {
@@ -122,6 +123,14 @@ struct CustomCounterPageContent: View {
     )?.heroValue ?? "\(periodTotal)"
   }
 
+  private var heroSubtitle: String? {
+    GoalProgressCalculator.progress(
+      current: periodTotal,
+      goal: counter.effectiveGoal,
+      direction: counter.goalDirection
+    )?.heroSubtitle
+  }
+
   private func migratePresetButtons(for counter: CustomCounter) {
     let filled = QuickAddConfiguration.filledPresets(
       from: counter.buttonValues,
@@ -143,6 +152,6 @@ struct CustomCounterPageContent: View {
   }
 
   private func syncWidgets() {
-    WidgetSnapshot.reloadTimelines()
+    WidgetSnapshotSync.publish(counter: counter, in: modelContext)
   }
 }

@@ -11,7 +11,7 @@ struct CounterAccent: Equatable {
   static let calories = CounterAccent(paletteIndex: 0)
 
   static func forCustomCounter(at index: Int) -> CounterAccent {
-    CounterAccent(paletteIndex: (index % 9) + 1)
+    CounterAccent(paletteIndex: index % CounterPaletteTokens.slotCount)
   }
 
   /// Legacy accessor — prefer `palette`.

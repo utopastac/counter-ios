@@ -76,6 +76,28 @@ struct GoalProgress {
     }
   }
 
+  var heroSubtitle: String {
+    switch direction {
+    case .countUp:
+      return "\(delta) to go"
+    case .countDown:
+      return "\(delta) remaining"
+    }
+  }
+
+  var statsSummaryValue: String {
+    "\(delta)"
+  }
+
+  var statsSummaryLabel: String {
+    switch direction {
+    case .countUp:
+      return "To go"
+    case .countDown:
+      return "Remaining"
+    }
+  }
+
   var progressLabel: String {
     switch direction {
     case .countUp:

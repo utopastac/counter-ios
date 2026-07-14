@@ -6,52 +6,43 @@ struct CounterPagerView: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.semanticColors) private var colors
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
-  @Query private var settingsList: [AppSettings]
 
-  @State private var selectedPageID: String? = PageID.calories.rawValue
+  @State private var selectedPageID: String?
   @State private var showButtonSettings = false
   @State private var showHistory = false
-  @State private var showCalorieHistory = false
   @State private var showAddCounter = false
   @State private var isCounterListRevealed = false
   @State private var cardOffset: CGFloat = 0
   @State private var locksRevealScroll = false
   @State private var containerWidth: CGFloat = 0
   @State private var scrollProgress: CGFloat = 0
-
-  enum PageID: String {
-    case calories
-  }
+  @State private var isPagerDragging = false
 
   private var pageIDs: [String] {
-    [PageID.calories.rawValue] + counters.map(\.id.uuidString)
+    counters.map(\.id.uuidString)
   }
 
-  private var isCaloriesPage: Bool {
-    (selectedPageID ?? PageID.calories.rawValue) == PageID.calories.rawValue
-  }
-
-  private var activeCustomCounter: CustomCounter? {
-    guard let selectedPageID else { return nil }
+  private var activeCounter: CustomCounter? {
+    guard let selectedPageID else { return counters.first }
     return counters.first { $0.id.uuidString == selectedPageID }
   }
 
   private var pageAccents: [CounterAccent] {
-    [.calories] + counters.enumerated().map { CounterAccent.forCustomCounter(at: $0.offset) }
+    counters.enumerated().map { CounterAccent.forCustomCounter(at: $0.offset) }
   }
 
   private var activeAccent: CounterAccent {
-    if isCaloriesPage { return .calories }
-    if let counter = activeCustomCounter,
-       let index = counters.firstIndex(where: { $0.id == counter.id }) {
-      return .forCustomCounter(at: index)
+    guard
+      let counter = activeCounter,
+      let index = counters.firstIndex(where: { $0.id == counter.id })
+    else {
+      return CounterAccent.forCustomCounter(at: 0)
     }
-    return .calories
+    return .forCustomCounter(at: index)
   }
 
   private var activePageTitle: String {
-    if isCaloriesPage { return "Calories" }
-    return activeCustomCounter?.name ?? "Counter"
+    activeCounter?.name ?? "Counter"
   }
 
   private var settleSpring: Animation {
@@ -105,11 +96,8 @@ struct CounterPagerView: View {
     .sheet(isPresented: $showButtonSettings) {
       buttonSettingsSheet
     }
-    .sheet(isPresented: $showCalorieHistory) {
-      CalorieHistoryView()
-    }
     .sheet(isPresented: $showHistory) {
-      if let counter = activeCustomCounter {
+      if let counter = activeCounter {
         CounterHistoryView(counter: counter)
       }
     }
@@ -120,11 +108,14 @@ struct CounterPagerView: View {
     }
     .onChange(of: counters.map(\.id)) { _, _ in
       if let selectedPageID, !pageIDs.contains(selectedPageID) {
-        self.selectedPageID = PageID.calories.rawValue
+        self.selectedPageID = counters.first?.id.uuidString
       }
       syncScrollProgressToSelectedPage()
     }
     .onAppear {
+      if selectedPageID == nil {
+        selectedPageID = counters.first?.id.uuidString
+      }
       syncScrollProgressToSelectedPage()
     }
   }
@@ -142,17 +133,13 @@ struct CounterPagerView: View {
     }
     .counterAccent(activeAccent)
     .counterDesignSystemFromColorScheme()
+    .counterPagerDragging(isPagerDragging)
   }
 
   @ViewBuilder
   private func verticalPager(height: CGFloat) -> some View {
     ScrollView(.vertical) {
       VStack(spacing: 0) {
-        CaloriesPageContent()
-          .frame(height: height)
-          .background(Color.clear)
-          .id(PageID.calories.rawValue)
-
         ForEach(Array(counters.enumerated()), id: \.element.id) { index, counter in
           CustomCounterPageContent(counter: counter, paletteIndex: index)
             .frame(height: height)
@@ -178,6 +165,9 @@ struct CounterPagerView: View {
     } action: { _, offset in
       guard height > 0, !isRevealActive else { return }
       scrollProgress = offset / height
+    }
+    .onScrollPhaseChange { _, newPhase in
+      isPagerDragging = newPhase != .idle
     }
   }
 
@@ -236,11 +226,7 @@ struct CounterPagerView: View {
 
         HStack(spacing: SpaceToken.x3) {
           CounterIconButton(icon: .chartBar) {
-            if isCaloriesPage {
-              showCalorieHistory = true
-            } else {
-              showHistory = true
-            }
+            showHistory = true
           }
 
           CounterIconButton(icon: .slidersHorizontal) {
@@ -258,40 +244,12 @@ struct CounterPagerView: View {
         .padding(.horizontal, SpaceToken.u1)
     }
     .background(Color.clear)
+    .disabled(isPagerDragging)
   }
 
   @ViewBuilder
   private var buttonSettingsSheet: some View {
-    if isCaloriesPage {
-      if let settings = settingsList.first {
-        CounterSettingsView(
-          title: "Calorie Settings",
-          values: settings.calorieButtonValues,
-          settings: settings
-        ) { save in
-          settings.calorieButtonValues = save.buttonValues
-          settings.calorieGoal = save.goal
-          settings.calorieResetPeriod = save.resetPeriod
-          settings.calorieResetAnchorDay = save.resetAnchorDay
-          settings.calorieGoalDirection = .countDown
-        }
-      } else {
-        CounterSettingsView(
-          title: "Calorie Settings",
-          values: AppSettings().calorieButtonValues,
-          settings: AppSettings()
-        ) { save in
-          let created = AppSettings(
-            calorieButtonValues: save.buttonValues,
-            calorieGoal: save.goal,
-            calorieResetPeriod: save.resetPeriod,
-            calorieResetAnchorDay: save.resetAnchorDay,
-            calorieGoalDirection: .countDown
-          )
-          modelContext.insert(created)
-        }
-      }
-    } else if let counter = activeCustomCounter {
+    if let counter = activeCounter {
       CounterSettingsView(
         title: "\(counter.name) Settings",
         values: counter.buttonValues,
@@ -305,7 +263,7 @@ struct CounterPagerView: View {
         counter.resetPeriod = save.resetPeriod
         counter.resetAnchorDay = save.resetAnchorDay
         counter.goalDirection = save.goalDirection
-        WidgetSnapshot.reloadTimelines()
+        WidgetSnapshotSync.publish(counter: counter, in: modelContext)
       }
     }
   }

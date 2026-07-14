@@ -9,7 +9,6 @@ enum PreviewModel {
   @MainActor
   static func appRoot<Content: View>(@ViewBuilder content: () -> Content) -> some View {
     content()
-      .environment(HealthKitManager())
       .modelContainer(container)
       .counterDesignSystemFromColorScheme()
   }

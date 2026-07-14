@@ -2,21 +2,17 @@ import Foundation
 import SwiftData
 
 enum WidgetSnapshotSync {
-  static func publish(from context: ModelContext, burned: Int) {
-    let settings = fetchSettings(in: context)
-    let entries = fetchCalorieEntries(in: context)
-    let added = CounterPeriodCalculator.totalCalories(from: entries, for: settings)
+  static func publish(counter: CustomCounter, in context: ModelContext) {
+    let total = CounterPeriodCalculator.total(from: counter.entries, for: counter)
+    let progress = GoalProgressCalculator.progress(
+      current: total,
+      goal: counter.effectiveGoal,
+      direction: counter.goalDirection
+    )
 
-    WidgetSnapshot.publish(added: added, burned: burned)
-  }
-
-  private static func fetchSettings(in context: ModelContext) -> AppSettings {
-    var descriptor = FetchDescriptor<AppSettings>()
-    descriptor.fetchLimit = 1
-    return (try? context.fetch(descriptor).first) ?? AppSettings()
-  }
-
-  private static func fetchCalorieEntries(in context: ModelContext) -> [CalorieEntry] {
-    (try? context.fetch(FetchDescriptor<CalorieEntry>())) ?? []
+    WidgetSnapshot.publish(
+      title: counter.name,
+      heroValue: progress?.heroValue ?? "\(total)"
+    )
   }
 }

@@ -4,38 +4,12 @@ import SwiftData
 struct AllCountersListView: View {
   @Environment(\.dismiss) private var dismiss
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
-  @Query(sort: \CalorieEntry.timestamp, order: .reverse) private var calorieEntries: [CalorieEntry]
-  @Query private var settingsList: [AppSettings]
 
   var embedded = false
   var scrollDisabled = false
   let onSelectPage: (String) -> Void
   var onClose: (() -> Void)?
   var onAddCounter: (() -> Void)?
-
-  private var settings: AppSettings {
-    settingsList.first ?? AppSettings()
-  }
-
-  private var calorieTotal: Int {
-    CounterPeriodCalculator.totalCalories(from: calorieEntries, for: settings)
-  }
-
-  private var calorieRingProgress: GoalProgress {
-    GoalProgressCalculator.ringDisplay(
-      current: calorieTotal,
-      goal: settings.effectiveCalorieGoal,
-      direction: settings.calorieGoalDirection
-    )
-  }
-
-  private var calorieGoalProgress: GoalProgress? {
-    GoalProgressCalculator.progress(
-      current: calorieTotal,
-      goal: settings.effectiveCalorieGoal,
-      direction: settings.calorieGoalDirection
-    )
-  }
 
   var body: some View {
     Group {
@@ -96,16 +70,6 @@ struct AllCountersListView: View {
 
   private var listCards: some View {
     VStack(alignment: .leading, spacing: SpaceToken.u1) {
-      CounterListCard(
-        accent: .calories,
-        title: "Calories",
-        value: calorieSummaryValue,
-        caption: calorieSummaryCaption,
-        ringProgress: calorieRingProgress
-      ) {
-        onSelectPage("calories")
-      }
-
       ForEach(Array(counters.enumerated()), id: \.element.id) { index, counter in
         let total = CounterPeriodCalculator.total(from: counter.entries, for: counter)
         let ringProgress = GoalProgressCalculator.ringDisplay(
@@ -136,14 +100,6 @@ struct AllCountersListView: View {
     }
   }
 
-  private var calorieSummaryValue: String {
-    calorieGoalProgress?.heroValue ?? "\(calorieTotal)"
-  }
-
-  private var calorieSummaryCaption: String {
-    calorieGoalProgress?.heroCaption.capitalized ?? settings.calorieResetPeriod.periodCaption
-  }
-
   private func cardValue(for progress: GoalProgress?, total: Int) -> String {
     progress?.heroValue ?? "\(total)"
   }
@@ -163,5 +119,5 @@ struct AllCountersListView: View {
 
 #Preview {
   AllCountersListView { _ in }
-    .modelContainer(for: [CustomCounter.self, CalorieEntry.self, AppSettings.self], inMemory: true)
+    .modelContainer(for: CustomCounter.self, inMemory: true)
 }

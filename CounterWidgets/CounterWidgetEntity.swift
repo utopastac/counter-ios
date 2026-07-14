@@ -28,11 +28,7 @@ struct CounterWidgetEntityQuery: EntityQuery {
   }
 
   func defaultResult() async -> CounterWidgetEntity? {
-    CounterWidgetEntity(
-      id: WidgetCounterID.calories,
-      title: "Calories",
-      paletteIndex: 0
-    )
+    try? await allEntities().first
   }
 
   @MainActor
@@ -43,22 +39,12 @@ struct CounterWidgetEntityQuery: EntityQuery {
     )
     let counters = try context.fetch(descriptor)
 
-    var entities = [
+    return counters.enumerated().map { index, counter in
       CounterWidgetEntity(
-        id: WidgetCounterID.calories,
-        title: "Calories",
-        paletteIndex: 0
-      )
-    ]
-    for (index, counter) in counters.enumerated() {
-      entities.append(
-        CounterWidgetEntity(
-          id: counter.id.uuidString,
-          title: counter.name,
-          paletteIndex: WidgetPalette.paletteIndex(forCustomCounterAt: index)
-        )
+        id: counter.id.uuidString,
+        title: counter.name,
+        paletteIndex: WidgetPalette.paletteIndex(forCustomCounterAt: index)
       )
     }
-    return entities
   }
 }

@@ -5,34 +5,30 @@ import WidgetKit
 
 enum WidgetSnapshot {
   private enum Keys {
-    static let added = "widget_calories_added"
-    static let burned = "widget_calories_burned"
-    static let updated = "widget_calories_updated"
+    static let title = "widget_counter_title"
+    static let heroValue = "widget_counter_hero_value"
+    static let updated = "widget_counter_updated"
   }
 
   private static var defaults: UserDefaults? {
     UserDefaults(suiteName: AppGroup.identifier)
   }
 
-  static var added: Int {
-    defaults?.integer(forKey: Keys.added) ?? 0
+  static var title: String {
+    defaults?.string(forKey: Keys.title) ?? "Counter"
   }
 
-  static var burned: Int {
-    defaults?.integer(forKey: Keys.burned) ?? 0
-  }
-
-  static var net: Int {
-    added - burned
+  static var heroValue: String {
+    defaults?.string(forKey: Keys.heroValue) ?? "0"
   }
 
   static var lastUpdated: Date? {
     defaults?.object(forKey: Keys.updated) as? Date
   }
 
-  static func publish(added: Int, burned: Int) {
-    defaults?.set(added, forKey: Keys.added)
-    defaults?.set(burned, forKey: Keys.burned)
+  static func publish(title: String, heroValue: String) {
+    defaults?.set(title, forKey: Keys.title)
+    defaults?.set(heroValue, forKey: Keys.heroValue)
     defaults?.set(Date(), forKey: Keys.updated)
     reloadTimelines()
   }

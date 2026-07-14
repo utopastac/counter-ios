@@ -34,7 +34,7 @@ struct CounterPagerBackdrop: View {
     reduceMotion: Bool
   ) -> Color {
     guard !accents.isEmpty else {
-      return CounterAccent.calories.palette.background(for: colorScheme)
+      return CounterAccent.forCustomCounter(at: 0).palette.background(for: colorScheme)
     }
 
     if reduceMotion || accents.count == 1 {
