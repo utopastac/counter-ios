@@ -33,6 +33,7 @@ enum SpaceToken {
   static let pageFooterBottom: CGFloat = u7
   static let toolbarTop: CGFloat = u1
   static let toolbarBottom: CGFloat = u1
+  static let toolbarIconSpacing: CGFloat = u1
 
   /// Inset around the vertical counter pager card from the screen edge.
   static let scrollContainerInset: CGFloat = u1
@@ -112,6 +113,13 @@ enum EntryLogPreviewLimit {
 
 enum SizeToken {
   static let iconButton: CGFloat = 24
+  /// Minimum tappable area for toolbar and header icon buttons.
+  static let iconButtonHitArea: CGFloat = 44
+
+  static var iconButtonHitOutset: CGFloat {
+    (iconButtonHitArea - iconButton) / 2
+  }
+
   static let iconGlyph: CGFloat = 20
   static let iconStroke: CGFloat = 2
   static let quickAddHeight: CGFloat = 44
@@ -156,7 +164,13 @@ enum ShadowToken {
   }
 }
 
+enum OpacityToken {
+  static let iconButtonPressed: CGFloat = 0.5
+}
+
 enum MotionToken {
+  static let iconButtonPressDuration: Double = 0.12
+
   static let pagerDotDuration: Double = 0.2
   static let revealSettleDuration: Double = 0.48
   static let revealSettleBounce: Double = 0.08

@@ -211,7 +211,7 @@ struct CounterPagerView: View {
   @ViewBuilder
   private var pagerToolbar: some View {
     VStack(spacing: 0) {
-      HStack(spacing: SpaceToken.x3) {
+      HStack(spacing: SpaceToken.toolbarIconSpacing) {
         CounterIconButton(icon: .listSortDescending) {
           openCounterList()
         }
@@ -222,7 +222,7 @@ struct CounterPagerView: View {
 
         Spacer(minLength: 0)
 
-        HStack(spacing: SpaceToken.x3) {
+        HStack(spacing: SpaceToken.toolbarIconSpacing) {
           CounterIconButton(icon: .chartBar) {
             showHistory = true
           }

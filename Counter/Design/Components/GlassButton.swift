@@ -50,7 +50,10 @@ struct GlassIconButton: View {
       CounterLucideIcon(icon: icon, color: colors.textPrimary)
         .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
         .glassSurface(cornerRadius: SizeToken.iconButton / 2, shape: .circle)
+        .padding(SizeToken.iconButtonHitOutset)
+        .contentShape(Rectangle())
     }
-    .buttonStyle(.plain)
+    .buttonStyle(.icon)
+    .padding(-SizeToken.iconButtonHitOutset)
   }
 }
