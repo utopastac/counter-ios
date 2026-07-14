@@ -5,9 +5,11 @@ struct CustomCounterPageContent: View {
   @Bindable var counter: CustomCounter
 
   @Environment(\.modelContext) private var modelContext
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   @State private var showCustomAmount = false
   @State private var showsEntryLog = false
+  @State private var entryToast: EntryToastState?
 
   private var periodEntries: [CounterEntry] {
     let range = CounterPeriodCalculator.currentRange(for: counter)
@@ -97,6 +99,13 @@ struct CustomCounterPageContent: View {
         } onCustom: {
           showCustomAmount = true
         }
+      } toast: {
+        if let entryToast {
+          EntryAddedToast(value: entryToast.value) {
+            undoToastEntry(entryToast.entryID)
+          }
+          .transition(toastTransition)
+        }
       }
     .counterAccent(CounterAccent.forCounter(counter))
     .sheet(isPresented: $showCustomAmount) {
@@ -113,6 +122,21 @@ struct CustomCounterPageContent: View {
     .onChange(of: periodTotal) { _, _ in
       syncWidgets()
     }
+    .task(id: entryToast) {
+      guard entryToast != nil else { return }
+      try? await Task.sleep(for: .seconds(EntryActions.entryToastDuration))
+      guard !Task.isCancelled else { return }
+      withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
+        entryToast = nil
+      }
+    }
+  }
+
+  private var toastTransition: AnyTransition {
+    if reduceMotion {
+      return .opacity
+    }
+    return .opacity.combined(with: .scale(scale: 0.96))
   }
 
   private var heroValue: String {
@@ -142,12 +166,28 @@ struct CustomCounterPageContent: View {
   }
 
   private func addEntry(_ value: Int) {
-    EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
+    let added = EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
+    presentToast(for: added)
     syncWidgets()
   }
 
   private func addEntryQuick(_ value: Int) {
-    EntryActions.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
+    let added = EntryActions.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
+    presentToast(for: added)
+    syncWidgets()
+  }
+
+  private func presentToast(for added: EntryActions.AddedEntry) {
+    withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
+      entryToast = EntryToastState(entryID: added.entryID, value: added.value)
+    }
+  }
+
+  private func undoToastEntry(_ entryID: UUID) {
+    EntryActions.deleteCounterEntry(id: entryID, in: modelContext)
+    withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
+      entryToast = nil
+    }
     syncWidgets()
   }
 

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CounterPageLayout<Footer: View, EntryLog: View>: View {
+struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   @Environment(\.counterAccent) private var counterAccent
   @Environment(\.counterPagerAccents) private var pagerAccents
   @Environment(\.counterPagerScrollProgress) private var pagerScrollProgress
@@ -13,6 +13,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
   let ringProgress: GoalProgress
   @ViewBuilder var entryLog: () -> EntryLog
   @ViewBuilder var footer: () -> Footer
+  @ViewBuilder var toast: () -> Toast
 
   @State private var isHeaderExpanded = false
 
@@ -30,7 +31,8 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
     statRows: [CounterStatRow],
     ringProgress: GoalProgress,
     @ViewBuilder entryLog: @escaping () -> EntryLog,
-    @ViewBuilder footer: @escaping () -> Footer
+    @ViewBuilder footer: @escaping () -> Footer,
+    @ViewBuilder toast: @escaping () -> Toast
   ) {
     self.heroValue = heroValue
     self.heroSubtitle = heroSubtitle
@@ -38,6 +40,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
     self.ringProgress = ringProgress
     self.entryLog = entryLog
     self.footer = footer
+    self.toast = toast
   }
 
   var body: some View {
@@ -64,6 +67,13 @@ struct CounterPageLayout<Footer: View, EntryLog: View>: View {
             .padding(.top, CounterPageToken.statsToQuickActionsSpacing)
 
           Spacer(minLength: 0)
+            .frame(maxWidth: .infinity)
+            .overlay(alignment: .top) {
+              toast()
+                .fixedSize()
+                .padding(.top, CounterPageToken.toastTopOffset)
+                .frame(maxWidth: .infinity)
+            }
 
           entryLog()
             .frame(maxWidth: .infinity, alignment: .bottomLeading)
@@ -198,7 +208,7 @@ private struct HeroSubtitleText: View {
   }
 }
 
-extension CounterPageLayout where EntryLog == EmptyView {
+extension CounterPageLayout where EntryLog == EmptyView, Toast == EmptyView {
   init(
     heroValue: String,
     heroSubtitle: String? = nil,
@@ -212,7 +222,29 @@ extension CounterPageLayout where EntryLog == EmptyView {
       statRows: statRows,
       ringProgress: ringProgress,
       entryLog: { EmptyView() },
-      footer: footer
+      footer: footer,
+      toast: { EmptyView() }
+    )
+  }
+}
+
+extension CounterPageLayout where Toast == EmptyView {
+  init(
+    heroValue: String,
+    heroSubtitle: String? = nil,
+    statRows: [CounterStatRow],
+    ringProgress: GoalProgress,
+    @ViewBuilder entryLog: @escaping () -> EntryLog,
+    @ViewBuilder footer: @escaping () -> Footer
+  ) {
+    self.init(
+      heroValue: heroValue,
+      heroSubtitle: heroSubtitle,
+      statRows: statRows,
+      ringProgress: ringProgress,
+      entryLog: entryLog,
+      footer: footer,
+      toast: { EmptyView() }
     )
   }
 }

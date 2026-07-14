@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GoalProgressRing: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   let progress: GoalProgress
   var size: CGFloat = SizeToken.Ring.default
@@ -9,23 +10,25 @@ struct GoalProgressRing: View {
   var trackColor: Color?
   var fillColor: Color?
 
+  private var fillFraction: Double {
+    progress.isOverGoal ? 1 : progress.ringFraction
+  }
+
   var body: some View {
     ZStack {
       ProgressRingArc(fraction: 1, lineWidth: lineWidth)
         .stroke(resolvedTrackColor, style: ringStrokeStyle)
 
-      if progress.isOverGoal {
-        ProgressRingArc(fraction: 1, lineWidth: lineWidth)
-          .stroke(resolvedFillColor, style: ringStrokeStyle)
-
-        if progress.overflowRingFraction > 0 {
-          overfillOverflowArc
-        }
-      } else if progress.ringFraction > 0 {
-        ProgressRingArc(fraction: progress.ringFraction, lineWidth: lineWidth)
+      if fillFraction > 0 {
+        ProgressRingArc(fraction: fillFraction, lineWidth: lineWidth)
           .stroke(resolvedFillColor, style: ringStrokeStyle)
       }
+
+      if progress.overflowRingFraction > 0 {
+        overfillOverflowArc
+      }
     }
+    .animation(MotionToken.ringProgress(reduceMotion: reduceMotion), value: progress.current)
     .frame(width: size, height: size)
     .accessibilityLabel(progress.progressLabel)
     .accessibilityValue(progress.detailLabel)

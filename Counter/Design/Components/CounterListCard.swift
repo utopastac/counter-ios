@@ -16,10 +16,13 @@ struct CounterListCard: View {
 
   var body: some View {
     Button(action: action) {
-      HStack(alignment: .center, spacing: SpaceToken.x4) {
+      HStack(alignment: .center, spacing: SpaceToken.u1) {
         VStack(alignment: .leading, spacing: -SpaceToken.x1) {
           Text(title)
             .counterTextStyle(.listCardTitle, compact: true)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
           Text(value)
             .counterTextStyle(.listCardNumber, compact: true)
@@ -29,8 +32,7 @@ struct CounterListCard: View {
           Text(caption)
             .counterTextStyle(.listCardCaption, compact: true)
         }
-
-        Spacer(minLength: SpaceToken.x4)
+        .frame(maxWidth: .infinity, alignment: .leading)
 
         GoalProgressRing(
           progress: ringProgress,
@@ -65,7 +67,7 @@ struct CounterListCard: View {
 
     CounterListCard(
       accent: .forCustomCounter(at: 0),
-      title: "Protein",
+      title: "Very Long Counter Name That Should Truncate",
       value: "70",
       caption: "80 to go",
       ringProgress: GoalProgress(current: 70, goal: 150, direction: .countUp)

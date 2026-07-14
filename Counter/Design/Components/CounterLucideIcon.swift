@@ -14,6 +14,7 @@ enum CounterLucideIconName: String {
   case listRestart = "lucide-list-restart"
   case chevronsUpDown = "lucide-chevrons-up-down"
   case cog = "lucide-cog"
+  case undo2 = "lucide-undo-2"
 }
 
 struct CounterLucideIcon: View {

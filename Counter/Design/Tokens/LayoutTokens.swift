@@ -195,6 +195,17 @@ enum MotionToken {
     .smooth(duration: entryInsertDuration, extraBounce: entryInsertBounce)
   }
 
+  static let ringProgressDuration: Double = 0.38
+  static let ringProgressBounce: Double = 0.1
+
+  static var ringProgress: Animation {
+    .smooth(duration: ringProgressDuration, extraBounce: ringProgressBounce)
+  }
+
+  static func ringProgress(reduceMotion: Bool) -> Animation? {
+    reduceMotion ? nil : ringProgress
+  }
+
   static func entryInsert(reduceMotion: Bool) -> Animation {
     reduceMotion ? reduceMotionSettle : entryInsert
   }
@@ -222,6 +233,8 @@ enum CounterPageToken {
   static let headerContentOffset: CGFloat = SpaceToken.u1
   /// Gap between the header and quick-add actions (3 grid units).
   static let statsToQuickActionsSpacing: CGFloat = SpaceToken.u3
+  /// Gap between quick-add actions and the entry-added toast (10 grid units).
+  static let toastTopOffset: CGFloat = GridToken.units(10)
 
   static let headerToggleAnimation: Animation = .spring(response: 0.38, dampingFraction: 0.86)
 }

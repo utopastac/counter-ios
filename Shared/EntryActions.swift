@@ -3,6 +3,13 @@ import SwiftData
 
 enum EntryActions {
   static let quickAddBatchInterval: TimeInterval = 2
+  /// How long the entry-added toast remains visible after the last update.
+  static let entryToastDuration: TimeInterval = 3
+
+  struct AddedEntry: Equatable {
+    let entryID: UUID
+    let value: Int
+  }
 
   private enum QuickAddScope: Hashable {
     case counter(UUID)
@@ -16,13 +23,16 @@ enum EntryActions {
   @MainActor
   private static var quickAddSessions: [QuickAddScope: QuickAddSession] = [:]
 
-  static func addCounterEntry(value: Int, counter: CustomCounter, in context: ModelContext) {
+  @discardableResult
+  static func addCounterEntry(value: Int, counter: CustomCounter, in context: ModelContext) -> AddedEntry {
     let entry = CounterEntry(value: value, counter: counter)
     context.insert(entry)
+    return AddedEntry(entryID: entry.id, value: entry.value)
   }
 
   @MainActor
-  static func addCounterEntryQuick(value: Int, counter: CustomCounter, in context: ModelContext) {
+  @discardableResult
+  static func addCounterEntryQuick(value: Int, counter: CustomCounter, in context: ModelContext) -> AddedEntry {
     let scope = QuickAddScope.counter(counter.id)
     let now = Date.now
 
@@ -35,12 +45,13 @@ enum EntryActions {
       session.lastTap = now
       quickAddSessions[scope] = session
       try? context.save()
-      return
+      return AddedEntry(entryID: entry.id, value: entry.value)
     }
 
     let entry = CounterEntry(value: value, counter: counter)
     context.insert(entry)
     quickAddSessions[scope] = QuickAddSession(entryID: entry.id, lastTap: now)
+    return AddedEntry(entryID: entry.id, value: entry.value)
   }
 
   static func deleteCounterEntry(id: UUID, in context: ModelContext) {

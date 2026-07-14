@@ -83,6 +83,7 @@
 		DS10000010000000000000020 /* CounterActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000020 /* CounterActionButton.swift */; };
 		DS10000010000000000000021 /* CounterListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000021 /* CounterListCard.swift */; };
 		DS10000010000000000000022 /* CounterLucideIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000022 /* CounterLucideIcon.swift */; };
+		DS10000010000000000000028 /* EntryAddedToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000028 /* EntryAddedToast.swift */; };
 		CM10000010000000000000001 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
 		CM10000010000000000000002 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
 		SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
@@ -284,6 +285,7 @@
 		DS20000010000000000000020 /* CounterActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterActionButton.swift; sourceTree = "<group>"; };
 		DS20000010000000000000021 /* CounterListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterListCard.swift; sourceTree = "<group>"; };
 		DS20000010000000000000022 /* CounterLucideIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterLucideIcon.swift; sourceTree = "<group>"; };
+		DS20000010000000000000028 /* EntryAddedToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAddedToast.swift; sourceTree = "<group>"; };
 		CM20000010000000000000001 /* CalorieMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieMigration.swift; sourceTree = "<group>"; };
 		SD20000010000000000000001 /* SampleDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataSeeder.swift; sourceTree = "<group>"; };
 		S20000010000000000000001 /* AmountEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountEntrySheet.swift; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				DS20000010000000000000020 /* CounterActionButton.swift */,
 				DS20000010000000000000021 /* CounterListCard.swift */,
 				DS20000010000000000000022 /* CounterLucideIcon.swift */,
+				DS20000010000000000000028 /* EntryAddedToast.swift */,
 				DS20000010000000000000023 /* HistoryPeriodPicker.swift */,
 				DS20000010000000000000024 /* HistoryBarChart.swift */,
 				DS20000010000000000000026 /* CounterSheetHeader.swift */,
@@ -810,6 +813,7 @@
 				DS10000010000000000000020 /* CounterActionButton.swift in Sources */,
 				DS10000010000000000000021 /* CounterListCard.swift in Sources */,
 				DS10000010000000000000022 /* CounterLucideIcon.swift in Sources */,
+				DS10000010000000000000028 /* EntryAddedToast.swift in Sources */,
 				DS10000010000000000000015 /* CounterListRow.swift in Sources */,
 				T10000010000000000000001 /* CompactEntryLogPreview.swift in Sources */,
 				T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */,
