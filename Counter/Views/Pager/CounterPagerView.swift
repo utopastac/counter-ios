@@ -17,6 +17,7 @@ struct CounterPagerView: View {
   @State private var containerWidth: CGFloat = 0
   @State private var scrollProgress: CGFloat = 0
   @State private var isPagerDragging = false
+  @State private var hasAppliedInitialListReveal = false
 
   private var pageIDs: [String] {
     counters.map(\.id.uuidString)
@@ -76,11 +77,14 @@ struct CounterPagerView: View {
       }
       .onAppear {
         containerWidth = geometry.size.width
+        applyInitialListRevealIfNeeded(width: geometry.size.width)
       }
       .onChange(of: geometry.size.width) { _, newWidth in
         containerWidth = newWidth
         if isCounterListRevealed {
           cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(for: newWidth)
+        } else {
+          applyInitialListRevealIfNeeded(width: newWidth)
         }
       }
     }
@@ -173,17 +177,35 @@ struct CounterPagerView: View {
     scrollProgress = CGFloat(index)
   }
 
-  private func openCounterList() {
+  private func openCounterList(animated: Bool = true) {
     let width = max(containerWidth, 1)
     let maxOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(for: width)
-    CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
-      $locksRevealScroll,
-      reduceMotion: reduceMotion
-    )
-    withAnimation(settleSpring) {
-      cardOffset = maxOffset
-      isCounterListRevealed = true
+    if animated {
+      CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
+        $locksRevealScroll,
+        reduceMotion: reduceMotion
+      )
     }
+    if animated {
+      withAnimation(settleSpring) {
+        cardOffset = maxOffset
+        isCounterListRevealed = true
+      }
+    } else {
+      var transaction = Transaction()
+      transaction.disablesAnimations = true
+      withTransaction(transaction) {
+        cardOffset = maxOffset
+        isCounterListRevealed = true
+      }
+    }
+  }
+
+  private func applyInitialListRevealIfNeeded(width: CGFloat) {
+    guard !hasAppliedInitialListReveal, width > 0 else { return }
+    hasAppliedInitialListReveal = true
+    containerWidth = width
+    openCounterList(animated: false)
   }
 
   private func selectPageFromList(_ pageID: String) {
@@ -213,7 +235,7 @@ struct CounterPagerView: View {
     PagerToolbarBar(
       activePageTitle: activePageTitle,
       isPagerDragging: isPagerDragging,
-      onOpenCounterList: openCounterList,
+      onOpenCounterList: { openCounterList() },
       onShowHistory: { showHistory = true },
       onShowButtonSettings: { showButtonSettings = true }
     )

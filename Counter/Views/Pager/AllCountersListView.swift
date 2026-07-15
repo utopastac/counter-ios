@@ -64,8 +64,13 @@ struct AllCountersListView: View {
   private var listHeader: some View {
     HStack {
       Spacer()
-      CounterIconButton(icon: .cog) {
-        showAppSettings = true
+      HStack(spacing: SpaceToken.toolbarIconSpacing) {
+        if let onAddCounter {
+          CounterIconButton(icon: .plus, action: onAddCounter)
+        }
+        CounterIconButton(icon: .cog) {
+          showAppSettings = true
+        }
       }
     }
     .padding(.horizontal, SpaceToken.pageMargin)
