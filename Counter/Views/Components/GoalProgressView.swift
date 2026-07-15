@@ -53,20 +53,20 @@ struct GoalProgressRing: View {
   }
 
   /// Draws one wound-again lap on top of the completed base ring — an Apple Watch–style
-  /// "activity ring" overlap. A wider outline stroke sits underneath the normal-width fill,
-  /// so it peeks out as a visible rim/halo around the overlap's rounded caps (most noticeably
-  /// at the growing tip) without needing to be masked to the ring band.
+  /// "activity ring" overlap. A halo sits underneath *only* the growing tip end of the arc
+  /// (not the fixed 12 o'clock start, which just resumes the previous lap), so the fill drawn
+  /// on top leaves a visible rim around the tip's rounded cap without touching the start cap.
   private func loopOverlapArc(fraction: Double, clockwise: Bool) -> some View {
     let outlineWidth = SizeToken.Ring.overfillOutlineWidth
-    let outlineStroke = StrokeStyle(
-      lineWidth: lineWidth + outlineWidth * 2,
-      lineCap: .round,
-      lineJoin: .round
-    )
 
     return ZStack {
-      ProgressRingArc(fraction: fraction, lineWidth: lineWidth, clockwise: clockwise)
-        .stroke(colors.progressRingOverfillOutline, style: outlineStroke)
+      RingTipHalo(
+        fraction: fraction,
+        lineWidth: lineWidth,
+        haloRadius: lineWidth / 2 + outlineWidth,
+        clockwise: clockwise
+      )
+      .fill(colors.progressRingOverfillOutline)
 
       ProgressRingArc(fraction: fraction, lineWidth: lineWidth, clockwise: clockwise)
         .stroke(resolvedFillColor, style: ringStrokeStyle)
@@ -79,6 +79,47 @@ struct GoalProgressRing: View {
 
   private var resolvedFillColor: Color {
     fillColor ?? colors.progressRingFill
+  }
+}
+
+/// A small filled disc centered on the tip (leading end) of a `ProgressRingArc` with the same
+/// `fraction`/`lineWidth`/`clockwise` — used to draw the overlap "halo" at just the growing end
+/// of a loop, without also touching its fixed start at 12 o'clock.
+private struct RingTipHalo: Shape {
+  var fraction: Double
+  var lineWidth: CGFloat
+  var haloRadius: CGFloat
+  var clockwise: Bool
+
+  var animatableData: Double {
+    get { fraction }
+    set { fraction = newValue }
+  }
+
+  func path(in rect: CGRect) -> Path {
+    let clamped = max(min(fraction, 1), 0)
+    guard clamped > 0 else { return Path() }
+
+    let insetRect = rect.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
+    let radius = min(insetRect.width, insetRect.height) / 2
+    let center = CGPoint(x: rect.midX, y: rect.midY)
+    let direction: Double = clockwise ? 1 : -1
+    let sweepDegrees = clamped >= 0.999 ? 360 - 0.001 : clamped * 360
+    let tipAngle = Angle.degrees(-90 + direction * sweepDegrees)
+
+    let tipPoint = CGPoint(
+      x: center.x + radius * cos(tipAngle.radians),
+      y: center.y + radius * sin(tipAngle.radians)
+    )
+
+    return Path(
+      ellipseIn: CGRect(
+        x: tipPoint.x - haloRadius,
+        y: tipPoint.y - haloRadius,
+        width: haloRadius * 2,
+        height: haloRadius * 2
+      )
+    )
   }
 }
 
