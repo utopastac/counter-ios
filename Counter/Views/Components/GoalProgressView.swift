@@ -29,8 +29,8 @@ struct GoalProgressRing: View {
           .stroke(resolvedFillColor, style: ringStrokeStyle)
       }
 
-      if progress.overflowRingFraction > 0 {
-        loopOverlapArc(fraction: progress.overflowRingFraction)
+      if progress.overflowLoopProgress > 0 {
+        loopOverlapArc(fraction: progress.overflowLoopProgress)
       }
     }
     .animation(MotionToken.ringProgress(reduceMotion: reduceMotion), value: progress.current)
@@ -43,10 +43,14 @@ struct GoalProgressRing: View {
     StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
   }
 
-  /// Draws one wound-again lap on top of the completed base ring — an Apple Watch–style
+  /// Draws the wound-again lap(s) on top of the completed base ring — an Apple Watch–style
   /// "activity ring" overlap. A halo sits underneath *only* the growing tip end of the arc
   /// (not the fixed 12 o'clock start, which just resumes the previous lap), so the fill drawn
   /// on top leaves a visible rim around the tip's rounded cap without touching the start cap.
+  ///
+  /// `fraction` is the continuous, unwrapped `overflowLoopProgress` (can be > 1) — both shapes
+  /// below wrap it into `(0, 1]` themselves when drawing, which keeps the animatable value
+  /// monotonic and avoids it snapping backwards at each lap boundary.
   private func loopOverlapArc(fraction: Double) -> some View {
     let outlineWidth = SizeToken.Ring.overfillOutlineWidth
 
@@ -82,7 +86,7 @@ private struct RingTipHalo: Shape {
   }
 
   func path(in rect: CGRect) -> Path {
-    let clamped = max(min(fraction, 1), 0)
+    let clamped = Self.lapFraction(for: fraction)
     guard clamped > 0 else { return Path() }
 
     let insetRect = rect.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
@@ -104,6 +108,14 @@ private struct RingTipHalo: Shape {
         height: haloRadius * 2
       )
     )
+  }
+
+  /// See `ProgressRingArc`'s identical helper — kept local rather than shared since this is a
+  /// tiny, self-contained shape and pulling in a cross-file dependency isn't worth it.
+  private static func lapFraction(for fraction: Double) -> Double {
+    guard fraction > 0 else { return 0 }
+    let wrapped = fraction.truncatingRemainder(dividingBy: 1)
+    return wrapped == 0 ? 1 : wrapped
   }
 }
 

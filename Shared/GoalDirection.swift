@@ -45,21 +45,23 @@ struct GoalProgress {
     }
   }
 
-  /// Magnitude (0, 1] of the current lap once progress has gone past 100%, wound clockwise
-  /// on top of the completed base ring — mirrors how Apple's Activity rings keep wrapping
-  /// around themselves instead of stopping at one extra loop.
+  /// Continuous, *unwrapped* extra-lap progress once a count-up target is exceeded (e.g. 2.5
+  /// once `current` reaches 350% of `goal`) — wound clockwise on top of the completed base
+  /// ring, mirroring how Apple's Activity rings keep wrapping around themselves instead of
+  /// stopping at one extra loop.
   ///
   /// Only meaningful for `.countUp`: exceeding a target is worth celebrating with an extra
   /// lap. Exceeding a `.countDown` budget isn't an achievement, so it renders as an empty ring
   /// instead (see `rendersEmptyRing`) rather than looping forward.
   ///
-  /// Wraps with `truncatingRemainder` rather than capping, so 150%, 250%, 350%… all read as
-  /// "how far into the current lap", and the ring can loop indefinitely.
-  var overflowRingFraction: Double {
+  /// This deliberately does *not* wrap into `[0, 1]` — the ring shape does that internally when
+  /// drawing. Wrapping here would mean the value resets from ~1 back to ~0 every time `current`
+  /// crosses a lap boundary (e.g. 200%), and since that's the value SwiftUI animates between,
+  /// the ring would visibly unwind backwards across almost a whole lap instead of continuing
+  /// forward. Keeping it monotonic means every increase in `current` is a small forward step.
+  var overflowLoopProgress: Double {
     guard direction == .countUp, fractionComplete > 1 else { return 0 }
-    let excess = fractionComplete - 1
-    let wrapped = excess.truncatingRemainder(dividingBy: 1)
-    return wrapped == 0 ? 1 : wrapped
+    return fractionComplete - 1
   }
 
   var isOverGoal: Bool {

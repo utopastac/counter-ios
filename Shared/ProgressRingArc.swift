@@ -16,7 +16,7 @@ struct ProgressRingArc: Shape {
 
   func path(in rect: CGRect) -> Path {
     var path = Path()
-    let clamped = max(min(fraction, 1), 0)
+    let clamped = Self.lapFraction(for: fraction)
     guard clamped > 0 else { return path }
 
     let insetRect = rect.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
@@ -44,5 +44,15 @@ struct ProgressRingArc: Shape {
     }
 
     return path
+  }
+
+  /// Wraps a continuously-growing `fraction` (e.g. `1.5` for a lap-and-a-half) back into
+  /// `(0, 1]` for drawing, so a caller can animate an ever-increasing overflow value — see
+  /// `GoalProgress.overflowLoopProgress` — without the shape jumping backwards across each lap
+  /// boundary. Behaves identically to a plain `[0, 1]` clamp for values already in that range.
+  private static func lapFraction(for fraction: Double) -> Double {
+    guard fraction > 0 else { return 0 }
+    let wrapped = fraction.truncatingRemainder(dividingBy: 1)
+    return wrapped == 0 ? 1 : wrapped
   }
 }

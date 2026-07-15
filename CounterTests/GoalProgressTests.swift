@@ -8,34 +8,32 @@ struct GoalProgressTests {
     #expect(progress.fractionComplete == 70.0 / 150.0)
     #expect(progress.ringFraction == progress.fractionComplete)
     #expect(!progress.isOverGoal)
-    #expect(progress.overflowRingFraction == 0)
+    #expect(progress.overflowLoopProgress == 0)
   }
 
-  @Test func countUpOverGoalProducesOverflowFraction() {
+  @Test func countUpOverGoalProducesOverflowProgress() {
     let progress = GoalProgress(current: 180, goal: 150, direction: .countUp)
 
     #expect(progress.isOverGoal)
     #expect(progress.ringFraction == 1)
-    #expect(progress.overflowRingFraction > 0)
-    #expect(progress.overflowRingFraction <= 1)
+    #expect(progress.overflowLoopProgress > 0)
   }
 
-  @Test func overflowRingFractionLoopsInsteadOfCappingPastOneExtraLap() {
-    // 350% — well past the old "cap at 200%" ceiling — should read as 50% into the
-    // *current* lap, not stay pinned at a full extra loop.
+  @Test func overflowLoopProgressStaysUnwrappedPastOneExtraLap() {
+    // 350% should read as 2.5 extra laps, not wrap back down to 0.5 — wrapping here is what
+    // caused the ring to visibly animate backwards across a lap boundary, since that's the
+    // value SwiftUI interpolates between (the ring shape wraps it for drawing instead).
     let progress = GoalProgress(current: 525, goal: 150, direction: .countUp)
 
     #expect(progress.fractionComplete == 3.5)
-    #expect(progress.overflowRingFraction == 0.5)
+    #expect(progress.overflowLoopProgress == 2.5)
   }
 
-  @Test func overflowRingFractionShowsAFullLoopExactlyOnALapBoundary() {
-    // Exactly 300% — a whole number of extra laps — reads as a completed loop (1),
-    // matching how the primary ring shows "1" rather than "0" at exactly 100%.
+  @Test func overflowLoopProgressIsAWholeNumberExactlyOnALapBoundary() {
     let progress = GoalProgress(current: 450, goal: 150, direction: .countUp)
 
     #expect(progress.fractionComplete == 3)
-    #expect(progress.overflowRingFraction == 1)
+    #expect(progress.overflowLoopProgress == 2)
   }
 
   @Test func negativeCurrentIsFlaggedUnderZeroWithNoRingFraction() {
@@ -72,7 +70,7 @@ struct GoalProgressTests {
 
     #expect(progress.isOverGoal)
     #expect(progress.rendersEmptyRing)
-    #expect(progress.overflowRingFraction == 0)
+    #expect(progress.overflowLoopProgress == 0)
   }
 
   @Test func countDownRingFractionTracksRemainingBudget() {
