@@ -11,8 +11,8 @@ struct GoalProgressRing: View {
   var fillColor: Color?
 
   /// The primary 0...1 lap. Snaps to the full ring once progress goes past 100% (the overflow
-  /// arc then wraps on top of it) and drops to empty once progress goes below 0% (the
-  /// underflow arc then winds backward from that empty ring instead).
+  /// arc then wraps on top of it) and drops to empty once progress goes below 0% — there's no
+  /// backward/negative visualization, just an empty ring.
   private var fillFraction: Double {
     if progress.isUnderZero { return 0 }
     if progress.isOverGoal { return 1 }
@@ -29,17 +29,8 @@ struct GoalProgressRing: View {
           .stroke(resolvedFillColor, style: ringStrokeStyle)
       }
 
-      if progress.underflowRingFraction > 0 {
-        ProgressRingArc(fraction: progress.underflowRingFraction, lineWidth: lineWidth, clockwise: false)
-          .stroke(resolvedFillColor, style: ringStrokeStyle)
-      }
-
       if progress.overflowRingFraction > 0 {
-        loopOverlapArc(fraction: progress.overflowRingFraction, clockwise: true)
-      }
-
-      if progress.underflowOverlapFraction > 0 {
-        loopOverlapArc(fraction: progress.underflowOverlapFraction, clockwise: false)
+        loopOverlapArc(fraction: progress.overflowRingFraction)
       }
     }
     .animation(MotionToken.ringProgress(reduceMotion: reduceMotion), value: progress.current)
@@ -56,19 +47,14 @@ struct GoalProgressRing: View {
   /// "activity ring" overlap. A halo sits underneath *only* the growing tip end of the arc
   /// (not the fixed 12 o'clock start, which just resumes the previous lap), so the fill drawn
   /// on top leaves a visible rim around the tip's rounded cap without touching the start cap.
-  private func loopOverlapArc(fraction: Double, clockwise: Bool) -> some View {
+  private func loopOverlapArc(fraction: Double) -> some View {
     let outlineWidth = SizeToken.Ring.overfillOutlineWidth
 
     return ZStack {
-      RingTipHalo(
-        fraction: fraction,
-        lineWidth: lineWidth,
-        haloRadius: lineWidth / 2 + outlineWidth,
-        clockwise: clockwise
-      )
-      .fill(colors.progressRingOverfillOutline)
+      RingTipHalo(fraction: fraction, lineWidth: lineWidth, haloRadius: lineWidth / 2 + outlineWidth)
+        .fill(colors.progressRingOverfillOutline)
 
-      ProgressRingArc(fraction: fraction, lineWidth: lineWidth, clockwise: clockwise)
+      ProgressRingArc(fraction: fraction, lineWidth: lineWidth)
         .stroke(resolvedFillColor, style: ringStrokeStyle)
     }
   }
@@ -83,13 +69,12 @@ struct GoalProgressRing: View {
 }
 
 /// A small filled disc centered on the tip (leading end) of a `ProgressRingArc` with the same
-/// `fraction`/`lineWidth`/`clockwise` — used to draw the overlap "halo" at just the growing end
-/// of a loop, without also touching its fixed start at 12 o'clock.
+/// `fraction`/`lineWidth` — used to draw the overlap "halo" at just the growing end of a loop,
+/// without also touching its fixed start at 12 o'clock.
 private struct RingTipHalo: Shape {
   var fraction: Double
   var lineWidth: CGFloat
   var haloRadius: CGFloat
-  var clockwise: Bool
 
   var animatableData: Double {
     get { fraction }
@@ -103,9 +88,8 @@ private struct RingTipHalo: Shape {
     let insetRect = rect.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
     let radius = min(insetRect.width, insetRect.height) / 2
     let center = CGPoint(x: rect.midX, y: rect.midY)
-    let direction: Double = clockwise ? 1 : -1
     let sweepDegrees = clamped >= 0.999 ? 360 - 0.001 : clamped * 360
-    let tipAngle = Angle.degrees(-90 + direction * sweepDegrees)
+    let tipAngle = Angle.degrees(-90 + sweepDegrees)
 
     let tipPoint = CGPoint(
       x: center.x + radius * cos(tipAngle.radians),

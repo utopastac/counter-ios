@@ -53,27 +53,7 @@ struct GoalProgress {
   /// "how far into the current lap", and the ring can loop indefinitely.
   var overflowRingFraction: Double {
     guard fractionComplete > 1 else { return 0 }
-    return Self.loopFraction(of: fractionComplete - 1)
-  }
-
-  /// Magnitude (0, 1] of the first lap wound counter-clockwise from 12 o'clock once progress
-  /// has dropped below 0% (e.g. a negative logged total). Drawn plainly, the same way the
-  /// normal fill is drawn for the first 0...100% lap — only the *second* backward lap and
-  /// beyond (`underflowOverlapFraction`) gets the overlap outline treatment.
-  var underflowRingFraction: Double {
-    guard fractionComplete < 0 else { return 0 }
-    return min(-fractionComplete, 1)
-  }
-
-  /// Magnitude (0, 1] of the current lap once progress has gone past one full loop below 0%,
-  /// wound counter-clockwise on top of the completed first backward lap. Mirrors
-  /// `overflowRingFraction` and loops indefinitely the same way.
-  var underflowOverlapFraction: Double {
-    guard fractionComplete < -1 else { return 0 }
-    return Self.loopFraction(of: -fractionComplete - 1)
-  }
-
-  private static func loopFraction(of excess: Double) -> Double {
+    let excess = fractionComplete - 1
     let wrapped = excess.truncatingRemainder(dividingBy: 1)
     return wrapped == 0 ? 1 : wrapped
   }
@@ -82,6 +62,11 @@ struct GoalProgress {
     current > goal
   }
 
+  /// True once progress has dropped below 0% (e.g. a negative logged total). Not a state
+  /// today's UI can produce — there's no decrement, and entries require positive values —
+  /// but the ring still renders empty rather than snapping to a misleading full circle
+  /// (`ringFraction`'s countDown formula would otherwise read a negative `current` as "over
+  /// 100% of budget remaining").
   var isUnderZero: Bool {
     fractionComplete < 0
   }

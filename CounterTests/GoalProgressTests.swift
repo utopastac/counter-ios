@@ -38,23 +38,21 @@ struct GoalProgressTests {
     #expect(progress.overflowRingFraction == 1)
   }
 
-  @Test func negativeCurrentProducesUnderflowFraction() {
+  @Test func negativeCurrentIsFlaggedUnderZeroWithNoRingFraction() {
     let progress = GoalProgress(current: -30, goal: 150, direction: .countUp)
 
     #expect(progress.isUnderZero)
     #expect(progress.ringFraction == 0)
-    #expect(progress.underflowRingFraction == 0.2)
-    #expect(progress.underflowOverlapFraction == 0)
   }
 
-  @Test func underflowRingFractionLoopsPastOneBackwardLap() {
-    // -250% — more than one full backward lap — should show a completed backward loop
-    // plus 50% into the next one, looping the same way overflow does.
-    let progress = GoalProgress(current: -375, goal: 150, direction: .countUp)
+  @Test func negativeCurrentCountDownIsAlsoFlaggedUnderZero() {
+    // A negative `current` would otherwise make the countDown formula (delta/goal) read as
+    // *more* remaining budget than the goal itself — `isUnderZero` exists so the ring can
+    // render empty instead of snapping to a misleadingly full circle.
+    let progress = GoalProgress(current: -400, goal: 150, direction: .countDown)
 
-    #expect(progress.fractionComplete == -2.5)
-    #expect(progress.underflowRingFraction == 1)
-    #expect(progress.underflowOverlapFraction == 0.5)
+    #expect(progress.isUnderZero)
+    #expect(progress.ringFraction == 1)
   }
 
   @Test func countDownRingFractionTracksRemainingBudget() {
