@@ -196,10 +196,13 @@ enum MotionToken {
   }
 
   static let ringProgressDuration: Double = 0.38
-  static let ringProgressBounce: Double = 0.1
 
+  // No `extraBounce` here (unlike the other `.smooth` tokens above): the ring's fill fraction
+  // is clamped at 0 and 1, so a spring overshooting past those bounds is invisible in one
+  // direction but not the other — you'd see it reach 100% and then visibly recede before
+  // settling back at full, reading as the ring animating backwards.
   static var ringProgress: Animation {
-    .smooth(duration: ringProgressDuration, extraBounce: ringProgressBounce)
+    .smooth(duration: ringProgressDuration)
   }
 
   static func ringProgress(reduceMotion: Bool) -> Animation? {
