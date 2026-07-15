@@ -6,6 +6,7 @@ struct CustomCounterPageContent: View {
 
   @Environment(\.modelContext) private var modelContext
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
   @State private var showCustomAmount = false
   @State private var showsEntryLog = false
@@ -67,6 +68,7 @@ struct CustomCounterPageContent: View {
       ) {
         VStack(alignment: .leading, spacing: 0) {
           Button {
+            guard !counterRevealIsDragging else { return }
             showsEntryLog = true
           } label: {
             VStack(alignment: .leading, spacing: 0) {

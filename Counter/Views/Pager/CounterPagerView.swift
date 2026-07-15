@@ -210,39 +210,13 @@ struct CounterPagerView: View {
 
   @ViewBuilder
   private var pagerToolbar: some View {
-    VStack(spacing: 0) {
-      HStack(spacing: SpaceToken.toolbarIconSpacing) {
-        CounterIconButton(icon: .listSortDescending) {
-          openCounterList()
-        }
-
-        Text(activePageTitle)
-          .counterTextStyle(.pageTitle)
-          .lineLimit(1)
-
-        Spacer(minLength: 0)
-
-        HStack(spacing: SpaceToken.toolbarIconSpacing) {
-          CounterIconButton(icon: .chartBar) {
-            showHistory = true
-          }
-
-          CounterIconButton(icon: .slidersHorizontal) {
-            showButtonSettings = true
-          }
-        }
-      }
-      .padding(.horizontal, SpaceToken.toolbarHorizontal)
-      .padding(.top, SpaceToken.toolbarTop)
-      .padding(.bottom, SpaceToken.toolbarBottom)
-
-      Rectangle()
-        .fill(colors.textPrimary)
-        .frame(height: BorderToken.toolbar)
-        .padding(.horizontal, SpaceToken.u1)
-    }
-    .background(Color.clear)
-    .allowsHitTesting(!isPagerDragging)
+    PagerToolbarBar(
+      activePageTitle: activePageTitle,
+      isPagerDragging: isPagerDragging,
+      onOpenCounterList: openCounterList,
+      onShowHistory: { showHistory = true },
+      onShowButtonSettings: { showButtonSettings = true }
+    )
   }
 
   @ViewBuilder
@@ -276,6 +250,47 @@ struct CounterPagerView: View {
         }
       )
     }
+  }
+}
+
+private struct PagerToolbarBar: View {
+  @Environment(\.semanticColors) private var colors
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+
+  let activePageTitle: String
+  let isPagerDragging: Bool
+  let onOpenCounterList: () -> Void
+  let onShowHistory: () -> Void
+  let onShowButtonSettings: () -> Void
+
+  var body: some View {
+    VStack(spacing: 0) {
+      HStack(spacing: SpaceToken.toolbarIconSpacing) {
+        CounterIconButton(icon: .listSortDescending, action: onOpenCounterList)
+
+        Text(activePageTitle)
+          .counterTextStyle(.pageTitle)
+          .lineLimit(1)
+
+        Spacer(minLength: 0)
+
+        HStack(spacing: SpaceToken.toolbarIconSpacing) {
+          CounterIconButton(icon: .chartBar, action: onShowHistory)
+
+          CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
+        }
+      }
+      .padding(.horizontal, SpaceToken.toolbarHorizontal)
+      .padding(.top, SpaceToken.toolbarTop)
+      .padding(.bottom, SpaceToken.toolbarBottom)
+
+      Rectangle()
+        .fill(colors.textPrimary)
+        .frame(height: BorderToken.toolbar)
+        .padding(.horizontal, SpaceToken.u1)
+    }
+    .background(Color.clear)
+    .allowsHitTesting(!isPagerDragging && !counterRevealIsDragging)
   }
 }
 

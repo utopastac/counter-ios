@@ -5,6 +5,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   @Environment(\.counterPagerAccents) private var pagerAccents
   @Environment(\.counterPagerScrollProgress) private var pagerScrollProgress
   @Environment(\.counterPagerIsDragging) private var counterPagerIsDragging
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
   @Environment(\.colorScheme) private var colorScheme
 
   let heroValue: String
@@ -81,7 +82,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
         }
         .padding(.horizontal, SpaceToken.pageMargin)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
-        .allowsHitTesting(!counterPagerIsDragging)
+        .allowsHitTesting(!counterPagerIsDragging && !counterRevealIsDragging)
       }
     }
   }
@@ -112,6 +113,7 @@ struct CounterPagerPageRoot<Content: View>: View {
 
 private struct CounterPageHeader: View {
   @Environment(\.colorScheme) private var colorScheme
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
   let heroValue: String
   let heroSubtitle: String?
@@ -128,6 +130,7 @@ private struct CounterPageHeader: View {
   var body: some View {
     HStack(alignment: .top, spacing: SpaceToken.u4) {
       Button {
+        guard !counterRevealIsDragging else { return }
         guard canExpand else { return }
         withAnimation(CounterPageToken.headerToggleAnimation) {
           isExpanded.toggle()

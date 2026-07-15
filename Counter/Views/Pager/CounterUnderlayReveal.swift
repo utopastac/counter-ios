@@ -55,6 +55,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
             )
           )
           .offset(x: inset)
+          .counterRevealDragging(isDraggingReveal)
           .simultaneousGesture(revealGesture(maxOffset: maxOffset))
       }
       .frame(width: width, height: height, alignment: .topLeading)
@@ -120,10 +121,10 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       .onEnded { value in
         let wasDragging = isDraggingReveal
         let axis = dragAxis
-        isDraggingReveal = false
         dragAxis = nil
 
         guard wasDragging, axis == .horizontal else {
+          isDraggingReveal = false
           setRevealScrollLocked(false)
           return
         }
@@ -143,6 +144,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           isRevealed = shouldOpen
         }
         scheduleRevealScrollUnlock()
+        scheduleRevealDragReset()
       }
   }
 
@@ -166,6 +168,13 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
     Task { @MainActor in
       try? await Task.sleep(for: .seconds(duration))
       setRevealScrollLocked(false)
+    }
+  }
+
+  /// Clears reveal-drag state after the current touch cycle so button actions do not fire on release.
+  private func scheduleRevealDragReset() {
+    Task { @MainActor in
+      isDraggingReveal = false
     }
   }
 

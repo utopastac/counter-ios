@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CounterActionButton: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
   let label: String?
   let icon: CounterLucideIconName?
@@ -20,7 +21,10 @@ struct CounterActionButton: View {
   }
 
   var body: some View {
-    Button(action: action) {
+    Button {
+      guard !counterRevealIsDragging else { return }
+      action()
+    } label: {
       Group {
         if let icon {
           CounterLucideIcon(icon: icon, color: colors.interactivePrimaryForeground)
@@ -40,12 +44,16 @@ struct CounterActionButton: View {
 
 struct CounterIconButton: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
   let icon: CounterLucideIconName
   let action: () -> Void
 
   var body: some View {
-    Button(action: action) {
+    Button {
+      guard !counterRevealIsDragging else { return }
+      action()
+    } label: {
       CounterLucideIcon(icon: icon, color: colors.textPrimary)
         .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
         .padding(SizeToken.iconButtonHitOutset)

@@ -38,6 +38,10 @@ private struct CounterPagerIsDraggingKey: EnvironmentKey {
   static let defaultValue = false
 }
 
+private struct CounterRevealIsDraggingKey: EnvironmentKey {
+  static let defaultValue = false
+}
+
 extension EnvironmentValues {
   var designSystem: CounterDesignSystem {
     get {
@@ -71,6 +75,11 @@ extension EnvironmentValues {
     get { self[CounterPagerIsDraggingKey.self] }
     set { self[CounterPagerIsDraggingKey.self] = newValue }
   }
+
+  var counterRevealIsDragging: Bool {
+    get { self[CounterRevealIsDraggingKey.self] }
+    set { self[CounterRevealIsDraggingKey.self] = newValue }
+  }
 }
 
 extension View {
@@ -89,6 +98,10 @@ extension View {
 
   func counterPagerDragging(_ isDragging: Bool) -> some View {
     environment(\.counterPagerIsDragging, isDragging)
+  }
+
+  func counterRevealDragging(_ isDragging: Bool) -> some View {
+    environment(\.counterRevealIsDragging, isDragging)
   }
 
   /// Syncs semantic tokens with the current system light/dark mode.
