@@ -5,6 +5,12 @@ import SwiftData
 final class CustomCounter {
   static let defaultCalorieGoal = 2200
   static let defaultButtonValues: [Int] = [1, 2, 5, 10, 20, 25, 50, 75, 100]
+  static let untitledName = "Untitled"
+
+  static func normalizedName(from raw: String) -> String {
+    let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+    return trimmed.isEmpty ? untitledName : trimmed
+  }
 
   var id: UUID
   var name: String

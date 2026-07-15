@@ -24,14 +24,14 @@ struct CreateCounterView: View {
     NavigationStack {
       VStack(spacing: 0) {
         CounterSheetHeader(
-          title: "New counter",
+          title: "Add new",
           trailingTitle: "Cancel",
           onDone: { dismiss() }
         )
 
         ScrollView {
           VStack(alignment: .leading, spacing: 0) {
-            SettingsLabeledField(label: "Title", text: $name, placeholder: "e.g. Protein")
+            SettingsLabeledField(label: "Title", text: $name, placeholder: CustomCounter.untitledName)
             SettingsSectionDivider()
 
             goalAndResetContent
@@ -120,7 +120,7 @@ struct CreateCounterView: View {
   }
 
   private var canCreate: Bool {
-    CounterFormValidation.canSave(name: name, goalText: goalText)
+    CounterFormValidation.canSave(name: nil, goalText: goalText)
   }
 
   private var hasActiveGoal: Bool {
@@ -132,11 +132,8 @@ struct CreateCounterView: View {
   }
 
   private func createCounter() {
-    let trimmed = name.trimmingCharacters(in: .whitespaces)
-    guard !trimmed.isEmpty else { return }
-
     let counter = CustomCounter(
-      name: trimmed,
+      name: CustomCounter.normalizedName(from: name),
       goal: parsedGoal,
       resetPeriod: resetPeriod,
       resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),

@@ -37,7 +37,7 @@ struct CounterWidgetProvider: AppIntentTimelineProvider {
   private func currentEntry(for counter: CounterWidgetEntity?) -> CounterWidgetEntry {
     let resolved = counter ?? CounterWidgetEntity(
       id: "preview",
-      title: "Counter",
+      title: CustomCounter.untitledName,
       paletteIndex: 0
     )
     return CounterWidgetEntry(

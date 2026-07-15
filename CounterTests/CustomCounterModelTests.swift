@@ -62,4 +62,10 @@ struct CustomCounterModelTests {
     #expect(CustomCounter.nextPaletteIndex(forExistingCount: CustomCounter.paletteSlotCount - 1) == CustomCounter.paletteSlotCount - 1)
     #expect(CustomCounter.nextPaletteIndex(forExistingCount: CustomCounter.paletteSlotCount) == 0)
   }
+
+  @Test func normalizedNameUsesUntitledForBlankInput() {
+    #expect(CustomCounter.normalizedName(from: "") == CustomCounter.untitledName)
+    #expect(CustomCounter.normalizedName(from: "   ") == CustomCounter.untitledName)
+    #expect(CustomCounter.normalizedName(from: "Protein") == "Protein")
+  }
 }

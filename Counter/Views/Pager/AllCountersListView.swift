@@ -24,7 +24,6 @@ struct AllCountersListView: View {
               .padding(.horizontal, SpaceToken.pageMargin)
               .padding(.vertical, SpaceToken.componentPadding)
           }
-          .navigationTitle("Counters")
           .navigationBarTitleDisplayMode(.inline)
           .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -64,8 +63,6 @@ struct AllCountersListView: View {
 
   private var listHeader: some View {
     HStack {
-      Text("Counters")
-        .counterTextStyle(.pageTitle)
       Spacer()
       CounterIconButton(icon: .cog) {
         showAppSettings = true

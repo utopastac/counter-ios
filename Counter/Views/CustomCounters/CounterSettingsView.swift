@@ -126,14 +126,14 @@ struct CounterSettingsView: View {
       .counterDesignSystemFromAppearancePreference()
     }
     .counterSheetPresentation()
-    .alert("Delete counter?", isPresented: $showDeleteConfirmation) {
+    .alert("Delete?", isPresented: $showDeleteConfirmation) {
       Button("Delete", role: .destructive) {
         onDelete?()
         dismiss()
       }
       Button("Cancel", role: .cancel) {}
     } message: {
-      Text("This will permanently delete \"\(trimmedName)\" and all of its entries. This can't be undone.")
+      Text("This will permanently delete \"\(displayName)\" and all of its entries. This can't be undone.")
     }
   }
 
@@ -217,7 +217,7 @@ struct CounterSettingsView: View {
     Group {
       SettingsSectionDivider()
 
-      SettingsDestructiveRow(label: "Delete counter") {
+      SettingsDestructiveRow(label: "Delete") {
         showDeleteConfirmation = true
       }
       .padding(.bottom, SpaceToken.u3)
@@ -226,9 +226,13 @@ struct CounterSettingsView: View {
 
   private var navigationTitle: String {
     if includeNameField {
-      return "Counter settings"
+      return "Settings"
     }
     return title
+  }
+
+  private var displayName: String {
+    CustomCounter.normalizedName(from: trimmedName)
   }
 
   private var trimmedName: String {

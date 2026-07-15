@@ -9,9 +9,9 @@ struct WatchCounterListView: View {
       Group {
         if counters.isEmpty {
           ContentUnavailableView(
-            "No Counters",
+            "Nothing yet",
             systemImage: "number.square",
-            description: Text("Create counters on iPhone")
+            description: Text("Add one on iPhone")
           )
         } else {
           List(counters) { counter in
@@ -30,7 +30,6 @@ struct WatchCounterListView: View {
           }
         }
       }
-      .navigationTitle("Counters")
     }
   }
 }

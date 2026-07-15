@@ -39,7 +39,7 @@ struct CounterPagerView: View {
   }
 
   private var activePageTitle: String {
-    activeCounter?.name ?? "Counter"
+    activeCounter?.name ?? CustomCounter.untitledName
   }
 
   private var settleSpring: Animation {
@@ -228,7 +228,7 @@ struct CounterPagerView: View {
         counter: counter,
         onSave: { save in
           if let name = save.name {
-            counter.name = name
+            counter.name = CustomCounter.normalizedName(from: name)
           }
           counter.buttonValues = save.buttonValues
           counter.goal = save.goal

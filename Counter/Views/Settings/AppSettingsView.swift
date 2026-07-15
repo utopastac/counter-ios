@@ -43,7 +43,7 @@ struct AppSettingsView: View {
       }
       Button("Cancel", role: .cancel) {}
     } message: {
-      Text("This will permanently delete all counters and entries. This can't be undone.")
+      Text("This will permanently delete everything. This can't be undone.")
     }
   }
 }

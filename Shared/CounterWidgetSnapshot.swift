@@ -12,7 +12,7 @@ struct CounterWidgetSnapshot {
 
   static let placeholder = CounterWidgetSnapshot(
     counterID: "preview",
-    title: "Counter",
+    title: CustomCounter.untitledName,
     paletteIndex: 0,
     heroValue: "2424",
     heroCaption: "remaining",

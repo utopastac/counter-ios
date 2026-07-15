@@ -3,4 +3,5 @@ import Foundation
 enum AppGroup {
   static let identifier = "group.com.becter.counter"
   static let storeFilename = "Counter-v4.store"
+  static let untitledCounterName = "Untitled"
 }

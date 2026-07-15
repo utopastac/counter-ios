@@ -72,7 +72,7 @@ struct NewCounterButton: View {
   var body: some View {
     Button(action: action) {
       HStack {
-        Text("New counter")
+        Text("Add new")
           .counterTextStyle(.sectionTitle)
 
         Spacer(minLength: SpaceToken.u1)

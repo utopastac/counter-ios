@@ -9,7 +9,7 @@ struct CounterComplicationEntry: TimelineEntry {
 
 struct CounterComplicationProvider: TimelineProvider {
   func placeholder(in context: Context) -> CounterComplicationEntry {
-    CounterComplicationEntry(date: .now, title: "Counter", heroValue: "1200")
+    CounterComplicationEntry(date: .now, title: AppGroup.untitledCounterName, heroValue: "1200")
   }
 
   func getSnapshot(in context: Context, completion: @escaping (CounterComplicationEntry) -> Void) {

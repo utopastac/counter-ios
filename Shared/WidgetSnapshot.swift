@@ -15,7 +15,7 @@ enum WidgetSnapshot {
   }
 
   static var title: String {
-    defaults?.string(forKey: Keys.title) ?? "Counter"
+    defaults?.string(forKey: Keys.title) ?? AppGroup.untitledCounterName
   }
 
   static var heroValue: String {

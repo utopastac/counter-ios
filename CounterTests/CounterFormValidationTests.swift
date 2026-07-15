@@ -1,9 +1,9 @@
 import Testing
 
 struct CounterFormValidationTests {
-  @Test func requiresANonEmptyNameWhenNameIsValidated() {
-    #expect(!CounterFormValidation.canSave(name: "", goalText: ""))
-    #expect(!CounterFormValidation.canSave(name: "   ", goalText: ""))
+  @Test func allowsEmptyNameWhenNameIsValidated() {
+    #expect(CounterFormValidation.canSave(name: "", goalText: ""))
+    #expect(CounterFormValidation.canSave(name: "   ", goalText: ""))
     #expect(CounterFormValidation.canSave(name: "Protein", goalText: ""))
   }
 
