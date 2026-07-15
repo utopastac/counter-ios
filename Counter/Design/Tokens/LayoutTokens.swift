@@ -238,6 +238,8 @@ enum CounterPageToken {
   static let statsToQuickActionsSpacing: CGFloat = SpaceToken.u3
   /// Gap between quick-add actions and the entry-added toast (10 grid units).
   static let toastTopOffset: CGFloat = GridToken.units(10)
+  /// Inset below the entry log preview and "All entries" control (2 grid units).
+  static let entryLogBottomInset: CGFloat = SpaceToken.u2
 
   static let headerToggleAnimation: Animation = .spring(response: 0.38, dampingFraction: 0.86)
 }

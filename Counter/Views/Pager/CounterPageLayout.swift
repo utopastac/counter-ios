@@ -78,7 +78,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
 
           entryLog()
             .frame(maxWidth: .infinity, alignment: .bottomLeading)
-            .padding(.bottom, SpaceToken.u3)
+            .padding(.bottom, CounterPageToken.entryLogBottomInset)
         }
         .padding(.horizontal, SpaceToken.pageMargin)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
