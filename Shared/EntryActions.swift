@@ -44,7 +44,7 @@ enum EntryActions {
       entry.value += value
       session.lastTap = now
       quickAddSessions[scope] = session
-      try? context.save()
+      AppLog.attempt("Save quick-add batch") { try context.save() }
       return AddedEntry(entryID: entry.id, value: entry.value)
     }
 
@@ -60,13 +60,13 @@ enum EntryActions {
       clearQuickAddSession(for: .counter(counterID), entryID: id)
     }
     context.delete(entry)
-    try? context.save()
+    AppLog.attempt("Save entry deletion") { try context.save() }
   }
 
   static func updateCounterEntry(id: UUID, value: Int, in context: ModelContext) {
     guard let entry = fetchCounterEntry(id: id, in: context) else { return }
     entry.value = value
-    try? context.save()
+    AppLog.attempt("Save entry update") { try context.save() }
   }
 
   private static func fetchCounterEntry(id: UUID, in context: ModelContext) -> CounterEntry? {

@@ -26,7 +26,7 @@ enum CalorieMigration {
       context.delete(settings)
     }
 
-    try? context.save()
+    AppLog.attempt("Save calorie migration") { try context.save() }
   }
 
   private static func findCaloriesCounter(in context: ModelContext) -> CustomCounter? {

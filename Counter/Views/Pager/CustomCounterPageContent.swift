@@ -18,15 +18,11 @@ struct CustomCounterPageContent: View {
   }
 
   private var periodTotal: Int {
-    CounterPeriodCalculator.total(from: counter.entries, for: counter)
+    counter.currentTotal()
   }
 
   private var ringProgress: GoalProgress {
-    GoalProgressCalculator.ringDisplay(
-      current: periodTotal,
-      goal: counter.effectiveGoal,
-      direction: counter.goalDirection
-    )
+    counter.currentRingDisplay()
   }
 
   private var previewItems: [EntryLogPreviewItem] {
@@ -48,11 +44,7 @@ struct CustomCounterPageContent: View {
 
     rows.append(CounterStatRow(id: "added", value: "\(periodTotal)", label: "Added"))
 
-    if let goalProgress = GoalProgressCalculator.progress(
-      current: periodTotal,
-      goal: counter.effectiveGoal,
-      direction: counter.goalDirection
-    ) {
+    if let goalProgress = counter.currentProgress() {
       rows.append(
         CounterStatRow(
           id: "summary",
@@ -140,19 +132,11 @@ struct CustomCounterPageContent: View {
   }
 
   private var heroValue: String {
-    GoalProgressCalculator.progress(
-      current: periodTotal,
-      goal: counter.effectiveGoal,
-      direction: counter.goalDirection
-    )?.heroValue ?? "\(periodTotal)"
+    counter.currentProgress()?.heroValue ?? "\(periodTotal)"
   }
 
   private var heroSubtitle: String? {
-    GoalProgressCalculator.progress(
-      current: periodTotal,
-      goal: counter.effectiveGoal,
-      direction: counter.goalDirection
-    )?.heroSubtitle
+    counter.currentProgress()?.heroSubtitle
   }
 
   private func migratePresetButtons(for counter: CustomCounter) {

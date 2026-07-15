@@ -73,7 +73,8 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
     }
 
     let duration = reduceMotion ? 0.2 : MotionToken.revealSettleDuration
-    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+    Task { @MainActor in
+      try? await Task.sleep(for: .seconds(duration))
       var unlockTransaction = Transaction()
       unlockTransaction.disablesAnimations = true
       withTransaction(unlockTransaction) {
@@ -162,7 +163,8 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
 
   private func scheduleRevealScrollUnlock() {
     let duration = reduceMotion ? 0.2 : MotionToken.revealSettleDuration
-    DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+    Task { @MainActor in
+      try? await Task.sleep(for: .seconds(duration))
       setRevealScrollLocked(false)
     }
   }

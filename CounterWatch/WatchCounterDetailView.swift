@@ -6,7 +6,7 @@ struct WatchCounterDetailView: View {
   @Environment(\.modelContext) private var modelContext
 
   private var periodTotal: Int {
-    CounterPeriodCalculator.total(from: counter.entries, for: counter)
+    counter.currentTotal()
   }
 
   var body: some View {
@@ -30,11 +30,7 @@ struct WatchCounterDetailView: View {
   }
 
   private var heroValue: String {
-    GoalProgressCalculator.progress(
-      current: periodTotal,
-      goal: counter.effectiveGoal,
-      direction: counter.goalDirection
-    ).map { progress in
+    counter.currentProgress().map { progress in
       switch counter.goalDirection {
       case .countUp:
         return "\(progress.current)/\(progress.goal)"

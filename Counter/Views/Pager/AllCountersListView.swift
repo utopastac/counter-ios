@@ -80,17 +80,9 @@ struct AllCountersListView: View {
   private var listCards: some View {
     VStack(alignment: .leading, spacing: SpaceToken.u1) {
       ForEach(counters) { counter in
-        let total = CounterPeriodCalculator.total(from: counter.entries, for: counter)
-        let ringProgress = GoalProgressCalculator.ringDisplay(
-          current: total,
-          goal: counter.effectiveGoal,
-          direction: counter.goalDirection
-        )
-        let progress = GoalProgressCalculator.progress(
-          current: total,
-          goal: counter.effectiveGoal,
-          direction: counter.goalDirection
-        )
+        let total = counter.currentTotal()
+        let ringProgress = counter.currentRingDisplay()
+        let progress = counter.currentProgress()
 
         CounterListCard(
           accent: .forCounter(counter),

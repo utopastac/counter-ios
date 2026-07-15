@@ -22,6 +22,21 @@ enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable {
     case .monthly: "this month"
     }
   }
+
+  /// Formats a day-of-month as an ordinal string (e.g. `1` → `"1st"`, `22` → `"22nd"`).
+  ///
+  /// Shared by the monthly "resets on" picker and any other UI that needs to
+  /// describe a specific day of the month.
+  static func ordinalDay(_ day: Int) -> String {
+    let suffix: String
+    switch day % 10 {
+    case 1 where day % 100 != 11: suffix = "st"
+    case 2 where day % 100 != 12: suffix = "nd"
+    case 3 where day % 100 != 13: suffix = "rd"
+    default: suffix = "th"
+    }
+    return "\(day)\(suffix)"
+  }
 }
 
 struct CounterPeriodRange {

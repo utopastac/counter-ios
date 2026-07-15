@@ -14,8 +14,8 @@ A simple iOS calorie and custom counter app.
 
 ## Requirements
 
-- Xcode 26+ (Swift 6.3)
-- iOS 17+ / watchOS 10+
+- Xcode 26+ (Swift 6.0, strict concurrency)
+- iOS 18+ / watchOS 10+
 
 ## Setup
 
@@ -40,9 +40,28 @@ Entries logged on Watch appear instantly on iPhone (and vice versa) via the shar
 ```
 Counter/             iOS app
 CounterWatch/        watchOS companion
+CounterWidgets/      Home screen widgets (WidgetKit + App Intents)
 CounterWatchWidgets/ Watch complication (WidgetKit)
-Shared/              Models + SwiftData container (App Group)
+Shared/              Models + SwiftData container (App Group) + domain logic
+CounterTests/        Unit tests (Swift Testing) for Shared/ domain logic
 ```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the module map, data flow, and the
+reasoning behind the app's architecture, and [docs/DECISIONS.md](docs/DECISIONS.md) for a
+log of the specific engineering decisions made while building and refactoring it.
+
+## Testing
+
+Domain logic in `Shared/` (period math, goal progress, history aggregation, quick-add
+batching, calorie migration) is covered by the `CounterTests` target, using Swift Testing.
+
+```sh
+xcodebuild -project Counter.xcodeproj -scheme Counter \
+  -destination 'platform=iOS Simulator,name=iPhone 16' test
+```
+
+Or open the project in Xcode and run the `CounterTests` target from the Test navigator
+(⌘U). See [docs/TESTING.md](docs/TESTING.md) for what is and isn't covered, and why.
 
 ## Notes
 

@@ -10,7 +10,7 @@ enum AppDataReset {
     deleteAll(CounterEntry.self, in: context)
     deleteAll(CalorieEntry.self, in: context)
     deleteAll(AppSettings.self, in: context)
-    try? context.save()
+    AppLog.attempt("Save full data reset") { try context.save() }
 
     EntryActions.clearAllQuickAddSessions()
     WidgetSnapshot.clear()

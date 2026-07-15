@@ -17,7 +17,7 @@ enum SampleDataSeeder {
     seedProteinCounter(in: context)
     seedMoneyCounter(in: context)
 
-    try? context.save()
+    AppLog.attempt("Save seeded sample data") { try context.save() }
   }
 
   private static func hasAnyCounters(in context: ModelContext) -> Bool {
@@ -105,7 +105,7 @@ enum SampleDataSeeder {
       counter.paletteIndex = CustomCounter.normalizedPaletteIndex(index)
     }
 
-    try? context.save()
+    AppLog.attempt("Save palette index migration") { try context.save() }
     UserDefaults.standard.set(true, forKey: paletteMigrationKey)
   }
 }

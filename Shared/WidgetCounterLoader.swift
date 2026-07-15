@@ -29,7 +29,7 @@ enum WidgetCounterLoader {
     }
 
     EntryActions.addCounterEntryQuick(value: amount, counter: counter, in: context)
-    try? context.save()
+    AppLog.attempt("Save widget quick-add") { try context.save() }
     WidgetSnapshot.reloadTimelines()
   }
 
@@ -38,17 +38,9 @@ enum WidgetCounterLoader {
     context: ModelContext
   ) -> CounterWidgetSnapshot {
     let paletteIndex = counter.effectivePaletteIndex
-    let total = CounterPeriodCalculator.total(from: counter.entries, for: counter)
-    let progress = GoalProgressCalculator.progress(
-      current: total,
-      goal: counter.effectiveGoal,
-      direction: counter.goalDirection
-    )
-    let ring = GoalProgressCalculator.ringDisplay(
-      current: total,
-      goal: counter.effectiveGoal,
-      direction: counter.goalDirection
-    )
+    let total = counter.currentTotal()
+    let progress = counter.currentProgress()
+    let ring = counter.currentRingDisplay()
     let buttons = QuickAddConfiguration.filledPresets(
       from: counter.buttonValues,
       defaults: QuickAddConfiguration.defaultCounterPresets

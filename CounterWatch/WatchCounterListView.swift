@@ -21,7 +21,9 @@ struct WatchCounterListView: View {
               HStack {
                 Text(counter.name)
                 Spacer()
-                Text("\(todayTotal(for: counter))")
+                // Uses the counter's own reset period (not just "today") so this total always
+                // agrees with the period total shown in `WatchCounterDetailView` for weekly/monthly counters.
+                Text("\(counter.currentTotal())")
                   .foregroundStyle(.secondary)
               }
             }
@@ -30,10 +32,6 @@ struct WatchCounterListView: View {
       }
       .navigationTitle("Counters")
     }
-  }
-
-  private func todayTotal(for counter: CustomCounter) -> Int {
-    HistoryAggregator.counterTotal(from: counter.entries, on: .now)
   }
 }
 
