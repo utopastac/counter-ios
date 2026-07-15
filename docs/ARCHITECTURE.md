@@ -85,13 +85,49 @@ namespaced pure/near-pure functions:
 | `HistoryAggregator` (`Shared/HistoryAggregator.swift`) | Buckets entries into `DailyValue`s for the history chart across day/week/month windows |
 | `EntryActions` (`Shared/EntryActions.swift`) | Stateless insert/update/delete of a `CounterEntry` |
 | `QuickAddSessionStore` (`Shared/QuickAddSessionStore.swift`) | The 2-second quick-add batching window. A real (non-static) type rather than another enum — see "Quick-add batching state" below |
-| `QuickAddConfiguration` (`Shared/QuickAddConfiguration.swift`) | Default/normalized quick-add preset button values |
+| `QuickAddConfiguration` (`Shared/QuickAddConfiguration.swift`) | Default/normalized quick-add preset button values, which built-in preset set a counter defaults to by name, and applying a single preset-field edit |
+| `AmountInput` (`Shared/AmountInput.swift`) | Text-field sanitization/parsing rules for numeric input — amount entry, quick-add preset editing, goal fields, entry-log editing, the numeric keypad |
+| `CounterFormValidation` (`Shared/CounterFormValidation.swift`) | The create/edit form save-gating rule (name required if present, goal text optional but must parse if non-empty) |
+| `HistoryChartScale` (`Shared/HistoryChartScale.swift`) | Y-axis "nice maximum" and tick-value math for the history bar chart |
 | `CalorieMigration` (`Shared/CalorieMigration.swift`) | One-time migration of the legacy single-counter calorie model into `CustomCounter`, run automatically by `CounterMigrationPlan` — see "Schema migration" below |
 | `CustomCounter.currentTotal/currentProgress/currentRingDisplay` (`Shared/CustomCounter+Progress.swift`) | Convenience combinators tying the above together for "this counter's current period" — used by the pager, list, widgets, and watch so they can't quietly diverge |
 
 Views call into these directly. This keeps the object graph flat (a view either owns UI
 state or reads/writes SwiftData through a one-line static call) and keeps the domain logic
 unit-testable without instantiating any SwiftUI view — see [TESTING.md](TESTING.md).
+
+A second pass pulled logic that was still embedded *inside* views out into `Shared/` once it
+turned out to be genuinely duplicated or silently diverging rather than view-specific:
+
+- `CounterResetPeriod.defaultAnchorDay(calendar:)` / `.normalizedAnchorDay(_:calendar:)` — the
+  create and edit forms each had their own hand-rolled "what anchor day should this period
+  start from" logic, and they disagreed: create always overwrote the anchor on period change,
+  edit only corrected it when it was out of range. Both now call the same
+  `normalizedAnchorDay`, which is the more correct of the two behaviors (it doesn't discard an
+  already-valid anchor the user picked just because they clicked through another period first).
+- `GoalProgress.compactHeroValue` (`Shared/GoalDirection.swift`) — the Watch detail view
+  formatted its hero number differently from every other surface (`"70/150"` instead of just
+  `"70"`) because it has no room for a second caption line the way the iPhone pager/list do.
+  That was inline `switch` logic in the view; it's now a named, tested property on
+  `GoalProgress` so the difference is documented rather than looking like an oversight.
+- `CounterPeriodCalculator.currentEntries(for:)` — "this counter's current-period entries,
+  newest first" was reimplemented at two call sites (`CustomCounterPageContent`,
+  `TodayLogView`); a new call site could easily have picked a different sort order by accident.
+- `QuickAddConfiguration.defaultPresets(forCounterNamed:)` — only the settings sheet used to
+  special-case "Calories" when picking default quick-add presets; the main page, widget, and
+  Watch grid all fell back to the generic preset set for a Calories counter. Centralizing the
+  name check fixed that divergence rather than just documenting it.
+- `QuickAddConfiguration.replacingPreset(_:with:in:)` — the settings preset grid's "replace or
+  append, then re-normalize" edit rule now lives next to the other preset rules instead of as a
+  private method on the view.
+- `CustomCounter.nextPaletteIndex(forExistingCount:)` — a thin, named wrapper around
+  `normalizedPaletteIndex` for its one call site (assigning a new counter's initial palette
+  slot), so that call site doesn't need to know palette-index wrapping is happening at all.
+
+The Watch quick-add grid also switched from `QuickAddConfiguration.normalizedPresets` (only
+ever shows what's stored) to `filledPresets` (pads out to a full grid from the defaults), to
+match the iPhone grid's fill policy — the two used to show different numbers of buttons for the
+same counter.
 
 ### Quick-add batching state
 
@@ -184,12 +220,13 @@ and a module-wide default actor isolation of `MainActor`
 - Most code (views, `EntryActions`, `WidgetCounterLoader` mutators, seeders) is implicitly
   `@MainActor` and doesn't need explicit annotations.
 - Pure calculators with no `ModelContext`/UI dependency — `CounterPeriodCalculator`,
-  `GoalProgressCalculator`, `HistoryAggregator`, `QuickAddConfiguration`, `CalorieMigration`,
-  `AppLog`, and the plain value types they operate on (`CounterResetPeriod`, `GoalDirection`,
-  `DailyValue`, `HistoryPeriod`, …) — are explicitly `nonisolated`. They do real work off the
-  main actor in tests and don't need the main-actor hop the module default would otherwise
-  force on them; `CalorieMigration.migrateIfNeeded` specifically *needs* to be `nonisolated`
-  so it can run synchronously from `CounterMigrationPlan`'s `willMigrate` closure.
+  `GoalProgressCalculator`, `HistoryAggregator`, `QuickAddConfiguration`, `AmountInput`,
+  `CounterFormValidation`, `HistoryChartScale`, `CalorieMigration`, `AppLog`, and the plain
+  value types they operate on (`CounterResetPeriod`, `GoalDirection`, `DailyValue`,
+  `HistoryPeriod`, …) — are explicitly `nonisolated`. They do real work off the main actor in
+  tests and don't need the main-actor hop the module default would otherwise force on them;
+  `CalorieMigration.migrateIfNeeded` specifically *needs* to be `nonisolated` so it can run
+  synchronously from `CounterMigrationPlan`'s `willMigrate` closure.
 - `@Model` types (`CustomCounter`, `CounterEntry`, …) opt out of the module's default
   `MainActor` isolation — unlike plain enums/structs, which inherit it. Code that reads a
   model's stored properties (e.g. `CustomCounter+Progress.swift`, which reads `self.entries`)

@@ -21,7 +21,10 @@ struct WatchCounterDetailView: View {
 
         Divider()
 
-        WatchQuickAddGrid(values: counter.buttonValues) { value in
+        WatchQuickAddGrid(
+          values: counter.buttonValues,
+          defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
+        ) { value in
           addEntryQuick(value)
         }
       }
@@ -31,14 +34,7 @@ struct WatchCounterDetailView: View {
   }
 
   private var heroValue: String {
-    counter.currentProgress().map { progress in
-      switch counter.goalDirection {
-      case .countUp:
-        return "\(progress.current)/\(progress.goal)"
-      case .countDown:
-        return "\(progress.heroValue)"
-      }
-    } ?? "\(periodTotal)"
+    counter.currentProgress()?.compactHeroValue ?? "\(periodTotal)"
   }
 
   private func addEntryQuick(_ value: Int) {

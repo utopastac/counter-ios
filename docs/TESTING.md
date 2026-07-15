@@ -21,12 +21,15 @@ determines *what the app should compute*, independent of how it's displayed:
 | `CounterPeriodCalculatorTests.swift` | Daily/weekly/monthly reset-period range math (including anchor-day edge cases like short months), `resetSummary` strings, period totals, `ordinalDay` formatting |
 | `GoalProgressTests.swift` | `GoalProgress` fraction/overflow/percent math for both count-up and count-down goals, `GoalProgressCalculator.progress`/`ringDisplay` |
 | `HistoryAggregatorTests.swift` | Calendar-day totals and grouped daily/weekly/monthly history buckets |
-| `QuickAddConfigurationTests.swift` | Preset normalization (sort + cap) and fill-to-count behavior |
-| `CustomCounterModelTests.swift` | `CustomCounter`'s derived properties: `effectiveGoal`, `effectivePaletteIndex` wraparound, `effectiveResetAnchorDay` clamping, `effectiveSliderMax` fallback |
+| `QuickAddConfigurationTests.swift` | Preset normalization (sort + cap), fill-to-count behavior, name-based default preset selection, single-preset replace/append editing |
+| `CustomCounterModelTests.swift` | `CustomCounter`'s derived properties: `effectiveGoal`, `effectivePaletteIndex` wraparound, `effectiveResetAnchorDay` clamping, `effectiveSliderMax` fallback, `nextPaletteIndex` cycling |
 | `EntryActionsTests.swift` | Stateless CRUD: insert, update, delete a `CounterEntry` |
 | `QuickAddSessionStoreTests.swift` | Quick-add batching (accumulate within the 2s window, start fresh after a reset), per-counter and per-instance session isolation, self-healing after the batched entry is deleted directly |
 | `CalorieMigrationTests.swift` | Legacy `CalorieEntry`/`AppSettings` → `CustomCounter` migration logic in isolation, including reusing an existing "Calories" counter and no-op when there's nothing to migrate |
 | `SchemaMigrationPlanTests.swift` | `CounterMigrationPlan` end-to-end: opening a file-backed V1 store against the V2 schema actually runs `CalorieMigration` and lands a `CustomCounter`; a fresh V1 store with no legacy data upgrades as a no-op |
+| `AmountInputTests.swift` | Numeric text-field sanitization (digits-only, signed, max length) and parsing (positive-int, keypad digit append) |
+| `CounterFormValidationTests.swift` | The create/edit form save-gating rule: name requirement, optional-but-must-parse goal text |
+| `HistoryChartScaleTests.swift` | History chart Y-axis "nice maximum" selection and tick-value generation |
 
 Tests use an isolated in-memory `ModelContainer` per test
 (`CounterTests/TestModelContainer.swift`) — they never touch the real App Group store, so

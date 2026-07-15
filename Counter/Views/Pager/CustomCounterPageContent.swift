@@ -14,9 +14,7 @@ struct CustomCounterPageContent: View {
   @State private var quickAddStore = QuickAddSessionStore()
 
   private var periodEntries: [CounterEntry] {
-    let range = CounterPeriodCalculator.currentRange(for: counter)
-    return CounterPeriodCalculator.entries(from: counter.entries, in: range)
-      .sorted { $0.timestamp > $1.timestamp }
+    CounterPeriodCalculator.currentEntries(for: counter)
   }
 
   private var periodTotal: Int {
@@ -88,7 +86,7 @@ struct CustomCounterPageContent: View {
       } footer: {
         CompactQuickAddGrid(
           values: counter.buttonValues,
-          defaultPresets: QuickAddConfiguration.defaultCounterPresets
+          defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
         ) { value in
           addEntryQuick(value)
         } onCustom: {
@@ -145,7 +143,7 @@ struct CustomCounterPageContent: View {
   private func migratePresetButtons(for counter: CustomCounter) {
     let filled = QuickAddConfiguration.filledPresets(
       from: counter.buttonValues,
-      defaults: QuickAddConfiguration.defaultCounterPresets
+      defaults: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     )
     if filled != counter.buttonValues {
       counter.buttonValues = filled

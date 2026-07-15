@@ -41,13 +41,7 @@ struct NumericKeypad: View {
   }
 
   private func append(_ digit: String) {
-    guard text.count < maxDigits else { return }
-
-    if text == "0" {
-      text = digit
-    } else {
-      text += digit
-    }
+    text = AmountInput.appendingDigit(digit, to: text, maxDigits: maxDigits)
   }
 
   private func deleteLast() {

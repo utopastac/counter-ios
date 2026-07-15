@@ -92,6 +92,20 @@ nonisolated struct GoalProgress {
     "\(current)"
   }
 
+  /// A single-line hero string with goal context folded in (e.g. `"70/150"`) for count-up
+  /// goals, or just `heroValue` for count-down ones (already "remaining", which needs no
+  /// extra context). For screens with no room for a separate caption line — currently just
+  /// the Watch detail view, which has no `heroCaption`/`heroSubtitle` line under its hero
+  /// number the way the iPhone pager and list do.
+  var compactHeroValue: String {
+    switch direction {
+    case .countUp:
+      return "\(current)/\(goal)"
+    case .countDown:
+      return heroValue
+    }
+  }
+
   var heroCaption: String {
     switch direction {
     case .countUp:

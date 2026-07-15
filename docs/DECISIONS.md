@@ -243,8 +243,65 @@ declaration. The one property with genuine custom logic — `designSystem`, whic
 but now wraps a `@Entry`-backed `fileprivate` raw value instead of a hand-written key, so only
 the actually-custom part remains hand-written.
 
+## Embedded view logic extracted into `Shared/`, once it was actually duplicated or diverging
+
+**Decision:** After deciding against an MVVM/view-model layer (see above), do a second pass
+over the view files specifically looking for logic that had drifted from "view-specific
+presentation" into "domain rule reimplemented per-view" — as opposed to extracting everything
+that merely *touches* a view's `@State`. Pulled out: numeric text-field sanitization/parsing
+(`Shared/AmountInput.swift`), the create/edit form save-gating rule
+(`Shared/CounterFormValidation.swift`), reset-period anchor-day defaulting/normalization
+(added to `Shared/CounterPeriod.swift`), the history chart's axis-scaling math
+(`Shared/HistoryChartScale.swift`), "this counter's current-period entries, newest first"
+(added to `Shared/CounterPeriod.swift`), which built-in preset set a counter defaults to by
+name and the settings preset-field edit rule (added to `Shared/QuickAddConfiguration.swift`),
+a compact Watch-only hero-value format (added to `Shared/GoalDirection.swift`), and a named
+"next palette slot" helper (added to `CustomCounter`).
+
+**Why:** Grepping the view layer for `Int(...)`, `.filter(\.isWholeNumber)`, and hand-rolled
+`switch`/`if` chains over `CounterResetPeriod`/`GoalDirection` turned up several cases where
+the *same* rule had been typed out at 2–3 call sites with small, accidental differences rather
+than one deliberate difference:
+- `AmountEntrySheet`, `SettingsEditablePresetField`, and `EntryLogEditableRow` each sanitized
+  typed digits slightly differently (different max lengths, only one of them allowing a
+  leading `-`) with no comment explaining why they differed — they were supposed to agree
+  except where entry-log editing legitimately needs signed values.
+- `CreateCounterView` always overwrote the reset-anchor day on period change, while
+  `CounterSettingsView` only corrected it when it became invalid for the new period. These
+  were the *same intended rule*, not two deliberate designs — unifying on the settings view's
+  behavior (which is strictly more correct: it doesn't discard a still-valid anchor) fixed a
+  latent bug in the create flow, where toggling between periods could silently reset a
+  weekday/day-of-month the user had already picked.
+- Only `CounterSettingsView`'s default-preset selection special-cased a counter named
+  "Calories"; `CustomCounterPageContent`'s quick-add grid, `WidgetCounterLoader`'s widget
+  snapshot, and `WatchCounterDetailView`'s grid all silently fell back to the generic preset
+  set for the same counter. This was an actual behavioral bug (a Calories counter showed
+  different quick-add numbers depending on which surface you were looking at it from), not
+  just style debt.
+- The Watch quick-add grid used `normalizedPresets` (show only what's stored) while the
+  iPhone's used `filledPresets` (pad out to a full grid); after switching the Watch grid to
+  `filledPresets` too, both surfaces show the same number of buttons for the same counter.
+- The Watch hero-value format (`"70/150"` for a count-up goal, vs. every other surface's plain
+  `"70"`) turned out to be a deliberate compensation for the Watch view having no second
+  caption line, not an oversight — so instead of force-unifying it, it became a named,
+  documented, tested `GoalProgress.compactHeroValue` property, making the difference visible
+  and intentional instead of inline `switch` logic buried in `WatchCounterDetailView`.
+
+What this pass explicitly avoided doing: it did not wrap trivial one-line reads
+(`counter.effectiveGoal`, simple string formatting with no branching) or view-only concerns
+(sheet presentation state, animation timing) in a "Shared" abstraction just to hit an
+extraction quota. The bar was "is this the same rule appearing more than once, and could a new
+call site plausibly get it subtly wrong" — the same bar `EntryActions`/`QuickAddSessionStore`
+were held to earlier in this log.
+
 ## What was deliberately left alone
 
+- **`RingTipHalo.lapFraction` (`Counter/Views/Components/GoalProgressView.swift`) duplicates
+  `ProgressRingArc.lapFraction`** rather than sharing it. Both are tiny (4-line), private,
+  file-local helpers on otherwise-unrelated `Shape`s; the type's own doc comment explains why
+  a cross-file dependency isn't worth it for something this small and self-contained. Revisited
+  during the `Shared/` extraction pass above and left as-is — this is a case where the
+  duplication is genuinely cheaper than the abstraction.
 - **`CounterSheetPresentationModifier`'s `DispatchQueue.main.async`** — not converted to
   `Task`/`async`. It defers a UIKit sheet-detent mutation out of `updateUIView`, which needs
   to happen on "the next runloop tick after this UIKit update pass," not "after some

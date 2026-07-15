@@ -1,30 +1,6 @@
 import Charts
 import SwiftUI
 
-enum HistoryChartScale {
-  static let defaultMaximum: Double = 2500
-
-  static func niceMaximum(for values: [Double]) -> Double {
-    let maxValue = values.max() ?? 0
-    guard maxValue > 0 else { return defaultMaximum }
-
-    let padded = maxValue * 1.1
-    let candidates: [Double] = [250, 500, 750, 1000, 1250, 1500, 2000, 2500, 3000, 5000, 10000]
-    return candidates.first { $0 >= padded } ?? padded.rounded(.up)
-  }
-
-  static func tickValues(maximum: Double) -> [Double] {
-    guard maximum > 0 else { return [0] }
-
-    let step = maximum / 3
-    return [0, step, step * 2, maximum]
-  }
-
-  static func formattedTick(_ value: Double) -> String {
-    "\(Int(value.rounded()))"
-  }
-}
-
 struct HistoryBarChart: View {
   @Environment(\.semanticColors) private var colors
 

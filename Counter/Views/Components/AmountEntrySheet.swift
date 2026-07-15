@@ -39,7 +39,7 @@ struct AmountEntrySheet: View {
     self.initialText = initialText
     self.onSubmit = onSubmit
     _amountText = State(
-      initialValue: String(initialText.filter(\.isWholeNumber).prefix(6))
+      initialValue: AmountInput.sanitizedDigits(initialText, maxLength: 6)
     )
   }
 
@@ -113,10 +113,7 @@ struct AmountEntrySheet: View {
   }
 
   private var parsedValue: Int? {
-    guard let value = Int(amountText.trimmingCharacters(in: .whitespaces)), value > 0 else {
-      return nil
-    }
-    return value
+    AmountInput.parsePositiveInt(amountText)
   }
 }
 

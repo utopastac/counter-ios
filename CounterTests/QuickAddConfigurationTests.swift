@@ -31,4 +31,42 @@ struct QuickAddConfigurationTests {
 
     #expect(filled.count == QuickAddConfiguration.presetCount)
   }
+
+  // MARK: - defaultPresets(forCounterNamed:)
+
+  @Test func defaultPresetsForCounterNamedUsesCaloriePresetsCaseInsensitively() {
+    #expect(QuickAddConfiguration.defaultPresets(forCounterNamed: "Calories") == QuickAddConfiguration.defaultCaloriePresets)
+    #expect(QuickAddConfiguration.defaultPresets(forCounterNamed: "CALORIES") == QuickAddConfiguration.defaultCaloriePresets)
+  }
+
+  @Test func defaultPresetsForCounterNamedFallsBackToGenericPresetsForOtherNames() {
+    #expect(QuickAddConfiguration.defaultPresets(forCounterNamed: "Protein") == QuickAddConfiguration.defaultCounterPresets)
+  }
+
+  // MARK: - replacingPreset
+
+  @Test func replacingPresetSwapsAnExistingValueInPlace() {
+    let updated = QuickAddConfiguration.replacingPreset(20, with: 30, in: [10, 20, 50])
+    #expect(updated == [10, 30, 50])
+  }
+
+  @Test func replacingPresetAppendsWhenTheOldValueIsNotStoredAndThereIsRoom() {
+    // 20 isn't in `values` (it's only ever shown via `filledPresets`' fallback), so editing it
+    // should append the new value rather than silently doing nothing.
+    let updated = QuickAddConfiguration.replacingPreset(20, with: 15, in: [10])
+    #expect(updated.contains(15))
+    #expect(updated.count == 2)
+  }
+
+  @Test func replacingPresetIgnoresNonPositiveInput() {
+    let updated = QuickAddConfiguration.replacingPreset(20, with: 0, in: [10, 20, 50])
+    #expect(updated == [10, 20, 50])
+  }
+
+  @Test func replacingPresetDoesNotExceedPresetCountWhenAppending() {
+    let full = Array(1...QuickAddConfiguration.presetCount)
+    let updated = QuickAddConfiguration.replacingPreset(999, with: 1000, in: full)
+    #expect(updated.count == QuickAddConfiguration.presetCount)
+    #expect(!updated.contains(1000))
+  }
 }

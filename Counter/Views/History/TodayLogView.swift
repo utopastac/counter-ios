@@ -20,9 +20,7 @@ struct CounterPeriodEntryLogScreen: View {
   @Environment(\.semanticColors) private var colors
 
   private var periodEntries: [CounterEntry] {
-    let range = CounterPeriodCalculator.currentRange(for: counter)
-    return CounterPeriodCalculator.entries(from: counter.entries, in: range)
-      .sorted { $0.timestamp > $1.timestamp }
+    CounterPeriodCalculator.currentEntries(for: counter)
   }
 
   var body: some View {

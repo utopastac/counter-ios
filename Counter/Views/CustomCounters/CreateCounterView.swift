@@ -51,10 +51,10 @@ struct CreateCounterView: View {
       .background(colors.surfaceSheet)
       .toolbar(.hidden, for: .navigationBar)
       .onChange(of: resetPeriod) { _, newPeriod in
-        resetAnchorDay = defaultAnchor(for: newPeriod)
+        resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)
       }
       .onAppear {
-        paletteIndex = counters.count % CustomCounter.paletteSlotCount
+        paletteIndex = CustomCounter.nextPaletteIndex(forExistingCount: counters.count)
       }
       .counterDesignSystemFromAppearancePreference()
     }
@@ -104,7 +104,7 @@ struct CreateCounterView: View {
         icon: .listRestart,
         label: "Resets on",
         selection: $resetAnchorDay,
-        options: (1...28).map { ($0, ordinalDay($0)) }
+        options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
       )
     }
   }
@@ -120,13 +120,7 @@ struct CreateCounterView: View {
   }
 
   private var canCreate: Bool {
-    let trimmed = name.trimmingCharacters(in: .whitespaces)
-    guard !trimmed.isEmpty else { return false }
-    let trimmedGoal = goalText.trimmingCharacters(in: .whitespaces)
-    if !trimmedGoal.isEmpty, parsedGoal == nil {
-      return false
-    }
-    return true
+    CounterFormValidation.canSave(name: name, goalText: goalText)
   }
 
   private var hasActiveGoal: Bool {
@@ -134,32 +128,7 @@ struct CreateCounterView: View {
   }
 
   private var parsedGoal: Int? {
-    guard let value = Int(goalText.trimmingCharacters(in: .whitespaces)), value > 0 else {
-      return nil
-    }
-    return value
-  }
-
-  private func defaultAnchor(for period: CounterResetPeriod) -> Int {
-    switch period {
-    case .daily:
-      return 1
-    case .weekly:
-      return Calendar.current.firstWeekday
-    case .monthly:
-      return 1
-    }
-  }
-
-  private func ordinalDay(_ day: Int) -> String {
-    let suffix: String
-    switch day % 10 {
-    case 1 where day != 11: suffix = "st"
-    case 2 where day != 12: suffix = "nd"
-    case 3 where day != 13: suffix = "rd"
-    default: suffix = "th"
-    }
-    return "\(day)\(suffix)"
+    AmountInput.parsePositiveInt(goalText)
   }
 
   private func createCounter() {
@@ -170,7 +139,7 @@ struct CreateCounterView: View {
       name: trimmed,
       goal: parsedGoal,
       resetPeriod: resetPeriod,
-      resetAnchorDay: resetPeriod == .daily ? 1 : resetAnchorDay,
+      resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
       goalDirection: goalDirection,
       paletteIndex: paletteIndex
     )

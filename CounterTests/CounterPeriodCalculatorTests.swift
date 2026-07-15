@@ -165,4 +165,51 @@ struct CounterPeriodCalculatorTests {
     #expect(CounterResetPeriod.ordinalDay(22) == "22nd")
     #expect(CounterResetPeriod.ordinalDay(23) == "23rd")
   }
+
+  // MARK: - defaultAnchorDay
+
+  @Test func defaultAnchorDayIsOneForDailyAndMonthly() {
+    #expect(CounterResetPeriod.daily.defaultAnchorDay(calendar: calendar) == 1)
+    #expect(CounterResetPeriod.monthly.defaultAnchorDay(calendar: calendar) == 1)
+  }
+
+  @Test func defaultAnchorDayIsTheCalendarsFirstWeekdayForWeekly() {
+    #expect(CounterResetPeriod.weekly.defaultAnchorDay(calendar: calendar) == calendar.firstWeekday)
+  }
+
+  // MARK: - normalizedAnchorDay
+
+  @Test func normalizedAnchorDayAlwaysCollapsesToOneForDaily() {
+    #expect(CounterResetPeriod.daily.normalizedAnchorDay(5, calendar: calendar) == 1)
+  }
+
+  @Test func normalizedAnchorDayPreservesAnAlreadyValidWeeklyAnchor() {
+    #expect(CounterResetPeriod.weekly.normalizedAnchorDay(3, calendar: calendar) == 3)
+  }
+
+  @Test func normalizedAnchorDayFallsBackToFirstWeekdayForAnOutOfRangeWeeklyAnchor() {
+    #expect(CounterResetPeriod.weekly.normalizedAnchorDay(30, calendar: calendar) == calendar.firstWeekday)
+  }
+
+  @Test func normalizedAnchorDayPreservesAnAlreadyValidMonthlyAnchor() {
+    #expect(CounterResetPeriod.monthly.normalizedAnchorDay(15, calendar: calendar) == 15)
+  }
+
+  @Test func normalizedAnchorDayFallsBackToOneForAnOutOfRangeMonthlyAnchor() {
+    #expect(CounterResetPeriod.monthly.normalizedAnchorDay(30, calendar: calendar) == 1)
+  }
+
+  // MARK: - currentEntries
+
+  @Test func currentEntriesReturnsOnlyThisPeriodsEntriesNewestFirst() {
+    let counter = CustomCounter(name: "Water", resetPeriod: .daily)
+    let older = CounterEntry(value: 10, timestamp: date(2026, 7, 14, 8))
+    let newer = CounterEntry(value: 5, timestamp: date(2026, 7, 14, 20))
+    let outOfRange = CounterEntry(value: 100, timestamp: date(2026, 7, 13, 23))
+    counter.entries = [older, newer, outOfRange]
+
+    let entries = CounterPeriodCalculator.currentEntries(for: counter, on: date(2026, 7, 14, 12), calendar: calendar)
+
+    #expect(entries.map(\.value) == [5, 10])
+  }
 }

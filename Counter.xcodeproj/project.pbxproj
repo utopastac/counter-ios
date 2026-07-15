@@ -108,6 +108,16 @@
 		P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* CounterUnderlayReveal.swift */; };
 		P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000002 /* ScrollPanDisabler.swift */; };
 
+		AI10000010000000000000001 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
+		CTGBFAmountInput01 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
+		CFV10000010000000000000001 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
+		CTGBFCounterFormValidation01 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
+		HCS10000010000000000000001 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
+		CTGBFHistoryChartScale01 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
+		AITBFTEST01 /* AmountInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AITFILEREF01 /* AmountInputTests.swift */; };
+		CFVTBFTEST01 /* CounterFormValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFVTFILEREF01 /* CounterFormValidationTests.swift */; };
+		HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCTFILEREF01 /* HistoryChartScaleTests.swift */; };
+
 		SCTBFCOUNTER01 /* SettingsControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCTFILEREF01 /* SettingsControls.swift */; };
 		CSVBFCOUNTER01 /* CounterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSVFILEREF01 /* CounterSettingsView.swift */; };
 		CPDBFCOUNTER01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
@@ -331,6 +341,12 @@
 		DS20000010000000000000022 /* CounterLucideIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterLucideIcon.swift; sourceTree = "<group>"; };
 		DS20000010000000000000028 /* EntryAddedToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAddedToast.swift; sourceTree = "<group>"; };
 		SCTFILEREF01 /* SettingsControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsControls.swift; sourceTree = "<group>"; };
+		AI20000010000000000000001 /* AmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInput.swift; sourceTree = "<group>"; };
+		CFV20000010000000000000001 /* CounterFormValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidation.swift; sourceTree = "<group>"; };
+		HCS20000010000000000000001 /* HistoryChartScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScale.swift; sourceTree = "<group>"; };
+		AITFILEREF01 /* AmountInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputTests.swift; sourceTree = "<group>"; };
+		CFVTFILEREF01 /* CounterFormValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidationTests.swift; sourceTree = "<group>"; };
+		HCTFILEREF01 /* HistoryChartScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScaleTests.swift; sourceTree = "<group>"; };
 		CM20000010000000000000001 /* CalorieMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieMigration.swift; sourceTree = "<group>"; };
 		CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaMigrationPlan.swift; sourceTree = "<group>"; };
 		QAS20000010000000000000001 /* QuickAddSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStore.swift; sourceTree = "<group>"; };
@@ -424,6 +440,9 @@
 				CMGFILEREF01 /* CalorieMigrationTests.swift */,
 				SMPTFILEREF01 /* SchemaMigrationPlanTests.swift */,
 				QASTFILEREF01 /* QuickAddSessionStoreTests.swift */,
+				AITFILEREF01 /* AmountInputTests.swift */,
+				CFVTFILEREF01 /* CounterFormValidationTests.swift */,
+				HCTFILEREF01 /* HistoryChartScaleTests.swift */,
 			);
 			path = CounterTests;
 			sourceTree = "<group>";
@@ -624,6 +643,9 @@
 				PRAFILEREF01 /* ProgressRingArc.swift */,
 				CCPFILEREF01 /* CustomCounter+Progress.swift */,
 				LOGFILEREF01 /* Logging.swift */,
+				AI20000010000000000000001 /* AmountInput.swift */,
+				CFV20000010000000000000001 /* CounterFormValidation.swift */,
+				HCS20000010000000000000001 /* HistoryChartScale.swift */,
 				C50000010000000000000002 /* Models */,
 			);
 			path = Shared;
@@ -951,6 +973,9 @@
 				PRABFCOUNTER01 /* ProgressRingArc.swift in Sources */,
 				CCPBFCOUNTER01 /* CustomCounter+Progress.swift in Sources */,
 				LOGBFCOUNTER01 /* Logging.swift in Sources */,
+				AI10000010000000000000001 /* AmountInput.swift in Sources */,
+				CFV10000010000000000000001 /* CounterFormValidation.swift in Sources */,
+				HCS10000010000000000000001 /* HistoryChartScale.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1061,6 +1086,12 @@
 				QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */,
 				CTGBFCalorieMigration01 /* CalorieMigration.swift in Sources */,
 				LOGBFTEST01 /* Logging.swift in Sources */,
+				CTGBFAmountInput01 /* AmountInput.swift in Sources */,
+				CTGBFCounterFormValidation01 /* CounterFormValidation.swift in Sources */,
+				CTGBFHistoryChartScale01 /* HistoryChartScale.swift in Sources */,
+				AITBFTEST01 /* AmountInputTests.swift in Sources */,
+				CFVTBFTEST01 /* CounterFormValidationTests.swift in Sources */,
+				HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

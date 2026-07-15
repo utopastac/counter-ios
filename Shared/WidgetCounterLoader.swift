@@ -43,7 +43,7 @@ enum WidgetCounterLoader {
     let ring = counter.currentRingDisplay()
     let buttons = QuickAddConfiguration.filledPresets(
       from: counter.buttonValues,
-      defaults: QuickAddConfiguration.defaultCounterPresets
+      defaults: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     )
 
     return CounterWidgetSnapshot(

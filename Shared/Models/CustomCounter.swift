@@ -53,6 +53,13 @@ final class CustomCounter {
     return ((index % count) + count) % count
   }
 
+  /// The palette slot a newly-created counter should default to, given how many counters
+  /// already exist — cycles through every slot before repeating. Named for its one call site
+  /// (assigning a new counter's initial color) rather than reused as a generic modulo helper.
+  static func nextPaletteIndex(forExistingCount count: Int) -> Int {
+    normalizedPaletteIndex(count)
+  }
+
   var goalDirection: GoalDirection {
     get { GoalDirection(rawValue: goalDirectionRaw) ?? .countUp }
     set { goalDirectionRaw = newValue.rawValue }

@@ -37,6 +37,33 @@ nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable
     }
     return "\(day)\(suffix)"
   }
+
+  /// The anchor day this period should start from when there's no existing anchor worth
+  /// preserving (e.g. a brand-new counter). Weekly defaults to the calendar's first weekday;
+  /// daily and monthly both default to `1`.
+  func defaultAnchorDay(calendar: Calendar = .current) -> Int {
+    switch self {
+    case .daily: return 1
+    case .weekly: return calendar.firstWeekday
+    case .monthly: return 1
+    }
+  }
+
+  /// Coerces `currentAnchorDay` when switching *into* this period on an already-configured
+  /// counter: keeps it unchanged if it's still valid for the new period, and only falls back
+  /// to `defaultAnchorDay` when it's out of range (e.g. a monthly anchor of `30` isn't a valid
+  /// weekday). Anchors aren't comparable across period types, so this is "keep if valid,
+  /// default otherwise" rather than "always keep" or "always reset".
+  func normalizedAnchorDay(_ currentAnchorDay: Int, calendar: Calendar = .current) -> Int {
+    switch self {
+    case .daily:
+      return 1
+    case .weekly:
+      return (1...7).contains(currentAnchorDay) ? currentAnchorDay : calendar.firstWeekday
+    case .monthly:
+      return (1...28).contains(currentAnchorDay) ? currentAnchorDay : 1
+    }
+  }
 }
 
 nonisolated struct CounterPeriodRange {
@@ -145,6 +172,18 @@ nonisolated enum CounterPeriodCalculator {
   ) -> Int {
     let range = currentRange(for: counter, on: date, calendar: calendar)
     return entries(from: allEntries, in: range).reduce(0) { $0 + $1.value }
+  }
+
+  /// `counter`'s own entries, filtered to its current period and sorted newest-first — the
+  /// convention every entry log/preview in the app uses. Centralized so "current period,
+  /// newest first" can't quietly diverge into a different order at a new call site.
+  static func currentEntries(
+    for counter: CustomCounter,
+    on date: Date = .now,
+    calendar: Calendar = .current
+  ) -> [CounterEntry] {
+    let range = currentRange(for: counter, on: date, calendar: calendar)
+    return entries(from: counter.entries, in: range).sorted { $0.timestamp > $1.timestamp }
   }
 
   private static func clampedAnchorDay(

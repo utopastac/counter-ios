@@ -158,7 +158,7 @@ struct SettingsEditablePresetField: View {
         in: RadiusToken.continuousButton
       )
       .onChange(of: text) { _, newValue in
-        let sanitized = String(newValue.filter(\.isWholeNumber).prefix(6))
+        let sanitized = AmountInput.sanitizedDigits(newValue, maxLength: 6)
         if sanitized != newValue {
           text = sanitized
         }
@@ -175,7 +175,7 @@ struct SettingsEditablePresetField: View {
   }
 
   private func commit() {
-    guard let parsed = Int(text), parsed > 0 else {
+    guard let parsed = AmountInput.parsePositiveInt(text) else {
       text = String(value)
       return
     }
@@ -211,15 +211,7 @@ struct SettingsPresetGrid: View {
   }
 
   private func commitPreset(replacing old: Int, with new: Int) {
-    guard new > 0 else { return }
-
-    if let index = values.firstIndex(of: old) {
-      values[index] = new
-    } else if values.count < QuickAddConfiguration.presetCount {
-      values.append(new)
-    }
-
-    values = QuickAddConfiguration.normalizedPresets(values)
+    values = QuickAddConfiguration.replacingPreset(old, with: new, in: values)
   }
 }
 

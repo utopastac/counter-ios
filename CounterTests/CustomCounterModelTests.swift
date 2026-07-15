@@ -56,4 +56,10 @@ struct CustomCounterModelTests {
     let counter = CustomCounter(name: "Water")
     #expect(counter.buttonValues == CustomCounter.defaultButtonValues)
   }
+
+  @Test func nextPaletteIndexCyclesThroughEverySlotBeforeRepeating() {
+    #expect(CustomCounter.nextPaletteIndex(forExistingCount: 0) == 0)
+    #expect(CustomCounter.nextPaletteIndex(forExistingCount: CustomCounter.paletteSlotCount - 1) == CustomCounter.paletteSlotCount - 1)
+    #expect(CustomCounter.nextPaletteIndex(forExistingCount: CustomCounter.paletteSlotCount) == 0)
+  }
 }

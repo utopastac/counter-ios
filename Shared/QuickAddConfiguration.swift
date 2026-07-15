@@ -26,4 +26,30 @@ nonisolated enum QuickAddConfiguration {
 
     return result.sorted()
   }
+
+  /// Which built-in preset set a counter should default to, based on its name. Only
+  /// "Calories" gets calorie-appropriate presets; every other counter gets the generic set.
+  /// Centralized so a Calories counter looks the same regardless of which surface (settings,
+  /// main page, widget) is the one filling in its defaults — this used to be a settings-only
+  /// check, so the main page and widget silently used generic presets for it instead.
+  static func defaultPresets(forCounterNamed name: String) -> [Int] {
+    name.lowercased() == "calories" ? defaultCaloriePresets : defaultCounterPresets
+  }
+
+  /// Applies a single preset-field edit: replaces `old` in place if it's one of the
+  /// user-stored `values`, appends `new` if there's room and `old` wasn't stored (i.e. the
+  /// edited slot was only visible via `filledPresets`' fallback), then re-normalizes.
+  /// Non-positive input is silently ignored, matching every other preset/amount field.
+  static func replacingPreset(_ old: Int, with new: Int, in values: [Int]) -> [Int] {
+    guard new > 0 else { return values }
+
+    var updated = values
+    if let index = updated.firstIndex(of: old) {
+      updated[index] = new
+    } else if updated.count < presetCount {
+      updated.append(new)
+    }
+
+    return normalizedPresets(updated)
+  }
 }

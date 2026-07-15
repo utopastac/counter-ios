@@ -119,4 +119,16 @@ struct GoalProgressTests {
     #expect(display.current == 40)
     #expect(display.goal == 100)
   }
+
+  // MARK: - compactHeroValue
+
+  @Test func compactHeroValueFoldsGoalContextIntoCountUp() {
+    let progress = GoalProgress(current: 70, goal: 150, direction: .countUp)
+    #expect(progress.compactHeroValue == "70/150")
+  }
+
+  @Test func compactHeroValueMatchesHeroValueForCountDown() {
+    let progress = GoalProgress(current: 480, goal: 3000, direction: .countDown)
+    #expect(progress.compactHeroValue == progress.heroValue)
+  }
 }

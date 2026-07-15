@@ -99,7 +99,7 @@ struct EntryLogEditableRow: View {
         .keyboardType(.numbersAndPunctuation)
         .focused($isFocused)
         .onChange(of: text) { _, newValue in
-          let sanitized = Self.sanitizedEntryText(newValue)
+          let sanitized = AmountInput.sanitizedSignedDigits(newValue, maxLength: 7)
           if sanitized != newValue {
             text = sanitized
           }
@@ -129,18 +129,6 @@ struct EntryLogEditableRow: View {
 
     guard parsed != value else { return }
     onCommit(parsed)
-  }
-
-  private static func sanitizedEntryText(_ raw: String) -> String {
-    var result = ""
-    for (index, character) in raw.enumerated() {
-      if character.isWholeNumber {
-        result.append(character)
-      } else if character == "-", index == 0 {
-        result.append(character)
-      }
-    }
-    return String(result.prefix(7))
   }
 }
 

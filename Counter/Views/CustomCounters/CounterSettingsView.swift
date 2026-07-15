@@ -11,8 +11,6 @@ struct CounterSettingsSave {
 }
 
 struct CounterSettingsView: View {
-  private static let maxQuickAddButtons = QuickAddConfiguration.presetCount
-
   let title: String
   let includeGoalAndReset: Bool
   let includeNameField: Bool
@@ -47,7 +45,7 @@ struct CounterSettingsView: View {
     self.includeNameField = false
     self.locksGoalDirection = false
     self.defaultPresets = QuickAddConfiguration.defaultCounterPresets
-    self._values = State(initialValue: Array(values.sorted().prefix(Self.maxQuickAddButtons)))
+    self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
     self._nameText = State(initialValue: "")
     self._goalText = State(initialValue: "")
     self._resetPeriod = State(initialValue: .daily)
@@ -71,10 +69,8 @@ struct CounterSettingsView: View {
     self.includeGoalAndReset = true
     self.includeNameField = true
     self.locksGoalDirection = false
-    self.defaultPresets = counter.name.lowercased() == "calories"
-      ? QuickAddConfiguration.defaultCaloriePresets
-      : QuickAddConfiguration.defaultCounterPresets
-    self._values = State(initialValue: Array(values.sorted().prefix(Self.maxQuickAddButtons)))
+    self.defaultPresets = QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
+    self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
     self._nameText = State(initialValue: counter.name)
     self._goalText = State(initialValue: counter.effectiveGoal.map(String.init) ?? "")
     self._resetPeriod = State(initialValue: counter.resetPeriod)
@@ -122,13 +118,7 @@ struct CounterSettingsView: View {
       .background(colors.surfaceSheet)
       .toolbar(.hidden, for: .navigationBar)
       .onChange(of: resetPeriod) { _, newPeriod in
-        if newPeriod == .daily {
-          resetAnchorDay = 1
-        } else if newPeriod == .weekly, !(1...7).contains(resetAnchorDay) {
-          resetAnchorDay = Calendar.current.firstWeekday
-        } else if newPeriod == .monthly, !(1...28).contains(resetAnchorDay) {
-          resetAnchorDay = 1
-        }
+        resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)
       }
       .onChange(of: paletteIndex) { _, newValue in
         onPaletteChange?(newValue)
@@ -250,31 +240,21 @@ struct CounterSettingsView: View {
   }
 
   private var canSave: Bool {
-    if includeNameField, trimmedName.isEmpty {
-      return false
-    }
-    let trimmedGoal = goalText.trimmingCharacters(in: .whitespaces)
-    if !trimmedGoal.isEmpty, parsedGoal == nil {
-      return false
-    }
-    return true
+    CounterFormValidation.canSave(name: includeNameField ? nameText : nil, goalText: goalText)
   }
 
   private var parsedGoal: Int? {
-    guard let value = Int(goalText.trimmingCharacters(in: .whitespaces)), value > 0 else {
-      return nil
-    }
-    return value
+    AmountInput.parsePositiveInt(goalText)
   }
 
   private func saveAndDismiss() {
     onSave(
       CounterSettingsSave(
         name: includeNameField ? trimmedName : nil,
-        buttonValues: Array(values.sorted().prefix(Self.maxQuickAddButtons)),
+        buttonValues: QuickAddConfiguration.normalizedPresets(values),
         goal: parsedGoal,
         resetPeriod: resetPeriod,
-        resetAnchorDay: resetPeriod == .daily ? 1 : resetAnchorDay,
+        resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
         goalDirection: locksGoalDirection ? .countDown : goalDirection,
         paletteIndex: includeNameField ? paletteIndex : nil
       )
