@@ -53,6 +53,26 @@ struct GoalProgressTests {
 
     #expect(progress.isUnderZero)
     #expect(progress.ringFraction == 1)
+    #expect(progress.rendersEmptyRing)
+  }
+
+  @Test func countUpOverGoalDoesNotRenderEmpty() {
+    // Exceeding a count-up target is worth celebrating with the overflow loop, not hiding
+    // behind an empty ring.
+    let progress = GoalProgress(current: 180, goal: 150, direction: .countUp)
+
+    #expect(!progress.rendersEmptyRing)
+  }
+
+  @Test func countDownOverBudgetRendersEmptyRingWithNoOverflowLoop() {
+    // Going over a count-down budget isn't an achievement, so — unlike count-up exceeding its
+    // target — it should render as a plain empty ring rather than a full ring plus a forward
+    // overflow loop.
+    let progress = GoalProgress(current: 4500, goal: 3000, direction: .countDown)
+
+    #expect(progress.isOverGoal)
+    #expect(progress.rendersEmptyRing)
+    #expect(progress.overflowRingFraction == 0)
   }
 
   @Test func countDownRingFractionTracksRemainingBudget() {
@@ -69,6 +89,7 @@ struct GoalProgressTests {
     #expect(progress.delta == -500)
     #expect(progress.isOverGoal)
     #expect(progress.ringFraction == 0)
+    #expect(progress.rendersEmptyRing)
   }
 
   @Test func percentCompleteRoundsToNearestInt() {

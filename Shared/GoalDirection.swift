@@ -49,10 +49,14 @@ struct GoalProgress {
   /// on top of the completed base ring — mirrors how Apple's Activity rings keep wrapping
   /// around themselves instead of stopping at one extra loop.
   ///
+  /// Only meaningful for `.countUp`: exceeding a target is worth celebrating with an extra
+  /// lap. Exceeding a `.countDown` budget isn't an achievement, so it renders as an empty ring
+  /// instead (see `rendersEmptyRing`) rather than looping forward.
+  ///
   /// Wraps with `truncatingRemainder` rather than capping, so 150%, 250%, 350%… all read as
   /// "how far into the current lap", and the ring can loop indefinitely.
   var overflowRingFraction: Double {
-    guard fractionComplete > 1 else { return 0 }
+    guard direction == .countUp, fractionComplete > 1 else { return 0 }
     let excess = fractionComplete - 1
     let wrapped = excess.truncatingRemainder(dividingBy: 1)
     return wrapped == 0 ? 1 : wrapped
@@ -69,6 +73,13 @@ struct GoalProgress {
   /// 100% of budget remaining").
   var isUnderZero: Bool {
     fractionComplete < 0
+  }
+
+  /// True when the ring has nothing meaningful to draw and should just render empty: always
+  /// once `current` is negative, and — unlike `.countUp` exceeding its target — also once a
+  /// `.countDown` budget goes over, since blowing a limit isn't an extra lap to celebrate.
+  var rendersEmptyRing: Bool {
+    isUnderZero || (direction == .countDown && isOverGoal)
   }
 
   var percentComplete: Int {

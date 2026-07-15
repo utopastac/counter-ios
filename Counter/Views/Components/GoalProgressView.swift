@@ -10,11 +10,11 @@ struct GoalProgressRing: View {
   var trackColor: Color?
   var fillColor: Color?
 
-  /// The primary 0...1 lap. Snaps to the full ring once progress goes past 100% (the overflow
-  /// arc then wraps on top of it) and drops to empty once progress goes below 0% — there's no
-  /// backward/negative visualization, just an empty ring.
+  /// The primary 0...1 lap. Snaps to the full ring once a count-up target is exceeded (the
+  /// overflow arc then wraps on top of it) and drops to empty for anything else out of
+  /// range — negative progress in either direction, or a count-down budget gone over.
   private var fillFraction: Double {
-    if progress.isUnderZero { return 0 }
+    if progress.rendersEmptyRing { return 0 }
     if progress.isOverGoal { return 1 }
     return progress.ringFraction
   }
