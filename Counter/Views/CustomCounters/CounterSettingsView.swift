@@ -154,7 +154,9 @@ struct CounterSettingsView: View {
       }
       .counterDesignSystemFromAppearancePreference()
     }
-    .counterSheetPresentation()
+    // `.full` (not the offset peek) because this screen presents nested preset-edit
+    // sheets, which only stack correctly on top of a sheet at the `.large` detent.
+    .counterSheetPresentation(.full)
     .alert("Delete counter?", isPresented: $showDeleteConfirmation) {
       Button("Delete", role: .destructive) {
         onDelete?()

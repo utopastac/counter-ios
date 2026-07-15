@@ -8,7 +8,9 @@ struct CounterTodayLogView: View {
 
   var body: some View {
     CounterPeriodEntryLogScreen(counter: counter)
-      .counterSheetPresentation()
+      // `.full` (not the offset peek) because this screen presents a nested edit
+      // sheet, which only stacks correctly on top of a sheet at the `.large` detent.
+      .counterSheetPresentation(.full)
   }
 }
 

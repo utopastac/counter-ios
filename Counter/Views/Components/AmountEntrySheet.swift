@@ -77,7 +77,7 @@ struct AmountEntrySheet: View {
     }
     .presentationDetents([.height(sheetHeight)])
     .presentationDragIndicator(.hidden)
-    .counterSheetPresentation(includeOffsetDetent: false)
+    .counterSheetPresentation(.cornerRadiusOnly)
     .presentationBackground {
       SheetToken.halfSheetTopCornerShape
         .fill(colors.surfaceSheet)
