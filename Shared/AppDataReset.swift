@@ -12,7 +12,7 @@ enum AppDataReset {
     deleteAll(AppSettings.self, in: context)
     AppLog.attempt("Save full data reset") { try context.save() }
 
-    EntryActions.clearAllQuickAddSessions()
+    QuickAddSessionStore.shared.reset()
     WidgetSnapshot.clear()
     UserDefaults.standard.set(true, forKey: suppressSampleSeedingKey)
   }

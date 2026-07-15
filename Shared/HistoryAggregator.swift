@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-enum HistoryAggregator {
+nonisolated enum HistoryAggregator {
   static func counterTotal(from entries: [CounterEntry], for counter: CustomCounter, on date: Date = .now) -> Int {
     CounterPeriodCalculator.total(from: entries, for: counter, on: date)
   }

@@ -4,6 +4,7 @@ import SwiftData
 struct WatchCounterDetailView: View {
   @Bindable var counter: CustomCounter
   @Environment(\.modelContext) private var modelContext
+  @State private var quickAddStore = QuickAddSessionStore()
 
   private var periodTotal: Int {
     counter.currentTotal()
@@ -41,7 +42,7 @@ struct WatchCounterDetailView: View {
   }
 
   private func addEntryQuick(_ value: Int) {
-    EntryActions.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
+    quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
   }
 }
 

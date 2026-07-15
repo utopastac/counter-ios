@@ -1,6 +1,6 @@
 import Foundation
 
-enum QuickAddConfiguration {
+nonisolated enum QuickAddConfiguration {
   static let buttonCount = 10
   static let presetCount = buttonCount - 1
 

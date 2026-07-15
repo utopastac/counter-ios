@@ -21,7 +21,7 @@ nonisolated enum GoalDirection: String, Codable, CaseIterable, Identifiable {
   }
 }
 
-struct GoalProgress {
+nonisolated struct GoalProgress {
   let current: Int
   let goal: Int
   let direction: GoalDirection
@@ -186,7 +186,7 @@ struct GoalProgress {
   }
 }
 
-enum GoalProgressCalculator {
+nonisolated enum GoalProgressCalculator {
   static func progress(current: Int, goal: Int?, direction: GoalDirection) -> GoalProgress? {
     guard let goal, goal > 0 else { return nil }
     return GoalProgress(current: current, goal: goal, direction: direction)

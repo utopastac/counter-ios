@@ -83,14 +83,45 @@ namespaced pure/near-pure functions:
 | `CounterPeriodCalculator` (`Shared/CounterPeriod.swift`) | Reset-period math: current range for daily/weekly/monthly, period totals, reset-summary strings |
 | `GoalProgressCalculator` (`Shared/GoalDirection.swift`) | Builds a `GoalProgress` value (fractions, hero strings, stat rows) for a counter's current total vs. its goal |
 | `HistoryAggregator` (`Shared/HistoryAggregator.swift`) | Buckets entries into `DailyValue`s for the history chart across day/week/month windows |
-| `EntryActions` (`Shared/EntryActions.swift`) | Insert/update/delete `CounterEntry`, including the 2-second quick-add batching window |
+| `EntryActions` (`Shared/EntryActions.swift`) | Stateless insert/update/delete of a `CounterEntry` |
+| `QuickAddSessionStore` (`Shared/QuickAddSessionStore.swift`) | The 2-second quick-add batching window. A real (non-static) type rather than another enum — see "Quick-add batching state" below |
 | `QuickAddConfiguration` (`Shared/QuickAddConfiguration.swift`) | Default/normalized quick-add preset button values |
-| `CalorieMigration` (`Shared/CalorieMigration.swift`) | One-time migration of the legacy single-counter calorie model into `CustomCounter` |
+| `CalorieMigration` (`Shared/CalorieMigration.swift`) | One-time migration of the legacy single-counter calorie model into `CustomCounter`, run automatically by `CounterMigrationPlan` — see "Schema migration" below |
 | `CustomCounter.currentTotal/currentProgress/currentRingDisplay` (`Shared/CustomCounter+Progress.swift`) | Convenience combinators tying the above together for "this counter's current period" — used by the pager, list, widgets, and watch so they can't quietly diverge |
 
 Views call into these directly. This keeps the object graph flat (a view either owns UI
 state or reads/writes SwiftData through a one-line static call) and keeps the domain logic
 unit-testable without instantiating any SwiftUI view — see [TESTING.md](TESTING.md).
+
+### Quick-add batching state
+
+Rapid taps on the same quick-add button accumulate into one `CounterEntry` instead of
+inserting a row per tap, if they land within `QuickAddSessionStore.batchInterval` (2s) of
+each other. That batching window is mutable, in-memory state (which entry is currently being
+accumulated into, and when it was last touched) — unlike everything else in the table above,
+which is pure/stateless. It intentionally isn't another `private static var` hidden inside a
+stateless-looking enum (that was the original design, and it made the batching window a
+hidden global with no visible owner or lifetime). Instead it's a small `@MainActor final
+class` that call sites hold explicitly:
+
+- `CustomCounterPageContent` and `WatchCounterDetailView` each keep one in `@State`, scoped
+  to that counter page's lifetime.
+- The widget extension's `AddCounterEntryIntent` (via `WidgetCounterLoader`) has no view to
+  own this state, so it explicitly opts into `QuickAddSessionStore.shared` — the one
+  legitimate singleton here, now visible and named instead of smuggled into `EntryActions`.
+
+## Schema migration
+
+`CustomCounter`/`CounterEntry` didn't always exist — early installs stored a single calorie
+counter as `CalorieEntry`/`AppSettings`. That upgrade is modeled as a SwiftData
+`VersionedSchema`/`SchemaMigrationPlan` (`Shared/CounterSchemaMigrationPlan.swift`):
+`CounterSchemaV1` (legacy models included) → `CounterSchemaV2` (current models only), with a
+custom migration stage whose `willMigrate` closure runs `CalorieMigration.migrateIfNeeded`
+while the store is still V1-shaped and `CalorieEntry`/`AppSettings` are still fetchable.
+`SharedModelContainer` passes this plan to `ModelContainer(for:migrationPlan:configurations:)`,
+so the migration runs automatically, exactly once, the first time a V1-shaped store is opened
+against the V2 schema — not re-checked by hand on every launch (see
+[DECISIONS.md](DECISIONS.md)).
 
 ## Design system
 
@@ -100,7 +131,7 @@ Design/
                CounterPaletteTokens (20-slot counter color palette)
   Theme/       CounterPalette / CounterAccent (per-counter accent resolution),
                CounterAppearance (light/dark)
-  System/      DesignSystemEnvironment — environment keys for colors/accent/pager state
+  System/      DesignSystemEnvironment — `@Entry`-backed environment values for colors/accent/pager state
   Modifiers/   Text style, glass surface, sheet presentation modifiers
   Components/  Buttons, cards, charts, lists, keypad, toast, settings controls, etc.
   Resources/   tokens.json — documents the token values; Swift is the canonical source
@@ -152,11 +183,27 @@ and a module-wide default actor isolation of `MainActor`
 
 - Most code (views, `EntryActions`, `WidgetCounterLoader` mutators, seeders) is implicitly
   `@MainActor` and doesn't need explicit annotations.
+- Pure calculators with no `ModelContext`/UI dependency — `CounterPeriodCalculator`,
+  `GoalProgressCalculator`, `HistoryAggregator`, `QuickAddConfiguration`, `CalorieMigration`,
+  `AppLog`, and the plain value types they operate on (`CounterResetPeriod`, `GoalDirection`,
+  `DailyValue`, `HistoryPeriod`, …) — are explicitly `nonisolated`. They do real work off the
+  main actor in tests and don't need the main-actor hop the module default would otherwise
+  force on them; `CalorieMigration.migrateIfNeeded` specifically *needs* to be `nonisolated`
+  so it can run synchronously from `CounterMigrationPlan`'s `willMigrate` closure.
+- `@Model` types (`CustomCounter`, `CounterEntry`, …) opt out of the module's default
+  `MainActor` isolation — unlike plain enums/structs, which inherit it. Code that reads a
+  model's stored properties (e.g. `CustomCounter+Progress.swift`, which reads `self.entries`)
+  has to be *explicitly* `@MainActor`, even though the pure math it delegates to
+  (`CounterPeriodCalculator`, `GoalProgressCalculator`) is `nonisolated` — see that file's doc
+  comment for the exact reasoning, since this is the easiest of these rules to get backwards.
 - `async`/`await` is used at real asynchronous boundaries: widget timeline/entity queries,
   App Intent `perform()`, and the entry-added toast's auto-dismiss (`Task.sleep`).
 - There are no Combine publishers and no custom `actor` types — the app is small enough
   that `@MainActor`-isolated static functions are sufficient; SwiftData/SwiftUI provide the
-  reactivity that would otherwise need Combine.
+  reactivity that would otherwise need Combine. `QuickAddSessionStore` is the one hand-rolled
+  stateful class, and it's `@MainActor` rather than an `actor`, since it's only ever touched
+  from main-actor call sites and an `actor` would just add `await` at every call site for no
+  isolation benefit.
 - The two `DispatchQueue.main.asyncAfter` timed delays in `CounterUnderlayReveal` (scroll
   lock/unlock around the reveal animation) were converted to
   `Task { @MainActor in try? await Task.sleep(...) }` for consistency with the rest of the

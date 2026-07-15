@@ -8,7 +8,9 @@ enum SampleDataSeeder {
 
   @MainActor
   static func seedIfNeeded(in context: ModelContext) {
-    CalorieMigration.migrateIfNeeded(in: context)
+    // Legacy calorie -> CustomCounter migration now runs automatically, once, at store-open
+    // time via `CounterMigrationPlan` (see `SharedModelContainer`), so it doesn't need to be
+    // re-checked here on every launch.
     migratePaletteIndicesIfNeeded(in: context)
     guard !UserDefaults.standard.bool(forKey: AppDataReset.suppressSampleSeedingKey) else { return }
     guard !hasAnyCounters(in: context) else { return }

@@ -5,7 +5,7 @@ import os
 /// failures to Console instead of disappearing silently. The app still treats these as
 /// non-fatal — data loss here is rare and not worth crashing over — but a swallowed error
 /// should be *visible*, not invisible.
-enum AppLog {
+nonisolated enum AppLog {
   private static let subsystem = Bundle.main.bundleIdentifier ?? "com.becter.counter"
 
   static let data = Logger(subsystem: subsystem, category: "data")

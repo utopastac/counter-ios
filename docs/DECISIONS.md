@@ -146,6 +146,103 @@ feature-specific view file. `ordinalDay` moved because it's domain formatting fo
 it let it be unit-tested directly (`CounterPeriodCalculatorTests.ordinalDayFormatsSuffixesCorrectly`)
 instead of only being exercised indirectly through the view.
 
+## `nonisolated` on pure calculators, instead of leaving them under the module's default `@MainActor`
+
+**Decision:** Explicitly mark `CounterPeriodCalculator`, `GoalProgressCalculator`,
+`HistoryAggregator`, `QuickAddConfiguration`, `CalorieMigration`, `AppLog`, and the plain
+value types they operate on (`CounterResetPeriod`, `CounterPeriodRange`, `GoalDirection`,
+`GoalProgress`, `DailyValue`, `HistoryPeriod`) as `nonisolated`, rather than relying on
+`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` to make them implicitly main-actor-bound.
+
+**Why:** The module-wide default isolation setting is convenient for views and mutators that
+already need the main actor (SwiftData's `ModelContext` is main-actor-bound in this app), but
+it silently pulls in code that has no actual main-actor dependency — pure functions over
+values already in hand. That silent pull-in is exactly what broke
+`CounterMigrationPlan.willMigrate`: `CalorieMigration.migrateIfNeeded` needs to run
+synchronously from a `@Sendable` closure SwiftData invokes off the main actor, and an
+implicitly-`@MainActor` function can't be called from there ("sending 'context' risks causing
+data races"). Marking it `nonisolated` fixes that call site and, as a side effect, makes the
+type's actual concurrency contract explicit rather than inherited by default. The same
+reasoning applies to the other calculators even though nothing currently calls them
+off-main-actor: they're pure, so there's no reason to pay a main-actor-hop tax for calling
+them from a background context in the future (e.g. a widget doing heavier history
+aggregation), and `nonisolated` documents that they're safe to do so.
+
+## `@Model` types don't inherit the module's default actor isolation — documented, not "fixed"
+
+**Decision:** Keep `CustomCounter`/`CounterEntry` themselves unannotated, but explicitly mark
+the `CustomCounter+Progress.swift` extension `@MainActor`, with a doc comment explaining why.
+
+**Why:** `@Model` is a macro that expands to its own set of conformances and storage, and that
+expansion opts the type out of `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` — a `@Model` class
+is `nonisolated` by default even in this module, unlike a plain `enum`/`struct`/`class`. This
+is a real, non-obvious gotcha: code can compile as `nonisolated` against a `@Model` type's
+*type declarations* while still being wrong to call from off the main actor, because the
+*store* backing that model (via `ModelContext`) is main-actor-bound in this app even though
+the Swift type isn't. `CustomCounter+Progress.swift`'s accessors read `self.entries` (a
+relationship), so they need `@MainActor` explicitly — there's no way to make the compiler
+enforce this automatically without also making `CustomCounter` itself `@MainActor` (which
+would then make routine SwiftData/`@Query` usage require await-hops it doesn't need). The fix
+here is documentation, not a code change to `CustomCounter` itself.
+
+## Quick-add batching moved out of a hidden `private static var` into `QuickAddSessionStore`
+
+**Decision:** Extract the quick-add batching window (which entry a rapid second tap should
+accumulate into, and when the window expires) out of `EntryActions` and into a new
+`QuickAddSessionStore` class that call sites own explicitly (`@State` in
+`CustomCounterPageContent`/`WatchCounterDetailView`, `.shared` in the widget extension).
+`EntryActions` is now purely stateless CRUD.
+
+**Why:** The original design kept `quickAddSessions: [UUID: Session]` as a `private static
+var` inside `EntryActions`, which otherwise reads as a stateless enum of pure CRUD functions.
+That's a hidden global: nothing in `EntryActions`'s public surface suggests it's holding
+mutable state with a lifetime, and every call site was implicitly sharing one global batching
+window regardless of which screen was on-screen or which counter's page had been dismissed
+and re-opened. Giving it a real, referenceable type makes the lifetime explicit and lets each
+owner scope it correctly — a counter page's batching window dying when the page does (via
+`@State`) is the right behavior, and the widget extension's `.shared` singleton is now a
+deliberate, visible choice rather than an implicit side effect of `EntryActions` being an
+enum. It's also more testable in isolation: `QuickAddSessionStoreTests` can construct
+independent store instances to prove sessions don't leak across them, which wasn't possible
+to express cleanly when the state was `private` inside `EntryActions`.
+
+## SwiftData `VersionedSchema`/`SchemaMigrationPlan` instead of an imperative migration call
+
+**Decision:** Replace the imperative `CalorieMigration.migrateIfNeeded(in:)` call (previously
+made by hand from `SampleDataSeeder.seedIfNeeded` on every launch) with a declarative
+`CounterSchemaV1` → `CounterSchemaV2` `SchemaMigrationPlan`
+(`Shared/CounterSchemaMigrationPlan.swift`), wired into `SharedModelContainer` via
+`ModelContainer(for:migrationPlan:configurations:)`.
+
+**Why:** The old design re-derived "should I check for legacy data?" on every single app
+launch via a guard clause at the top of `migrateIfNeeded` — cheap, but conceptually wrong: an
+old-schema-to-new-schema data move is exactly the problem `SchemaMigrationPlan` exists to
+solve, and SwiftData already knows how to run a migration stage exactly once, at store-open
+time, only when the store is actually shaped like the old schema. Modeling it that way also
+makes the migration end-to-end testable in a way the imperative version wasn't:
+`SchemaMigrationPlanTests` opens a real file-backed store shaped like `CounterSchemaV1`,
+closes it, and reopens the same file against `CounterSchemaV2` with the plan attached — the
+same path a real app upgrade takes — rather than only testing `CalorieMigration`'s data-moving
+logic in isolation (which `CalorieMigrationTests` still does, and continues to be useful for).
+`CalorieEntry`/`AppSettings` stay in `CounterSchemaV1` and drop out of `CounterSchemaV2`,
+formalizing what was previously an implicit "these are legacy, don't add new features to them"
+convention into the schema itself.
+
+## `@Entry` macro instead of hand-written `EnvironmentKey` boilerplate
+
+**Decision:** Replace `DesignSystemEnvironment.swift`'s six hand-written
+`private struct FooKey: EnvironmentKey { static let defaultValue = ... }` +
+`extension EnvironmentValues { var foo: T { get { self[FooKey.self] } set { ... } } }` pairs
+with `@Entry` (SwiftUI's macro for exactly this, available since iOS 17).
+
+**Why:** Every one of those keys existed solely to give `EnvironmentValues` a new property;
+none had custom subscript behavior worth the boilerplate. `@Entry` generates the same
+`EnvironmentKey` + subscript accessor pair from a single `@Entry var foo: T = default`
+declaration. The one property with genuine custom logic — `designSystem`, which layers
+`counterAccent` on top of a stored value on read — keeps a hand-written computed property,
+but now wraps a `@Entry`-backed `fileprivate` raw value instead of a hand-written key, so only
+the actually-custom part remains hand-written.
+
 ## What was deliberately left alone
 
 - **`CounterSheetPresentationModifier`'s `DispatchQueue.main.async`** — not converted to

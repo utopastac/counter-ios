@@ -136,6 +136,7 @@
 		CTGBFCalorieMigration01 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
 		CSMP10000010000000000004 /* CounterSchemaMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */; };
 		SMPTBFTEST01 /* SchemaMigrationPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SMPTFILEREF01 /* SchemaMigrationPlanTests.swift */; };
+		QASTBFTEST01 /* QuickAddSessionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = QASTFILEREF01 /* QuickAddSessionStoreTests.swift */; };
 
 		TMCBFTEST01 /* TestModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMCFILEREF01 /* TestModelContainer.swift */; };
 		CPTBFTEST01 /* CounterPeriodCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPTFILEREF01 /* CounterPeriodCalculatorTests.swift */; };
@@ -305,6 +306,7 @@
 		EATFILEREF01 /* EntryActionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActionsTests.swift; sourceTree = "<group>"; };
 		CMGFILEREF01 /* CalorieMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieMigrationTests.swift; sourceTree = "<group>"; };
 		SMPTFILEREF01 /* SchemaMigrationPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaMigrationPlanTests.swift; sourceTree = "<group>"; };
+		QASTFILEREF01 /* QuickAddSessionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStoreTests.swift; sourceTree = "<group>"; };
 		DS20000010000000000000001 /* BaseColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseColorTokens.swift; sourceTree = "<group>"; };
 		DS20000010000000000000002 /* SemanticColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticColorTokens.swift; sourceTree = "<group>"; };
 		DS20000010000000000000003 /* TypographyTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypographyTokens.swift; sourceTree = "<group>"; };
@@ -330,6 +332,8 @@
 		DS20000010000000000000028 /* EntryAddedToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAddedToast.swift; sourceTree = "<group>"; };
 		SCTFILEREF01 /* SettingsControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsControls.swift; sourceTree = "<group>"; };
 		CM20000010000000000000001 /* CalorieMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieMigration.swift; sourceTree = "<group>"; };
+		CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaMigrationPlan.swift; sourceTree = "<group>"; };
+		QAS20000010000000000000001 /* QuickAddSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStore.swift; sourceTree = "<group>"; };
 		SD20000010000000000000001 /* SampleDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataSeeder.swift; sourceTree = "<group>"; };
 		S20000010000000000000001 /* AmountEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountEntrySheet.swift; sourceTree = "<group>"; };
 		DS20000010000000000000015 /* CounterListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterListRow.swift; sourceTree = "<group>"; };
@@ -419,6 +423,7 @@
 				EATFILEREF01 /* EntryActionsTests.swift */,
 				CMGFILEREF01 /* CalorieMigrationTests.swift */,
 				SMPTFILEREF01 /* SchemaMigrationPlanTests.swift */,
+				QASTFILEREF01 /* QuickAddSessionStoreTests.swift */,
 			);
 			path = CounterTests;
 			sourceTree = "<group>";
@@ -1042,6 +1047,7 @@
 				CMGBFTEST01 /* CalorieMigrationTests.swift in Sources */,
 				CSMP10000010000000000004 /* CounterSchemaMigrationPlan.swift in Sources */,
 				SMPTBFTEST01 /* SchemaMigrationPlanTests.swift in Sources */,
+				QASTBFTEST01 /* QuickAddSessionStoreTests.swift in Sources */,
 				CTGBFCalorieEntry01 /* CalorieEntry.swift in Sources */,
 				CTGBFCustomCounter01 /* CustomCounter.swift in Sources */,
 				CTGBFCounterEntry01 /* CounterEntry.swift in Sources */,

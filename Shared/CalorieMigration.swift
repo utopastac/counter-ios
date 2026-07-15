@@ -1,8 +1,13 @@
 import Foundation
 import SwiftData
 
-enum CalorieMigration {
-  @MainActor
+/// `nonisolated` so `migrateIfNeeded` can run synchronously from `CounterMigrationPlan`'s
+/// `willMigrate` closure, which SwiftData invokes off the main actor as a `@Sendable`
+/// closure. `ModelContext` itself isn't `Sendable`, but SwiftData hands this specific
+/// context to the closure precisely so it can be mutated synchronously during migration —
+/// there's no cross-actor hop here, just a context that was never main-actor-bound to begin
+/// with (unlike `SharedModelContainer`'s context, which is only ever touched from the main actor).
+nonisolated enum CalorieMigration {
   static func migrateIfNeeded(in context: ModelContext) {
     let calorieEntries = fetchCalorieEntries(in: context)
     let settings = fetchAppSettings(in: context)

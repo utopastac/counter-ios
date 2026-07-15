@@ -4,7 +4,7 @@
 
 ```sh
 xcodebuild -project Counter.xcodeproj -scheme Counter \
-  -destination 'platform=iOS Simulator,name=iPhone 16' test
+  -destination 'platform=iOS Simulator,name=iPhone 17' test
 ```
 
 Or in Xcode: select the `Counter` scheme, open the Test navigator (⌘6), and run the
@@ -23,8 +23,10 @@ determines *what the app should compute*, independent of how it's displayed:
 | `HistoryAggregatorTests.swift` | Calendar-day totals and grouped daily/weekly/monthly history buckets |
 | `QuickAddConfigurationTests.swift` | Preset normalization (sort + cap) and fill-to-count behavior |
 | `CustomCounterModelTests.swift` | `CustomCounter`'s derived properties: `effectiveGoal`, `effectivePaletteIndex` wraparound, `effectiveResetAnchorDay` clamping, `effectiveSliderMax` fallback |
-| `EntryActionsTests.swift` | Quick-add batching (accumulate within the 2s window, start fresh after it/after a manual clear), per-counter session isolation, delete/update |
-| `CalorieMigrationTests.swift` | Legacy `CalorieEntry`/`AppSettings` → `CustomCounter` migration, including reusing an existing "Calories" counter and no-op when there's nothing to migrate |
+| `EntryActionsTests.swift` | Stateless CRUD: insert, update, delete a `CounterEntry` |
+| `QuickAddSessionStoreTests.swift` | Quick-add batching (accumulate within the 2s window, start fresh after a reset), per-counter and per-instance session isolation, self-healing after the batched entry is deleted directly |
+| `CalorieMigrationTests.swift` | Legacy `CalorieEntry`/`AppSettings` → `CustomCounter` migration logic in isolation, including reusing an existing "Calories" counter and no-op when there's nothing to migrate |
+| `SchemaMigrationPlanTests.swift` | `CounterMigrationPlan` end-to-end: opening a file-backed V1 store against the V2 schema actually runs `CalorieMigration` and lands a `CustomCounter`; a fresh V1 store with no legacy data upgrades as a no-op |
 
 Tests use an isolated in-memory `ModelContainer` per test
 (`CounterTests/TestModelContainer.swift`) — they never touch the real App Group store, so

@@ -28,7 +28,7 @@ enum WidgetCounterLoader {
       return
     }
 
-    EntryActions.addCounterEntryQuick(value: amount, counter: counter, in: context)
+    QuickAddSessionStore.shared.addCounterEntryQuick(value: amount, counter: counter, in: context)
     AppLog.attempt("Save widget quick-add") { try context.save() }
     WidgetSnapshot.reloadTimelines()
   }

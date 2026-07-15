@@ -1,6 +1,6 @@
 import Foundation
 
-enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable {
+nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable {
   case daily
   case weekly
   case monthly
@@ -39,12 +39,12 @@ enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable {
   }
 }
 
-struct CounterPeriodRange {
+nonisolated struct CounterPeriodRange {
   let start: Date
   let end: Date
 }
 
-enum CounterPeriodCalculator {
+nonisolated enum CounterPeriodCalculator {
   static func currentRange(
     for counter: CustomCounter,
     on date: Date = .now,

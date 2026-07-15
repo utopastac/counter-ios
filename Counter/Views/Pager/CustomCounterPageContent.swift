@@ -11,6 +11,7 @@ struct CustomCounterPageContent: View {
   @State private var showCustomAmount = false
   @State private var showsEntryLog = false
   @State private var entryToast: EntryToastState?
+  @State private var quickAddStore = QuickAddSessionStore()
 
   private var periodEntries: [CounterEntry] {
     let range = CounterPeriodCalculator.currentRange(for: counter)
@@ -158,7 +159,7 @@ struct CustomCounterPageContent: View {
   }
 
   private func addEntryQuick(_ value: Int) {
-    let added = EntryActions.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
+    let added = quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
     presentToast(for: added)
     syncWidgets()
   }

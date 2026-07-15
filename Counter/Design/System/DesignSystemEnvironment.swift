@@ -18,68 +18,30 @@ struct CounterDesignSystem: Equatable {
   }
 }
 
-private struct CounterDesignSystemKey: EnvironmentKey {
-  static let defaultValue = CounterDesignSystem(colorScheme: .dark, accent: nil)
-}
-
-private struct CounterAccentKey: EnvironmentKey {
-  static let defaultValue: CounterAccent? = nil
-}
-
-private struct CounterPagerScrollProgressKey: EnvironmentKey {
-  static let defaultValue: CGFloat? = nil
-}
-
-private struct CounterPagerAccentsKey: EnvironmentKey {
-  static let defaultValue: [CounterAccent]? = nil
-}
-
-private struct CounterPagerIsDraggingKey: EnvironmentKey {
-  static let defaultValue = false
-}
-
-private struct CounterRevealIsDraggingKey: EnvironmentKey {
-  static let defaultValue = false
-}
-
 extension EnvironmentValues {
+  /// Backing storage for `designSystem`, which layers `counterAccent` on top on read — kept
+  /// separate so that layering logic doesn't have to live inside a hand-written
+  /// `EnvironmentKey`. `@Entry` (iOS 17+) generates that boilerplate for every other key here.
+  @Entry fileprivate var rawDesignSystem = CounterDesignSystem(colorScheme: .dark, accent: nil)
+
   var designSystem: CounterDesignSystem {
     get {
-      var system = self[CounterDesignSystemKey.self]
+      var system = rawDesignSystem
       system.accent = counterAccent
       return system
     }
-    set { self[CounterDesignSystemKey.self] = newValue }
+    set { rawDesignSystem = newValue }
   }
 
   var semanticColors: SemanticColors {
     designSystem.colors
   }
 
-  var counterAccent: CounterAccent? {
-    get { self[CounterAccentKey.self] }
-    set { self[CounterAccentKey.self] = newValue }
-  }
-
-  var counterPagerScrollProgress: CGFloat? {
-    get { self[CounterPagerScrollProgressKey.self] }
-    set { self[CounterPagerScrollProgressKey.self] = newValue }
-  }
-
-  var counterPagerAccents: [CounterAccent]? {
-    get { self[CounterPagerAccentsKey.self] }
-    set { self[CounterPagerAccentsKey.self] = newValue }
-  }
-
-  var counterPagerIsDragging: Bool {
-    get { self[CounterPagerIsDraggingKey.self] }
-    set { self[CounterPagerIsDraggingKey.self] = newValue }
-  }
-
-  var counterRevealIsDragging: Bool {
-    get { self[CounterRevealIsDraggingKey.self] }
-    set { self[CounterRevealIsDraggingKey.self] = newValue }
-  }
+  @Entry var counterAccent: CounterAccent?
+  @Entry var counterPagerScrollProgress: CGFloat?
+  @Entry var counterPagerAccents: [CounterAccent]?
+  @Entry var counterPagerIsDragging = false
+  @Entry var counterRevealIsDragging = false
 }
 
 extension View {

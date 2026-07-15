@@ -1,13 +1,13 @@
 import Foundation
 
-struct DailyValue: Identifiable {
+nonisolated struct DailyValue: Identifiable {
   let date: Date
   let value: Double
 
   var id: Date { date }
 }
 
-enum HistoryPeriod: String, CaseIterable, Identifiable {
+nonisolated enum HistoryPeriod: String, CaseIterable, Identifiable {
   case daily
   case weekly
   case monthly
