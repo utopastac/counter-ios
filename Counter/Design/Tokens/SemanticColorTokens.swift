@@ -91,7 +91,7 @@ struct SemanticColors: Equatable {
     progressOverGoal: BaseColor.Orange.orange500.opacity(0.95),
     progressRingTrack: BaseColor.WhiteAlpha.a100,
     progressRingFill: BaseColor.Yellow.yellow500,
-    progressRingOverfillOutline: BaseColor.WhiteAlpha.a180,
+    progressRingOverfillOutline: BaseColor.Neutral.darkBackdrop,
     statusSuccess: BaseColor.Green.green500,
     statusWarning: BaseColor.Orange.orange500,
     statusDanger: BaseColor.Red.red500,
@@ -136,7 +136,7 @@ struct SemanticColors: Equatable {
     progressOverGoal: BaseColor.Orange.orange500,
     progressRingTrack: BaseColor.BlackAlpha.a100,
     progressRingFill: BaseColor.Yellow.yellow500,
-    progressRingOverfillOutline: BaseColor.BlackAlpha.a100,
+    progressRingOverfillOutline: BaseColor.Neutral.lightBackdrop,
     statusSuccess: BaseColor.Green.green500,
     statusWarning: BaseColor.Orange.orange500,
     statusDanger: BaseColor.Red.red500,
@@ -179,7 +179,10 @@ struct SemanticColors: Equatable {
     copy.interactiveDisabledForeground = palette.buttonForeground(for: colorScheme).opacity(0.45)
     copy.progressRingFill = foreground
     copy.progressRingTrack = palette.subtleForeground(for: colorScheme)
-    copy.progressRingOverfillOutline = foreground.opacity(colorScheme == .dark ? 0.45 : 0.28)
+    // The counter's own card background (not `foreground`-based): the outline reads as a
+    // "cut-out" gap back down to the card behind the ring, so it stays visible against the
+    // fill color instead of blending into a translucent version of the same hue.
+    copy.progressRingOverfillOutline = background
     copy.surfaceGlassFill = foreground.opacity(0.08)
     copy.surfaceGlassFillSubtle = foreground.opacity(0.05)
     copy.surfaceGlassStroke = foreground.opacity(0.12)

@@ -10,8 +10,13 @@ struct GoalProgressRing: View {
   var trackColor: Color?
   var fillColor: Color?
 
+  /// The primary 0...1 lap. Snaps to the full ring once progress goes past 100% (the overflow
+  /// arc then wraps on top of it) and drops to empty once progress goes below 0% (the
+  /// underflow arc then winds backward from that empty ring instead).
   private var fillFraction: Double {
-    progress.isOverGoal ? 1 : progress.ringFraction
+    if progress.isUnderZero { return 0 }
+    if progress.isOverGoal { return 1 }
+    return progress.ringFraction
   }
 
   var body: some View {
@@ -24,8 +29,17 @@ struct GoalProgressRing: View {
           .stroke(resolvedFillColor, style: ringStrokeStyle)
       }
 
+      if progress.underflowRingFraction > 0 {
+        ProgressRingArc(fraction: progress.underflowRingFraction, lineWidth: lineWidth, clockwise: false)
+          .stroke(resolvedFillColor, style: ringStrokeStyle)
+      }
+
       if progress.overflowRingFraction > 0 {
-        overfillOverflowArc
+        loopOverlapArc(fraction: progress.overflowRingFraction, clockwise: true)
+      }
+
+      if progress.underflowOverlapFraction > 0 {
+        loopOverlapArc(fraction: progress.underflowOverlapFraction, clockwise: false)
       }
     }
     .animation(MotionToken.ringProgress(reduceMotion: reduceMotion), value: progress.current)
@@ -38,9 +52,12 @@ struct GoalProgressRing: View {
     StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
   }
 
-  private var overfillOverflowArc: some View {
+  /// Draws one wound-again lap on top of the completed base ring — an Apple Watch–style
+  /// "activity ring" overlap. A wider outline stroke sits underneath the normal-width fill,
+  /// so it peeks out as a visible rim/halo around the overlap's rounded caps (most noticeably
+  /// at the growing tip) without needing to be masked to the ring band.
+  private func loopOverlapArc(fraction: Double, clockwise: Bool) -> some View {
     let outlineWidth = SizeToken.Ring.overfillOutlineWidth
-    let overflow = progress.overflowRingFraction
     let outlineStroke = StrokeStyle(
       lineWidth: lineWidth + outlineWidth * 2,
       lineCap: .round,
@@ -48,13 +65,10 @@ struct GoalProgressRing: View {
     )
 
     return ZStack {
-      ProgressRingArc(fraction: overflow, lineWidth: lineWidth)
+      ProgressRingArc(fraction: fraction, lineWidth: lineWidth, clockwise: clockwise)
         .stroke(colors.progressRingOverfillOutline, style: outlineStroke)
-        .mask {
-          ProgressRingBandMask(lineWidth: lineWidth)
-        }
 
-      ProgressRingArc(fraction: overflow, lineWidth: lineWidth)
+      ProgressRingArc(fraction: fraction, lineWidth: lineWidth, clockwise: clockwise)
         .stroke(resolvedFillColor, style: ringStrokeStyle)
     }
   }
@@ -65,26 +79,6 @@ struct GoalProgressRing: View {
 
   private var resolvedFillColor: Color {
     fillColor ?? colors.progressRingFill
-  }
-}
-
-/// Annulus mask that clips strokes to the progress ring band.
-struct ProgressRingBandMask: View {
-  let lineWidth: CGFloat
-
-  var body: some View {
-    ProgressRingBandShape(lineWidth: lineWidth)
-      .fill(.white, style: FillStyle(eoFill: true))
-  }
-}
-
-private struct ProgressRingBandShape: Shape {
-  let lineWidth: CGFloat
-
-  func path(in rect: CGRect) -> Path {
-    var path = Path(ellipseIn: rect)
-    path.addPath(Path(ellipseIn: rect.insetBy(dx: lineWidth, dy: lineWidth)))
-    return path
   }
 }
 
@@ -125,6 +119,12 @@ struct GoalProgressView: View {
       )
       GoalProgressView(
         progress: GoalProgress(current: 3200, goal: 2000, direction: .countDown)
+      )
+      GoalProgressView(
+        progress: GoalProgress(current: 6800, goal: 2000, direction: .countUp)
+      )
+      GoalProgressView(
+        progress: GoalProgress(current: -900, goal: 2000, direction: .countUp)
       )
     }
     .padding()
