@@ -31,8 +31,6 @@ struct CounterSettingsView: View {
 
   @Environment(\.dismiss) private var dismiss
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
-  @State private var editingPreset: PresetEditItem?
-  @State private var isAddingPreset = false
   @State private var showDeleteConfirmation = false
 
   private var colors: SemanticColors {
@@ -135,28 +133,9 @@ struct CounterSettingsView: View {
       .onChange(of: paletteIndex) { _, newValue in
         onPaletteChange?(newValue)
       }
-      .sheet(item: $editingPreset) { item in
-        AmountEntrySheet(
-          title: "Edit preset",
-          actionTitle: "Save",
-          initialText: String(item.value)
-        ) { newValue in
-          replacePreset(old: item.value, with: newValue)
-        }
-      }
-      .sheet(isPresented: $isAddingPreset) {
-        AmountEntrySheet(
-          title: "Add preset",
-          actionTitle: "Add"
-        ) { newValue in
-          addPreset(newValue)
-        }
-      }
       .counterDesignSystemFromAppearancePreference()
     }
-    // `.full` (not the offset peek) because this screen presents nested preset-edit
-    // sheets, which only stack correctly on top of a sheet at the `.large` detent.
-    .counterSheetPresentation(.full)
+    .counterSheetPresentation()
     .alert("Delete counter?", isPresented: $showDeleteConfirmation) {
       Button("Delete", role: .destructive) {
         onDelete?()
@@ -228,20 +207,8 @@ struct CounterSettingsView: View {
     Group {
       SettingsSectionHeader(title: "Quick add presets")
 
-      SettingsPresetGrid(
-        values: displayPresetValues,
-        onTap: { value in
-          editingPreset = PresetEditItem(value: value)
-        },
-        onAdd: {
-          if values.count < Self.maxQuickAddButtons {
-            isAddingPreset = true
-          } else if let last = displayPresetValues.last {
-            editingPreset = PresetEditItem(value: last)
-          }
-        }
-      )
-      .padding(.bottom, SpaceToken.u2)
+      SettingsPresetGrid(values: $values, defaults: defaultPresets)
+        .padding(.bottom, SpaceToken.u2)
     }
   }
 
@@ -282,10 +249,6 @@ struct CounterSettingsView: View {
     parsedGoal != nil
   }
 
-  private var displayPresetValues: [Int] {
-    QuickAddConfiguration.filledPresets(from: values, defaults: defaultPresets)
-  }
-
   private var canSave: Bool {
     if includeNameField, trimmedName.isEmpty {
       return false
@@ -318,29 +281,6 @@ struct CounterSettingsView: View {
     )
     dismiss()
   }
-
-  private func replacePreset(old: Int, with new: Int) {
-    guard new > 0 else { return }
-
-    if let index = values.firstIndex(of: old) {
-      values[index] = new
-    } else if values.count < Self.maxQuickAddButtons {
-      values.append(new)
-    }
-
-    values = QuickAddConfiguration.normalizedPresets(values)
-  }
-
-  private func addPreset(_ value: Int) {
-    guard value > 0, values.count < Self.maxQuickAddButtons, !values.contains(value) else { return }
-    values.append(value)
-    values = QuickAddConfiguration.normalizedPresets(values)
-  }
-}
-
-private struct PresetEditItem: Identifiable {
-  let value: Int
-  var id: Int { value }
 }
 
 #Preview {

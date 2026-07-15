@@ -15,7 +15,7 @@ struct WatchQuickAddGrid: View {
 
   var body: some View {
     LazyVGrid(columns: columns, spacing: 6) {
-      ForEach(displayValues, id: \.self) { value in
+      ForEach(Array(displayValues.enumerated()), id: \.offset) { _, value in
         Button("\(value)") {
           onTap(value)
         }

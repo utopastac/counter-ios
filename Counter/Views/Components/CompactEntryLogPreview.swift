@@ -76,6 +76,74 @@ struct EntryLogRow: View {
     .minute(.twoDigits)
 }
 
+struct EntryLogEditableRow: View {
+  let value: Int
+  let timestamp: Date
+  let onCommit: (Int) -> Void
+
+  @State private var text: String
+  @FocusState private var isFocused: Bool
+
+  init(value: Int, timestamp: Date, onCommit: @escaping (Int) -> Void) {
+    self.value = value
+    self.timestamp = timestamp
+    self.onCommit = onCommit
+    _text = State(initialValue: String(value))
+  }
+
+  var body: some View {
+    HStack(alignment: .center, spacing: SpaceToken.x3) {
+      TextField("", text: $text)
+        .counterTextStyle(.rowHeavy)
+        .textFieldStyle(.plain)
+        .keyboardType(.numbersAndPunctuation)
+        .focused($isFocused)
+        .onChange(of: text) { _, newValue in
+          let sanitized = Self.sanitizedEntryText(newValue)
+          if sanitized != newValue {
+            text = sanitized
+          }
+        }
+        .onChange(of: value) { _, newValue in
+          guard !isFocused else { return }
+          text = String(newValue)
+        }
+        .onChange(of: isFocused) { _, focused in
+          if !focused {
+            commit()
+          }
+        }
+
+      Spacer(minLength: 0)
+
+      Text(timestamp, format: EntryLogRow.timestampFormat)
+        .counterTextStyle(.meta, color: .secondary)
+    }
+  }
+
+  private func commit() {
+    guard let parsed = Int(text) else {
+      text = String(value)
+      return
+    }
+
+    guard parsed != value else { return }
+    onCommit(parsed)
+  }
+
+  private static func sanitizedEntryText(_ raw: String) -> String {
+    var result = ""
+    for (index, character) in raw.enumerated() {
+      if character.isWholeNumber {
+        result.append(character)
+      } else if character == "-", index == 0 {
+        result.append(character)
+      }
+    }
+    return String(result.prefix(7))
+  }
+}
+
 struct CompactEntryLogPreview: View {
   @Environment(\.semanticColors) private var colors
   @Environment(\.accessibilityReduceMotion) private var reduceMotion

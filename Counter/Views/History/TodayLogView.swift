@@ -8,9 +8,7 @@ struct CounterTodayLogView: View {
 
   var body: some View {
     CounterPeriodEntryLogScreen(counter: counter)
-      // `.full` (not the offset peek) because this screen presents a nested edit
-      // sheet, which only stacks correctly on top of a sheet at the `.large` detent.
-      .counterSheetPresentation(.full)
+      .counterSheetPresentation()
   }
 }
 
@@ -20,13 +18,6 @@ struct CounterPeriodEntryLogScreen: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
   @Environment(\.semanticColors) private var colors
-
-  @State private var editingEntry: EntryEditContext?
-
-  private struct EntryEditContext: Identifiable {
-    let id: UUID
-    let value: Int
-  }
 
   private var periodEntries: [CounterEntry] {
     let range = CounterPeriodCalculator.currentRange(for: counter)
@@ -44,16 +35,11 @@ struct CounterPeriodEntryLogScreen: View {
       CounterPeriodEntryLogContent(
         entries: periodEntries,
         onDelete: deleteEntry,
-        onEdit: { editingEntry = EntryEditContext(id: $0, value: $1) }
+        onValueCommit: updateEntry
       )
     }
     .background(colors.surfaceSheet)
     .counterDesignSystemFromColorScheme()
-    .sheet(item: $editingEntry) { context in
-      EditEntrySheet(initialValue: context.value) { newValue in
-        updateEntry(id: context.id, value: newValue)
-      }
-    }
   }
 
   private func deleteEntry(id: UUID) {
@@ -72,7 +58,7 @@ struct CounterPeriodEntryLogContent: View {
 
   let entries: [CounterEntry]
   let onDelete: (UUID) -> Void
-  let onEdit: (UUID, Int) -> Void
+  let onValueCommit: (UUID, Int) -> Void
 
   private var insertAnimation: Animation {
     MotionToken.entryInsert(reduceMotion: reduceMotion)
@@ -93,22 +79,19 @@ struct CounterPeriodEntryLogContent: View {
       } else {
         List {
           ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
-            Button {
-              onEdit(entry.id, entry.value)
-            } label: {
-              VStack(spacing: 0) {
-                if index > 0 {
-                  EntryLogRowDivider()
-                    .padding(.horizontal, SheetToken.horizontal)
-                }
-
-                EntryLogRow(valueText: "\(entry.value)", timestamp: entry.timestamp)
-                  .frame(height: SheetToken.tableRowHeight)
-                  .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(spacing: 0) {
+              if index > 0 {
+                EntryLogRowDivider()
                   .padding(.horizontal, SheetToken.horizontal)
               }
+
+              EntryLogEditableRow(value: entry.value, timestamp: entry.timestamp) { newValue in
+                onValueCommit(entry.id, newValue)
+              }
+              .frame(height: SheetToken.tableRowHeight)
+              .frame(maxWidth: .infinity, alignment: .leading)
+              .padding(.horizontal, SheetToken.horizontal)
             }
-            .buttonStyle(.noHighlight)
             .listRowInsets(EdgeInsets())
             .listRowSeparator(.hidden)
             .transition(rowTransition)
@@ -145,22 +128,6 @@ enum EntryLogTitles {
     case .weekly: "This Week"
     case .monthly: "This Month"
     }
-  }
-}
-
-struct EditEntrySheet: View {
-  let initialValue: Int
-  let onSave: (Int) -> Void
-
-  var body: some View {
-    AmountEntrySheet(
-      title: "Edit",
-      actionTitle: "Save",
-      initialText: String(initialValue),
-      onSubmit: onSave
-    )
-    .environment(\.counterAccent, nil)
-    .counterDesignSystemFromColorScheme()
   }
 }
 

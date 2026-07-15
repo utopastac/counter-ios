@@ -16,7 +16,7 @@ struct CompactQuickAddGrid: View {
 
   var body: some View {
     LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
-      ForEach(displayValues, id: \.self) { value in
+      ForEach(Array(displayValues.enumerated()), id: \.offset) { _, value in
         CounterActionButton("\(value)") {
           onTap(value)
         }

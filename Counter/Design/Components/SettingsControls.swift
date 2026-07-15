@@ -129,24 +129,97 @@ struct SettingsPickerRow<Option: Hashable>: View {
   }
 }
 
-struct SettingsPresetButton: View {
+struct SettingsEditablePresetField: View {
   @Environment(\.semanticColors) private var colors
 
-  let label: String
-  let action: () -> Void
+  let value: Int
+  let onCommit: (Int) -> Void
+
+  @State private var text: String
+  @FocusState private var isFocused: Bool
+
+  init(value: Int, onCommit: @escaping (Int) -> Void) {
+    self.value = value
+    self.onCommit = onCommit
+    _text = State(initialValue: String(value))
+  }
 
   var body: some View {
-    Button(action: action) {
-      Text(label)
-        .counterTextStyle(.settingsRowLabel, color: .primary)
-        .frame(maxWidth: .infinity)
-        .frame(height: SizeToken.quickAddHeight)
-        .background(
-          ComponentColor.listActionButtonFill(colors),
-          in: RadiusToken.continuousButton
-        )
+    TextField("", text: $text)
+      .counterTextStyle(.settingsRowLabel, color: .primary)
+      .textFieldStyle(.plain)
+      .multilineTextAlignment(.center)
+      .keyboardType(.numberPad)
+      .focused($isFocused)
+      .frame(maxWidth: .infinity)
+      .frame(height: SizeToken.quickAddHeight)
+      .background(
+        ComponentColor.listActionButtonFill(colors),
+        in: RadiusToken.continuousButton
+      )
+      .onChange(of: text) { _, newValue in
+        let sanitized = String(newValue.filter(\.isWholeNumber).prefix(6))
+        if sanitized != newValue {
+          text = sanitized
+        }
+      }
+      .onChange(of: value) { _, newValue in
+        guard !isFocused else { return }
+        text = String(newValue)
+      }
+      .onChange(of: isFocused) { _, focused in
+        if !focused {
+          commit()
+        }
+      }
+  }
+
+  private func commit() {
+    guard let parsed = Int(text), parsed > 0 else {
+      text = String(value)
+      return
     }
-    .buttonStyle(.plain)
+
+    guard parsed != value else { return }
+    onCommit(parsed)
+  }
+}
+
+struct SettingsPresetGrid: View {
+  @Binding var values: [Int]
+  let defaults: [Int]
+
+  private var columns: [GridItem] {
+    Array(
+      repeating: GridItem(.flexible(), spacing: SizeToken.gridSpacing),
+      count: SizeToken.gridColumnCount
+    )
+  }
+
+  private var displayValues: [Int] {
+    QuickAddConfiguration.filledPresets(from: values, defaults: defaults)
+  }
+
+  var body: some View {
+    LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
+      ForEach(Array(displayValues.enumerated()), id: \.offset) { _, presetValue in
+        SettingsEditablePresetField(value: presetValue) { newValue in
+          commitPreset(replacing: presetValue, with: newValue)
+        }
+      }
+    }
+  }
+
+  private func commitPreset(replacing old: Int, with new: Int) {
+    guard new > 0 else { return }
+
+    if let index = values.firstIndex(of: old) {
+      values[index] = new
+    } else if values.count < QuickAddConfiguration.presetCount {
+      values.append(new)
+    }
+
+    values = QuickAddConfiguration.normalizedPresets(values)
   }
 }
 
@@ -199,33 +272,6 @@ struct SettingsColorSwatchGrid: View {
         ) {
           selection = slot.id
         }
-      }
-    }
-  }
-}
-
-struct SettingsPresetGrid: View {
-  let values: [Int]
-  let onTap: (Int) -> Void
-  let onAdd: () -> Void
-
-  private var columns: [GridItem] {
-    Array(
-      repeating: GridItem(.flexible(), spacing: SizeToken.gridSpacing),
-      count: SizeToken.gridColumnCount
-    )
-  }
-
-  var body: some View {
-    LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
-      ForEach(values, id: \.self) { value in
-        SettingsPresetButton(label: "\(value)") {
-          onTap(value)
-        }
-      }
-
-      SettingsPresetButton(label: "…") {
-        onAdd()
       }
     }
   }
