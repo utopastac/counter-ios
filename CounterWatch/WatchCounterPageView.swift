@@ -28,84 +28,78 @@ struct WatchCounterPageView: View {
       theme.background
         .ignoresSafeArea()
 
-      VStack(spacing: 0) {
-        header
-          .padding(.horizontal, 8)
-          .padding(.top, 4)
+      VStack(alignment: .leading, spacing: 0) {
+        ring
+
+        content
+          .padding(.top, 10)
 
         Spacer(minLength: 0)
-
-        hero
-          .padding(.horizontal, 8)
-
-        Spacer(minLength: 0)
-
-        footer
-          .padding(.horizontal, 8)
-          .padding(.bottom, 8)
       }
+      .padding(.leading, 8)
+      .padding(.trailing, 12)
     }
     .navigationBarHidden(true)
   }
 
-  private var header: some View {
-    HStack(alignment: .top, spacing: 8) {
+  private var ring: some View {
+    Group {
       if let progress {
-        WatchGoalProgressRing(progress: progress, theme: theme)
+        WatchGoalProgressRing(progress: progress, theme: theme, size: 64, lineWidth: 10)
       } else {
         Color.clear
-          .frame(width: 28, height: 28)
+          .frame(width: 64, height: 64)
       }
+    }
+  }
+
+  private var content: some View {
+    HStack(alignment: .center, spacing: 8) {
+      hero
 
       Spacer(minLength: 0)
 
-      VStack(alignment: .trailing, spacing: 0) {
-        TimelineView(.periodic(from: .now, by: 60)) { context in
-          Text(context.date, style: .time)
-            .font(.system(size: 16, weight: .semibold, design: .rounded))
-            .monospacedDigit()
-        }
-        Text(counter.name)
-          .font(.system(size: 13, weight: .medium, design: .rounded))
-          .foregroundStyle(theme.mutedForeground)
-          .lineLimit(1)
-      }
+      quickAddButton
     }
   }
 
   private var hero: some View {
-    VStack(spacing: 4) {
+    VStack(alignment: .leading, spacing: -4) {
+      Text(counter.name)
+        .font(.system(size: 17, weight: .semibold, design: .rounded))
+        .foregroundStyle(theme.foreground)
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+
       Text(heroValue)
-        .font(.system(size: 44, weight: .bold, design: .rounded))
+        .font(.system(size: 44, weight: .semibold, design: .rounded))
         .foregroundStyle(theme.foreground)
         .minimumScaleFactor(0.5)
         .lineLimit(1)
         .contentTransition(.numericText())
+        .padding(.top, -2)
 
       if let subtitle {
         Text(subtitle)
-          .font(.system(size: 15, weight: .medium, design: .rounded))
+          .font(.system(size: 16, weight: .semibold, design: .rounded))
           .foregroundStyle(theme.mutedForeground)
+          .lineLimit(1)
+          .minimumScaleFactor(0.7)
       }
     }
-    .frame(maxWidth: .infinity)
   }
 
-  private var footer: some View {
-    HStack {
-      NavigationLink {
-        WatchQuickAddView(counter: counter)
-      } label: {
-        Image(systemName: "plus")
-          .font(.system(size: 22, weight: .semibold))
-          .foregroundStyle(theme.foreground)
-          .frame(width: 44, height: 44)
-          .background(theme.foreground.opacity(0.18), in: Circle())
-      }
-      .buttonStyle(.plain)
-
-      Spacer(minLength: 0)
+  private var quickAddButton: some View {
+    NavigationLink {
+      WatchQuickAddView(counter: counter)
+    } label: {
+      Image(systemName: "plus")
+        .font(.system(size: 22, weight: .semibold))
+        .foregroundStyle(theme.foreground)
+        .frame(width: 44, height: 44)
+        .background(theme.foreground.opacity(0.18), in: Circle())
     }
+    .buttonStyle(.plain)
   }
 
   private var heroValue: String {

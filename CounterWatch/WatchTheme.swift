@@ -15,6 +15,14 @@ struct WatchThemeColors {
     )
     foreground = .white
     mutedForeground = .white.opacity(0.72)
-    ringTrack = background.opacity(0.72)
+    // Darken (rather than fade) the background so the track reads as a
+    // visible ring against a same-colored page background — matching
+    // `CounterPaletteSlot.progressRingTrack`.
+    let darkenFactor: Double = 0.78
+    ringTrack = Color(
+      red: entry.darkRGB.red * darkenFactor,
+      green: entry.darkRGB.green * darkenFactor,
+      blue: entry.darkRGB.blue * darkenFactor
+    )
   }
 }
