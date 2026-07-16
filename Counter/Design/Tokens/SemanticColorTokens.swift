@@ -33,6 +33,7 @@ struct SemanticColors: Equatable {
   var toggleThumbOn: Color
 
   var surfaceSheet: Color
+  var modalScrim: Color
   var surfaceKeypadKey: Color
   var surfaceHistoryMuted: Color
 
@@ -63,7 +64,8 @@ struct SemanticColors: Equatable {
     toggleTrackOn: BaseColor.white,
     toggleThumbOff: BaseColor.white,
     toggleThumbOn: BaseColor.black,
-    surfaceSheet: BaseColor.Neutral.darkBackdrop,
+    surfaceSheet: BaseColor.Neutral.darkSheet,
+    modalScrim: BaseColor.black.opacity(0.28),
     surfaceKeypadKey: BaseColor.WhiteAlpha.a140,
     surfaceHistoryMuted: BaseColor.Neutral.darkMutedSurface,
     progressRingTrack: BaseColor.WhiteAlpha.a100,
@@ -94,6 +96,7 @@ struct SemanticColors: Equatable {
     toggleThumbOff: BaseColor.white,
     toggleThumbOn: BaseColor.white,
     surfaceSheet: BaseColor.white,
+    modalScrim: BaseColor.black.opacity(0.10),
     surfaceKeypadKey: BaseColor.Neutral.keypadKey,
     surfaceHistoryMuted: BaseColor.Neutral.mutedSurface,
     progressRingTrack: BaseColor.BlackAlpha.a100,
@@ -178,6 +181,10 @@ enum ComponentColor {
 
   static func sheetPrimaryButtonForeground(_ colors: SemanticColors, isEnabled: Bool) -> Color {
     isEnabled ? colors.interactivePrimaryForeground : colors.interactiveDisabledForeground
+  }
+
+  static func modalScrim(_ colors: SemanticColors) -> Color {
+    colors.modalScrim
   }
 
   static func toggleTrackFill(_ colors: SemanticColors, isOn: Bool) -> Color {

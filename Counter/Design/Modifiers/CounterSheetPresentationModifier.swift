@@ -30,6 +30,11 @@ extension View {
   func counterSheetPresentation(_ style: CounterSheetPresentationStyle = .offsetPeek) -> some View {
     modifier(CounterSheetPresentationModifier(style: style))
   }
+
+  /// Dims the presenting content with app-defined modal semantics while a sheet is active.
+  func counterModalScrim(isPresented: Bool) -> some View {
+    modifier(CounterModalScrimModifier(isPresented: isPresented))
+  }
 }
 
 private struct CounterSheetPresentationModifier: ViewModifier {
@@ -50,6 +55,25 @@ private struct CounterSheetPresentationModifier: ViewModifier {
       content
         .presentationCornerRadius(SheetToken.cornerRadius)
     }
+  }
+}
+
+private struct CounterModalScrimModifier: ViewModifier {
+  @Environment(\.semanticColors) private var colors
+
+  let isPresented: Bool
+
+  func body(content: Content) -> some View {
+    content
+      .overlay {
+        if isPresented {
+          ComponentColor.modalScrim(colors)
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
+            .transition(.opacity)
+        }
+      }
+      .animation(.easeInOut(duration: 0.18), value: isPresented)
   }
 }
 

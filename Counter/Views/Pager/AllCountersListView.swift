@@ -38,6 +38,7 @@ struct AllCountersListView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(colors.surfacePrimary)
+    .counterModalScrim(isPresented: showAppSettings)
     .sheet(isPresented: $showAppSettings) {
       AppSettingsView()
         .navigationTransition(.zoom(sourceID: SheetTransitionID.appSettings, in: transitionNamespace))

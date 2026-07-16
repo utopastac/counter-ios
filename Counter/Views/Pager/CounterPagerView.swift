@@ -105,6 +105,7 @@ struct CounterPagerView: View {
       colors.surfacePrimary
         .ignoresSafeArea(edges: [.top, .horizontal])
     }
+    .counterModalScrim(isPresented: showButtonSettings || showHistory || showAddCounter)
     .sheet(isPresented: $showButtonSettings) {
       buttonSettingsSheet
         .navigationTransition(.zoom(sourceID: SheetTransitionID.buttonSettings, in: sheetTransition))

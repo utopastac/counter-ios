@@ -113,6 +113,7 @@ struct CustomCounterPageContent: View {
         }
       }
     .counterAccent(pageAccent)
+    .counterModalScrim(isPresented: showCustomAmount || showsEntryLog)
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addEntry(value)
