@@ -39,8 +39,8 @@ struct CounterComplicationWidget: Widget {
       CounterComplicationView(entry: entry)
         .containerBackground(.fill.tertiary, for: .widget)
     }
-    .configurationDisplayName("Counter")
-    .description("Shows your default counter total.")
+    .configurationDisplayName("Numo")
+    .description("Shows your default total.")
     .supportedFamilies([
       .accessoryCircular,
       .accessoryRectangular,

@@ -59,8 +59,8 @@ struct CounterWidget: Widget {
     ) { entry in
       CounterWidgetContainer(entry: entry)
     }
-    .configurationDisplayName("Counter")
-    .description("Track a counter and quick-add from your home screen.")
+    .configurationDisplayName("Numo")
+    .description("Show a total and quick-add from your home screen.")
     .supportedFamilies([.systemSmall, .systemMedium])
     .contentMarginsDisabled()
   }
