@@ -11,6 +11,12 @@
 		ADR10000010000000000000001 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
 		ADR10000010000000000000002 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
 		AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
+		AP10000010000000000000003 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
+		AP10000010000000000000004 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
+		AP10000010000000000000005 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
+		AH10000010000000000000001 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
+		AH10000010000000000000002 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
+		AH10000010000000000000003 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
 		A10000010000000000000001 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* CounterApp.swift */; };
 		BS10000010000000000000001 /* BootSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BS20000010000000000000001 /* BootSplashView.swift */; };
 		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* ContentView.swift */; };
@@ -269,6 +275,7 @@
 		AP20000010000000000000001 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
 		ADR20000010000000000000001 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
 		AP20000010000000000000002 /* AppAppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreference.swift; sourceTree = "<group>"; };
+		AH20000010000000000000001 /* AppHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHaptics.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
 		BS20000010000000000000001 /* BootSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootSplashView.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -662,6 +669,7 @@
 				SD20000010000000000000001 /* SampleDataSeeder.swift */,
 				CM20000010000000000000001 /* CalorieMigration.swift */,
 				AP20000010000000000000002 /* AppAppearancePreference.swift */,
+				AH20000010000000000000001 /* AppHaptics.swift */,
 				ADR20000010000000000000001 /* AppDataReset.swift */,
 				CPDFILEREF01 /* CounterPaletteData.swift */,
 				PRAFILEREF01 /* ProgressRingArc.swift */,
@@ -934,6 +942,7 @@
 				M10000010000000000000001 /* AllCountersListView.swift in Sources */,
 				AP10000010000000000000001 /* AppSettingsView.swift in Sources */,
 				AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */,
+				AH10000010000000000000001 /* AppHaptics.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
 				G10000010000000000000002 /* CounterPageLayout.swift in Sources */,
 				DS10000010000000000000001 /* BaseColorTokens.swift in Sources */,
@@ -1019,6 +1028,8 @@
 				CPDBFWATCH01 /* CounterPaletteData.swift in Sources */,
 				PRABFWATCH01 /* ProgressRingArc.swift in Sources */,
 				D10000010000000000000001 /* AppGroup.swift in Sources */,
+				AP10000010000000000000003 /* AppAppearancePreference.swift in Sources */,
+				AH10000010000000000000002 /* AppHaptics.swift in Sources */,
 				D10000010000000000000002 /* HistoryTypes.swift in Sources */,
 				D10000010000000000000003 /* SharedModelContainer.swift in Sources */,
 				CSMP10000010000000000002 /* CounterSchemaMigrationPlan.swift in Sources */,
@@ -1073,6 +1084,7 @@
 				IW10000010000000000000025 /* WidgetHeroHeading.swift in Sources */,
 				IW10000010000000000000026 /* WidgetSmallHeroStack.swift in Sources */,
 				IW10000010000000000000007 /* AppGroup.swift in Sources */,
+				AP10000010000000000000004 /* AppAppearancePreference.swift in Sources */,
 				IW10000010000000000000008 /* WidgetSnapshot.swift in Sources */,
 				IW10000010000000000000010 /* SharedModelContainer.swift in Sources */,
 				CSMP10000010000000000003 /* CounterSchemaMigrationPlan.swift in Sources */,
@@ -1121,6 +1133,8 @@
 				CTGBFQuickAddConfiguration01 /* QuickAddConfiguration.swift in Sources */,
 				CTGBFEntryActions01 /* EntryActions.swift in Sources */,
 				CTGBFAppGroup01 /* AppGroup.swift in Sources */,
+				AP10000010000000000000005 /* AppAppearancePreference.swift in Sources */,
+				AH10000010000000000000003 /* AppHaptics.swift in Sources */,
 				CTGBFSharedModelContainer01 /* SharedModelContainer.swift in Sources */,
 				CTGBFWidgetSnapshot01 /* WidgetSnapshot.swift in Sources */,
 				CTGBFCustomCounterProgress01 /* CustomCounter+Progress.swift in Sources */,

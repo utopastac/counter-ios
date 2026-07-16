@@ -12,8 +12,8 @@ struct CreateCounterView: View {
   @State private var name = ""
   @State private var goalText = ""
   @State private var goalDirection: GoalDirection = .countUp
-  @State private var resetPeriod: CounterResetPeriod = .daily
-  @State private var resetAnchorDay = Calendar.current.firstWeekday
+  @State private var resetPeriod = AppAppearancePreference.defaultResetPeriod
+  @State private var resetAnchorDay = AppAppearancePreference.defaultResetPeriod.defaultAnchorDay()
   @State private var paletteIndex = 0
 
   private var colors: SemanticColors {
@@ -54,6 +54,8 @@ struct CreateCounterView: View {
         resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)
       }
       .onAppear {
+        resetPeriod = AppAppearancePreference.defaultResetPeriod
+        resetAnchorDay = resetPeriod.defaultAnchorDay()
         paletteIndex = CustomCounter.nextPaletteIndex(forExistingCount: counters.count)
       }
       .counterDesignSystemFromAppearancePreference()

@@ -4,6 +4,14 @@ import SwiftData
 struct AllCountersListView: View {
   @Environment(\.semanticColors) private var colors
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
+  @AppStorage(
+    AppAppearancePreference.monoEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isMonoEnabled = false
+  @AppStorage(
+    AppAppearancePreference.monoPaletteIndexKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var monoPaletteIndex = 0
 
   @State private var showAppSettings = false
 
@@ -58,7 +66,8 @@ struct AllCountersListView: View {
   }
 
   private var listCards: some View {
-    VStack(alignment: .leading, spacing: SpaceToken.u1) {
+    let _ = (isMonoEnabled, monoPaletteIndex)
+    return VStack(alignment: .leading, spacing: SpaceToken.u1) {
       ForEach(counters) { counter in
         let total = counter.currentTotal()
         let progress = counter.currentProgress()

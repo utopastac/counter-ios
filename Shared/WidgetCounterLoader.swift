@@ -37,7 +37,7 @@ enum WidgetCounterLoader {
     counter: CustomCounter,
     context: ModelContext
   ) -> CounterWidgetSnapshot {
-    let paletteIndex = counter.effectivePaletteIndex
+    let paletteIndex = AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex)
     let total = counter.currentTotal()
     let progress = counter.currentProgress()
     let buttons = QuickAddConfiguration.filledPresets(

@@ -7,6 +7,14 @@ struct CustomCounterPageContent: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+  @AppStorage(
+    AppAppearancePreference.monoEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isMonoEnabled = false
+  @AppStorage(
+    AppAppearancePreference.monoPaletteIndexKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var monoPaletteIndex = 0
 
   let transitionNamespace: Namespace.ID
 
@@ -14,6 +22,11 @@ struct CustomCounterPageContent: View {
   @State private var showsEntryLog = false
   @State private var entryToast: EntryToastState?
   @State private var quickAddStore = QuickAddSessionStore()
+
+  private var pageAccent: CounterAccent {
+    let _ = (isMonoEnabled, monoPaletteIndex)
+    return CounterAccent.forCounter(counter)
+  }
 
   private var periodEntries: [CounterEntry] {
     CounterPeriodCalculator.currentEntries(for: counter)
@@ -99,7 +112,7 @@ struct CustomCounterPageContent: View {
           .transition(toastTransition)
         }
       }
-    .counterAccent(CounterAccent.forCounter(counter))
+    .counterAccent(pageAccent)
     .sheet(isPresented: $showCustomAmount) {
       CustomAmountSheet { value in
         addEntry(value)
@@ -154,12 +167,14 @@ struct CustomCounterPageContent: View {
 
   private func addEntry(_ value: Int) {
     let added = EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
+    AppHaptics.impact()
     presentToast(for: added)
     syncWidgets()
   }
 
   private func addEntryQuick(_ value: Int) {
     let added = quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
+    AppHaptics.impact()
     presentToast(for: added)
     syncWidgets()
   }
@@ -172,6 +187,7 @@ struct CustomCounterPageContent: View {
 
   private func undoToastEntry(_ entryID: UUID) {
     EntryActions.deleteCounterEntry(id: entryID, in: modelContext)
+    AppHaptics.undo()
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
       entryToast = nil
     }

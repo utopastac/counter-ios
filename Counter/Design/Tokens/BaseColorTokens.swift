@@ -35,7 +35,10 @@ enum BaseColor {
     static let keypadKey = Color(red: 0.90, green: 0.90, blue: 0.90)
     static let mutedSurface = Color(red: 0.94, green: 0.94, blue: 0.94)
     static let darkMutedSurface = Color(red: 0.14, green: 0.14, blue: 0.15)
-    static let toggleTrack = Color(red: 224 / 255, green: 224 / 255, blue: 224 / 255)
+    /// Light-mode toggle track when off — soft neutral gray.
+    static let toggleTrackOffLight = Color(red: 224 / 255, green: 224 / 255, blue: 224 / 255)
+    /// Dark-mode toggle track when off — lifted gray that reads on dark surfaces.
+    static let toggleTrackOffDark = Color(red: 58 / 255, green: 58 / 255, blue: 60 / 255)
   }
 
   /// White with fixed alpha steps — mirrors `color.base.white-alpha.*` in tokens.json.

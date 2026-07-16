@@ -15,6 +15,8 @@ struct CounterAccent: Equatable {
   }
 
   static func forCounter(_ counter: CustomCounter) -> CounterAccent {
-    CounterAccent(paletteIndex: counter.effectivePaletteIndex)
+    CounterAccent(
+      paletteIndex: AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex)
+    )
   }
 }

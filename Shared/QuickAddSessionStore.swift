@@ -26,7 +26,9 @@ import SwiftData
 final class QuickAddSessionStore {
   static let shared = QuickAddSessionStore()
 
-  static let batchInterval: TimeInterval = 2
+  static var batchInterval: TimeInterval {
+    AppAppearancePreference.quickAddBatchInterval
+  }
 
   private struct Session {
     var entryID: UUID

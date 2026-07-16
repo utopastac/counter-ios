@@ -43,7 +43,7 @@ struct CounterWidgetEntityQuery: EntityQuery {
       CounterWidgetEntity(
         id: counter.id.uuidString,
         title: counter.name,
-        paletteIndex: counter.effectivePaletteIndex
+        paletteIndex: AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex)
       )
     }
   }

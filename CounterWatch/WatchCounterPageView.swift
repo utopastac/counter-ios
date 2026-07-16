@@ -3,9 +3,20 @@ import SwiftData
 
 struct WatchCounterPageView: View {
   @Bindable var counter: CustomCounter
+  @AppStorage(
+    AppAppearancePreference.monoEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isMonoEnabled = false
+  @AppStorage(
+    AppAppearancePreference.monoPaletteIndexKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var monoPaletteIndex = 0
 
   private var theme: WatchThemeColors {
-    WatchThemeColors(paletteIndex: counter.effectivePaletteIndex)
+    let _ = (isMonoEnabled, monoPaletteIndex)
+    return WatchThemeColors(
+      paletteIndex: AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex)
+    )
   }
 
   private var progress: GoalProgress? {

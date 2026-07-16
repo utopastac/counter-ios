@@ -53,6 +53,12 @@ enum RadiusToken {
   /// Standard corner radius for interactive buttons (8pt).
   static let button: CGFloat = xs
 
+  /// Toggle track outer corners (8pt).
+  static let toggle: CGFloat = 8
+
+  /// Toggle thumb inner corners (4pt).
+  static let toggleThumb: CGFloat = 4
+
   /// Counter list cards and matching list actions (12pt).
   static let listCard: CGFloat = sm
 
@@ -98,9 +104,11 @@ enum SizeToken {
   static let primaryButtonHeight: CGFloat = 56
   static let gridColumnCount: Int = 5
   static let gridSpacing: CGFloat = SpaceToken.x2
-  static let toggleWidth: CGFloat = 51
-  static let toggleHeight: CGFloat = 31
-  static let toggleThumbPadding: CGFloat = 2
+  static let toggleWidth: CGFloat = 64
+  static let toggleHeight: CGFloat = 24
+  static let toggleThumbPadding: CGFloat = 5
+  static let toggleThumbWidth: CGFloat = 32
+  static let toggleThumbHeight: CGFloat = 14
 
   enum Ring {
     static let display: CGFloat = GridToken.units(8)

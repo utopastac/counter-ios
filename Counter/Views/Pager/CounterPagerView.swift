@@ -6,6 +6,14 @@ struct CounterPagerView: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.semanticColors) private var colors
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
+  @AppStorage(
+    AppAppearancePreference.monoEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isMonoEnabled = false
+  @AppStorage(
+    AppAppearancePreference.monoPaletteIndexKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var monoPaletteIndex = 0
 
   @State private var selectedPageID: String?
   @State private var showButtonSettings = false
@@ -31,10 +39,12 @@ struct CounterPagerView: View {
   }
 
   private var pageAccents: [CounterAccent] {
-    counters.map { CounterAccent.forCounter($0) }
+    let _ = (isMonoEnabled, monoPaletteIndex)
+    return counters.map { CounterAccent.forCounter($0) }
   }
 
   private var activeAccent: CounterAccent {
+    let _ = (isMonoEnabled, monoPaletteIndex)
     guard let counter = activeCounter else {
       return CounterAccent.forCustomCounter(at: 0)
     }

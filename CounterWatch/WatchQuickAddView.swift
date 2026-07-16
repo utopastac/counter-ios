@@ -51,6 +51,7 @@ struct WatchQuickAddView: View {
 
   private func addEntryQuick(_ value: Int) {
     quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
+    AppHaptics.impact()
   }
 }
 

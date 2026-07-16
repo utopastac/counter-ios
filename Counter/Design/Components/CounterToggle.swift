@@ -5,10 +5,6 @@ struct CounterToggle: View {
 
   @Binding var isOn: Bool
 
-  private var thumbExtent: CGFloat {
-    SizeToken.toggleHeight - SizeToken.toggleThumbPadding * 2
-  }
-
   var body: some View {
     Button {
       withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
@@ -16,15 +12,16 @@ struct CounterToggle: View {
       }
     } label: {
       ZStack(alignment: isOn ? .trailing : .leading) {
-        Capsule(style: .continuous)
-          .fill(ComponentColor.toggleTrackFill(colors))
+        RoundedRectangle(cornerRadius: RadiusToken.toggle, style: .continuous)
+          .fill(ComponentColor.toggleTrackFill(colors, isOn: isOn))
           .frame(width: SizeToken.toggleWidth, height: SizeToken.toggleHeight)
 
-        Capsule(style: .continuous)
-          .fill(ComponentColor.toggleThumbFill(colors))
-          .frame(width: thumbExtent, height: thumbExtent)
+        RoundedRectangle(cornerRadius: RadiusToken.toggleThumb, style: .continuous)
+          .fill(ComponentColor.toggleThumbFill(colors, isOn: isOn))
+          .frame(width: SizeToken.toggleThumbWidth, height: SizeToken.toggleThumbHeight)
           .padding(SizeToken.toggleThumbPadding)
       }
+      .frame(width: SizeToken.toggleWidth, height: SizeToken.toggleHeight)
     }
     .buttonStyle(.plain)
     .accessibilityAddTraits(.isButton)
@@ -33,11 +30,16 @@ struct CounterToggle: View {
 }
 
 struct SettingsToggleRow: View {
+  @Environment(\.semanticColors) private var colors
+
+  let icon: CounterLucideIconName
   let label: String
   @Binding var isOn: Bool
 
   var body: some View {
     HStack(spacing: SpaceToken.u2) {
+      CounterLucideIcon(icon: icon, color: colors.textPrimary)
+
       Text(label)
         .counterTextStyle(.settingsRowLabel)
 
@@ -49,14 +51,45 @@ struct SettingsToggleRow: View {
   }
 }
 
-#Preview {
+#Preview("Light") {
   struct PreviewContainer: View {
-    @State private var isOn = false
+    @State private var isOff = false
+    @State private var isOn = true
 
     var body: some View {
-      SettingsToggleRow(label: "Dark mode", isOn: $isOn)
-        .padding()
-        .counterDesignSystem(CounterDesignSystem(colorScheme: .dark, accent: nil))
+      VStack(alignment: .leading, spacing: 16) {
+        SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isOff)
+        SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isOn)
+        HStack(spacing: 12) {
+          CounterToggle(isOn: $isOff)
+          CounterToggle(isOn: $isOn)
+        }
+      }
+      .padding()
+      .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: nil))
+    }
+  }
+
+  return PreviewContainer()
+}
+
+#Preview("Dark") {
+  struct PreviewContainer: View {
+    @State private var isOff = false
+    @State private var isOn = true
+
+    var body: some View {
+      VStack(alignment: .leading, spacing: 16) {
+        SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isOff)
+        SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isOn)
+        HStack(spacing: 12) {
+          CounterToggle(isOn: $isOff)
+          CounterToggle(isOn: $isOn)
+        }
+      }
+      .padding()
+      .background(SemanticColors.dark.surfaceSheet)
+      .counterDesignSystem(CounterDesignSystem(colorScheme: .dark, accent: nil))
     }
   }
 

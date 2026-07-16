@@ -5,10 +5,38 @@ struct AppSettingsView: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
+  @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
+  @AppStorage(AppAppearancePreference.defaultResetPeriodKey) private var defaultResetPeriodRaw =
+    CounterResetPeriod.daily.rawValue
+  @AppStorage(
+    AppAppearancePreference.monoEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isMonoEnabled = false
+  @AppStorage(
+    AppAppearancePreference.monoPaletteIndexKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var monoPaletteIndex = 0
+  @AppStorage(
+    AppAppearancePreference.quickAddBatchWindowKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
   @State private var showResetConfirmation = false
 
   private var colors: SemanticColors {
     SemanticColors.forColorScheme(isDarkModeEnabled ? .dark : .light)
+  }
+
+  private var defaultResetPeriod: Binding<CounterResetPeriod> {
+    Binding(
+      get: { CounterResetPeriod(rawValue: defaultResetPeriodRaw) ?? .daily },
+      set: { defaultResetPeriodRaw = $0.rawValue }
+    )
+  }
+
+  private var appVersionText: String {
+    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
+    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
+    return "\(version) (\(build))"
   }
 
   var body: some View {
@@ -20,7 +48,38 @@ struct AppSettingsView: View {
 
       ScrollView {
         VStack(alignment: .leading, spacing: 0) {
-          SettingsToggleRow(label: "Dark mode", isOn: $isDarkModeEnabled)
+          SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
+          SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isHapticsEnabled)
+
+          SettingsPickerRow(
+            icon: .calendar,
+            label: "Default reset",
+            selection: defaultResetPeriod,
+            options: CounterResetPeriod.allCases.map { ($0, $0.label) }
+          )
+
+          SettingsPickerRow(
+            icon: .timer,
+            label: "Batch window",
+            selection: $batchWindowSeconds,
+            options: AppAppearancePreference.batchWindowOptions.map {
+              ($0, AppAppearancePreference.batchWindowLabel(for: $0))
+            }
+          )
+
+          SettingsToggleRow(icon: .palette, label: "Mono", isOn: $isMonoEnabled)
+
+          if isMonoEnabled {
+            SettingsSectionHeader(title: "Colour")
+              .padding(.top, SpaceToken.u1)
+
+            SettingsColorSwatchGrid(selection: $monoPaletteIndex)
+              .padding(.bottom, SpaceToken.u2)
+          }
+
+          SettingsDivider()
+
+          SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
 
           SettingsDivider()
 
@@ -36,6 +95,12 @@ struct AppSettingsView: View {
     .background(colors.surfaceSheet)
     .counterDesignSystemFromAppearancePreference()
     .counterSheetPresentation()
+    .onChange(of: isMonoEnabled) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
+    .onChange(of: monoPaletteIndex) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
     .alert("Reset all data?", isPresented: $showResetConfirmation) {
       Button("Reset", role: .destructive) {
         AppDataReset.resetAll(in: modelContext)

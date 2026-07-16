@@ -23,8 +23,14 @@ struct SemanticColors: Equatable {
   var interactiveDisabledFill: Color
   var interactiveDisabledForeground: Color
 
-  var toggleTrack: Color
-  var toggleThumb: Color
+  /// Toggle track fill while off.
+  var toggleTrackOff: Color
+  /// Toggle track fill while on.
+  var toggleTrackOn: Color
+  /// Toggle thumb fill while off.
+  var toggleThumbOff: Color
+  /// Toggle thumb fill while on.
+  var toggleThumbOn: Color
 
   var surfaceSheet: Color
   var surfaceKeypadKey: Color
@@ -53,8 +59,10 @@ struct SemanticColors: Equatable {
     interactivePrimaryForeground: BaseColor.black,
     interactiveDisabledFill: BaseColor.WhiteAlpha.a250,
     interactiveDisabledForeground: BaseColor.WhiteAlpha.a450,
-    toggleTrack: BaseColor.Neutral.toggleTrack,
-    toggleThumb: BaseColor.white,
+    toggleTrackOff: BaseColor.Neutral.toggleTrackOffDark,
+    toggleTrackOn: BaseColor.white,
+    toggleThumbOff: BaseColor.white,
+    toggleThumbOn: BaseColor.black,
     surfaceSheet: BaseColor.Neutral.darkBackdrop,
     surfaceKeypadKey: BaseColor.WhiteAlpha.a140,
     surfaceHistoryMuted: BaseColor.Neutral.darkMutedSurface,
@@ -81,8 +89,10 @@ struct SemanticColors: Equatable {
     interactivePrimaryForeground: BaseColor.white,
     interactiveDisabledFill: BaseColor.BlackAlpha.a060,
     interactiveDisabledForeground: BaseColor.BlackAlpha.a100,
-    toggleTrack: BaseColor.Neutral.toggleTrack,
-    toggleThumb: BaseColor.white,
+    toggleTrackOff: BaseColor.Neutral.toggleTrackOffLight,
+    toggleTrackOn: BaseColor.black,
+    toggleThumbOff: BaseColor.white,
+    toggleThumbOn: BaseColor.white,
     surfaceSheet: BaseColor.white,
     surfaceKeypadKey: BaseColor.Neutral.keypadKey,
     surfaceHistoryMuted: BaseColor.Neutral.mutedSurface,
@@ -170,12 +180,12 @@ enum ComponentColor {
     isEnabled ? colors.interactivePrimaryForeground : colors.interactiveDisabledForeground
   }
 
-  static func toggleTrackFill(_ colors: SemanticColors) -> Color {
-    colors.toggleTrack
+  static func toggleTrackFill(_ colors: SemanticColors, isOn: Bool) -> Color {
+    isOn ? colors.toggleTrackOn : colors.toggleTrackOff
   }
 
-  static func toggleThumbFill(_ colors: SemanticColors) -> Color {
-    colors.toggleThumb
+  static func toggleThumbFill(_ colors: SemanticColors, isOn: Bool) -> Color {
+    isOn ? colors.toggleThumbOn : colors.toggleThumbOff
   }
 
   static func progressRingTrack(_ colors: SemanticColors) -> Color {
