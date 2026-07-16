@@ -18,10 +18,6 @@ struct CounterPaletteSlot: Equatable, Identifiable {
     scheme == .dark ? BaseColor.white : BaseColor.black
   }
 
-  func mutedForeground(for scheme: ColorScheme) -> Color {
-    foreground(for: scheme).opacity(scheme == .dark ? 0.72 : 0.62)
-  }
-
   func subtleForeground(for scheme: ColorScheme) -> Color {
     foreground(for: scheme).opacity(0.1)
   }

@@ -8,11 +8,8 @@ enum FontSizeToken {
   static let sm: CGFloat = 14
   static let md: CGFloat = 16
   static let lg: CGFloat = 18
-  static let xl: CGFloat = 20
   static let xxl: CGFloat = 24
-  static let x3xl: CGFloat = 32
   static let xxxl: CGFloat = 40
-  static let x4xl: CGFloat = 56
   static let x5xl: CGFloat = 80
 }
 
@@ -69,14 +66,6 @@ enum TypeStyle {
     monospacedDigits: false
   )
 
-  static let x4xlBoldMono = TypeStyleDefinition(
-    size: FontSizeToken.x4xl,
-    weight: FontWeightToken.bold,
-    lineHeight: FontSizeToken.x4xl,
-    trackingPercent: nil,
-    monospacedDigits: true
-  )
-
   static let xxxlSemibold = TypeStyleDefinition(
     size: FontSizeToken.xxxl,
     weight: FontWeightToken.semibold,
@@ -97,14 +86,6 @@ enum TypeStyle {
     size: FontSizeToken.xxl,
     weight: FontWeightToken.semibold,
     lineHeight: FontSizeToken.xxl,
-    trackingPercent: FontTrackingToken.tight2,
-    monospacedDigits: false
-  )
-
-  static let x3xlBold = TypeStyleDefinition(
-    size: FontSizeToken.x3xl,
-    weight: FontWeightToken.bold,
-    lineHeight: FontSizeToken.x3xl,
     trackingPercent: FontTrackingToken.tight2,
     monospacedDigits: false
   )
@@ -165,22 +146,6 @@ enum TypeStyle {
     monospacedDigits: true
   )
 
-  static let smSemibold = TypeStyleDefinition(
-    size: FontSizeToken.sm,
-    weight: FontWeightToken.semibold,
-    lineHeight: FontSizeToken.sm,
-    trackingPercent: FontTrackingToken.tight5,
-    monospacedDigits: false
-  )
-
-  static let smSemiboldMono = TypeStyleDefinition(
-    size: FontSizeToken.sm,
-    weight: FontWeightToken.semibold,
-    lineHeight: FontSizeToken.sm,
-    trackingPercent: nil,
-    monospacedDigits: true
-  )
-
   static let smRegular = TypeStyleDefinition(
     size: FontSizeToken.sm,
     weight: FontWeightToken.regular,
@@ -197,21 +162,6 @@ enum TypeStyle {
     monospacedDigits: false
   )
 
-  static let xlRegular = TypeStyleDefinition(
-    size: FontSizeToken.xl,
-    weight: FontWeightToken.regular,
-    lineHeight: FontSizeToken.xl,
-    trackingPercent: nil,
-    monospacedDigits: false
-  )
-
-  static let xlRegularMono = TypeStyleDefinition(
-    size: FontSizeToken.xl,
-    weight: FontWeightToken.regular,
-    lineHeight: FontSizeToken.xl,
-    trackingPercent: nil,
-    monospacedDigits: true
-  )
 }
 
 // MARK: - Tier 3: Semantic use-case tokens
@@ -228,35 +178,22 @@ enum CounterTextStyle: CaseIterable {
   case rowHeavy
   case rowLight
   case button
-  case buttonCompact
   case meta
 
   // History screen
-  case historyTitle
   case historyListDate
   case historyListValue
   case historyChartAxis
   case historySegment
 
   // Legacy aliases — mapped to the new ramp.
-  case heroTitle
   case heroValue
-  case sectionLabel
   case bodySecondary
-  case bodyTertiary
   case numericLarge
-  case numericCompact
-  case numericRing
-  case headline
-  case subheadlineSemibold
   case caption
-  case caption2
-  case iconButton
   case sheetTitle
   case sheetSubtitle
-  case sheetAmount
   case sheetKeypadDigit
-  case settingsSheetTitle
   case settingsSectionHeader
   case settingsFieldValue
   case settingsRowLabel
@@ -274,22 +211,18 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.lgSemibold
     case .listCardCaption:
       return TypeStyle.smRegular
-    case .pageTitle, .heroTitle, .sheetTitle, .settingsSheetTitle:
+    case .pageTitle, .sheetTitle:
       return TypeStyle.xxlMedium
-    case .sectionTitle, .sectionLabel:
+    case .sectionTitle:
       return TypeStyle.lgSemibold
-    case .rowHeavy, .numericLarge, .subheadlineSemibold:
+    case .rowHeavy, .numericLarge:
       return TypeStyle.lgSemiboldMono
-    case .rowLight, .bodySecondary, .bodyTertiary, .sheetSubtitle:
+    case .rowLight, .bodySecondary, .sheetSubtitle:
       return TypeStyle.lgRegular
-    case .button, .numericCompact:
+    case .button:
       return TypeStyle.mdSemiboldMono
-    case .buttonCompact, .headline, .iconButton:
-      return TypeStyle.smSemibold
     case .meta, .caption:
       return TypeStyle.smRegular
-    case .historyTitle:
-      return TypeStyle.x3xlBold
     case .historyListDate:
       return TypeStyle.lgRegular
     case .historyListValue:
@@ -298,12 +231,6 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.xsRegular
     case .historySegment:
       return TypeStyle.mdMedium
-    case .caption2:
-      return TypeStyle.xsRegular
-    case .numericRing:
-      return TypeStyle.smSemiboldMono
-    case .sheetAmount:
-      return TypeStyle.x4xlBoldMono
     case .sheetKeypadDigit:
       return TypeStyle.xxlSemibold
     case .settingsSectionHeader:
@@ -322,36 +249,4 @@ enum CounterTextStyle: CaseIterable {
   var lineHeight: CGFloat? { definition.lineHeight }
   var fontSize: CGFloat? { definition.size }
   var lineSpacing: CGFloat { definition.lineSpacing }
-
-  func ringFontSize(for ringSize: CGFloat) -> Font {
-    .system(size: ringSize * 0.22, weight: FontWeightToken.semibold, design: .default).monospacedDigit()
-  }
-}
-
-/// Component-level typography aliases.
-enum ComponentTypography {
-  static let mainNumber = CounterTextStyle.mainNumber.font
-  static let listCardNumber = CounterTextStyle.listCardNumber.font
-  static let pageTitle = CounterTextStyle.pageTitle.font
-  static let heroTitle = CounterTextStyle.pageTitle.font
-  static let heroValue = CounterTextStyle.mainNumber.font
-  static let sectionLabel = CounterTextStyle.sectionTitle.font
-  static let numericLarge = CounterTextStyle.rowHeavy.font
-  static let numericCompact = CounterTextStyle.button.font
-}
-
-/// Legacy alias — prefer `ComponentTypography` or `CounterTextStyle` directly.
-enum TypographyToken {
-  static let mainNumber = ComponentTypography.mainNumber
-  static let listCardNumber = ComponentTypography.listCardNumber
-  static let pageTitle = ComponentTypography.pageTitle
-  static let heroTitle = ComponentTypography.heroTitle
-  static let heroValue = ComponentTypography.heroValue
-  static let sectionLabel = ComponentTypography.sectionLabel
-  static let numericLarge = ComponentTypography.numericLarge
-  static let numericCompact = ComponentTypography.numericCompact
-
-  static func tracking(size: CGFloat, percent: CGFloat) -> CGFloat {
-    FontTrackingToken.value(size: size, percent: percent)
-  }
 }

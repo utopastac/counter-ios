@@ -67,10 +67,7 @@ struct CustomCounterPageContent: View {
             showsEntryLog = true
           } label: {
             VStack(alignment: .leading, spacing: 0) {
-              CompactEntryLogPreview(
-                items: previewItems,
-                emptyMessage: "No entries yet for this period."
-              )
+              CompactEntryLogPreview(items: previewItems)
 
               EntryLogAllEntriesControl()
             }

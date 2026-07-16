@@ -119,48 +119,26 @@ private struct RingTipHalo: Shape {
   }
 }
 
-struct GoalProgressView: View {
-  let progress: GoalProgress
-
-  var body: some View {
-    GlassCard {
-      HStack(spacing: SpaceToken.x4) {
-        GoalProgressRing(progress: progress)
-
-        VStack(alignment: .leading, spacing: 6) {
-          Text(progress.progressLabel)
-            .counterTextStyle(.bodySecondary, color: .tertiary)
-
-          Text(progress.detailLabel)
-            .counterTextStyle(.numericLarge)
-        }
-
-        Spacer(minLength: 0)
-      }
-    }
-  }
-}
-
 #Preview {
   ZStack {
     CounterPagerBackdrop(accents: [.calories], scrollProgress: 0)
     VStack(spacing: SpaceToken.x4) {
-      GoalProgressView(
+      GoalProgressRing(
         progress: GoalProgress(current: 500, goal: 2000, direction: .countDown)
       )
-      GoalProgressView(
+      GoalProgressRing(
         progress: GoalProgress(current: 1800, goal: 2000, direction: .countDown)
       )
-      GoalProgressView(
+      GoalProgressRing(
         progress: GoalProgress(current: 2150, goal: 2000, direction: .countDown)
       )
-      GoalProgressView(
+      GoalProgressRing(
         progress: GoalProgress(current: 3200, goal: 2000, direction: .countDown)
       )
-      GoalProgressView(
+      GoalProgressRing(
         progress: GoalProgress(current: 6800, goal: 2000, direction: .countUp)
       )
-      GoalProgressView(
+      GoalProgressRing(
         progress: GoalProgress(current: -900, goal: 2000, direction: .countUp)
       )
     }

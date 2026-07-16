@@ -98,7 +98,7 @@ enum SampleDataSeeder {
   private static func migratePaletteIndicesIfNeeded(in context: ModelContext) {
     guard !UserDefaults.standard.bool(forKey: paletteMigrationKey) else { return }
 
-    var descriptor = FetchDescriptor<CustomCounter>(
+    let descriptor = FetchDescriptor<CustomCounter>(
       sortBy: [SortDescriptor(\.createdAt)]
     )
     let counters = (try? context.fetch(descriptor)) ?? []

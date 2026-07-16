@@ -14,14 +14,6 @@ nonisolated enum HistoryPeriod: String, CaseIterable, Identifiable {
 
   var id: String { rawValue }
 
-  var title: String {
-    switch self {
-    case .daily: "Daily"
-    case .weekly: "Weekly"
-    case .monthly: "Monthly"
-    }
-  }
-
   var segmentTitle: String {
     switch self {
     case .daily: "Day"

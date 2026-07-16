@@ -22,17 +22,6 @@ struct EntryLogAllEntriesControl: View {
   }
 }
 
-struct EntryLogAllEntriesButton: View {
-  let action: () -> Void
-
-  var body: some View {
-    Button(action: action) {
-      EntryLogAllEntriesControl()
-    }
-    .buttonStyle(.noHighlight)
-  }
-}
-
 struct EntryLogPreviewTableDivider: View {
   @Environment(\.semanticColors) private var colors
 
@@ -137,7 +126,6 @@ struct CompactEntryLogPreview: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   let items: [EntryLogPreviewItem]
-  let emptyMessage: String
 
   private var displayItems: [EntryLogPreviewItem] {
     Array(items.prefix(EntryLogPreviewLimit.count))
@@ -155,14 +143,7 @@ struct CompactEntryLogPreview: View {
     VStack(alignment: .leading, spacing: 0) {
       EntryLogPreviewTableDivider()
 
-      if displayItems.isEmpty {
-        Text(emptyMessage)
-          .counterTextStyle(.meta, color: .secondary)
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .frame(height: SizeToken.tableRowHeight)
-          .contentShape(Rectangle())
-          .transition(.opacity)
-      } else {
+      if !displayItems.isEmpty {
         ForEach(Array(displayItems.enumerated()), id: \.element.id) { index, item in
           VStack(spacing: 0) {
             if index > 0 {
@@ -185,21 +166,5 @@ struct CompactEntryLogPreview: View {
     .frame(maxWidth: .infinity, alignment: .bottomLeading)
     .animation(insertAnimation, value: displayItems)
     .clipped()
-  }
-}
-
-struct BottomFadeMask: View {
-  var fadeHeight: CGFloat = 52
-
-  var body: some View {
-    VStack(spacing: 0) {
-      Rectangle()
-      LinearGradient(
-        colors: [.black, .black.opacity(0)],
-        startPoint: .top,
-        endPoint: .bottom
-      )
-      .frame(height: fadeHeight)
-    }
   }
 }

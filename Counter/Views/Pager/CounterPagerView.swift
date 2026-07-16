@@ -19,6 +19,8 @@ struct CounterPagerView: View {
   @State private var isPagerDragging = false
   @State private var hasAppliedInitialListReveal = false
 
+  @Namespace private var sheetTransition
+
   private var pageIDs: [String] {
     counters.map(\.id.uuidString)
   }
@@ -67,8 +69,8 @@ struct CounterPagerView: View {
         locksRevealScroll: $locksRevealScroll
       ) {
         AllCountersListView(
-          embedded: true,
           scrollDisabled: locksRevealScroll || !isRevealSettledOpen,
+          transitionNamespace: sheetTransition,
           onSelectPage: selectPageFromList,
           onAddCounter: { showAddCounter = true }
         )
@@ -95,16 +97,19 @@ struct CounterPagerView: View {
     }
     .sheet(isPresented: $showButtonSettings) {
       buttonSettingsSheet
+        .navigationTransition(.zoom(sourceID: SheetTransitionID.buttonSettings, in: sheetTransition))
     }
     .sheet(isPresented: $showHistory) {
       if let counter = activeCounter {
         CounterHistoryView(counter: counter)
+          .navigationTransition(.zoom(sourceID: SheetTransitionID.history, in: sheetTransition))
       }
     }
     .sheet(isPresented: $showAddCounter) {
       CreateCounterView { counter in
         selectedPageID = counter.id.uuidString
       }
+      .navigationTransition(.zoom(sourceID: SheetTransitionID.addCounter, in: sheetTransition))
     }
     .onChange(of: counters.map(\.id)) { _, _ in
       if let selectedPageID, !pageIDs.contains(selectedPageID) {
@@ -235,6 +240,7 @@ struct CounterPagerView: View {
     PagerToolbarBar(
       activePageTitle: activePageTitle,
       isPagerDragging: isPagerDragging,
+      transitionNamespace: sheetTransition,
       onOpenCounterList: { openCounterList() },
       onShowHistory: { showHistory = true },
       onShowButtonSettings: { showButtonSettings = true }
@@ -281,6 +287,7 @@ private struct PagerToolbarBar: View {
 
   let activePageTitle: String
   let isPagerDragging: Bool
+  let transitionNamespace: Namespace.ID
   let onOpenCounterList: () -> Void
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
@@ -298,8 +305,10 @@ private struct PagerToolbarBar: View {
 
         HStack(spacing: SpaceToken.toolbarIconSpacing) {
           CounterIconButton(icon: .chartBar, action: onShowHistory)
+            .matchedTransitionSource(id: SheetTransitionID.history, in: transitionNamespace)
 
           CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
+            .matchedTransitionSource(id: SheetTransitionID.buttonSettings, in: transitionNamespace)
         }
       }
       .padding(.horizontal, SpaceToken.toolbarHorizontal)

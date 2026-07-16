@@ -78,10 +78,6 @@ struct AmountEntrySheet: View {
     .presentationDetents([.height(sheetHeight)])
     .presentationDragIndicator(.hidden)
     .counterSheetPresentation(.cornerRadiusOnly)
-    .presentationBackground {
-      SheetToken.halfSheetTopCornerShape
-        .fill(colors.surfaceSheet)
-    }
   }
 
   private var amountDisplay: some View {

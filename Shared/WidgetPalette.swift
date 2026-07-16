@@ -27,6 +27,37 @@ struct WidgetPaletteSlot {
   func buttonText(for scheme: ColorScheme) -> Color {
     background(for: scheme)
   }
+
+  /// Muted track color for progress rings sitting on the card background — mirrors
+  /// `CounterPaletteSlot.progressRingTrack(for:)` so the widget's ring reads identically to
+  /// the app's, without pulling the app-only `Counter/Design` module into this target.
+  func progressRingTrack(for scheme: ColorScheme) -> Color {
+    Self.darken(background(for: scheme), amount: scheme == .dark ? 0.22 : 0.16)
+  }
+
+  /// Background the overfill halo cuts back down to — same "cut-out" rationale as
+  /// `CounterPaletteSlot`'s equivalent.
+  func progressRingOverfillOutline(for scheme: ColorScheme) -> Color {
+    background(for: scheme)
+  }
+
+  private static func darken(_ color: Color, amount: CGFloat) -> Color {
+    #if canImport(UIKit)
+    var red: CGFloat = 0
+    var green: CGFloat = 0
+    var blue: CGFloat = 0
+    var alpha: CGFloat = 0
+
+    guard UIColor(color).getRed(&red, green: &green, blue: &blue, alpha: &alpha) else {
+      return color.opacity(1 - amount * 0.5)
+    }
+
+    let factor = 1 - amount
+    return Color(red: red * factor, green: green * factor, blue: blue * factor, opacity: alpha)
+    #else
+    return color.opacity(1 - amount * 0.5)
+    #endif
+  }
 }
 
 enum WidgetPalette {
@@ -55,6 +86,8 @@ struct WidgetThemeColors {
   let mutedForeground: Color
   let buttonFill: Color
   let buttonText: Color
+  let ringTrack: Color
+  let ringOverfillOutline: Color
 
   init(paletteIndex: Int, colorScheme: ColorScheme) {
     let slot = WidgetPalette.slot(at: paletteIndex)
@@ -63,5 +96,7 @@ struct WidgetThemeColors {
     mutedForeground = slot.mutedForeground(for: colorScheme)
     buttonFill = slot.buttonFill(for: colorScheme)
     buttonText = slot.buttonText(for: colorScheme)
+    ringTrack = slot.progressRingTrack(for: colorScheme)
+    ringOverfillOutline = slot.progressRingOverfillOutline(for: colorScheme)
   }
 }

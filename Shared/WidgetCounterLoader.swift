@@ -50,8 +50,8 @@ enum WidgetCounterLoader {
       title: counter.name,
       paletteIndex: paletteIndex,
       heroValue: progress?.heroValue ?? "\(total)",
-      heroCaption: progress?.heroCaption ?? "logged",
-      ringFraction: progress?.ringFraction,
+      heroSubtitle: progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption.capitalized,
+      ringProgress: progress,
       buttonValues: widgetButtonValues(from: buttons),
       lastUpdated: .now
     )

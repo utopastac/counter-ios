@@ -27,7 +27,6 @@ enum BaseColor {
 
   enum Yellow {
     static let yellow500 = Color(red: 1.0, green: 0.80, blue: 0.0)
-    static let yellow700 = Color(red: 0.90, green: 0.65, blue: 0.0)
   }
 
   enum Neutral {
@@ -42,16 +41,11 @@ enum BaseColor {
   /// White with fixed alpha steps — mirrors `color.base.white-alpha.*` in tokens.json.
   enum WhiteAlpha {
     static let a950 = Color.white.opacity(0.95)
-    static let a900 = Color.white.opacity(0.90)
-    static let a850 = Color.white.opacity(0.85)
-    static let a750 = Color.white.opacity(0.75)
     static let a650 = Color.white.opacity(0.65)
     static let a550 = Color.white.opacity(0.55)
     static let a500 = Color.white.opacity(0.50)
     static let a450 = Color.white.opacity(0.45)
-    static let a350 = Color.white.opacity(0.35)
     static let a250 = Color.white.opacity(0.25)
-    static let a180 = Color.white.opacity(0.18)
     static let a140 = Color.white.opacity(0.14)
     static let a120 = Color.white.opacity(0.12)
     static let a100 = Color.white.opacity(0.10)
@@ -59,7 +53,6 @@ enum BaseColor {
 
   enum BlackAlpha {
     static let a500 = Color.black.opacity(0.50)
-    static let a280 = Color.black.opacity(0.28)
     static let a180 = Color.black.opacity(0.18)
     static let a140 = Color.black.opacity(0.14)
     static let a120 = Color.black.opacity(0.12)

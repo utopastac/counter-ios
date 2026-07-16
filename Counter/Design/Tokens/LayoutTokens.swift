@@ -17,16 +17,12 @@ enum SpaceToken {
   static let u2: CGFloat = GridToken.units(2)
   static let u3: CGFloat = GridToken.units(3)
   static let u4: CGFloat = GridToken.units(4)
-  static let u5: CGFloat = GridToken.units(5)
-  static let u6: CGFloat = GridToken.units(6)
   static let u7: CGFloat = GridToken.units(7)
-  static let u8: CGFloat = GridToken.units(8)
 
   /// Page horizontal inset and default component padding (1 grid unit).
   static let pageMargin: CGFloat = u1
   static let componentPadding: CGFloat = u1
 
-  static let pageHorizontal: CGFloat = pageMargin
   static let toolbarHorizontal: CGFloat = pageMargin
 
   static let pageTopInset: CGFloat = toolbarTop + SizeToken.iconButton + toolbarBottom + BorderToken.toolbar
@@ -44,8 +40,6 @@ enum SpaceToken {
   static let x3: CGFloat = u1 + x1
   static let x4: CGFloat = u2
   static let x5: CGFloat = u2 + x1
-  static let x6: CGFloat = u3
-  static let x7: CGFloat = u3 + x1
 }
 
 enum RadiusToken {
@@ -65,30 +59,8 @@ enum RadiusToken {
   /// Vertical counter pager card — fixed 16pt (2 grid units) corners.
   static let scrollContainer: CGFloat = SpaceToken.u2
 
-  /// Pager card when counters list is revealed.
-  static let revealCard: CGFloat = scrollContainer
-
-  /// Legacy alias for reveal card radius.
-  static let card: CGFloat = revealCard
-
-  static var continuousXs: RoundedRectangle {
-    RoundedRectangle(cornerRadius: xs, style: .continuous)
-  }
-
   static var continuousButton: RoundedRectangle {
     RoundedRectangle(cornerRadius: button, style: .continuous)
-  }
-
-  static var continuousSm: RoundedRectangle {
-    RoundedRectangle(cornerRadius: sm, style: .continuous)
-  }
-
-  static var continuousMd: RoundedRectangle {
-    RoundedRectangle(cornerRadius: md, style: .continuous)
-  }
-
-  static var continuousLg: RoundedRectangle {
-    RoundedRectangle(cornerRadius: lg, style: .continuous)
   }
 
   static var continuousListCard: RoundedRectangle {
@@ -121,7 +93,6 @@ enum SizeToken {
   }
 
   static let iconGlyph: CGFloat = 20
-  static let iconStroke: CGFloat = 2
   static let quickAddHeight: CGFloat = 44
   static let tableRowHeight: CGFloat = GridToken.units(4)
   static let primaryButtonHeight: CGFloat = 56
@@ -134,25 +105,13 @@ enum SizeToken {
   enum Ring {
     static let display: CGFloat = GridToken.units(8)
     static let displayStroke: CGFloat = 16
-    static let list: CGFloat = display
-    static let listStroke: CGFloat = displayStroke
-    static let hero: CGFloat = display
-    static let heroStroke: CGFloat = displayStroke
     static let `default`: CGFloat = display
-    static let defaultStroke: CGFloat = displayStroke
     static let progressStroke: CGFloat = displayStroke
     static let overfillOutlineWidth: CGFloat = 2
   }
 }
 
 enum ShadowToken {
-  static let subtleRadius: CGFloat = 12
-  static let subtleY: CGFloat = 4
-
-  static func subtle(_ colors: SemanticColors = .dark) -> (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
-    (BaseColor.BlackAlpha.a120, subtleRadius, 0, subtleY)
-  }
-
   static func reveal(progress: CGFloat) -> (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
     let amount = min(max(progress, 0), 1)
     return (
@@ -306,22 +265,10 @@ enum SheetToken {
   static let headerIconSpacing: CGFloat = SpaceToken.u1
   static let amountTopSpacing: CGFloat = SpaceToken.u2
   static let actionTop: CGFloat = SpaceToken.u2
-  static let contentBottom: CGFloat = SpaceToken.u3
   static let amountInputHeight: CGFloat = FontSizeToken.x5xl
   static let keypadTopSpacing: CGFloat = SpaceToken.u2
   static let keypadKeySpacing: CGFloat = SpaceToken.u1
   static let keypadKeyHeight: CGFloat = GridToken.units(6)
   static let keypadKeyCornerRadius: CGFloat = RadiusToken.button
   static let keypadBottom: CGFloat = SpaceToken.u2
-
-  /// Rounds only the top corners so the sheet bottom can follow the device edge.
-  static var halfSheetTopCornerShape: UnevenRoundedRectangle {
-    UnevenRoundedRectangle(
-      cornerRadii: RectangleCornerRadii(
-        topLeading: cornerRadius,
-        topTrailing: cornerRadius
-      ),
-      style: .continuous
-    )
-  }
 }

@@ -2,10 +2,6 @@ import Foundation
 import SwiftData
 
 nonisolated enum HistoryAggregator {
-  static func counterTotal(from entries: [CounterEntry], for counter: CustomCounter, on date: Date = .now) -> Int {
-    CounterPeriodCalculator.total(from: entries, for: counter, on: date)
-  }
-
   static func counterTotal(from entries: [CounterEntry], on date: Date) -> Int {
     entries
       .filter { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }

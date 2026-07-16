@@ -2,42 +2,17 @@ import SwiftUI
 import SwiftData
 
 struct AllCountersListView: View {
-  @Environment(\.dismiss) private var dismiss
   @Environment(\.semanticColors) private var colors
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
 
   @State private var showAppSettings = false
 
-  var embedded = false
   var scrollDisabled = false
+  let transitionNamespace: Namespace.ID
   let onSelectPage: (String) -> Void
   var onAddCounter: (() -> Void)?
 
   var body: some View {
-    Group {
-      if embedded {
-        embeddedListContent
-      } else {
-        NavigationStack {
-          ScrollView {
-            listCards
-              .padding(.horizontal, SpaceToken.pageMargin)
-              .padding(.vertical, SpaceToken.componentPadding)
-          }
-          .navigationBarTitleDisplayMode(.inline)
-          .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-              Button("Done") {
-                dismiss()
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  private var embeddedListContent: some View {
     ScrollView {
       listCards
         .padding(.horizontal, SpaceToken.pageMargin)
@@ -57,6 +32,7 @@ struct AllCountersListView: View {
     .background(colors.surfacePrimary)
     .sheet(isPresented: $showAppSettings) {
       AppSettingsView()
+        .navigationTransition(.zoom(sourceID: SheetTransitionID.appSettings, in: transitionNamespace))
     }
     .counterDesignSystemFromColorScheme()
   }
@@ -67,10 +43,12 @@ struct AllCountersListView: View {
       HStack(spacing: SpaceToken.toolbarIconSpacing) {
         if let onAddCounter {
           CounterIconButton(icon: .plus, action: onAddCounter)
+            .matchedTransitionSource(id: SheetTransitionID.addCounter, in: transitionNamespace)
         }
         CounterIconButton(icon: .cog) {
           showAppSettings = true
         }
+        .matchedTransitionSource(id: SheetTransitionID.appSettings, in: transitionNamespace)
       }
     }
     .padding(.horizontal, SpaceToken.pageMargin)
@@ -112,6 +90,14 @@ struct AllCountersListView: View {
 }
 
 #Preview {
-  AllCountersListView { _ in }
-    .modelContainer(for: CustomCounter.self, inMemory: true)
+  AllCountersListViewPreviewContainer()
+}
+
+private struct AllCountersListViewPreviewContainer: View {
+  @Namespace private var transitionNamespace
+
+  var body: some View {
+    AllCountersListView(transitionNamespace: transitionNamespace) { _ in }
+      .modelContainer(for: CustomCounter.self, inMemory: true)
+  }
 }

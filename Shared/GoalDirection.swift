@@ -12,13 +12,6 @@ nonisolated enum GoalDirection: String, Codable, CaseIterable, Identifiable {
     case .countDown: "Count down"
     }
   }
-
-  var summary: String {
-    switch self {
-    case .countUp: "Track progress toward a target"
-    case .countDown: "Track remaining toward a limit"
-    }
-  }
 }
 
 nonisolated struct GoalProgress {
@@ -155,49 +148,6 @@ nonisolated struct GoalProgress {
     }
   }
 
-  var listSubtitle: String {
-    switch direction {
-    case .countUp:
-      return "\(current) logged · \(goal) goal"
-    case .countDown:
-      return "\(current) used · \(goal) goal"
-    }
-  }
-
-  var summaryValue: String {
-    switch direction {
-    case .countUp:
-      return "\(current)"
-    case .countDown:
-      return "\(delta)"
-    }
-  }
-
-  var summaryCaption: String {
-    switch direction {
-    case .countUp:
-      return "logged"
-    case .countDown:
-      return "remaining"
-    }
-  }
-
-  var metricRows: [(label: String, value: String)] {
-    switch direction {
-    case .countUp:
-      return [
-        ("Goal", "\(goal)"),
-        ("Progress", "\(current)"),
-        ("To go", "\(delta)")
-      ]
-    case .countDown:
-      return [
-        ("Goal", "\(goal)"),
-        ("Used", "\(current)"),
-        ("Remaining", "\(delta)")
-      ]
-    }
-  }
 }
 
 nonisolated enum GoalProgressCalculator {

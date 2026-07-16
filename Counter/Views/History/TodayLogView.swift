@@ -109,26 +109,6 @@ struct CounterPeriodEntryLogContent: View {
   }
 }
 
-// MARK: - Shared
-
-enum EntryLogTitles {
-  static func full(for period: CounterResetPeriod) -> String {
-    switch period {
-    case .daily: "Today's Log"
-    case .weekly: "This Week's Log"
-    case .monthly: "This Month's Log"
-    }
-  }
-
-  static func preview(for period: CounterResetPeriod) -> String {
-    switch period {
-    case .daily: "Today"
-    case .weekly: "This Week"
-    case .monthly: "This Month"
-    }
-  }
-}
-
 #Preview {
   CounterTodayLogView(counter: CustomCounter(name: "Calories"))
     .modelContainer(for: [CustomCounter.self, CounterEntry.self], inMemory: true)

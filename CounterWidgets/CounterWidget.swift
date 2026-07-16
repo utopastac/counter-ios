@@ -84,6 +84,7 @@ struct CounterWidgetContainer: View {
 struct CounterWidgetView: View {
   @Environment(\.widgetFamily) private var family
   @Environment(\.colorScheme) private var colorScheme
+  @Environment(\.widgetContentMargins) private var widgetMargins
   let entry: CounterWidgetEntry
 
   private var colors: WidgetThemeColors {
@@ -100,77 +101,65 @@ struct CounterWidgetView: View {
   }
 
   private var smallLayout: some View {
-    VStack(alignment: .leading, spacing: 6) {
-      labelText(entry.snapshot.title)
-      heroText(size: 44)
-      labelText(entry.snapshot.heroCaption.capitalized)
+    VStack(alignment: .leading, spacing: 0) {
+      // Title, hero number, and subtitle stack on their own lines rather than the medium
+      // layout's combined heading — no ring either, since there isn't room next to it at
+      // small width without cramping the text.
+      WidgetSmallHeroStack(
+        title: entry.counter.title,
+        heroValue: entry.snapshot.heroValue,
+        subtitle: entry.snapshot.heroSubtitle,
+        foreground: colors.foreground
+      )
+      Spacer(minLength: 0)
     }
-    .foregroundStyle(colors.foreground)
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-    .padding(16)
+    .padding(widgetMargins)
   }
 
   private var mediumLayout: some View {
     VStack(alignment: .leading, spacing: 0) {
-      HStack(alignment: .top, spacing: 12) {
-        VStack(alignment: .leading, spacing: 6) {
-          labelText(entry.snapshot.title)
-          heroText(size: 40)
-          labelText(entry.snapshot.heroCaption.capitalized)
-        }
-
-        Spacer(minLength: 0)
-
-        if let ringFraction = entry.snapshot.ringFraction {
-          WidgetProgressRing(
-            fraction: ringFraction,
-            foreground: colors.foreground,
-            size: 54,
-            lineWidth: 12
-          )
-        }
-      }
+      mediumHeader
 
       Spacer(minLength: 12)
 
       quickAddGrid
     }
-    .padding(16)
+    .padding(widgetMargins)
   }
 
-  private func labelText(_ text: String) -> some View {
-    Text(text)
-      .font(.system(size: 13, weight: .medium, design: .rounded))
-      .foregroundStyle(colors.mutedForeground)
-  }
+  /// Hero heading + subtitle on the leading edge, ring on the trailing edge — matches the
+  /// main app's pager header (`CounterPageHeader` in `Counter/Views/Pager/CounterPageLayout.swift`).
+  private var mediumHeader: some View {
+    HStack(alignment: .top, spacing: 12) {
+      WidgetHeroHeading(
+        heroValue: entry.snapshot.heroValue,
+        title: entry.counter.title,
+        subtitle: entry.snapshot.heroSubtitle,
+        foreground: colors.foreground
+      )
 
-  private func heroText(size: CGFloat) -> some View {
-    Text(entry.snapshot.heroValue)
-      .font(.system(size: size, weight: .bold, design: .rounded))
-      .foregroundStyle(colors.foreground)
-      .minimumScaleFactor(0.55)
-      .lineLimit(1)
-      .contentTransition(.numericText())
+      if let ringProgress = entry.snapshot.ringProgress {
+        WidgetGoalProgressRing(
+          progress: ringProgress,
+          trackColor: colors.ringTrack,
+          fillColor: colors.foreground,
+          overfillOutlineColor: colors.ringOverfillOutline
+        )
+      }
+    }
   }
 
   @ViewBuilder
   private var quickAddGrid: some View {
-    let values = entry.snapshot.buttonValues
-    let firstRowCount = min(5, values.count)
-    let firstRow = Array(values.prefix(firstRowCount))
-    let secondRow = Array(values.dropFirst(firstRowCount))
+    let values = Array(entry.snapshot.buttonValues.prefix(8))
     let columns = Array(
       repeating: GridItem(.flexible(), spacing: WidgetTheme.buttonSpacing),
-      count: 5
+      count: WidgetTheme.buttonColumns
     )
 
     LazyVGrid(columns: columns, spacing: WidgetTheme.buttonSpacing) {
-      ForEach(firstRow, id: \.self) { value in
-        WidgetQuickAddButton(counter: entry.counter, value: value, colors: colors)
-          .frame(height: WidgetTheme.buttonHeight)
-      }
-
-      ForEach(secondRow, id: \.self) { value in
+      ForEach(values, id: \.self) { value in
         WidgetQuickAddButton(counter: entry.counter, value: value, colors: colors)
           .frame(height: WidgetTheme.buttonHeight)
       }

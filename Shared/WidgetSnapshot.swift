@@ -22,10 +22,6 @@ enum WidgetSnapshot {
     defaults?.string(forKey: Keys.heroValue) ?? "0"
   }
 
-  static var lastUpdated: Date? {
-    defaults?.object(forKey: Keys.updated) as? Date
-  }
-
   static func publish(title: String, heroValue: String) {
     defaults?.set(title, forKey: Keys.title)
     defaults?.set(heroValue, forKey: Keys.heroValue)

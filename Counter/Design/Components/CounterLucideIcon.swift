@@ -5,7 +5,6 @@ enum CounterLucideIconName: String {
   case chartBar = "lucide-chart-no-axes-column"
   case slidersHorizontal = "lucide-sliders-horizontal"
   case plus = "lucide-plus"
-  case chevronRight = "lucide-chevron-right"
   case ellipsis = "lucide-ellipsis"
   case deleteBackward = "lucide-delete"
   case maximize2 = "lucide-maximize-2"

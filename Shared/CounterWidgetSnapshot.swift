@@ -5,8 +5,11 @@ struct CounterWidgetSnapshot {
   let title: String
   let paletteIndex: Int
   let heroValue: String
-  let heroCaption: String
-  let ringFraction: Double?
+  /// Full-sentence, capitalized subtitle (e.g. `"80 Remaining"`) — matches the string the
+  /// main app shows under its hero number (`GoalProgress.heroSubtitle`), rather than the
+  /// single-word caption used elsewhere, so the widget reads the same as the app.
+  let heroSubtitle: String
+  let ringProgress: GoalProgress?
   let buttonValues: [Int]
   let lastUpdated: Date?
 
@@ -15,8 +18,8 @@ struct CounterWidgetSnapshot {
     title: CustomCounter.untitledName,
     paletteIndex: 0,
     heroValue: "2424",
-    heroCaption: "remaining",
-    ringFraction: 0.72,
+    heroSubtitle: "80 Remaining",
+    ringProgress: GoalProgress(current: 2424, goal: 2504, direction: .countDown),
     buttonValues: [5, 10, 25, 50, 100, 200, 500, 1000],
     lastUpdated: .now
   )

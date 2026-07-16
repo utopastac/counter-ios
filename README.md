@@ -15,7 +15,7 @@ A simple iOS calorie and custom counter app.
 ## Requirements
 
 - Xcode 26+ (Swift 6.0, strict concurrency)
-- iOS 18+ / watchOS 10+
+- iOS 26+ / watchOS 26+
 
 ## Setup
 
@@ -57,7 +57,7 @@ batching, calorie migration) is covered by the `CounterTests` target, using Swif
 
 ```sh
 xcodebuild -project Counter.xcodeproj -scheme Counter \
-  -destination 'platform=iOS Simulator,name=iPhone 16' test
+  -destination 'platform=iOS Simulator,name=iPhone 17' test
 ```
 
 Or open the project in Xcode and run the `CounterTests` target from the Test navigator
