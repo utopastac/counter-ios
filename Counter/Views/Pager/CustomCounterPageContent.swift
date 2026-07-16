@@ -8,6 +8,8 @@ struct CustomCounterPageContent: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
+  let transitionNamespace: Namespace.ID
+
   @State private var showCustomAmount = false
   @State private var showsEntryLog = false
   @State private var entryToast: EntryToastState?
@@ -75,6 +77,10 @@ struct CustomCounterPageContent: View {
             .contentShape(Rectangle())
           }
           .buttonStyle(.noHighlight)
+          .matchedTransitionSource(
+            id: SheetTransitionID.allEntries(counter.id),
+            in: transitionNamespace
+          )
         }
       } footer: {
         CompactQuickAddGrid(
@@ -101,6 +107,9 @@ struct CustomCounterPageContent: View {
     }
     .sheet(isPresented: $showsEntryLog) {
       CounterTodayLogView(counter: counter)
+        .navigationTransition(
+          .zoom(sourceID: SheetTransitionID.allEntries(counter.id), in: transitionNamespace)
+        )
     }
     .onAppear {
       migratePresetButtons(for: counter)

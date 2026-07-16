@@ -6,26 +6,29 @@ struct WatchQuickAddGrid: View {
   let onTap: (Int) -> Void
 
   private let columns = [
-    GridItem(.flexible()),
-    GridItem(.flexible())
+    GridItem(.flexible(), spacing: 4),
+    GridItem(.flexible(), spacing: 4),
+    GridItem(.flexible(), spacing: 4)
   ]
 
-  /// Fills up to a full grid from `defaultPresets` when `values` doesn't have enough on its
-  /// own, matching the iPhone quick-add grid's fill policy — this used to just normalize
-  /// `values` in isolation, which showed a sparser grid on the Watch than on the iPhone for
-  /// the same counter.
   private var displayValues: [Int] {
     QuickAddConfiguration.filledPresets(from: values, defaults: defaultPresets)
   }
 
   var body: some View {
-    LazyVGrid(columns: columns, spacing: 6) {
+    LazyVGrid(columns: columns, spacing: 4) {
       ForEach(Array(displayValues.enumerated()), id: \.offset) { _, value in
-        Button("\(value)") {
+        Button {
           onTap(value)
+        } label: {
+          Text("\(value)")
+            .font(.system(size: 17, weight: .semibold, design: .rounded))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: 40)
+            .background(Color(white: 0.18), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
-        .buttonStyle(.bordered)
-        .font(.caption)
+        .buttonStyle(.plain)
       }
     }
   }
@@ -33,7 +36,9 @@ struct WatchQuickAddGrid: View {
 
 #Preview {
   WatchQuickAddGrid(
-    values: [10, 20, 50, 100],
-    defaultPresets: QuickAddConfiguration.defaultCounterPresets
+    values: [5, 10, 25, 50, 100, 200, 500, 1000],
+    defaultPresets: QuickAddConfiguration.defaultCaloriePresets
   ) { _ in }
+  .padding()
+  .background(Color.black)
 }

@@ -46,7 +46,7 @@ struct SemanticColors: Equatable {
     textHistoryChartAxis: BaseColor.WhiteAlpha.a500,
     surfacePrimary: BaseColor.Neutral.darkBackdrop,
     borderSubtle: BaseColor.WhiteAlpha.a100,
-    borderSettingsDivider: BaseColor.black,
+    borderSettingsDivider: BaseColor.WhiteAlpha.a250,
     borderColourSwatch: BaseColor.WhiteAlpha.a250,
     accentPrimary: BaseColor.Brand.blue500,
     interactivePrimaryFill: BaseColor.white,

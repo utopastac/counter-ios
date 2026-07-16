@@ -18,7 +18,9 @@ struct ContentView: View {
     .animation(.easeOut(duration: 0.25), value: isBootstrapped)
     .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
     .task {
+      WatchSyncCoordinator.shared.activate()
       SampleDataSeeder.seedIfNeeded(in: modelContext)
+      WatchSyncEngine.publishFullSnapshot(in: modelContext)
       isBootstrapped = true
     }
   }

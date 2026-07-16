@@ -25,8 +25,13 @@
 		B10000010000000000000001 /* CounterWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000001 /* CounterWatchApp.swift */; };
 		B10000010000000000000002 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000002 /* WatchContentView.swift */; };
 		B10000010000000000000004 /* WatchQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000004 /* WatchQuickAddGrid.swift */; };
-		B10000010000000000000005 /* WatchCounterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000005 /* WatchCounterListView.swift */; };
-		B10000010000000000000006 /* WatchCounterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000006 /* WatchCounterDetailView.swift */; };
+		B10000010000000000000005 /* WatchCounterPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000005 /* WatchCounterPagerView.swift */; };
+		B10000010000000000000006 /* WatchCounterPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000006 /* WatchCounterPageView.swift */; };
+		B10000010000000000000010 /* WatchQuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000011 /* WatchQuickAddView.swift */; };
+		B10000010000000000000011 /* WatchGoalProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000010 /* WatchGoalProgressRing.swift */; };
+		CPDBFWATCH01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
+		B10000010000000000000012 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000012 /* WatchTheme.swift */; };
+		PRABFWATCH01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
 		B10000010000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000007 /* Assets.xcassets */; };
 		B10000010000000000000008 /* CounterWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B30000010000000000000001 /* CounterWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
@@ -40,6 +45,9 @@
 		C10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
 		C10000010000000000000009 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		C10000010000000000000011 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
+		WS10000010000000000000001 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000002 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
+		WS10000010000000000000003 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
 		QAS10000010000000000000001 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
 		C10000010000000000000012 /* PreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000012 /* PreviewModel.swift */; };
 		D10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
@@ -53,6 +61,14 @@
 		D10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
 		D10000010000000000000010 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		D10000010000000000000012 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
+		WS10000010000000000000004 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000005 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
+		WS10000010000000000000006 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
+		WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
+		WS10000010000000000000009 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
+		WS10000010000000000000010 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000011 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
 		QAS10000010000000000000002 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
 		F10000010000000000000001 /* CounterWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000001 /* CounterWidgetsBundle.swift */; };
 		F10000010000000000000002 /* CounterComplicationWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000002 /* CounterComplicationWidget.swift */; };
@@ -138,6 +154,10 @@
 		CTGBFHistoryAggregator01 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
 		CTGBFQuickAddConfiguration01 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
 		CTGBFEntryActions01 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
+		CTGBFAppGroup01 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
+		CTGBFSharedModelContainer01 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
+		CTGBFWidgetSnapshot01 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
+		CTGBFCustomCounterProgress01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
 		QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
 		CTGBFCalorieMigration01 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
 		CSMP10000010000000000004 /* CounterSchemaMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */; };
@@ -267,8 +287,11 @@
 		B20000010000000000000001 /* CounterWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWatchApp.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
 		B20000010000000000000004 /* WatchQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddGrid.swift; sourceTree = "<group>"; };
-		B20000010000000000000005 /* WatchCounterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterListView.swift; sourceTree = "<group>"; };
-		B20000010000000000000006 /* WatchCounterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterDetailView.swift; sourceTree = "<group>"; };
+		B20000010000000000000005 /* WatchCounterPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterPagerView.swift; sourceTree = "<group>"; };
+		B20000010000000000000006 /* WatchCounterPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterPageView.swift; sourceTree = "<group>"; };
+		B20000010000000000000011 /* WatchQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddView.swift; sourceTree = "<group>"; };
+		B20000010000000000000012 /* WatchTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTheme.swift; sourceTree = "<group>"; };
+		B20000010000000000000010 /* WatchGoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchGoalProgressRing.swift; sourceTree = "<group>"; };
 		B20000010000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B20000010000000000000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B20000010000000000000009 /* CounterWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWatch.entitlements; sourceTree = "<group>"; };
@@ -283,6 +306,9 @@
 		C20000010000000000000008 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C20000010000000000000009 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
 		C20000010000000000000011 /* EntryActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActions.swift; sourceTree = "<group>"; };
+		WS20000010000000000000001 /* WatchSyncDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncDTO.swift; sourceTree = "<group>"; };
+		WS20000010000000000000002 /* WatchSyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncEngine.swift; sourceTree = "<group>"; };
+		WS20000010000000000000003 /* WatchSyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncCoordinator.swift; sourceTree = "<group>"; };
 		C20000010000000000000012 /* PreviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModel.swift; sourceTree = "<group>"; };
 		F20000010000000000000001 /* CounterWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetsBundle.swift; sourceTree = "<group>"; };
 		F20000010000000000000002 /* CounterComplicationWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterComplicationWidget.swift; sourceTree = "<group>"; };
@@ -599,8 +625,11 @@
 				B20000010000000000000001 /* CounterWatchApp.swift */,
 				B20000010000000000000002 /* WatchContentView.swift */,
 				B20000010000000000000004 /* WatchQuickAddGrid.swift */,
-				B20000010000000000000005 /* WatchCounterListView.swift */,
-				B20000010000000000000006 /* WatchCounterDetailView.swift */,
+				B20000010000000000000005 /* WatchCounterPagerView.swift */,
+				B20000010000000000000006 /* WatchCounterPageView.swift */,
+				B20000010000000000000011 /* WatchQuickAddView.swift */,
+				B20000010000000000000010 /* WatchGoalProgressRing.swift */,
+				B20000010000000000000012 /* WatchTheme.swift */,
 				B20000010000000000000007 /* Assets.xcassets */,
 				B20000010000000000000008 /* Info.plist */,
 				B20000010000000000000009 /* CounterWatch.entitlements */,
@@ -625,6 +654,9 @@
 				IW20000010000000000000013 /* WidgetPalette.swift */,
 				IW20000010000000000000014 /* WidgetCounterLoader.swift */,
 				C20000010000000000000011 /* EntryActions.swift */,
+				WS20000010000000000000001 /* WatchSyncDTO.swift */,
+				WS20000010000000000000002 /* WatchSyncEngine.swift */,
+				WS20000010000000000000003 /* WatchSyncCoordinator.swift */,
 				QAS20000010000000000000001 /* QuickAddSessionStore.swift */,
 				C20000010000000000000012 /* PreviewModel.swift */,
 				SD20000010000000000000001 /* SampleDataSeeder.swift */,
@@ -951,6 +983,9 @@
 				C10000010000000000000009 /* WidgetSnapshot.swift in Sources */,
 				C10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */,
 				C10000010000000000000011 /* EntryActions.swift in Sources */,
+				WS10000010000000000000001 /* WatchSyncDTO.swift in Sources */,
+				WS10000010000000000000002 /* WatchSyncEngine.swift in Sources */,
+				WS10000010000000000000003 /* WatchSyncCoordinator.swift in Sources */,
 				QAS10000010000000000000001 /* QuickAddSessionStore.swift in Sources */,
 				K10000010000000000000001 /* CounterPeriod.swift in Sources */,
 				L10000010000000000000001 /* GoalDirection.swift in Sources */,
@@ -976,8 +1011,13 @@
 				B10000010000000000000001 /* CounterWatchApp.swift in Sources */,
 				B10000010000000000000002 /* WatchContentView.swift in Sources */,
 				B10000010000000000000004 /* WatchQuickAddGrid.swift in Sources */,
-				B10000010000000000000005 /* WatchCounterListView.swift in Sources */,
-				B10000010000000000000006 /* WatchCounterDetailView.swift in Sources */,
+				B10000010000000000000005 /* WatchCounterPagerView.swift in Sources */,
+				B10000010000000000000006 /* WatchCounterPageView.swift in Sources */,
+				B10000010000000000000010 /* WatchQuickAddView.swift in Sources */,
+				B10000010000000000000011 /* WatchGoalProgressRing.swift in Sources */,
+				B10000010000000000000012 /* WatchTheme.swift in Sources */,
+				CPDBFWATCH01 /* CounterPaletteData.swift in Sources */,
+				PRABFWATCH01 /* ProgressRingArc.swift in Sources */,
 				D10000010000000000000001 /* AppGroup.swift in Sources */,
 				D10000010000000000000002 /* HistoryTypes.swift in Sources */,
 				D10000010000000000000003 /* SharedModelContainer.swift in Sources */,
@@ -990,6 +1030,9 @@
 				D10000010000000000000010 /* WidgetSnapshot.swift in Sources */,
 				D10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */,
 				D10000010000000000000012 /* EntryActions.swift in Sources */,
+				WS10000010000000000000004 /* WatchSyncDTO.swift in Sources */,
+				WS10000010000000000000005 /* WatchSyncEngine.swift in Sources */,
+				WS10000010000000000000006 /* WatchSyncCoordinator.swift in Sources */,
 				QAS10000010000000000000002 /* QuickAddSessionStore.swift in Sources */,
 				K10000010000000000000002 /* CounterPeriod.swift in Sources */,
 				L10000010000000000000002 /* GoalDirection.swift in Sources */,
@@ -1039,6 +1082,8 @@
 				IW10000010000000000000013 /* CounterEntry.swift in Sources */,
 				IW10000010000000000000014 /* AppSettings.swift in Sources */,
 				IW10000010000000000000015 /* EntryActions.swift in Sources */,
+				WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */,
+				WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */,
 				QAS10000010000000000000003 /* QuickAddSessionStore.swift in Sources */,
 				IW10000010000000000000016 /* CounterPeriod.swift in Sources */,
 				IW10000010000000000000017 /* GoalDirection.swift in Sources */,
@@ -1075,6 +1120,12 @@
 				CTGBFHistoryAggregator01 /* HistoryAggregator.swift in Sources */,
 				CTGBFQuickAddConfiguration01 /* QuickAddConfiguration.swift in Sources */,
 				CTGBFEntryActions01 /* EntryActions.swift in Sources */,
+				CTGBFAppGroup01 /* AppGroup.swift in Sources */,
+				CTGBFSharedModelContainer01 /* SharedModelContainer.swift in Sources */,
+				CTGBFWidgetSnapshot01 /* WidgetSnapshot.swift in Sources */,
+				CTGBFCustomCounterProgress01 /* CustomCounter+Progress.swift in Sources */,
+				WS10000010000000000000010 /* WatchSyncDTO.swift in Sources */,
+				WS10000010000000000000011 /* WatchSyncEngine.swift in Sources */,
 				QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */,
 				CTGBFCalorieMigration01 /* CalorieMigration.swift in Sources */,
 				LOGBFTEST01 /* Logging.swift in Sources */,

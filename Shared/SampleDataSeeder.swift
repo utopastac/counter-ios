@@ -20,6 +20,7 @@ enum SampleDataSeeder {
     seedMoneyCounter(in: context)
 
     AppLog.attempt("Save seeded sample data") { try context.save() }
+    WatchSyncEngine.publishFullSnapshot(in: context)
   }
 
   private static func hasAnyCounters(in context: ModelContext) -> Bool {

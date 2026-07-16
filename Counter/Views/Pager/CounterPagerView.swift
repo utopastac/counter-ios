@@ -146,7 +146,7 @@ struct CounterPagerView: View {
     ScrollView(.vertical) {
       VStack(spacing: 0) {
         ForEach(counters) { counter in
-          CustomCounterPageContent(counter: counter)
+          CustomCounterPageContent(counter: counter, transitionNamespace: sheetTransition)
             .frame(height: height)
             .background(Color.clear)
             .id(counter.id.uuidString)
@@ -267,14 +267,18 @@ struct CounterPagerView: View {
             counter.paletteIndex = paletteIndex
           }
           WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+          WatchSyncEngine.publishCounterUpsert(counter)
         },
         onDelete: {
+          let counterID = counter.id
           modelContext.delete(counter)
           WidgetSnapshot.reloadTimelines()
+          WatchSyncEngine.publishCounterDelete(counterID)
         },
         onPaletteChange: { index in
           counter.paletteIndex = index
           WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+          WatchSyncEngine.publishCounterUpsert(counter)
         }
       )
     }

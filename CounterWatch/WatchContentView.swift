@@ -1,8 +1,14 @@
 import SwiftUI
 
 struct WatchContentView: View {
+  @Environment(\.modelContext) private var modelContext
+
   var body: some View {
-    WatchCounterListView()
+    WatchCounterPagerView()
+      .task {
+        WatchSyncCoordinator.shared.activate()
+        WatchSyncEngine.publishFullSnapshot(in: modelContext)
+      }
   }
 }
 

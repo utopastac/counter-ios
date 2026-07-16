@@ -49,12 +49,14 @@ final class QuickAddSessionStore {
       entry.value += value
       sessionsByCounterID[counter.id] = Session(entryID: entry.id, lastTap: now)
       AppLog.attempt("Save quick-add batch") { try context.save() }
+      WatchSyncEngine.publishEntryUpsert(entry)
       return EntryActions.AddedEntry(entryID: entry.id, value: entry.value)
     }
 
     let entry = CounterEntry(value: value, counter: counter)
     context.insert(entry)
     sessionsByCounterID[counter.id] = Session(entryID: entry.id, lastTap: now)
+    WatchSyncEngine.publishEntryUpsert(entry)
     return EntryActions.AddedEntry(entryID: entry.id, value: entry.value)
   }
 

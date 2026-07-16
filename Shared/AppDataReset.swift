@@ -15,6 +15,7 @@ enum AppDataReset {
     QuickAddSessionStore.shared.reset()
     WidgetSnapshot.clear()
     UserDefaults.standard.set(true, forKey: suppressSampleSeedingKey)
+    WatchSyncEngine.publishResetAll()
   }
 
   private static func deleteAll<T: PersistentModel>(_ type: T.Type, in context: ModelContext) {

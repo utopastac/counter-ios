@@ -14,22 +14,28 @@ enum EntryActions {
   }
 
   @discardableResult
+  @MainActor
   static func addCounterEntry(value: Int, counter: CustomCounter, in context: ModelContext) -> AddedEntry {
     let entry = CounterEntry(value: value, counter: counter)
     context.insert(entry)
+    WatchSyncEngine.publishEntryUpsert(entry)
     return AddedEntry(entryID: entry.id, value: entry.value)
   }
 
+  @MainActor
   static func deleteCounterEntry(id: UUID, in context: ModelContext) {
     guard let entry = fetchCounterEntry(id: id, in: context) else { return }
     context.delete(entry)
     AppLog.attempt("Save entry deletion") { try context.save() }
+    WatchSyncEngine.publishEntryDelete(id)
   }
 
+  @MainActor
   static func updateCounterEntry(id: UUID, value: Int, in context: ModelContext) {
     guard let entry = fetchCounterEntry(id: id, in: context) else { return }
     entry.value = value
     AppLog.attempt("Save entry update") { try context.save() }
+    WatchSyncEngine.publishEntryUpsert(entry)
   }
 
   /// Not `private`: `QuickAddSessionStore` looks up the entry a batching window is tracking

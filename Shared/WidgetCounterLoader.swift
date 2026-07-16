@@ -71,7 +71,7 @@ enum WidgetCounterLoader {
   }
 
   private static func fetchCounters(in context: ModelContext) -> [CustomCounter] {
-    var descriptor = FetchDescriptor<CustomCounter>(
+    let descriptor = FetchDescriptor<CustomCounter>(
       sortBy: [SortDescriptor(\.createdAt)]
     )
     return (try? context.fetch(descriptor)) ?? []

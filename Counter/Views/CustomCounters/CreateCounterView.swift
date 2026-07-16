@@ -141,6 +141,7 @@ struct CreateCounterView: View {
       paletteIndex: paletteIndex
     )
     modelContext.insert(counter)
+    WatchSyncEngine.publishCounterUpsert(counter)
     onCreated?(counter)
     dismiss()
   }

@@ -19,6 +19,10 @@ enum SheetTransitionID {
   static let history = "history"
   static let addCounter = "addCounter"
   static let appSettings = "appSettings"
+
+  static func allEntries(_ counterID: UUID) -> String {
+    "allEntries-\(counterID.uuidString)"
+  }
 }
 
 extension View {

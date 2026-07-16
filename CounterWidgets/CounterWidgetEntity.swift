@@ -34,7 +34,7 @@ struct CounterWidgetEntityQuery: EntityQuery {
   @MainActor
   private func allEntities() async throws -> [CounterWidgetEntity] {
     let context = ModelContext(SharedModelContainer.shared)
-    var descriptor = FetchDescriptor<CustomCounter>(
+    let descriptor = FetchDescriptor<CustomCounter>(
       sortBy: [SortDescriptor(\.createdAt)]
     )
     let counters = try context.fetch(descriptor)
