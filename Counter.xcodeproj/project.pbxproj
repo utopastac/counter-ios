@@ -12,6 +12,7 @@
 		ADR10000010000000000000002 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
 		AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
 		A10000010000000000000001 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* CounterApp.swift */; };
+		BS10000010000000000000001 /* BootSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BS20000010000000000000001 /* BootSplashView.swift */; };
 		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* ContentView.swift */; };
 		DS10000010000000000000023 /* HistoryPeriodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000023 /* HistoryPeriodPicker.swift */; };
 		DS10000010000000000000024 /* HistoryBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000024 /* HistoryBarChart.swift */; };
@@ -252,6 +253,7 @@
 		ADR20000010000000000000001 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
 		AP20000010000000000000002 /* AppAppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreference.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
+		BS20000010000000000000001 /* BootSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootSplashView.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DS20000010000000000000023 /* HistoryPeriodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPeriodPicker.swift; sourceTree = "<group>"; };
 		DS20000010000000000000024 /* HistoryBarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryBarChart.swift; sourceTree = "<group>"; };
@@ -592,6 +594,7 @@
 		A50000010000000000000010 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				BS20000010000000000000001 /* BootSplashView.swift */,
 				L20000010000000000000002 /* GoalProgressView.swift */,
 				N20000010000000000000001 /* CompactQuickAddGrid.swift */,
 				N20000010000000000000002 /* CustomAmountSheet.swift */,
@@ -900,6 +903,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000010000000000000001 /* CounterApp.swift in Sources */,
+				BS10000010000000000000001 /* BootSplashView.swift in Sources */,
 				A10000010000000000000002 /* ContentView.swift in Sources */,
 				G10000010000000000000006 /* CounterPagerView.swift in Sources */,
 				P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */,

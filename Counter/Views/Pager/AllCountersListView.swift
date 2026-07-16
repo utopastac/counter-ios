@@ -83,7 +83,6 @@ struct AllCountersListView: View {
     VStack(alignment: .leading, spacing: SpaceToken.u1) {
       ForEach(counters) { counter in
         let total = counter.currentTotal()
-        let ringProgress = counter.currentRingDisplay()
         let progress = counter.currentProgress()
 
         CounterListCard(
@@ -91,7 +90,7 @@ struct AllCountersListView: View {
           title: counter.name,
           value: cardValue(for: progress, total: total),
           caption: cardCaption(for: progress, counter: counter),
-          ringProgress: ringProgress
+          ringProgress: progress
         ) {
           onSelectPage(counter.id.uuidString)
         }

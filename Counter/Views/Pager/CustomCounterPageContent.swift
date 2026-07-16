@@ -21,10 +21,6 @@ struct CustomCounterPageContent: View {
     counter.currentTotal()
   }
 
-  private var ringProgress: GoalProgress {
-    counter.currentRingDisplay()
-  }
-
   private var previewItems: [EntryLogPreviewItem] {
     periodEntries.prefix(EntryLogPreviewLimit.count).map { entry in
       EntryLogPreviewItem(
@@ -63,7 +59,7 @@ struct CustomCounterPageContent: View {
         heroValue: heroValue,
         heroSubtitle: heroSubtitle,
         statRows: statRows,
-        ringProgress: ringProgress
+        ringProgress: counter.currentProgress()
       ) {
         VStack(alignment: .leading, spacing: 0) {
           Button {

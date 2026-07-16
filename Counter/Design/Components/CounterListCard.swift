@@ -7,7 +7,7 @@ struct CounterListCard: View {
   let title: String
   let value: String
   let caption: String
-  let ringProgress: GoalProgress
+  let ringProgress: GoalProgress?
   let action: () -> Void
 
   private var palette: CounterPaletteSlot {
@@ -34,13 +34,15 @@ struct CounterListCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
 
-        GoalProgressRing(
-          progress: ringProgress,
-          size: SizeToken.Ring.display,
-          lineWidth: SizeToken.Ring.displayStroke,
-          trackColor: palette.progressRingTrack(for: colorScheme),
-          fillColor: palette.foreground(for: colorScheme)
-        )
+        if let ringProgress {
+          GoalProgressRing(
+            progress: ringProgress,
+            size: SizeToken.Ring.display,
+            lineWidth: SizeToken.Ring.displayStroke,
+            trackColor: palette.progressRingTrack(for: colorScheme),
+            fillColor: palette.foreground(for: colorScheme)
+          )
+        }
       }
       .padding(.horizontal, SpaceToken.componentPadding)
       .padding(.vertical, SpaceToken.componentPadding)

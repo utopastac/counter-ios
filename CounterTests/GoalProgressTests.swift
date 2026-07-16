@@ -107,19 +107,6 @@ struct GoalProgressTests {
     #expect(progress?.goal == 20)
   }
 
-  @Test func ringDisplayFallsBackToASafeRingWithoutAGoal() {
-    let display = GoalProgressCalculator.ringDisplay(current: 10, goal: nil, direction: .countUp)
-    #expect(display.goal == 1)
-    #expect(display.current == 0)
-    #expect(display.ringFraction == 0)
-  }
-
-  @Test func ringDisplayUsesRealGoalWhenPresent() {
-    let display = GoalProgressCalculator.ringDisplay(current: 40, goal: 100, direction: .countUp)
-    #expect(display.current == 40)
-    #expect(display.goal == 100)
-  }
-
   // MARK: - compactHeroValue
 
   @Test func compactHeroValueFoldsGoalContextIntoCountUp() {

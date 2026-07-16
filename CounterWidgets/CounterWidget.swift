@@ -121,12 +121,14 @@ struct CounterWidgetView: View {
 
         Spacer(minLength: 0)
 
-        WidgetProgressRing(
-          fraction: entry.snapshot.ringFraction,
-          foreground: colors.foreground,
-          size: 54,
-          lineWidth: 12
-        )
+        if let ringFraction = entry.snapshot.ringFraction {
+          WidgetProgressRing(
+            fraction: ringFraction,
+            foreground: colors.foreground,
+            size: 54,
+            lineWidth: 12
+          )
+        }
       }
 
       Spacer(minLength: 12)

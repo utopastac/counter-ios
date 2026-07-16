@@ -11,7 +11,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   let heroValue: String
   let heroSubtitle: String?
   let statRows: [CounterStatRow]
-  let ringProgress: GoalProgress
+  let ringProgress: GoalProgress?
   @ViewBuilder var entryLog: () -> EntryLog
   @ViewBuilder var footer: () -> Footer
   @ViewBuilder var toast: () -> Toast
@@ -30,7 +30,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     heroValue: String,
     heroSubtitle: String? = nil,
     statRows: [CounterStatRow],
-    ringProgress: GoalProgress,
+    ringProgress: GoalProgress? = nil,
     @ViewBuilder entryLog: @escaping () -> EntryLog,
     @ViewBuilder footer: @escaping () -> Footer,
     @ViewBuilder toast: @escaping () -> Toast
@@ -118,7 +118,7 @@ private struct CounterPageHeader: View {
   let heroValue: String
   let heroSubtitle: String?
   let statRows: [CounterStatRow]
-  let ringProgress: GoalProgress
+  let ringProgress: GoalProgress?
   let ringPalette: CounterPaletteSlot
   @Binding var isExpanded: Bool
   let canExpand: Bool
@@ -158,15 +158,17 @@ private struct CounterPageHeader: View {
       .disabled(!canExpand)
       .layoutPriority(1)
 
-      GoalProgressRing(
-        progress: ringProgress,
-        size: SizeToken.Ring.display,
-        lineWidth: SizeToken.Ring.displayStroke,
-        trackColor: ringPalette.progressRingTrack(for: colorScheme),
-        fillColor: ringPalette.foreground(for: colorScheme)
-      )
-      .frame(width: SizeToken.Ring.display, height: CounterPageToken.heroBandHeight, alignment: .center)
-      .padding(.top, CounterPageToken.headerContentOffset)
+      if let ringProgress {
+        GoalProgressRing(
+          progress: ringProgress,
+          size: SizeToken.Ring.display,
+          lineWidth: SizeToken.Ring.displayStroke,
+          trackColor: ringPalette.progressRingTrack(for: colorScheme),
+          fillColor: ringPalette.foreground(for: colorScheme)
+        )
+        .frame(width: SizeToken.Ring.display, height: CounterPageToken.heroBandHeight, alignment: .center)
+        .padding(.top, CounterPageToken.headerContentOffset)
+      }
     }
     .frame(height: contentHeight, alignment: .top)
   }
@@ -216,7 +218,7 @@ extension CounterPageLayout where EntryLog == EmptyView, Toast == EmptyView {
     heroValue: String,
     heroSubtitle: String? = nil,
     statRows: [CounterStatRow],
-    ringProgress: GoalProgress,
+    ringProgress: GoalProgress? = nil,
     @ViewBuilder footer: @escaping () -> Footer
   ) {
     self.init(
@@ -236,7 +238,7 @@ extension CounterPageLayout where Toast == EmptyView {
     heroValue: String,
     heroSubtitle: String? = nil,
     statRows: [CounterStatRow],
-    ringProgress: GoalProgress,
+    ringProgress: GoalProgress? = nil,
     @ViewBuilder entryLog: @escaping () -> EntryLog,
     @ViewBuilder footer: @escaping () -> Footer
   ) {

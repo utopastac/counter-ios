@@ -40,7 +40,6 @@ enum WidgetCounterLoader {
     let paletteIndex = counter.effectivePaletteIndex
     let total = counter.currentTotal()
     let progress = counter.currentProgress()
-    let ring = counter.currentRingDisplay()
     let buttons = QuickAddConfiguration.filledPresets(
       from: counter.buttonValues,
       defaults: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
@@ -52,7 +51,7 @@ enum WidgetCounterLoader {
       paletteIndex: paletteIndex,
       heroValue: progress?.heroValue ?? "\(total)",
       heroCaption: progress?.heroCaption ?? "logged",
-      ringFraction: ring.ringFraction,
+      ringFraction: progress?.ringFraction,
       buttonValues: widgetButtonValues(from: buttons),
       lastUpdated: .now
     )

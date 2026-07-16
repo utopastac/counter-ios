@@ -27,13 +27,4 @@ extension CustomCounter {
       direction: goalDirection
     )
   }
-
-  /// Always renders a valid ring, even without a goal (see `GoalProgressCalculator.ringDisplay`).
-  func currentRingDisplay(on date: Date = .now, calendar: Calendar = .current) -> GoalProgress {
-    GoalProgressCalculator.ringDisplay(
-      current: currentTotal(on: date, calendar: calendar),
-      goal: effectiveGoal,
-      direction: goalDirection
-    )
-  }
 }

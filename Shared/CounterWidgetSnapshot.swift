@@ -6,7 +6,7 @@ struct CounterWidgetSnapshot {
   let paletteIndex: Int
   let heroValue: String
   let heroCaption: String
-  let ringFraction: Double
+  let ringFraction: Double?
   let buttonValues: [Int]
   let lastUpdated: Date?
 
