@@ -65,6 +65,9 @@ enum RadiusToken {
   /// Vertical counter pager card — fixed 16pt (2 grid units) corners.
   static let scrollContainer: CGFloat = SpaceToken.u2
 
+  /// Compact-mode counter card corners.
+  static let compactCard: CGFloat = xl
+
   static var continuousButton: RoundedRectangle {
     RoundedRectangle(cornerRadius: button, style: .continuous)
   }
@@ -209,6 +212,26 @@ enum CounterPageToken {
   static let entryLogBottomInset: CGFloat = SpaceToken.u2
 
   static let headerToggleAnimation: Animation = .spring(response: 0.38, dampingFraction: 0.86)
+}
+
+/// Compact-mode counter card — a shrunken, non-full-screen card with compressed spacing.
+/// Row entries are hidden on-card and only shown via the entry log modal sheet.
+enum CompactCardToken {
+  /// Inner padding around a compact card's content.
+  static let cardPadding: CGFloat = SpaceToken.u2
+  /// Gap between stacked compact cards.
+  static let cardSpacing: CGFloat = SpaceToken.u1
+  /// Gap between the header row (title + icons) and the hero number row.
+  static let headerToHeroSpacing: CGFloat = SpaceToken.u1
+  /// Trims the `mainNumber` font's built-in leading above the glyph so the compact
+  /// card's visible gap below the header matches `headerToHeroSpacing`.
+  static let heroNumberLeadingTrim: CGFloat = -23
+  /// Gap between the hero number row and the quick-add footer.
+  static let heroToFooterSpacing: CGFloat = SpaceToken.u2
+  /// Quick-add button height — 8pt shorter than the standard button height.
+  static let quickAddHeight: CGFloat = SizeToken.quickAddHeight - SpaceToken.u1
+  /// Gap above the entry-added toast overlay.
+  static let toastTopOffset: CGFloat = SpaceToken.u1
 }
 
 /// Counters list underlay reveal — card peeks on the trailing edge when open.

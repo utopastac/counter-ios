@@ -6,6 +6,7 @@ struct AppSettingsView: View {
   @Environment(\.modelContext) private var modelContext
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
   @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
+  @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
   @AppStorage(AppAppearancePreference.defaultResetPeriodKey) private var defaultResetPeriodRaw =
     CounterResetPeriod.daily.rawValue
   @AppStorage(
@@ -50,6 +51,7 @@ struct AppSettingsView: View {
         VStack(alignment: .leading, spacing: 0) {
           SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
           SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isHapticsEnabled)
+          SettingsToggleRow(icon: .rows3, label: "Compact mode", isOn: $isCompactModeEnabled)
 
           SettingsPickerRow(
             icon: .calendar,

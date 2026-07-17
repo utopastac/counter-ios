@@ -6,17 +6,20 @@ struct CounterActionButton: View {
 
   let label: String?
   let icon: CounterLucideIconName?
+  let height: CGFloat
   let action: () -> Void
 
-  init(_ label: String, action: @escaping () -> Void) {
+  init(_ label: String, height: CGFloat = SizeToken.quickAddHeight, action: @escaping () -> Void) {
     self.label = label
     self.icon = nil
+    self.height = height
     self.action = action
   }
 
-  init(icon: CounterLucideIconName, action: @escaping () -> Void) {
+  init(icon: CounterLucideIconName, height: CGFloat = SizeToken.quickAddHeight, action: @escaping () -> Void) {
     self.label = nil
     self.icon = icon
+    self.height = height
     self.action = action
   }
 
@@ -34,7 +37,7 @@ struct CounterActionButton: View {
         }
       }
       .frame(maxWidth: .infinity)
-      .frame(height: SizeToken.quickAddHeight)
+      .frame(height: height)
       .background(colors.interactivePrimaryFill, in: RadiusToken.continuousButton)
     }
     .buttonStyle(.plain)

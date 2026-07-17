@@ -14,6 +14,7 @@ struct CounterPagerView: View {
     AppAppearancePreference.monoPaletteIndexKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
+  @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
 
   @State private var selectedPageID: String?
   @State private var showButtonSettings = false
@@ -141,15 +142,48 @@ struct CounterPagerView: View {
     GeometryReader { geometry in
       ZStack(alignment: .top) {
         CounterPagerPageRoot {
-          verticalPager(height: geometry.size.height)
+          if isCompactModeEnabled {
+            compactStack()
+          } else {
+            verticalPager(height: geometry.size.height)
+          }
         }
 
-        pagerToolbar
+        if !isCompactModeEnabled {
+          pagerToolbar
+        }
       }
     }
     .counterAccent(activeAccent)
     .counterDesignSystemFromColorScheme()
     .counterPagerDragging(isPagerDragging)
+  }
+
+  @ViewBuilder
+  private func compactStack() -> some View {
+    ScrollView(.vertical) {
+      VStack(spacing: CompactCardToken.cardSpacing) {
+        ForEach(counters) { counter in
+          CustomCounterPageContent(
+            counter: counter,
+            transitionNamespace: sheetTransition,
+            isCompact: true,
+            onShowHistory: { presentHistory(for: counter) },
+            onShowButtonSettings: { presentButtonSettings(for: counter) }
+          )
+          .id(counter.id.uuidString)
+        }
+      }
+      .padding(.bottom, SpaceToken.pageFooterBottom)
+      .background {
+        ScrollPanDisabler(isDisabled: locksRevealScroll)
+      }
+    }
+    .scrollContentBackground(.hidden)
+    .background(colors.surfacePrimary)
+    .scrollIndicators(.hidden)
+    .scrollDisabled(locksRevealScroll || isRevealActive)
+    .scrollClipDisabled(!isRevealActive)
   }
 
   @ViewBuilder
@@ -222,6 +256,16 @@ struct CounterPagerView: View {
     hasAppliedInitialListReveal = true
     containerWidth = width
     openCounterList(animated: false)
+  }
+
+  private func presentHistory(for counter: CustomCounter) {
+    selectedPageID = counter.id.uuidString
+    showHistory = true
+  }
+
+  private func presentButtonSettings(for counter: CustomCounter) {
+    selectedPageID = counter.id.uuidString
+    showButtonSettings = true
   }
 
   private func selectPageFromList(_ pageID: String) {

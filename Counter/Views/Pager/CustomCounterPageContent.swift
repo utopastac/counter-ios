@@ -17,6 +17,9 @@ struct CustomCounterPageContent: View {
   ) private var monoPaletteIndex = 0
 
   let transitionNamespace: Namespace.ID
+  var isCompact = false
+  var onShowHistory: () -> Void = {}
+  var onShowButtonSettings: () -> Void = {}
 
   @State private var showCustomAmount = false
   @State private var showsEntryLog = false
@@ -70,48 +73,81 @@ struct CustomCounterPageContent: View {
   }
 
   var body: some View {
-    CounterPageLayout(
-        heroValue: heroValue,
-        heroSubtitle: heroSubtitle,
-        statRows: statRows,
-        ringProgress: counter.currentProgress()
-      ) {
-        VStack(alignment: .leading, spacing: 0) {
-          Button {
-            guard !counterRevealIsDragging else { return }
-            showsEntryLog = true
-          } label: {
-            VStack(alignment: .leading, spacing: 0) {
-              CompactEntryLogPreview(items: previewItems)
-
-              EntryLogAllEntriesControl()
+    Group {
+      if isCompact {
+        CompactCounterCardLayout(
+          title: counter.name,
+          heroValue: heroValue,
+          heroSubtitle: heroSubtitle,
+          ringProgress: counter.currentProgress(),
+          entryLogTransitionID: SheetTransitionID.allEntries(counter.id),
+          transitionNamespace: transitionNamespace,
+          onSelectEntryLog: { showsEntryLog = true },
+          onShowHistory: onShowHistory,
+          onShowButtonSettings: onShowButtonSettings
+        ) {
+          CompactQuickAddGrid(
+            values: counter.buttonValues,
+            defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
+            buttonHeight: CompactCardToken.quickAddHeight
+          ) { value in
+            addEntryQuick(value)
+          } onCustom: {
+            showCustomAmount = true
+          }
+        } toast: {
+          if let entryToast {
+            EntryAddedToast(value: entryToast.value) {
+              undoToastEntry(entryToast.entryID)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
+            .transition(toastTransition)
           }
-          .buttonStyle(.noHighlight)
-          .matchedTransitionSource(
-            id: SheetTransitionID.allEntries(counter.id),
-            in: transitionNamespace
-          )
         }
-      } footer: {
-        CompactQuickAddGrid(
-          values: counter.buttonValues,
-          defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
-        ) { value in
-          addEntryQuick(value)
-        } onCustom: {
-          showCustomAmount = true
-        }
-      } toast: {
-        if let entryToast {
-          EntryAddedToast(value: entryToast.value) {
-            undoToastEntry(entryToast.entryID)
+      } else {
+        CounterPageLayout(
+            heroValue: heroValue,
+            heroSubtitle: heroSubtitle,
+            statRows: statRows,
+            ringProgress: counter.currentProgress()
+          ) {
+            VStack(alignment: .leading, spacing: 0) {
+              Button {
+                guard !counterRevealIsDragging else { return }
+                showsEntryLog = true
+              } label: {
+                VStack(alignment: .leading, spacing: 0) {
+                  CompactEntryLogPreview(items: previewItems)
+
+                  EntryLogAllEntriesControl()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+              }
+              .buttonStyle(.noHighlight)
+              .matchedTransitionSource(
+                id: SheetTransitionID.allEntries(counter.id),
+                in: transitionNamespace
+              )
+            }
+          } footer: {
+            CompactQuickAddGrid(
+              values: counter.buttonValues,
+              defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
+            ) { value in
+              addEntryQuick(value)
+            } onCustom: {
+              showCustomAmount = true
+            }
+          } toast: {
+            if let entryToast {
+              EntryAddedToast(value: entryToast.value) {
+                undoToastEntry(entryToast.entryID)
+              }
+              .transition(toastTransition)
+            }
           }
-          .transition(toastTransition)
-        }
       }
+    }
     .counterAccent(pageAccent)
     .counterModalScrim(isPresented: showCustomAmount || showsEntryLog)
     .sheet(isPresented: $showCustomAmount) {

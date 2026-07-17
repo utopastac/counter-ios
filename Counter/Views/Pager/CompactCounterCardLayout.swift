@@ -1,0 +1,127 @@
+import SwiftUI
+
+/// Compact-mode counter card — a shrunken, self-contained card (title, hero number,
+/// ring, and quick-add footer). Row entries are never shown inline; tapping the
+/// header's logs icon opens the entry log modal sheet instead.
+struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
+  @Environment(\.counterAccent) private var counterAccent
+  @Environment(\.colorScheme) private var colorScheme
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+
+  let title: String
+  let heroValue: String
+  let heroSubtitle: String?
+  let ringProgress: GoalProgress?
+  let entryLogTransitionID: String
+  let transitionNamespace: Namespace.ID
+  let onSelectEntryLog: () -> Void
+  let onShowHistory: () -> Void
+  let onShowButtonSettings: () -> Void
+  @ViewBuilder var footer: () -> Footer
+  @ViewBuilder var toast: () -> Toast
+
+  private var palette: CounterPaletteSlot {
+    (counterAccent ?? .forCustomCounter(at: 0)).palette
+  }
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      header
+        .padding(.bottom, CompactCardToken.headerToHeroSpacing)
+
+      heroRow
+        .padding(.bottom, CompactCardToken.heroToFooterSpacing)
+
+      footer()
+    }
+    .padding(CompactCardToken.cardPadding)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(palette.background(for: colorScheme), in: RadiusToken.continuous(RadiusToken.compactCard))
+    .overlay(alignment: .top) {
+      toast()
+        .fixedSize()
+        .padding(.top, CompactCardToken.toastTopOffset)
+    }
+    .allowsHitTesting(!counterRevealIsDragging)
+  }
+
+  private var header: some View {
+    HStack(spacing: SpaceToken.u2) {
+      Text(title)
+        .counterTextStyle(.pageTitle, compact: true)
+        .lineLimit(1)
+        .truncationMode(.tail)
+
+      Spacer(minLength: SpaceToken.u1)
+
+      HStack(spacing: SpaceToken.toolbarIconSpacing) {
+        CounterIconButton(icon: .logs, action: onSelectEntryLog)
+          .matchedTransitionSource(id: entryLogTransitionID, in: transitionNamespace)
+        CounterIconButton(icon: .chartBar, action: onShowHistory)
+        CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
+      }
+    }
+  }
+
+  private var heroRow: some View {
+    HStack(alignment: .top, spacing: SpaceToken.u2) {
+      VStack(alignment: .leading, spacing: CounterPageToken.heroSubtitleSpacing) {
+        Text(heroValue)
+          .counterTextStyle(.mainNumber)
+          .minimumScaleFactor(0.6)
+          .lineLimit(1)
+          .contentTransition(.numericText())
+          .padding(.top, CompactCardToken.heroNumberLeadingTrim)
+
+        if let heroSubtitle {
+          Text(heroSubtitle)
+            .counterTextStyle(.heroSubtitle)
+            .lineLimit(1)
+            .contentTransition(.numericText())
+        }
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+
+      if let ringProgress {
+        GoalProgressRing(
+          progress: ringProgress,
+          size: SizeToken.Ring.display,
+          lineWidth: SizeToken.Ring.displayStroke,
+          trackColor: palette.progressRingTrack(for: colorScheme),
+          fillColor: palette.foreground(for: colorScheme)
+        )
+        .frame(width: SizeToken.Ring.display, height: CounterPageToken.heroBandHeight, alignment: .center)
+        .padding(.top, CounterPageToken.headerContentOffset)
+      }
+    }
+  }
+}
+
+extension CompactCounterCardLayout where Toast == EmptyView {
+  init(
+    title: String,
+    heroValue: String,
+    heroSubtitle: String? = nil,
+    ringProgress: GoalProgress? = nil,
+    entryLogTransitionID: String,
+    transitionNamespace: Namespace.ID,
+    onSelectEntryLog: @escaping () -> Void,
+    onShowHistory: @escaping () -> Void,
+    onShowButtonSettings: @escaping () -> Void,
+    @ViewBuilder footer: @escaping () -> Footer
+  ) {
+    self.init(
+      title: title,
+      heroValue: heroValue,
+      heroSubtitle: heroSubtitle,
+      ringProgress: ringProgress,
+      entryLogTransitionID: entryLogTransitionID,
+      transitionNamespace: transitionNamespace,
+      onSelectEntryLog: onSelectEntryLog,
+      onShowHistory: onShowHistory,
+      onShowButtonSettings: onShowButtonSettings,
+      footer: footer,
+      toast: { EmptyView() }
+    )
+  }
+}

@@ -3,6 +3,7 @@ import Foundation
 enum AppAppearancePreference {
   static let darkModeEnabledKey = "app.appearance.darkModeEnabled"
   static let hapticsEnabledKey = "app.haptics.enabled"
+  static let compactModeEnabledKey = "app.appearance.compactModeEnabled"
   static let defaultResetPeriodKey = "app.defaults.resetPeriod"
   static let monoEnabledKey = "app.appearance.monoEnabled"
   static let monoPaletteIndexKey = "app.appearance.monoPaletteIndex"
@@ -29,6 +30,10 @@ enum AppAppearancePreference {
 
   static var isMonoEnabled: Bool {
     sharedDefaults.bool(forKey: monoEnabledKey)
+  }
+
+  static var isCompactModeEnabled: Bool {
+    UserDefaults.standard.bool(forKey: compactModeEnabledKey)
   }
 
   static var monoPaletteIndex: Int {

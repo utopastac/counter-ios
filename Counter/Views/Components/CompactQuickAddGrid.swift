@@ -3,6 +3,7 @@ import SwiftUI
 struct CompactQuickAddGrid: View {
   let values: [Int]
   let defaultPresets: [Int]
+  var buttonHeight: CGFloat = SizeToken.quickAddHeight
   let onTap: (Int) -> Void
   let onCustom: () -> Void
 
@@ -17,12 +18,12 @@ struct CompactQuickAddGrid: View {
   var body: some View {
     LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
       ForEach(Array(displayValues.enumerated()), id: \.offset) { _, value in
-        CounterActionButton("\(value)") {
+        CounterActionButton("\(value)", height: buttonHeight) {
           onTap(value)
         }
       }
 
-      CounterActionButton(icon: .ellipsis) {
+      CounterActionButton(icon: .ellipsis, height: buttonHeight) {
         onCustom()
       }
     }

@@ -19,6 +19,8 @@ enum CounterLucideIconName: String {
   case palette = "lucide-palette"
   case timer = "lucide-timer"
   case moon = "lucide-moon"
+  case rows3 = "lucide-rows-3"
+  case logs = "lucide-logs"
 }
 
 struct CounterLucideIcon: View {

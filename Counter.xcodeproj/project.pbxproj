@@ -112,6 +112,7 @@
 		G10000010000000000000002 /* CounterPageLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000002 /* CounterPageLayout.swift */; };
 		G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000004 /* CustomCounterPageContent.swift */; };
 		G10000010000000000000006 /* CounterPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000006 /* CounterPagerView.swift */; };
+		G10000010000000000000007 /* CompactCounterCardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000007 /* CompactCounterCardLayout.swift */; };
 		M10000010000000000000001 /* AllCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = M20000010000000000000001 /* AllCountersListView.swift */; };
 		J10000010000000000000001 /* TodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = J20000010000000000000001 /* TodayLogView.swift */; };
 		K10000010000000000000001 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
@@ -387,6 +388,7 @@
 		G20000010000000000000002 /* CounterPageLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageLayout.swift; sourceTree = "<group>"; };
 		G20000010000000000000004 /* CustomCounterPageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterPageContent.swift; sourceTree = "<group>"; };
 		G20000010000000000000006 /* CounterPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPagerView.swift; sourceTree = "<group>"; };
+		G20000010000000000000007 /* CompactCounterCardLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactCounterCardLayout.swift; sourceTree = "<group>"; };
 		M20000010000000000000001 /* AllCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCountersListView.swift; sourceTree = "<group>"; };
 		J20000010000000000000001 /* TodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayLogView.swift; sourceTree = "<group>"; };
 		K20000010000000000000001 /* CounterPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPeriod.swift; sourceTree = "<group>"; };
@@ -715,6 +717,7 @@
 				G20000010000000000000004 /* CustomCounterPageContent.swift */,
 				M20000010000000000000001 /* AllCountersListView.swift */,
 				G20000010000000000000002 /* CounterPageLayout.swift */,
+				G20000010000000000000007 /* CompactCounterCardLayout.swift */,
 			);
 			path = Pager;
 			sourceTree = "<group>";
@@ -945,6 +948,7 @@
 				AH10000010000000000000001 /* AppHaptics.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
 				G10000010000000000000002 /* CounterPageLayout.swift in Sources */,
+				G10000010000000000000007 /* CompactCounterCardLayout.swift in Sources */,
 				DS10000010000000000000001 /* BaseColorTokens.swift in Sources */,
 				DS10000010000000000000002 /* SemanticColorTokens.swift in Sources */,
 				DS10000010000000000000003 /* TypographyTokens.swift in Sources */,
