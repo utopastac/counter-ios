@@ -14,13 +14,14 @@ struct PrimaryCapsuleButton: View {
         .frame(maxWidth: .infinity)
         .frame(height: SizeToken.primaryButtonHeight)
         .background(
-          ComponentColor.sheetPrimaryButtonFill(colors, isEnabled: isEnabled),
+          colors.interactivePrimaryFill,
           in: RadiusToken.continuousButton
         )
-        .foregroundStyle(ComponentColor.sheetPrimaryButtonForeground(colors, isEnabled: isEnabled))
+        .foregroundStyle(colors.interactivePrimaryForeground)
     }
     .buttonStyle(.plain)
-    .tint(ComponentColor.sheetPrimaryButtonForeground(colors, isEnabled: isEnabled))
+    .tint(colors.interactivePrimaryForeground)
+    .opacity(isEnabled ? 1 : OpacityToken.disabledButton)
     .disabled(!isEnabled)
   }
 }

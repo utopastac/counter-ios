@@ -175,14 +175,6 @@ enum ComponentColor {
     colors.borderSubtle.opacity(progress)
   }
 
-  static func sheetPrimaryButtonFill(_ colors: SemanticColors, isEnabled: Bool) -> Color {
-    isEnabled ? colors.interactivePrimaryFill : colors.interactiveDisabledFill
-  }
-
-  static func sheetPrimaryButtonForeground(_ colors: SemanticColors, isEnabled: Bool) -> Color {
-    isEnabled ? colors.interactivePrimaryForeground : colors.interactiveDisabledForeground
-  }
-
   static func modalScrim(_ colors: SemanticColors) -> Color {
     colors.modalScrim
   }

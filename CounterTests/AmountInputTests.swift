@@ -39,6 +39,14 @@ struct AmountInputTests {
     #expect(AmountInput.parsePositiveInt("") == nil)
   }
 
+  @Test func parsePositiveIntAcceptsTrailingDecimalSeparatorAndTwoPlaces() {
+    #expect(AmountInput.parsePositiveInt("12.") == 12)
+    #expect(AmountInput.parsePositiveInt("12.0") == 12)
+    #expect(AmountInput.parsePositiveInt("12.50") == 12)
+    #expect(AmountInput.parsePositiveInt("12.4") == 12)
+    #expect(AmountInput.parsePositiveInt("0.5") == nil)
+  }
+
   // MARK: - appendingDigit
 
   @Test func appendingDigitAppendsWhenUnderTheLimit() {
@@ -51,5 +59,30 @@ struct AmountInputTests {
 
   @Test func appendingDigitIsANoOpAtTheLimit() {
     #expect(AmountInput.appendingDigit("7", to: "123456", maxDigits: 6) == "123456")
+  }
+
+  @Test func appendingDigitAllowsUpToTwoDecimalPlaces() {
+    #expect(AmountInput.appendingDigit("5", to: "12.", maxDigits: 6) == "12.5")
+    #expect(AmountInput.appendingDigit("0", to: "12.5", maxDigits: 6) == "12.50")
+    #expect(AmountInput.appendingDigit("1", to: "12.50", maxDigits: 6) == "12.50")
+  }
+
+  @Test func appendingDigitDoesNotReplaceZeroOnceADecimalIsPresent() {
+    #expect(AmountInput.appendingDigit("5", to: "0.", maxDigits: 6) == "0.5")
+  }
+
+  // MARK: - appendingDecimalSeparator
+
+  @Test func appendingDecimalSeparatorAddsAPeriod() {
+    #expect(AmountInput.appendingDecimalSeparator(to: "12") == "12.")
+  }
+
+  @Test func appendingDecimalSeparatorOnEmptyBecomesZeroDot() {
+    #expect(AmountInput.appendingDecimalSeparator(to: "") == "0.")
+  }
+
+  @Test func appendingDecimalSeparatorIsANoOpWhenAlreadyPresent() {
+    #expect(AmountInput.appendingDecimalSeparator(to: "12.") == "12.")
+    #expect(AmountInput.appendingDecimalSeparator(to: "12.5") == "12.5")
   }
 }

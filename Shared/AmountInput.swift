@@ -26,20 +26,43 @@ nonisolated enum AmountInput {
     return String(result.prefix(maxLength))
   }
 
-  /// Parses text as a strictly positive integer. `0`, negative numbers, and unparseable text
-  /// are all `nil` — used anywhere only a positive count makes sense (amount entry, quick-add
-  /// presets, goal fields).
+  /// Parses text as a strictly positive integer. Accepts optional two-digit decimals
+  /// (`"12."`, `"12.5"`, `"12.50"`); the integer part is used (fractional digits are for
+  /// keypad display — entry storage remains whole numbers).
+  /// `0`, negative numbers, and unparseable text are all `nil`.
   static func parsePositiveInt(_ text: String) -> Int? {
-    guard let value = Int(text.trimmingCharacters(in: .whitespaces)), value > 0 else {
+    let trimmed = text.trimmingCharacters(in: .whitespaces)
+    guard !trimmed.isEmpty else { return nil }
+
+    let normalized = trimmed.hasSuffix(".") ? String(trimmed.dropLast()) : trimmed
+    guard let decimal = Decimal(string: normalized, locale: Locale(identifier: "en_US_POSIX")),
+          decimal > 0
+    else {
       return nil
     }
+
+    let value = NSDecimalNumber(decimal: decimal).intValue
+    guard value > 0 else { return nil }
     return value
   }
 
-  /// Appends `digit` to `text` respecting `maxDigits`, replacing a lone leading `"0"` instead
+  /// Appends `digit` to `text` respecting `maxDigits` on the integer part and at most two
+  /// digits after a decimal separator. Replaces a lone leading `"0"` (with no decimal) instead
   /// of producing `"05"`. Used by the numeric keypad.
   static func appendingDigit(_ digit: String, to text: String, maxDigits: Int) -> String {
+    if let separatorIndex = text.firstIndex(of: ".") {
+      let decimalDigits = text[text.index(after: separatorIndex)...]
+      guard decimalDigits.count < 2 else { return text }
+      return text + digit
+    }
+
     guard text.count < maxDigits else { return text }
     return text == "0" ? digit : text + digit
+  }
+
+  /// Inserts a decimal separator if one is not already present. An empty field becomes `"0."`.
+  static func appendingDecimalSeparator(to text: String) -> String {
+    guard !text.contains(".") else { return text }
+    return text.isEmpty ? "0." : text + "."
   }
 }

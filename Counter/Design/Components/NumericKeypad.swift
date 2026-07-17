@@ -21,9 +21,10 @@ struct NumericKeypad: View {
         }
       }
 
-      Color.clear
-        .frame(height: SheetToken.keypadKeyHeight)
-        .accessibilityHidden(true)
+      KeypadKeyButton(title: ".") {
+        appendDecimalSeparator()
+      }
+      .accessibilityLabel("Decimal point")
 
       KeypadKeyButton(title: "0") {
         append("0")
@@ -44,9 +45,16 @@ struct NumericKeypad: View {
     text = AmountInput.appendingDigit(digit, to: text, maxDigits: maxDigits)
   }
 
+  private func appendDecimalSeparator() {
+    text = AmountInput.appendingDecimalSeparator(to: text)
+  }
+
   private func deleteLast() {
     guard !text.isEmpty else { return }
     text.removeLast()
+    if text == "0" {
+      text = ""
+    }
   }
 }
 

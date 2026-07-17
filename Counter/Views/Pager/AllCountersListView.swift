@@ -53,7 +53,6 @@ struct AllCountersListView: View {
       HStack(spacing: SpaceToken.toolbarIconSpacing) {
         if let onAddCounter {
           CounterIconButton(icon: .plus, action: onAddCounter)
-            .matchedTransitionSource(id: SheetTransitionID.addCounter, in: transitionNamespace)
         }
         CounterIconButton(icon: .cog) {
           showAppSettings = true
@@ -92,7 +91,9 @@ struct AllCountersListView: View {
           .id("add-new-counter")
       }
     }
-    // Avoid animating row insertion/moves — mid-animation hit targets drift from visuals.
+    // Rebuild list chrome when membership changes so newly inserted rows don't inherit
+    // stale hit-testing from the previous "Add new" slot after sheet dismiss.
+    .id(counters.map(\.id))
     .transaction { transaction in
       transaction.animation = nil
     }

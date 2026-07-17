@@ -65,6 +65,7 @@ struct AmountEntrySheet: View {
 
       NumericKeypad(text: $amountText, maxDigits: maxDigits)
     }
+    .background(colors.surfaceSheet)
     .background {
       GeometryReader { geometry in
         Color.clear.preference(key: SheetHeightKey.self, value: geometry.size.height)
@@ -77,6 +78,8 @@ struct AmountEntrySheet: View {
     }
     .presentationDetents([.height(sheetHeight)])
     .presentationDragIndicator(.hidden)
+    // Solid fill — replace iOS 26's default Liquid Glass chrome on this half sheet.
+    .presentationBackground(colors.surfaceSheet)
     .counterSheetPresentation(.cornerRadiusOnly)
   }
 

@@ -136,6 +136,8 @@ enum ShadowToken {
 
 enum OpacityToken {
   static let iconButtonPressed: CGFloat = 0.5
+  /// Primary action buttons when `isEnabled` is false.
+  static let disabledButton: CGFloat = 0.5
 }
 
 enum MotionToken {
