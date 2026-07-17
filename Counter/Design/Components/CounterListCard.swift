@@ -35,6 +35,7 @@ struct CounterListCard: View {
       .counterAccent(accent)
     }
     .buttonStyle(.plain)
+    .contentShape(Rectangle())
   }
 
   /// Title, value, and caption stacked on the leading edge with the ring trailing —

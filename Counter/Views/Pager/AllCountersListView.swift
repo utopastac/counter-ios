@@ -84,11 +84,17 @@ struct AllCountersListView: View {
         ) {
           onSelectPage(counter.id.uuidString)
         }
+        .id(counter.id)
       }
 
       if let onAddCounter {
         NewCounterButton(action: onAddCounter)
+          .id("add-new-counter")
       }
+    }
+    // Avoid animating row insertion/moves — mid-animation hit targets drift from visuals.
+    .transaction { transaction in
+      transaction.animation = nil
     }
   }
 

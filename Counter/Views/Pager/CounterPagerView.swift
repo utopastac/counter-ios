@@ -132,15 +132,27 @@ struct CounterPagerView: View {
     }
     .sheet(isPresented: $showAddCounter) {
       CreateCounterView { counter in
-        selectedPageID = counter.id.uuidString
+        // Sheet dismiss carries an animation transaction — apply selection without it so the
+        // pager/compact stack jumps to the new counter instead of fighting the dismiss spring.
+        scrollToPage(counter.id.uuidString, animated: false)
       }
       .navigationTransition(.zoom(sourceID: SheetTransitionID.addCounter, in: sheetTransition))
     }
     .onChange(of: counters.map(\.id)) { _, _ in
       if let selectedPageID, !pageIDs.contains(selectedPageID) {
-        self.selectedPageID = counters.first?.id.uuidString
+        scrollToPage(counters.first?.id.uuidString, animated: false)
+      } else {
+        // Newly inserted pages aren't in the scroll hierarchy on the same turn selection is
+        // set — re-assert once the query updates so scrollPosition can find the target.
+        reassertSelectedPageScroll()
       }
-      syncScrollProgressToSelectedPage()
+    }
+    .onChange(of: isRevealActive) { wasActive, active in
+      // Programmatic scrollPosition is ignored while the main scroll view is disabled during
+      // reveal — re-apply once the card is interactive again.
+      if wasActive && !active {
+        reassertSelectedPageScroll()
+      }
     }
     .onAppear {
       if selectedPageID == nil {
@@ -187,6 +199,7 @@ struct CounterPagerView: View {
           .id(counter.id.uuidString)
         }
       }
+      .scrollTargetLayout()
       .padding(.bottom, SpaceToken.pageFooterBottom)
       .background {
         ScrollPanDisabler(isDisabled: locksRevealScroll)
@@ -194,6 +207,7 @@ struct CounterPagerView: View {
     }
     .scrollContentBackground(.hidden)
     .background(colors.surfacePrimary)
+    .scrollPosition(id: $selectedPageID, anchor: .top)
     .scrollIndicators(.hidden)
     .scrollDisabled(locksRevealScroll || isRevealActive)
     .scrollClipDisabled(!isRevealActive)
@@ -238,6 +252,41 @@ struct CounterPagerView: View {
     guard let selectedPageID,
           let index = pageIDs.firstIndex(of: selectedPageID) else { return }
     scrollProgress = CGFloat(index)
+  }
+
+  /// Sets the active page and keeps pager accent progress in sync. Pass `animated: false`
+  /// for list taps and post-create jumps so scrollPosition settles instantly.
+  private func scrollToPage(_ pageID: String?, animated: Bool) {
+    guard let pageID else {
+      selectedPageID = nil
+      return
+    }
+    if animated {
+      selectedPageID = pageID
+    } else {
+      var transaction = Transaction()
+      transaction.disablesAnimations = true
+      withTransaction(transaction) {
+        selectedPageID = pageID
+      }
+    }
+    syncScrollProgressToSelectedPage()
+  }
+
+  /// Forces `scrollPosition` to re-read the current selection without animation — needed after
+  /// the scroll view is re-enabled or after a newly inserted page appears in the query.
+  private func reassertSelectedPageScroll() {
+    guard let selectedPageID, pageIDs.contains(selectedPageID) else { return }
+    let pageID = selectedPageID
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      self.selectedPageID = nil
+    }
+    withTransaction(transaction) {
+      self.selectedPageID = pageID
+    }
+    syncScrollProgressToSelectedPage()
   }
 
   private func openCounterList(animated: Bool = true) {
@@ -285,13 +334,7 @@ struct CounterPagerView: View {
   }
 
   private func selectPageFromList(_ pageID: String) {
-    if pageID != selectedPageID {
-      var transaction = Transaction()
-      transaction.disablesAnimations = true
-      withTransaction(transaction) {
-        selectedPageID = pageID
-      }
-    }
+    scrollToPage(pageID, animated: false)
     collapseCounterList()
   }
 

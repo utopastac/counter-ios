@@ -142,9 +142,15 @@ struct CreateCounterView: View {
       goalDirection: goalDirection,
       paletteIndex: paletteIndex
     )
-    modelContext.insert(counter)
-    WatchSyncEngine.publishCounterUpsert(counter)
-    onCreated?(counter)
+    // Keep list insertion out of the sheet-dismiss animation transaction so underlay row
+    // hit targets don't lag behind the visible layout (which made the new row open Create).
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      modelContext.insert(counter)
+      WatchSyncEngine.publishCounterUpsert(counter)
+      onCreated?(counter)
+    }
     dismiss()
   }
 }
