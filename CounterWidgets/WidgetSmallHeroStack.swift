@@ -2,7 +2,8 @@ import SwiftUI
 
 /// Small-widget-only counterpart to `WidgetHeroHeading`: title, hero number, and subtitle each
 /// get their own line instead of folding the title into the headline, since a small widget
-/// isn't wide enough to keep a combined "value + title" line legible at a useful size.
+/// isn't wide enough to keep a combined "value + title" line legible at a useful size. The
+/// progress ring sits above this stack (see `CounterWidgetView.smallLayout`).
 struct WidgetSmallHeroStack: View {
   let title: String
   let heroValue: String

@@ -61,6 +61,10 @@ nonisolated struct GoalProgress {
     current > goal
   }
 
+  var amountOverTarget: Int {
+    current - goal
+  }
+
   /// True once progress has dropped below 0% (e.g. a negative logged total). Not a state
   /// today's UI can produce — there's no decrement, and entries require positive values —
   /// but the ring still renders empty rather than snapping to a misleading full circle
@@ -109,6 +113,9 @@ nonisolated struct GoalProgress {
   }
 
   var heroSubtitle: String {
+    if isOverGoal {
+      return "\(amountOverTarget) over target"
+    }
     switch direction {
     case .countUp:
       return "\(delta) to go"
@@ -118,10 +125,16 @@ nonisolated struct GoalProgress {
   }
 
   var statsSummaryValue: String {
-    "\(delta)"
+    if isOverGoal {
+      return "\(amountOverTarget)"
+    }
+    return "\(delta)"
   }
 
   var statsSummaryLabel: String {
+    if isOverGoal {
+      return "Over target"
+    }
     switch direction {
     case .countUp:
       return "To go"
@@ -133,16 +146,19 @@ nonisolated struct GoalProgress {
   var progressLabel: String {
     switch direction {
     case .countUp:
-      return delta >= 0 ? "Progress" : "Over goal"
+      return isOverGoal ? "Over target" : "Progress"
     case .countDown:
       return "Budget used"
     }
   }
 
   var detailLabel: String {
+    if isOverGoal {
+      return "\(amountOverTarget) over target"
+    }
     switch direction {
     case .countUp:
-      return delta >= 0 ? "\(current) / \(goal)" : "\(-delta) over \(goal)"
+      return "\(current) / \(goal)"
     case .countDown:
       return "\(delta) remaining"
     }

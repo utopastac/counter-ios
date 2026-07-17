@@ -102,9 +102,18 @@ struct CounterWidgetView: View {
 
   private var smallLayout: some View {
     VStack(alignment: .leading, spacing: 0) {
-      // Title, hero number, and subtitle stack on their own lines rather than the medium
-      // layout's combined heading — no ring either, since there isn't room next to it at
-      // small width without cramping the text.
+      // Ring sits above the text stack on the leading edge — title, hero, and subtitle each
+      // keep their own line below it (unlike medium, which places the ring beside a combined
+      // heading to free vertical space for quick-add buttons).
+      if let ringProgress = entry.snapshot.ringProgress {
+        WidgetGoalProgressRing(
+          progress: ringProgress,
+          trackColor: colors.ringTrack,
+          fillColor: colors.foreground,
+          overfillOutlineColor: colors.ringOverfillOutline
+        )
+      }
+
       WidgetSmallHeroStack(
         title: entry.counter.title,
         heroValue: entry.snapshot.heroValue,

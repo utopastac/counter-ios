@@ -61,7 +61,10 @@ struct CounterPagerView: View {
   }
 
   private var maxRevealOffset: CGFloat {
-    RevealToken.openOffset(forScreenWidth: max(containerWidth, 1))
+    RevealToken.openOffset(
+      forScreenWidth: max(containerWidth, 1),
+      isCompact: isCompactModeEnabled
+    )
   }
 
   private var isRevealSettledOpen: Bool {
@@ -77,7 +80,8 @@ struct CounterPagerView: View {
       CounterUnderlayReveal(
         cardOffset: $cardOffset,
         isRevealed: $isCounterListRevealed,
-        locksRevealScroll: $locksRevealScroll
+        locksRevealScroll: $locksRevealScroll,
+        isCompact: isCompactModeEnabled
       ) {
         AllCountersListView(
           scrollDisabled: locksRevealScroll || !isRevealSettledOpen,
@@ -95,9 +99,18 @@ struct CounterPagerView: View {
       .onChange(of: geometry.size.width) { _, newWidth in
         containerWidth = newWidth
         if isCounterListRevealed {
-          cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(for: newWidth)
+          cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
+            for: newWidth,
+            isCompact: isCompactModeEnabled
+          )
         } else {
           applyInitialListRevealIfNeeded(width: newWidth)
+        }
+      }
+      .onChange(of: isCompactModeEnabled) { _, _ in
+        guard isCounterListRevealed else { return }
+        withAnimation(settleSpring) {
+          cardOffset = maxRevealOffset
         }
       }
     }
@@ -229,7 +242,10 @@ struct CounterPagerView: View {
 
   private func openCounterList(animated: Bool = true) {
     let width = max(containerWidth, 1)
-    let maxOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(for: width)
+    let maxOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
+      for: width,
+      isCompact: isCompactModeEnabled
+    )
     if animated {
       CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
         $locksRevealScroll,

@@ -118,4 +118,25 @@ struct GoalProgressTests {
     let progress = GoalProgress(current: 480, goal: 3000, direction: .countDown)
     #expect(progress.compactHeroValue == progress.heroValue)
   }
+
+  // MARK: - over target copy
+
+  @Test func countUpOverGoalShowsOverTargetSubtitle() {
+    let progress = GoalProgress(current: 180, goal: 150, direction: .countUp)
+
+    #expect(progress.heroSubtitle == "30 over target")
+    #expect(progress.statsSummaryValue == "30")
+    #expect(progress.statsSummaryLabel == "Over target")
+    #expect(progress.detailLabel == "30 over target")
+    #expect(progress.progressLabel == "Over target")
+  }
+
+  @Test func countDownOverBudgetShowsOverTargetSubtitle() {
+    let progress = GoalProgress(current: 3500, goal: 3000, direction: .countDown)
+
+    #expect(progress.heroSubtitle == "500 over target")
+    #expect(progress.statsSummaryValue == "500")
+    #expect(progress.statsSummaryLabel == "Over target")
+    #expect(progress.detailLabel == "500 over target")
+  }
 }

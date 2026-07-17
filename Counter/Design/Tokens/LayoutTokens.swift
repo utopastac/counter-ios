@@ -232,6 +232,11 @@ enum CompactCardToken {
   static let quickAddHeight: CGFloat = SizeToken.quickAddHeight - SpaceToken.u1
   /// Gap above the entry-added toast overlay.
   static let toastTopOffset: CGFloat = SpaceToken.u1
+
+  /// Underlay list row ring — smaller than the full display ring so a single-line row stays short.
+  static let listRingSize: CGFloat = 40
+  /// Keeps the same 25% stroke-to-size ratio as `SizeToken.Ring.displayStroke` / `display`.
+  static let listRingStroke: CGFloat = 10
 }
 
 /// Counters list underlay reveal — card peeks on the trailing edge when open.
@@ -240,6 +245,9 @@ enum RevealToken {
   static let listGap: CGFloat = GridToken.unit
   /// Visible horizontal width of the counter card when open (9 grid units).
   static let cardPeekWidth: CGFloat = GridToken.units(9)
+  /// Extra card peek in compact mode — shrinks the underlay list by the same amount and
+  /// reduces how far the main card has to slide to fully reveal it.
+  static let compactExtraCardPeekWidth: CGFloat = 40
   /// Counter card scale when the list is fully open.
   static let openScale: CGFloat = 0.95
 
@@ -247,8 +255,12 @@ enum RevealToken {
     1 - openScale
   }
 
-  static func listWidth(for screenWidth: CGFloat) -> CGFloat {
-    max(0, screenWidth - cardPeekWidth - listGap - SpaceToken.scrollContainerInset)
+  static func cardPeekWidth(isCompact: Bool) -> CGFloat {
+    cardPeekWidth + (isCompact ? compactExtraCardPeekWidth : 0)
+  }
+
+  static func listWidth(for screenWidth: CGFloat, isCompact: Bool = false) -> CGFloat {
+    max(0, screenWidth - cardPeekWidth(isCompact: isCompact) - listGap - SpaceToken.scrollContainerInset)
   }
 
   static func cardContentWidth(forScreenWidth screenWidth: CGFloat) -> CGFloat {
@@ -256,13 +268,16 @@ enum RevealToken {
   }
 
   /// Horizontal offset for a fully open reveal (scale + slide right).
-  static func openOffset(forCardWidth cardWidth: CGFloat) -> CGFloat {
-    max(0, openScale * cardWidth - cardPeekWidth)
+  static func openOffset(forCardWidth cardWidth: CGFloat, isCompact: Bool = false) -> CGFloat {
+    max(0, openScale * cardWidth - cardPeekWidth(isCompact: isCompact))
   }
 
   /// Horizontal offset for a fully open reveal using the full screen width.
-  static func openOffset(forScreenWidth screenWidth: CGFloat) -> CGFloat {
-    openOffset(forCardWidth: cardContentWidth(forScreenWidth: screenWidth))
+  static func openOffset(forScreenWidth screenWidth: CGFloat, isCompact: Bool = false) -> CGFloat {
+    openOffset(
+      forCardWidth: cardContentWidth(forScreenWidth: screenWidth),
+      isCompact: isCompact
+    )
   }
 
   /// Minimum drag distance before choosing horizontal reveal vs vertical scroll.

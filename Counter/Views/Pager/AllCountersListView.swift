@@ -12,6 +12,7 @@ struct AllCountersListView: View {
     AppAppearancePreference.monoPaletteIndexKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
+  @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
 
   @State private var showAppSettings = false
 
@@ -78,7 +79,8 @@ struct AllCountersListView: View {
           title: counter.name,
           value: cardValue(for: progress, total: total),
           caption: cardCaption(for: progress, counter: counter),
-          ringProgress: progress
+          ringProgress: progress,
+          isCompact: isCompactModeEnabled
         ) {
           onSelectPage(counter.id.uuidString)
         }

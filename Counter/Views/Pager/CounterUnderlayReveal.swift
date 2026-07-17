@@ -5,6 +5,8 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   @Binding var cardOffset: CGFloat
   @Binding var isRevealed: Bool
   @Binding var locksRevealScroll: Bool
+  /// Compact mode uses a narrower underlay list and a smaller open drag offset.
+  var isCompact = false
   @ViewBuilder var list: () -> List
   @ViewBuilder var card: () -> Card
 
@@ -23,9 +25,9 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       let height = max(geometry.size.height, 1)
       let inset = SpaceToken.scrollContainerInset
       let cardWidth = RevealToken.cardContentWidth(forScreenWidth: width)
-      let listWidth = RevealToken.listWidth(for: width)
+      let listWidth = RevealToken.listWidth(for: width, isCompact: isCompact)
       let maxScaleReduction = RevealToken.maxScaleReduction
-      let maxOffset = RevealToken.openOffset(forCardWidth: cardWidth)
+      let maxOffset = RevealToken.openOffset(forCardWidth: cardWidth, isCompact: isCompact)
       let progress = RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
 
       ZStack(alignment: .topLeading) {
@@ -85,8 +87,8 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   }
 
   /// Horizontal offset when the list is fully revealed.
-  static func openOffset(for width: CGFloat) -> CGFloat {
-    RevealToken.openOffset(forScreenWidth: width)
+  static func openOffset(for width: CGFloat, isCompact: Bool = false) -> CGFloat {
+    RevealToken.openOffset(forScreenWidth: width, isCompact: isCompact)
   }
 
   private var settleSpring: Animation {
