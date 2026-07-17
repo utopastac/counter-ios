@@ -21,9 +21,16 @@ enum WidgetTheme {
 
   /// Small-widget-only sizes: the combined "value + title" headline used at medium width
   /// doesn't fit legibly in a small widget, so it splits back into its own title line above a
-  /// dedicated, larger hero number.
-  static let smallTitleFontSize: CGFloat = 20
-  static let smallValueFontSize: CGFloat = 44
+  /// dedicated hero number (18 / 40 / 14 semibold).
+  static let smallTitleFontSize: CGFloat = 18
+  static let smallValueFontSize: CGFloat = 40
+  static let smallSubtitleFontSize: CGFloat = 14
+  /// Gap between the progress ring and the title line — roughly one title-line of air.
+  static let smallRingToTitleSpacing: CGFloat = 12
+  /// Pulls the hero number up against the title (tight heading pair).
+  static let smallTitleToValueSpacing: CGFloat = -4
+  /// Slight air between the hero number and the remaining/to-go subtitle.
+  static let smallValueToSubtitleSpacing: CGFloat = -2
 
   static func tracking(forSize size: CGFloat) -> CGFloat {
     size * (trackingPercent / 100)
@@ -52,6 +59,12 @@ enum WidgetTheme {
   }
 
   static var smallValueTracking: CGFloat { tracking(forSize: smallValueFontSize) }
+
+  static var smallSubtitleFont: Font {
+    .system(size: smallSubtitleFontSize, weight: .semibold, design: .default)
+  }
+
+  static var smallSubtitleTracking: CGFloat { tracking(forSize: smallSubtitleFontSize) }
 }
 
 /// Home-screen counterpart to the app's `GoalProgressRing` (`Counter/Views/Components/GoalProgressRing.swift`).

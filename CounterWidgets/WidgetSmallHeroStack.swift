@@ -11,7 +11,7 @@ struct WidgetSmallHeroStack: View {
   let foreground: Color
 
   var body: some View {
-    VStack(alignment: .leading, spacing: -2) {
+    VStack(alignment: .leading, spacing: 0) {
       Text(title)
         .font(WidgetTheme.smallTitleFont)
         .tracking(WidgetTheme.smallTitleTracking)
@@ -25,13 +25,15 @@ struct WidgetSmallHeroStack: View {
         .foregroundStyle(foreground)
         .lineLimit(1)
         .minimumScaleFactor(0.6)
+        .padding(.top, WidgetTheme.smallTitleToValueSpacing)
 
       Text(subtitle)
-        .font(WidgetTheme.subtitleFont)
-        .tracking(WidgetTheme.subtitleTracking)
+        .font(WidgetTheme.smallSubtitleFont)
+        .tracking(WidgetTheme.smallSubtitleTracking)
         .foregroundStyle(foreground)
         .lineLimit(1)
         .minimumScaleFactor(0.8)
+        .padding(.top, WidgetTheme.smallValueToSubtitleSpacing)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }

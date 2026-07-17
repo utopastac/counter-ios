@@ -112,6 +112,7 @@ struct CounterWidgetView: View {
           fillColor: colors.foreground,
           overfillOutlineColor: colors.ringOverfillOutline
         )
+        .padding(.bottom, WidgetTheme.smallRingToTitleSpacing)
       }
 
       WidgetSmallHeroStack(
