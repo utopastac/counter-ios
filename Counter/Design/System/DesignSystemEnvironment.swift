@@ -38,7 +38,7 @@ extension EnvironmentValues {
   }
 
   @Entry var counterAccent: CounterAccent?
-  @Entry var counterPagerScrollProgress: CGFloat?
+  @Entry var counterPagerScrollState: PagerScrollState?
   @Entry var counterPagerAccents: [CounterAccent]?
   @Entry var counterPagerIsDragging = false
   @Entry var counterRevealIsDragging = false
@@ -53,9 +53,9 @@ extension View {
     environment(\.counterAccent, accent)
   }
 
-  func counterPagerBackground(accents: [CounterAccent], scrollProgress: CGFloat) -> some View {
+  func counterPagerBackground(accents: [CounterAccent], scrollState: PagerScrollState) -> some View {
     environment(\.counterPagerAccents, accents)
-      .environment(\.counterPagerScrollProgress, scrollProgress)
+      .environment(\.counterPagerScrollState, scrollState)
   }
 
   func counterPagerDragging(_ isDragging: Bool) -> some View {

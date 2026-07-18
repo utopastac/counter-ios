@@ -1,8 +1,30 @@
+import Observation
 import SwiftUI
 
 #if canImport(UIKit)
 import UIKit
 #endif
+
+/// Holds the live pager scroll progress. Kept in a dedicated `@Observable` object so that
+/// per-frame scroll updates only invalidate the small backdrop view that reads `value` —
+/// not `CounterPagerView`/`CounterPageLayout`, which would otherwise rebuild the entire pager
+/// (list + every page) on each scroll frame.
+@Observable
+final class PagerScrollState {
+  var value: CGFloat = 0
+}
+
+/// Leaf wrapper that reads the observable scroll progress and feeds it into the value-based
+/// `CounterPagerBackdrop`. The observable read is isolated here so only this view re-renders
+/// while the pager is being swiped.
+struct PagerBackdropView: View {
+  let accents: [CounterAccent]
+  let scrollState: PagerScrollState
+
+  var body: some View {
+    CounterPagerBackdrop(accents: accents, scrollProgress: scrollState.value)
+  }
+}
 
 /// Full-screen counter backdrop that cross-fades between page palette colors.
 struct CounterPagerBackdrop: View {

@@ -26,13 +26,10 @@ extension View {
 }
 
 private struct CounterSheetPresentationModifier: ViewModifier {
+  @Environment(\.semanticColors) private var colors
+
   let style: CounterSheetPresentationStyle
 
-  // iOS 26 gives partial-height sheets (any non-`.large` detent) an inset, floating
-  // Liquid Glass background automatically. A custom `presentationBackground` would
-  // paint over that system material, so both styles only set sizing and let the
-  // system supply the glass chrome. `.presentationContentInteraction(.scrolls)` keeps
-  // downward pans scrolling sheet content instead of dismissing on tiny movements.
   func body(content: Content) -> some View {
     switch style {
     case .offsetPeek:
@@ -42,10 +39,12 @@ private struct CounterSheetPresentationModifier: ViewModifier {
         .presentationDetents([.counterOffsetLarge])
         .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
+        .presentationBackground(colors.surfaceSheet)
     case .cornerRadiusOnly:
       content
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationContentInteraction(.scrolls)
+        .presentationBackground(colors.surfaceSheet)
     }
   }
 }
@@ -153,6 +152,7 @@ struct CounterSheetHost: View {
       .allowsHitTesting(false)
       .sheet(item: $coordinator.route) { route in
         sheetContent(for: route)
+          .counterDesignSystemFromColorScheme()
       }
   }
 

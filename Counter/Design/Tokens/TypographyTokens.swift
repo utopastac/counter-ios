@@ -187,6 +187,10 @@ enum CounterTextStyle: CaseIterable {
   case historyChartAxis
   case historySegment
 
+  // Entry log rows
+  case entryLogValue
+  case entryLogTimestamp
+
   // Legacy aliases — mapped to the new ramp.
   case heroValue
   case bodySecondary
@@ -228,12 +232,14 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.smRegular
     case .historyListDate:
       return TypeStyle.lgRegular
-    case .historyListValue:
+    case .historyListValue, .entryLogValue:
       return TypeStyle.xxlSemibold
     case .historyChartAxis:
       return TypeStyle.xsRegular
     case .historySegment:
       return TypeStyle.mdMedium
+    case .entryLogTimestamp:
+      return TypeStyle.mdRegular
     case .sheetKeypadDigit:
       return TypeStyle.xxlSemibold
     case .settingsSectionHeader:

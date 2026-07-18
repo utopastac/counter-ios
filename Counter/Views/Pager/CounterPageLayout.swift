@@ -3,7 +3,7 @@ import SwiftUI
 struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   @Environment(\.counterAccent) private var counterAccent
   @Environment(\.counterPagerAccents) private var pagerAccents
-  @Environment(\.counterPagerScrollProgress) private var pagerScrollProgress
+  @Environment(\.counterPagerScrollState) private var pagerScrollState
   @Environment(\.counterPagerIsDragging) private var counterPagerIsDragging
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
   @Environment(\.colorScheme) private var colorScheme
@@ -89,8 +89,8 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
 
   @ViewBuilder
   private var pagerBackground: some View {
-    if let pagerAccents, let pagerScrollProgress {
-      CounterPagerBackdrop(accents: pagerAccents, scrollProgress: pagerScrollProgress)
+    if let pagerAccents, let pagerScrollState {
+      PagerBackdropView(accents: pagerAccents, scrollState: pagerScrollState)
     } else {
       (counterAccent ?? .forCustomCounter(at: 0)).palette.background(for: colorScheme)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

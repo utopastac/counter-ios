@@ -8,17 +8,13 @@ struct HistoryListItem: Identifiable, Equatable {
 }
 
 struct HistoryList: View {
-  @Environment(\.semanticColors) private var colors
-
   let items: [HistoryListItem]
 
   var body: some View {
     VStack(spacing: 0) {
       ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
         if index > 0 {
-          Rectangle()
-            .fill(colors.textPrimary)
-            .frame(height: BorderToken.statsRow)
+          SettingsDivider()
         }
 
         HistoryListRow(item: item)

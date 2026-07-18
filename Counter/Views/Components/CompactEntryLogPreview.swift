@@ -23,22 +23,14 @@ struct EntryLogAllEntriesControl: View {
 }
 
 struct EntryLogPreviewTableDivider: View {
-  @Environment(\.semanticColors) private var colors
-
   var body: some View {
-    Rectangle()
-      .fill(colors.textPrimary)
-      .frame(height: BorderToken.toolbar)
+    SettingsDivider()
   }
 }
 
 struct EntryLogRowDivider: View {
-  @Environment(\.semanticColors) private var colors
-
   var body: some View {
-    Rectangle()
-      .fill(colors.textPrimary)
-      .frame(height: BorderToken.statsRow)
+    SettingsDivider()
   }
 }
 
@@ -49,12 +41,12 @@ struct EntryLogRow: View {
   var body: some View {
     HStack(alignment: .center, spacing: SpaceToken.x3) {
       Text(valueText)
-        .counterTextStyle(.rowHeavy)
+        .counterTextStyle(.entryLogValue)
 
       Spacer(minLength: 0)
 
       Text(timestamp, format: Self.timestampFormat)
-        .counterTextStyle(.meta, color: .secondary)
+        .counterTextStyle(.entryLogTimestamp)
     }
   }
 
@@ -83,7 +75,7 @@ struct EntryLogEditableRow: View {
   var body: some View {
     HStack(alignment: .center, spacing: SpaceToken.x3) {
       TextField("", text: $text)
-        .counterTextStyle(.rowHeavy)
+        .counterTextStyle(.entryLogValue)
         .textFieldStyle(.plain)
         .keyboardType(.numbersAndPunctuation)
         .focused($isFocused)
@@ -106,7 +98,7 @@ struct EntryLogEditableRow: View {
       Spacer(minLength: 0)
 
       Text(timestamp, format: EntryLogRow.timestampFormat)
-        .counterTextStyle(.meta, color: .secondary)
+        .counterTextStyle(.entryLogTimestamp)
     }
   }
 

@@ -22,7 +22,7 @@ struct CounterPagerView: View {
   @State private var revealState = RevealState()
   @State private var locksRevealScroll = false
   @State private var containerWidth: CGFloat = 0
-  @State private var scrollProgress: CGFloat = 0
+  @State private var pagerScrollState = PagerScrollState()
   @State private var isPagerDragging = false
   @State private var hasAppliedInitialListReveal = false
   /// Selection to apply to the pager/compact stack once scrolling is enabled again. While the
@@ -236,7 +236,7 @@ struct CounterPagerView: View {
           }
         }
         .scrollTargetLayout()
-        .counterPagerBackground(accents: pageAccents, scrollProgress: scrollProgress)
+        .counterPagerBackground(accents: pageAccents, scrollState: pagerScrollState)
         .background {
           ScrollPanDisabler(isDisabled: locksRevealScroll)
         }
@@ -252,7 +252,7 @@ struct CounterPagerView: View {
         geometry.contentOffset.y + geometry.contentInsets.top
       } action: { _, offset in
         guard height > 0, !isRevealActive else { return }
-        scrollProgress = offset / height
+        pagerScrollState.value = offset / height
       }
       .onScrollPhaseChange { _, newPhase in
         isPagerDragging = newPhase != .idle
@@ -267,7 +267,7 @@ struct CounterPagerView: View {
   private func syncScrollProgressToSelectedPage() {
     guard let selectedPageID,
           let index = pageIDs.firstIndex(of: selectedPageID) else { return }
-    scrollProgress = CGFloat(index)
+    pagerScrollState.value = CGFloat(index)
   }
 
   /// Sets the active page and keeps pager accent progress in sync. Pass `animated: false`
