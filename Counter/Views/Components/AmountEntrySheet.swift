@@ -78,6 +78,8 @@ struct AmountEntrySheet: View {
     }
     .presentationDetents([.height(sheetHeight)])
     .presentationDragIndicator(.hidden)
+    // Prefer scrolling/content pans over dismiss so a light touch doesn't swipe it away.
+    .presentationContentInteraction(.scrolls)
     // Solid fill — replace iOS 26's default Liquid Glass chrome on this half sheet.
     .presentationBackground(colors.surfaceSheet)
     .counterSheetPresentation(.cornerRadiusOnly)

@@ -31,8 +31,14 @@ struct CounterPagerView: View {
   /// underlay list is open the main scroll view is disabled, and `scrollPosition` would otherwise
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
-
-  @Namespace private var sheetTransition
+  /// Count of page-hosted sheets (custom amount / entry log) currently presented over the pager.
+  /// Combined with the top-level sheet flags to freeze the pager's scroll inset while any sheet
+  /// is up — otherwise the system's safe-area animation on present/dismiss shifts page content.
+  @State private var pagerHostedSheetDepth = 0
+  /// Resting page height, captured while no sheet is presented. Presenting a sheet shrinks the
+  /// presenter's safe area (card-stack), which would otherwise resize pages mid-flight and shove
+  /// content up. We hold this fixed for the duration of any presentation.
+  @State private var restingPageHeight: CGFloat = 0
 
   /// Two-way `scrollPosition` binding that ignores scroll-view writebacks while the list
   /// reveal has the main pager locked — keeps create/list selection from being clobbered.
@@ -92,6 +98,11 @@ struct CounterPagerView: View {
     isCounterListRevealed || cardOffset > 0.5
   }
 
+  /// True while any sheet (top-level or page-hosted) is presented over the pager.
+  private var isAnyPagerSheetPresented: Bool {
+    showButtonSettings || showHistory || showAddCounter || pagerHostedSheetDepth > 0
+  }
+
   var body: some View {
     GeometryReader { geometry in
       CounterUnderlayReveal(
@@ -102,7 +113,6 @@ struct CounterPagerView: View {
       ) {
         AllCountersListView(
           scrollDisabled: locksRevealScroll || !isRevealSettledOpen,
-          transitionNamespace: sheetTransition,
           onSelectPage: selectPageFromList,
           onAddCounter: { showAddCounter = true }
         )
@@ -139,12 +149,10 @@ struct CounterPagerView: View {
     .counterModalScrim(isPresented: showButtonSettings || showHistory || showAddCounter)
     .sheet(isPresented: $showButtonSettings) {
       buttonSettingsSheet
-        .navigationTransition(.zoom(sourceID: SheetTransitionID.buttonSettings, in: sheetTransition))
     }
     .sheet(isPresented: $showHistory) {
       if let counter = activeCounter {
         CounterHistoryView(counter: counter)
-          .navigationTransition(.zoom(sourceID: SheetTransitionID.history, in: sheetTransition))
       }
     }
     .sheet(isPresented: $showAddCounter) {
@@ -153,9 +161,9 @@ struct CounterPagerView: View {
         // pager/compact stack jumps to the new counter instead of fighting the dismiss spring.
         scrollToPage(counter.id.uuidString, animated: false)
       }
-      // Zoom morph from the list "+" was leaving stale hit targets over newly inserted rows
-      // after dismiss; present without a matched source so the underlay list stays tappable.
     }
+    .environment(\.onPagerHostedSheetPresent, notePagerHostedSheetPresented)
+    .environment(\.onPagerHostedSheetDismiss, notePagerHostedSheetDismissed)
     .onChange(of: counters.map(\.id)) { _, ids in
       let idStrings = ids.map(\.uuidString)
       if let selectedPageID, !idStrings.contains(selectedPageID) {
@@ -174,12 +182,6 @@ struct CounterPagerView: View {
         flushPendingScroll()
       }
     }
-    .onChange(of: showAddCounter) { _, isShowing in
-      // Once create has dismissed, retry scroll so paging layout has the new page.
-      if !isShowing {
-        flushPendingScroll()
-      }
-    }
     .onAppear {
       if selectedPageID == nil {
         selectedPageID = counters.first?.id.uuidString
@@ -191,12 +193,18 @@ struct CounterPagerView: View {
   @ViewBuilder
   private func counterScreen() -> some View {
     GeometryReader { geometry in
+      // While a sheet is up, hold the last resting height so the safe-area animation can't
+      // resize pages and shift content. Otherwise track the live geometry height.
+      let pageHeight = (isAnyPagerSheetPresented && restingPageHeight > 0)
+        ? restingPageHeight
+        : geometry.size.height
+
       ZStack(alignment: .top) {
         CounterPagerPageRoot {
           if isCompactModeEnabled {
             compactStack()
           } else {
-            verticalPager(height: geometry.size.height)
+            verticalPager(height: pageHeight)
           }
         }
 
@@ -204,10 +212,22 @@ struct CounterPagerView: View {
           pagerToolbar
         }
       }
+      .onAppear {
+        if restingPageHeight < 1 {
+          restingPageHeight = geometry.size.height
+        }
+      }
+      .onChange(of: geometry.size.height) { _, newHeight in
+        guard !isAnyPagerSheetPresented, newHeight > 1 else { return }
+        // Only grow: the presenter's safe-area animation only ever shrinks height transiently,
+        // and a page-hosted sheet's "presented" flag can arrive a beat late.
+        restingPageHeight = max(restingPageHeight, newHeight)
+      }
     }
     .counterAccent(activeAccent)
     .counterDesignSystemFromColorScheme()
     .counterPagerDragging(isPagerDragging)
+    .ignoresSafeArea(.keyboard)
   }
 
   @ViewBuilder
@@ -218,7 +238,6 @@ struct CounterPagerView: View {
           ForEach(counters) { counter in
             CustomCounterPageContent(
               counter: counter,
-              transitionNamespace: sheetTransition,
               isCompact: true,
               onShowHistory: { presentHistory(for: counter) },
               onShowButtonSettings: { presentButtonSettings(for: counter) }
@@ -230,6 +249,7 @@ struct CounterPagerView: View {
         .padding(.bottom, SpaceToken.pageFooterBottom)
         .background {
           ScrollPanDisabler(isDisabled: locksRevealScroll)
+          PagerScrollInsetLock(isSheetPresented: isAnyPagerSheetPresented)
         }
       }
       .scrollContentBackground(.hidden)
@@ -253,7 +273,7 @@ struct CounterPagerView: View {
       ScrollView(.vertical) {
         VStack(spacing: 0) {
           ForEach(counters) { counter in
-            CustomCounterPageContent(counter: counter, transitionNamespace: sheetTransition)
+            CustomCounterPageContent(counter: counter)
               .frame(height: height)
               .background(Color.clear)
               .id(counter.id.uuidString)
@@ -263,6 +283,7 @@ struct CounterPagerView: View {
         .counterPagerBackground(accents: pageAccents, scrollProgress: scrollProgress)
         .background {
           ScrollPanDisabler(isDisabled: locksRevealScroll)
+          PagerScrollInsetLock(isSheetPresented: isAnyPagerSheetPresented)
         }
       }
       .scrollContentBackground(.hidden)
@@ -322,6 +343,14 @@ struct CounterPagerView: View {
     guard let pageID = pendingScrollPageID ?? selectedPageID,
           pageIDs.contains(pageID) else { return }
     queuePagerScroll(to: pageID)
+  }
+
+  private func notePagerHostedSheetPresented() {
+    pagerHostedSheetDepth += 1
+  }
+
+  private func notePagerHostedSheetDismissed() {
+    pagerHostedSheetDepth = max(0, pagerHostedSheetDepth - 1)
   }
 
   private func queuePagerScroll(to pageID: String) {
@@ -413,7 +442,6 @@ struct CounterPagerView: View {
     PagerToolbarBar(
       activePageTitle: activePageTitle,
       isPagerDragging: isPagerDragging,
-      transitionNamespace: sheetTransition,
       onOpenCounterList: { openCounterList() },
       onShowHistory: { showHistory = true },
       onShowButtonSettings: { showButtonSettings = true }
@@ -464,7 +492,6 @@ private struct PagerToolbarBar: View {
 
   let activePageTitle: String
   let isPagerDragging: Bool
-  let transitionNamespace: Namespace.ID
   let onOpenCounterList: () -> Void
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
@@ -482,10 +509,7 @@ private struct PagerToolbarBar: View {
 
         HStack(spacing: SpaceToken.toolbarIconSpacing) {
           CounterIconButton(icon: .chartBar, action: onShowHistory)
-            .matchedTransitionSource(id: SheetTransitionID.history, in: transitionNamespace)
-
           CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
-            .matchedTransitionSource(id: SheetTransitionID.buttonSettings, in: transitionNamespace)
         }
       }
       .padding(.horizontal, SpaceToken.toolbarHorizontal)

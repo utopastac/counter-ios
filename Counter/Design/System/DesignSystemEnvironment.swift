@@ -42,6 +42,9 @@ extension EnvironmentValues {
   @Entry var counterPagerAccents: [CounterAccent]?
   @Entry var counterPagerIsDragging = false
   @Entry var counterRevealIsDragging = false
+  /// Called when a sheet hosted inside a pager page appears / dismisses.
+  @Entry var onPagerHostedSheetPresent: () -> Void = {}
+  @Entry var onPagerHostedSheetDismiss: () -> Void = {}
 }
 
 extension View {

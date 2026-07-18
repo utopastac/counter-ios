@@ -11,20 +11,6 @@ enum CounterSheetPresentationStyle {
   case cornerRadiusOnly
 }
 
-/// Stable IDs shared between a sheet's triggering button (`matchedTransitionSource`) and
-/// its presented content (`navigationTransition(.zoom)`), so the two call sites — often in
-/// different views — can't drift apart.
-enum SheetTransitionID {
-  static let buttonSettings = "buttonSettings"
-  static let history = "history"
-  static let addCounter = "addCounter"
-  static let appSettings = "appSettings"
-
-  static func allEntries(_ counterID: UUID) -> String {
-    "allEntries-\(counterID.uuidString)"
-  }
-}
-
 extension View {
   /// Applies the standard top corner radius and sizing for modal sheets.
   func counterSheetPresentation(_ style: CounterSheetPresentationStyle = .offsetPeek) -> some View {
@@ -42,8 +28,9 @@ private struct CounterSheetPresentationModifier: ViewModifier {
 
   // iOS 26 gives partial-height sheets (any non-`.large` detent) an inset, floating
   // Liquid Glass background automatically. A custom `presentationBackground` would
-  // paint over that system material, so both styles now only set sizing and let the
-  // system supply the glass chrome.
+  // paint over that system material, so both styles only set sizing and let the
+  // system supply the glass chrome. `.presentationContentInteraction(.scrolls)` keeps
+  // downward pans scrolling sheet content instead of dismissing on tiny movements.
   func body(content: Content) -> some View {
     switch style {
     case .offsetPeek:
@@ -51,9 +38,12 @@ private struct CounterSheetPresentationModifier: ViewModifier {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationDetents([.counterOffsetLarge])
+        .presentationContentInteraction(.scrolls)
+        .presentationDragIndicator(.visible)
     case .cornerRadiusOnly:
       content
         .presentationCornerRadius(SheetToken.cornerRadius)
+        .presentationContentInteraction(.scrolls)
     }
   }
 }

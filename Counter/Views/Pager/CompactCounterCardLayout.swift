@@ -12,8 +12,6 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   let heroValue: String
   let heroSubtitle: String?
   let ringProgress: GoalProgress?
-  let entryLogTransitionID: String
-  let transitionNamespace: Namespace.ID
   let onSelectEntryLog: () -> Void
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
@@ -56,7 +54,6 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
 
       HStack(spacing: SpaceToken.toolbarIconSpacing) {
         CounterIconButton(icon: .logs, action: onSelectEntryLog)
-          .matchedTransitionSource(id: entryLogTransitionID, in: transitionNamespace)
         CounterIconButton(icon: .chartBar, action: onShowHistory)
         CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
       }
@@ -102,8 +99,6 @@ extension CompactCounterCardLayout where Toast == EmptyView {
     heroValue: String,
     heroSubtitle: String? = nil,
     ringProgress: GoalProgress? = nil,
-    entryLogTransitionID: String,
-    transitionNamespace: Namespace.ID,
     onSelectEntryLog: @escaping () -> Void,
     onShowHistory: @escaping () -> Void,
     onShowButtonSettings: @escaping () -> Void,
@@ -114,8 +109,6 @@ extension CompactCounterCardLayout where Toast == EmptyView {
       heroValue: heroValue,
       heroSubtitle: heroSubtitle,
       ringProgress: ringProgress,
-      entryLogTransitionID: entryLogTransitionID,
-      transitionNamespace: transitionNamespace,
       onSelectEntryLog: onSelectEntryLog,
       onShowHistory: onShowHistory,
       onShowButtonSettings: onShowButtonSettings,

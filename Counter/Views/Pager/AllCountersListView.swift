@@ -17,7 +17,6 @@ struct AllCountersListView: View {
   @State private var showAppSettings = false
 
   var scrollDisabled = false
-  let transitionNamespace: Namespace.ID
   let onSelectPage: (String) -> Void
   var onAddCounter: (() -> Void)?
 
@@ -42,7 +41,6 @@ struct AllCountersListView: View {
     .counterModalScrim(isPresented: showAppSettings)
     .sheet(isPresented: $showAppSettings) {
       AppSettingsView()
-        .navigationTransition(.zoom(sourceID: SheetTransitionID.appSettings, in: transitionNamespace))
     }
     .counterDesignSystemFromColorScheme()
   }
@@ -57,7 +55,6 @@ struct AllCountersListView: View {
         CounterIconButton(icon: .cog) {
           showAppSettings = true
         }
-        .matchedTransitionSource(id: SheetTransitionID.appSettings, in: transitionNamespace)
       }
     }
     .padding(.horizontal, SpaceToken.pageMargin)
@@ -109,14 +106,6 @@ struct AllCountersListView: View {
 }
 
 #Preview {
-  AllCountersListViewPreviewContainer()
-}
-
-private struct AllCountersListViewPreviewContainer: View {
-  @Namespace private var transitionNamespace
-
-  var body: some View {
-    AllCountersListView(transitionNamespace: transitionNamespace) { _ in }
-      .modelContainer(for: CustomCounter.self, inMemory: true)
-  }
+  AllCountersListView { _ in }
+    .modelContainer(for: CustomCounter.self, inMemory: true)
 }

@@ -1,4 +1,18 @@
 import SwiftUI
+import UIKit
+
+/// Dismisses the system keyboard without delaying the caller's action.
+enum CounterKeyboard {
+  @MainActor
+  static func resign() {
+    UIApplication.shared.sendAction(
+      #selector(UIResponder.resignFirstResponder),
+      to: nil,
+      from: nil,
+      for: nil
+    )
+  }
+}
 
 struct CounterSheetHeader: View {
   let title: String
@@ -26,9 +40,8 @@ struct CounterSheetHeader: View {
       Spacer(minLength: SpaceToken.u1)
 
       Button(trailingTitle) {
-        // Resign before the caller's dismiss so keyboard safe-area teardown finishes while
-        // the sheet still covers the pager — otherwise page content shifts up under the toolbar.
-        CounterKeyboard.resignThen(onDone)
+        CounterKeyboard.resign()
+        onDone()
       }
       .counterTextStyle(.settingsRowLabel, color: isDoneEnabled ? .primary : .disabled)
       .buttonStyle(.plain)

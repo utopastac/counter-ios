@@ -7,6 +7,8 @@ struct CustomCounterPageContent: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+  @Environment(\.onPagerHostedSheetPresent) private var onPagerHostedSheetPresent
+  @Environment(\.onPagerHostedSheetDismiss) private var onPagerHostedSheetDismiss
   @AppStorage(
     AppAppearancePreference.monoEnabledKey,
     store: AppAppearancePreference.sharedDefaults
@@ -16,7 +18,6 @@ struct CustomCounterPageContent: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
 
-  let transitionNamespace: Namespace.ID
   var isCompact = false
   var onShowHistory: () -> Void = {}
   var onShowButtonSettings: () -> Void = {}
@@ -80,8 +81,6 @@ struct CustomCounterPageContent: View {
           heroValue: heroValue,
           heroSubtitle: heroSubtitle,
           ringProgress: counter.currentProgress(),
-          entryLogTransitionID: SheetTransitionID.allEntries(counter.id),
-          transitionNamespace: transitionNamespace,
           onSelectEntryLog: { showsEntryLog = true },
           onShowHistory: onShowHistory,
           onShowButtonSettings: onShowButtonSettings
@@ -124,10 +123,6 @@ struct CustomCounterPageContent: View {
                 .contentShape(Rectangle())
               }
               .buttonStyle(.noHighlight)
-              .matchedTransitionSource(
-                id: SheetTransitionID.allEntries(counter.id),
-                in: transitionNamespace
-              )
             }
           } footer: {
             CompactQuickAddGrid(
@@ -150,16 +145,15 @@ struct CustomCounterPageContent: View {
     }
     .counterAccent(pageAccent)
     .counterModalScrim(isPresented: showCustomAmount || showsEntryLog)
-    .sheet(isPresented: $showCustomAmount) {
+    .sheet(isPresented: $showCustomAmount, onDismiss: onPagerHostedSheetDismiss) {
       CustomAmountSheet { value in
         addEntry(value)
       }
+      .onAppear(perform: onPagerHostedSheetPresent)
     }
-    .sheet(isPresented: $showsEntryLog) {
+    .sheet(isPresented: $showsEntryLog, onDismiss: onPagerHostedSheetDismiss) {
       CounterTodayLogView(counter: counter)
-        .navigationTransition(
-          .zoom(sourceID: SheetTransitionID.allEntries(counter.id), in: transitionNamespace)
-        )
+        .onAppear(perform: onPagerHostedSheetPresent)
     }
     .onAppear {
       migratePresetButtons(for: counter)
