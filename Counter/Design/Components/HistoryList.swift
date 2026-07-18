@@ -28,13 +28,13 @@ private struct HistoryListRow: View {
 
   var body: some View {
     HStack(alignment: .center, spacing: SpaceToken.x3) {
-      Text(item.date, format: HistoryListRow.dateFormat)
-        .counterTextStyle(.historyListDate)
+      Text("\(item.value)")
+        .counterTextStyle(.historyListValue)
 
       Spacer(minLength: 0)
 
-      Text("\(item.value)")
-        .counterTextStyle(.historyListValue)
+      Text(item.date, format: HistoryListRow.dateFormat)
+        .counterTextStyle(.historyListDate)
     }
     .frame(height: HistoryToken.listRowHeight)
     .frame(maxWidth: .infinity, alignment: .leading)
