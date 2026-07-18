@@ -15,26 +15,26 @@ nonisolated enum GoalDirection: String, Codable, CaseIterable, Identifiable {
 }
 
 nonisolated struct GoalProgress {
-  let current: Int
-  let goal: Int
+  let current: Double
+  let goal: Double
   let direction: GoalDirection
 
-  var delta: Int {
+  var delta: Double {
     goal - current
   }
 
   var fractionComplete: Double {
     guard goal > 0 else { return 0 }
-    return Double(current) / Double(goal)
+    return current / goal
   }
 
   var ringFraction: Double {
     guard goal > 0 else { return 0 }
     switch direction {
     case .countUp:
-      return min(max(Double(current) / Double(goal), 0), 1)
+      return min(max(current / goal, 0), 1)
     case .countDown:
-      return min(max(Double(delta) / Double(goal), 0), 1)
+      return min(max(delta / goal, 0), 1)
     }
   }
 
@@ -61,7 +61,7 @@ nonisolated struct GoalProgress {
     current > goal
   }
 
-  var amountOverTarget: Int {
+  var amountOverTarget: Double {
     current - goal
   }
 
@@ -85,8 +85,13 @@ nonisolated struct GoalProgress {
     Int((fractionComplete * 100).rounded())
   }
 
+  private func formatted(_ value: Double) -> String {
+    CounterFormatting.amount(value)
+  }
+
+  /// Amount only — the pager hero renders the unit beside this at half size.
   var heroValue: String {
-    "\(current)"
+    CounterFormatting.amount(current)
   }
 
   /// A single-line hero string with goal context folded in (e.g. `"70/150"`) for count-up
@@ -97,7 +102,7 @@ nonisolated struct GoalProgress {
   var compactHeroValue: String {
     switch direction {
     case .countUp:
-      return "\(current)/\(goal)"
+      return "\(CounterFormatting.amount(current))/\(CounterFormatting.amount(goal))"
     case .countDown:
       return heroValue
     }
@@ -106,7 +111,7 @@ nonisolated struct GoalProgress {
   var heroCaption: String {
     switch direction {
     case .countUp:
-      return "of \(goal)"
+      return "of \(formatted(goal))"
     case .countDown:
       return "remaining"
     }
@@ -114,21 +119,21 @@ nonisolated struct GoalProgress {
 
   var heroSubtitle: String {
     if isOverGoal {
-      return "\(amountOverTarget) over target"
+      return "\(formatted(amountOverTarget)) over target"
     }
     switch direction {
     case .countUp:
-      return "\(delta) to go"
+      return "\(formatted(delta)) to go"
     case .countDown:
-      return "\(delta) remaining"
+      return "\(formatted(delta)) remaining"
     }
   }
 
   var statsSummaryValue: String {
     if isOverGoal {
-      return "\(amountOverTarget)"
+      return formatted(amountOverTarget)
     }
-    return "\(delta)"
+    return formatted(delta)
   }
 
   var statsSummaryLabel: String {
@@ -154,20 +159,23 @@ nonisolated struct GoalProgress {
 
   var detailLabel: String {
     if isOverGoal {
-      return "\(amountOverTarget) over target"
+      return "\(formatted(amountOverTarget)) over target"
     }
     switch direction {
     case .countUp:
-      return "\(current) / \(goal)"
+      return "\(CounterFormatting.amount(current)) / \(formatted(goal))"
     case .countDown:
-      return "\(delta) remaining"
+      return "\(formatted(delta)) remaining"
     }
   }
-
 }
 
 nonisolated enum GoalProgressCalculator {
-  static func progress(current: Int, goal: Int?, direction: GoalDirection) -> GoalProgress? {
+  static func progress(
+    current: Double,
+    goal: Double?,
+    direction: GoalDirection
+  ) -> GoalProgress? {
     guard let goal, goal > 0 else { return nil }
     return GoalProgress(current: current, goal: goal, direction: direction)
   }

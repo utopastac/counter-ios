@@ -181,36 +181,20 @@ private struct HeroSimpleDisplay: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: CounterPageToken.heroSubtitleSpacing) {
-      HeroMainNumberText(value: value)
+      Text(value)
+        .counterTextStyle(.mainNumber)
+        .minimumScaleFactor(0.6)
+        .lineLimit(1)
+        .fixedSize(horizontal: false, vertical: true)
+        .contentTransition(.numericText())
 
       if let subtitle {
-        HeroSubtitleText(text: subtitle)
+        Text(subtitle)
+          .counterTextStyle(.heroSubtitle)
+          .lineLimit(1)
+          .contentTransition(.numericText())
       }
     }
-  }
-}
-
-private struct HeroMainNumberText: View {
-  let value: String
-
-  var body: some View {
-    Text(value)
-      .counterTextStyle(.mainNumber)
-      .minimumScaleFactor(0.6)
-      .lineLimit(1)
-      .fixedSize(horizontal: false, vertical: true)
-      .contentTransition(.numericText())
-  }
-}
-
-private struct HeroSubtitleText: View {
-  let text: String
-
-  var body: some View {
-    Text(text)
-      .counterTextStyle(.heroSubtitle)
-      .lineLimit(1)
-      .contentTransition(.numericText())
   }
 }
 

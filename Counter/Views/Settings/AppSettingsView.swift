@@ -4,6 +4,7 @@ import SwiftUI
 struct AppSettingsView: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
+  @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
   @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
   @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
@@ -23,6 +24,7 @@ struct AppSettingsView: View {
   ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
   @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
   @State private var showResetConfirmation = false
+  @State private var exportURL: URL?
 
   private var colors: SemanticColors {
     SemanticColors.forColorScheme(isDarkModeEnabled ? .dark : .light)
@@ -81,6 +83,16 @@ struct AppSettingsView: View {
 
           SettingsSectionDivider()
 
+          SettingsSectionHeader(title: "Data")
+
+          if let exportURL {
+            ShareLink(item: exportURL) {
+              SettingsStaticRow(icon: .logs, label: "Export CSV", value: "Share")
+            }
+          }
+
+          SettingsSectionDivider()
+
           SettingsSectionHeader(title: "Debug")
 
           SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
@@ -100,6 +112,12 @@ struct AppSettingsView: View {
     .background(colors.surfaceSheet)
     .counterDesignSystemFromAppearancePreference()
     .counterSheetPresentation()
+    .onAppear {
+      prepareExportFile()
+    }
+    .onChange(of: counters.map(\.id)) { _, _ in
+      prepareExportFile()
+    }
     .onChange(of: isMonoEnabled) { _, _ in
       WidgetSnapshot.reloadTimelines()
     }
@@ -116,8 +134,17 @@ struct AppSettingsView: View {
       Text("This will permanently delete everything. This can't be undone.")
     }
   }
+
+  private func prepareExportFile() {
+    let url = FileManager.default.temporaryDirectory
+      .appendingPathComponent(CounterExport.csvFilename())
+    let data = CounterExport.csvData(counters: counters)
+    try? data.write(to: url, options: .atomic)
+    exportURL = url
+  }
 }
 
 #Preview {
   AppSettingsView()
+    .modelContainer(for: [CustomCounter.self, CounterEntry.self], inMemory: true)
 }

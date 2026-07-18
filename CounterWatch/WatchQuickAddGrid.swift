@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct WatchQuickAddGrid: View {
-  let values: [Int]
-  let defaultPresets: [Int]
-  let onTap: (Int) -> Void
+  let values: [Double]
+  let defaultPresets: [Double]
+  let onTap: (Double) -> Void
 
   private let columns = [
     GridItem(.flexible(), spacing: 4),
@@ -11,7 +11,7 @@ struct WatchQuickAddGrid: View {
     GridItem(.flexible(), spacing: 4)
   ]
 
-  private var displayValues: [Int] {
+  private var displayValues: [Double] {
     QuickAddConfiguration.filledPresets(from: values, defaults: defaultPresets)
   }
 
@@ -21,7 +21,7 @@ struct WatchQuickAddGrid: View {
         Button {
           onTap(value)
         } label: {
-          Text("\(value)")
+          Text(CounterFormatting.amount(value))
             .font(.system(size: 17, weight: .semibold, design: .rounded))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)

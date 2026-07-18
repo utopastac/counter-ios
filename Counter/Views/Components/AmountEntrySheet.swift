@@ -17,7 +17,7 @@ struct AmountEntrySheet: View {
   let headerIcon: CounterLucideIconName
   let actionTitle: String
   let initialText: String
-  let onSubmit: (Int) -> Void
+  let onSubmit: (Double) -> Void
 
   @State private var amountText: String
   @State private var sheetHeight: CGFloat = 520
@@ -30,7 +30,7 @@ struct AmountEntrySheet: View {
     headerIcon: CounterLucideIconName = .chartBar,
     actionTitle: String,
     initialText: String = "",
-    onSubmit: @escaping (Int) -> Void
+    onSubmit: @escaping (Double) -> Void
   ) {
     self.title = title
     self.subtitle = subtitle
@@ -39,7 +39,7 @@ struct AmountEntrySheet: View {
     self.initialText = initialText
     self.onSubmit = onSubmit
     _amountText = State(
-      initialValue: AmountInput.sanitizedDigits(initialText, maxLength: 6)
+      initialValue: AmountInput.sanitizedSignedDecimal(initialText, maxLength: 8)
     )
   }
 
@@ -111,8 +111,8 @@ struct AmountEntrySheet: View {
       .padding(.top, SpaceToken.x2)
   }
 
-  private var parsedValue: Int? {
-    AmountInput.parsePositiveInt(amountText)
+  private var parsedValue: Double? {
+    AmountInput.parsePositiveAmount(amountText)
   }
 }
 

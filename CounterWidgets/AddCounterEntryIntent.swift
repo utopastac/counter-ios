@@ -9,14 +9,14 @@ struct AddCounterEntryIntent: AppIntent {
   var counterID: String
 
   @Parameter(title: "Amount")
-  var amount: Int
+  var amount: Double
 
   init() {
     self.counterID = ""
     self.amount = 0
   }
 
-  init(counterID: String, amount: Int) {
+  init(counterID: String, amount: Double) {
     self.counterID = counterID
     self.amount = amount
   }

@@ -11,6 +11,10 @@ enum SettingsToken {
   static let sectionSpacing: CGFloat = SpaceToken.u2
   /// Space from a section header/label to its content.
   static let headerToContent: CGFloat = SpaceToken.u1
+  /// Space from a field label to its text field.
+  static let labelToField: CGFloat = SpaceToken.x1
+  /// Vertical gap between stacked labeled fields (Title / Unit, etc.).
+  static let fieldSpacing: CGFloat = SpaceToken.u3
 }
 
 struct SettingsSectionDivider: View {
@@ -58,7 +62,7 @@ struct SettingsLabeledField: View {
   var placeholder: String = ""
 
   var body: some View {
-    VStack(alignment: .leading, spacing: SettingsToken.headerToContent) {
+    VStack(alignment: .leading, spacing: SettingsToken.labelToField) {
       Text(label)
         .font(CounterTextStyle.settingsSectionHeader.font)
         .tracking(CounterTextStyle.settingsSectionHeader.tracking ?? 0)
@@ -148,16 +152,16 @@ struct SettingsPickerRow<Option: Hashable>: View {
 struct SettingsEditablePresetField: View {
   @Environment(\.semanticColors) private var colors
 
-  let value: Int
-  let onCommit: (Int) -> Void
+  let value: Double
+  let onCommit: (Double) -> Void
 
   @State private var text: String
   @FocusState private var isFocused: Bool
 
-  init(value: Int, onCommit: @escaping (Int) -> Void) {
+  init(value: Double, onCommit: @escaping (Double) -> Void) {
     self.value = value
     self.onCommit = onCommit
-    _text = State(initialValue: String(value))
+    _text = State(initialValue: CounterFormatting.editingText(for: value))
   }
 
   var body: some View {
@@ -165,7 +169,7 @@ struct SettingsEditablePresetField: View {
       .counterTextStyle(.settingsRowLabel, color: .primary)
       .textFieldStyle(.plain)
       .multilineTextAlignment(.center)
-      .keyboardType(.numberPad)
+      .keyboardType(.decimalPad)
       .focused($isFocused)
       .frame(maxWidth: .infinity)
       .frame(height: SizeToken.quickAddHeight)
@@ -174,20 +178,20 @@ struct SettingsEditablePresetField: View {
         in: RadiusToken.continuousButton
       )
       .onChange(of: text) { _, newValue in
-        let sanitized = AmountInput.sanitizedDigits(newValue, maxLength: 6)
+        let sanitized = AmountInput.sanitizedSignedDecimal(newValue, maxLength: 8)
         if sanitized != newValue {
           text = sanitized
           return
         }
         // Commit as-you-type so Done can save without an explicit blur (number pads have
         // no return key, and sheet dismiss used to race the focus-loss commit).
-        if let parsed = AmountInput.parsePositiveInt(sanitized), parsed != value {
+        if let parsed = AmountInput.parsePositiveAmount(sanitized), parsed != value {
           onCommit(parsed)
         }
       }
       .onChange(of: value) { _, newValue in
         guard !isFocused else { return }
-        text = String(newValue)
+        text = CounterFormatting.editingText(for: newValue)
       }
       .onChange(of: isFocused) { _, focused in
         if !focused {
@@ -197,8 +201,8 @@ struct SettingsEditablePresetField: View {
   }
 
   private func commit() {
-    guard let parsed = AmountInput.parsePositiveInt(text) else {
-      text = String(value)
+    guard let parsed = AmountInput.parsePositiveAmount(text) else {
+      text = CounterFormatting.editingText(for: value)
       return
     }
 
@@ -208,12 +212,12 @@ struct SettingsEditablePresetField: View {
 }
 
 struct SettingsPresetGrid: View {
-  @Binding var values: [Int]
-  let defaults: [Int]
+  @Binding var values: [Double]
+  let defaults: [Double]
 
   /// Stable slot order while editing. Re-sorting `values` on every commit used to reshuffle
   /// the grid under the focused field (and fight the sheet's dismiss gesture).
-  @State private var slots: [Int] = []
+  @State private var slots: [Double] = []
 
   private var columns: [GridItem] {
     Array(
@@ -237,7 +241,7 @@ struct SettingsPresetGrid: View {
     }
   }
 
-  private func commitPreset(at index: Int, to newValue: Int) {
+  private func commitPreset(at index: Int, to newValue: Double) {
     guard newValue > 0, slots.indices.contains(index) else { return }
     slots[index] = newValue
     // Persist the full visible set (including previously default-filled slots) without

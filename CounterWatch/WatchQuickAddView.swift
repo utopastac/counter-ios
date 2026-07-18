@@ -13,7 +13,7 @@ struct WatchQuickAddView: View {
         .padding(.horizontal, 4)
 
       WatchQuickAddGrid(
-        values: counter.buttonValues,
+        values: counter.presetAmounts,
         defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
       ) { value in
         addEntryQuick(value)
@@ -40,7 +40,7 @@ struct WatchQuickAddView: View {
 
       Spacer(minLength: 0)
 
-      Text("\(counter.currentTotal())")
+      Text(CounterFormatting.amount(counter.currentTotal()))
         .font(.system(size: 34, weight: .bold, design: .rounded))
         .foregroundStyle(.white)
         .monospacedDigit()
@@ -49,7 +49,7 @@ struct WatchQuickAddView: View {
     }
   }
 
-  private func addEntryQuick(_ value: Int) {
+  private func addEntryQuick(_ value: Double) {
     quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
     AppHaptics.impact()
   }

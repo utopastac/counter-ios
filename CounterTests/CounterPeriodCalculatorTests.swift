@@ -210,6 +210,6 @@ struct CounterPeriodCalculatorTests {
 
     let entries = CounterPeriodCalculator.currentEntries(for: counter, on: date(2026, 7, 14, 12), calendar: calendar)
 
-    #expect(entries.map(\.value) == [5, 10])
+    #expect(entries.map(\.amount) == [5, 10])
   }
 }

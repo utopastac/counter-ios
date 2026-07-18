@@ -3,8 +3,8 @@ import SwiftData
 
 @Model
 final class CustomCounter {
-  static let defaultCalorieGoal = 2200
-  static let defaultButtonValues: [Int] = [1, 2, 5, 10, 20, 25, 50, 75, 100]
+  static let defaultCalorieGoal: Double = 2200
+  static let defaultButtonValues: [Double] = [1, 2, 5, 10, 20, 25, 50, 75, 100]
   static let untitledName = "Untitled"
 
   static func normalizedName(from raw: String) -> String {
@@ -12,11 +12,21 @@ final class CustomCounter {
     return trimmed.isEmpty ? untitledName : trimmed
   }
 
+  static func normalizedUnit(from raw: String) -> String {
+    String(raw.trimmingCharacters(in: .whitespacesAndNewlines).prefix(12))
+  }
+
   var id: UUID
   var name: String
+  var unit: String = ""
+  /// Quick-add presets stored as hundredths (`CounterAmount`).
   var buttonValues: [Int]
   var sliderMax: Int
   var createdAt: Date
+  /// Lower values appear first in the pager and list. Defaults to `createdAt` so existing
+  /// counters keep their prior order after migration.
+  var sortOrder: Double = 0
+  /// Goal stored as hundredths (`CounterAmount`); `nil` / non-positive means no goal.
   var goal: Int?
   var resetPeriodRaw: String = CounterResetPeriod.daily.rawValue
   var resetAnchorDay: Int = 1
@@ -27,20 +37,25 @@ final class CustomCounter {
 
   init(
     name: String,
-    buttonValues: [Int]? = nil,
-    sliderMax: Int = 100,
-    goal: Int? = nil,
+    unit: String = "",
+    buttonValues: [Double]? = nil,
+    sliderMax: Double = 100,
+    goal: Double? = nil,
     resetPeriod: CounterResetPeriod = .daily,
     resetAnchorDay: Int = 1,
     goalDirection: GoalDirection = .countUp,
-    paletteIndex: Int = 0
+    paletteIndex: Int = 0,
+    sortOrder: Double? = nil
   ) {
+    let createdAt = Date.now
     self.id = UUID()
     self.name = name
-    self.buttonValues = buttonValues ?? Self.defaultButtonValues
-    self.sliderMax = sliderMax
-    self.createdAt = .now
-    self.goal = goal
+    self.unit = Self.normalizedUnit(from: unit)
+    self.buttonValues = CounterAmount.storage(buttonValues ?? Self.defaultButtonValues)
+    self.sliderMax = CounterAmount.storage(sliderMax)
+    self.createdAt = createdAt
+    self.sortOrder = sortOrder ?? createdAt.timeIntervalSinceReferenceDate
+    self.goal = goal.map { CounterAmount.storage($0) }
     self.resetPeriodRaw = resetPeriod.rawValue
     self.resetAnchorDay = resetAnchorDay
     self.goalDirectionRaw = goalDirection.rawValue
@@ -59,11 +74,12 @@ final class CustomCounter {
     return ((index % count) + count) % count
   }
 
-  /// The palette slot a newly-created counter should default to, given how many counters
-  /// already exist — cycles through every slot before repeating. Named for its one call site
-  /// (assigning a new counter's initial color) rather than reused as a generic modulo helper.
   static func nextPaletteIndex(forExistingCount count: Int) -> Int {
     normalizedPaletteIndex(count)
+  }
+
+  static func nextSortOrder(forExisting counters: [CustomCounter]) -> Double {
+    (counters.map(\.sortOrder).max() ?? 0) + 1
   }
 
   var goalDirection: GoalDirection {
@@ -74,6 +90,15 @@ final class CustomCounter {
   var resetPeriod: CounterResetPeriod {
     get { CounterResetPeriod(rawValue: resetPeriodRaw) ?? .daily }
     set { resetPeriodRaw = newValue.rawValue }
+  }
+
+  var effectiveUnit: String {
+    Self.normalizedUnit(from: unit)
+  }
+
+  var presetAmounts: [Double] {
+    get { CounterAmount.display(buttonValues) }
+    set { buttonValues = CounterAmount.storage(newValue) }
   }
 
   var effectiveResetAnchorDay: Int {
@@ -87,8 +112,9 @@ final class CustomCounter {
     }
   }
 
-  var effectiveSliderMax: Int {
-    sliderMax > 0 ? sliderMax : 100
+  var effectiveSliderMax: Double {
+    let display = CounterAmount.display(sliderMax)
+    return display > 0 ? display : 100
   }
 
   var hasGoal: Bool {
@@ -96,8 +122,8 @@ final class CustomCounter {
     return goal > 0
   }
 
-  var effectiveGoal: Int? {
+  var effectiveGoal: Double? {
     guard let goal, goal > 0 else { return nil }
-    return goal
+    return CounterAmount.display(goal)
   }
 }

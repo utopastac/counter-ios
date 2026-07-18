@@ -1,34 +1,58 @@
 import Charts
 import SwiftUI
 
+/// Horizontally paged history chart (Apple Health–style).
+/// Pages are ordered oldest → newest left to right, so swiping right goes further back.
 struct HistoryBarChart: View {
   @Environment(\.semanticColors) private var colors
 
-  let data: [DailyValue]
   let period: HistoryPeriod
+  @Binding var windowOffset: Int
+  let maxWindowOffset: Int
+  let dataForOffset: (Int) -> [DailyValue]
+  var onSelectBar: ((DailyValue) -> Void)?
 
-  private var yAxisMaximum: Double {
-    HistoryChartScale.niceMaximum(for: data.map(\.value))
-  }
-
-  private var yAxisValues: [Double] {
-    HistoryChartScale.tickValues(maximum: yAxisMaximum)
+  private var scrollPosition: Binding<Int?> {
+    Binding(
+      get: { windowOffset },
+      set: { newValue in
+        if let newValue {
+          windowOffset = min(max(0, newValue), maxWindowOffset)
+        }
+      }
+    )
   }
 
   var body: some View {
-    Group {
-      if data.isEmpty {
-        emptyState
-      } else {
-        chart
+    ScrollView(.horizontal) {
+      LazyHStack(spacing: 0) {
+        ForEach(Array((0...maxWindowOffset).reversed()), id: \.self) { offset in
+          chartPage(data: dataForOffset(offset))
+            .containerRelativeFrame(.horizontal)
+            .id(offset)
+        }
       }
+      .scrollTargetLayout()
     }
+    .scrollTargetBehavior(.paging)
+    .scrollPosition(id: scrollPosition)
+    .scrollIndicators(.hidden)
+    .defaultScrollAnchor(.trailing)
     .frame(height: HistoryToken.chartHeight)
     .padding(HistoryToken.chartPadding)
     .background(
       ComponentColor.historyChartBackground(colors),
       in: RoundedRectangle(cornerRadius: HistoryToken.chartCornerRadius, style: .continuous)
     )
+  }
+
+  @ViewBuilder
+  private func chartPage(data: [DailyValue]) -> some View {
+    if data.isEmpty {
+      emptyState
+    } else {
+      chart(data: data)
+    }
   }
 
   private var emptyState: some View {
@@ -40,8 +64,11 @@ struct HistoryBarChart: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
 
-  private var chart: some View {
-    Chart(data) { item in
+  private func chart(data: [DailyValue]) -> some View {
+    let yAxisMaximum = HistoryChartScale.niceMaximum(for: data.map(\.value))
+    let yAxisValues = HistoryChartScale.tickValues(maximum: yAxisMaximum)
+
+    return Chart(data) { item in
       BarMark(
         x: .value("Date", item.date, unit: xAxisUnit),
         y: .value("Value", item.value),
@@ -64,11 +91,22 @@ struct HistoryBarChart: View {
       }
     }
     .chartXAxis {
-      AxisMarks(values: .automatic) { value in
-        AxisValueLabel(centered: true, collisionResolution: .disabled) {
-          if let date = value.as(Date.self) {
-            Text(date, format: xLabelFormat)
-              .counterTextStyle(.historyChartAxis, color: .historyChartAxis, compact: true)
+      if period == .daily {
+        AxisMarks(values: xAxisValues(for: data)) { value in
+          AxisValueLabel(centered: true, collisionResolution: .disabled) {
+            if let date = value.as(Date.self) {
+              Text(date, format: xLabelFormat)
+                .counterTextStyle(.historyChartAxis, color: .historyChartAxis, compact: true)
+            }
+          }
+        }
+      } else {
+        AxisMarks(values: .automatic) { value in
+          AxisValueLabel(centered: true, collisionResolution: .disabled) {
+            if let date = value.as(Date.self) {
+              Text(date, format: xLabelFormat)
+                .counterTextStyle(.historyChartAxis, color: .historyChartAxis, compact: true)
+            }
           }
         }
       }
@@ -78,33 +116,80 @@ struct HistoryBarChart: View {
         .padding(.trailing, SpaceToken.u1)
         .padding(.bottom, SpaceToken.x1)
     }
+    .chartOverlay { proxy in
+      GeometryReader { geometry in
+        Rectangle()
+          .fill(.clear)
+          .contentShape(Rectangle())
+          .onTapGesture { location in
+            guard let onSelectBar else { return }
+            let plotFrame = geometry[proxy.plotAreaFrame]
+            let xPosition = location.x - plotFrame.origin.x
+            guard plotFrame.width > 0,
+                  let date: Date = proxy.value(atX: xPosition, as: Date.self) else { return }
+            if let item = nearestItem(in: data, to: date) {
+              onSelectBar(item)
+            }
+          }
+      }
+    }
+  }
+
+  private func nearestItem(in data: [DailyValue], to date: Date) -> DailyValue? {
+    data.min { lhs, rhs in
+      abs(lhs.date.timeIntervalSince(date)) < abs(rhs.date.timeIntervalSince(date))
+    }
   }
 
   private var xAxisUnit: Calendar.Component {
     switch period {
-    case .daily, .monthly: .day
+    case .daily: .hour
+    case .monthly: .day
     case .weekly: .weekOfYear
     }
   }
 
   private var xLabelFormat: Date.FormatStyle {
     switch period {
-    case .daily, .monthly, .weekly:
+    case .daily:
+      return .dateTime.hour(.defaultDigits(amPM: .abbreviated))
+    case .monthly, .weekly:
       return .dateTime.day().month(.abbreviated)
     }
+  }
+
+  private func xAxisValues(for data: [DailyValue]) -> [Date] {
+    // Sparse hour labels like Health: midnight, 6, noon, 6pm.
+    let hours: Set<Int> = [0, 6, 12, 18]
+    return data.filter { hours.contains(Calendar.current.component(.hour, from: $0.date)) }.map(\.date)
   }
 }
 
 #Preview {
-  HistoryBarChart(
-    data: [
-      DailyValue(date: Calendar.current.date(byAdding: .day, value: -6, to: .now)!, value: 900),
-      DailyValue(date: Calendar.current.date(byAdding: .day, value: -4, to: .now)!, value: 1200),
-      DailyValue(date: Calendar.current.date(byAdding: .day, value: -2, to: .now)!, value: 600),
-      DailyValue(date: .now, value: 1800)
-    ],
-    period: .daily
-  )
-  .padding()
-  .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: nil))
+  struct PreviewHost: View {
+    @State private var offset = 0
+
+    var body: some View {
+      HistoryBarChart(
+        period: .daily,
+        windowOffset: $offset,
+        maxWindowOffset: 2,
+        dataForOffset: { page in
+          let calendar = Calendar.current
+          let day = calendar.date(byAdding: .day, value: -page, to: .now) ?? .now
+          let start = calendar.startOfDay(for: day)
+          return (0..<24).compactMap { hour in
+            guard let date = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: start) else {
+              return nil
+            }
+            return DailyValue(date: date, value: Double((hour + page) % 5 * 100))
+          }
+        }
+      )
+      .padding()
+      .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: nil))
+    }
+  }
+
+  return PreviewHost()
 }

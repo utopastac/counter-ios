@@ -232,8 +232,10 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.smRegular
     case .historyListDate:
       return TypeStyle.lgRegular
-    case .historyListValue, .entryLogValue:
+    case .historyListValue:
       return TypeStyle.xxlSemibold
+    case .entryLogValue:
+      return TypeStyle.lgSemibold
     case .historyChartAxis:
       return TypeStyle.xsRegular
     case .historySegment:

@@ -27,7 +27,7 @@ struct EntryActionsTests {
 
     EntryActions.updateCounterEntry(id: added.entryID, value: 40, in: context)
 
-    #expect(counter.entries.first?.value == 40)
+    #expect(counter.entries.first?.amount == 40)
   }
 
   @Test func deleteCounterEntryRemovesIt() {
@@ -37,5 +37,28 @@ struct EntryActionsTests {
     EntryActions.deleteCounterEntry(id: added.entryID, in: context)
 
     #expect(counter.entries.isEmpty)
+  }
+
+  @Test func restoreCounterEntryReinsertsWithTheOriginalIdentity() {
+    let (context, counter) = makeContext()
+    let added = EntryActions.addCounterEntry(value: 10, counter: counter, in: context)
+    let originalID = added.entryID
+    let timestamp = counter.entries.first!.timestamp
+
+    EntryActions.deleteCounterEntry(id: originalID, in: context)
+    #expect(counter.entries.isEmpty)
+
+    let restored = EntryActions.restoreCounterEntry(
+      id: originalID,
+      value: 10,
+      timestamp: timestamp,
+      counter: counter,
+      in: context
+    )
+
+    #expect(restored.entryID == originalID)
+    #expect(counter.entries.count == 1)
+    #expect(counter.entries.first?.amount == 10)
+    #expect(counter.entries.first?.timestamp == timestamp)
   }
 }

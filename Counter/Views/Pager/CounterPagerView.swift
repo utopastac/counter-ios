@@ -6,7 +6,7 @@ struct CounterPagerView: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.semanticColors) private var colors
   @Environment(CounterSheetCoordinator.self) private var sheets
-  @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
+  @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
   @AppStorage(
     AppAppearancePreference.monoEnabledKey,
     store: AppAppearancePreference.sharedDefaults
@@ -66,7 +66,11 @@ struct CounterPagerView: View {
   }
 
   private var activePageTitle: String {
-    activeCounter?.name ?? CustomCounter.untitledName
+    guard let activeCounter else { return CustomCounter.untitledName }
+    return CounterFormatting.titleWithUnit(
+      name: activeCounter.name,
+      unit: activeCounter.effectiveUnit
+    )
   }
 
   private var settleSpring: Animation {
@@ -151,6 +155,7 @@ struct CounterPagerView: View {
     .onChange(of: isRevealActive) { wasActive, active in
       if wasActive && !active {
         flushPendingScroll()
+        syncScrollProgressToSelectedPage()
       }
     }
     .onAppear {
@@ -294,8 +299,11 @@ struct CounterPagerView: View {
     queuePagerScroll(to: pageID)
   }
 
+  /// Applies a deferred programmatic page scroll after the list reveal closes. Only runs when
+  /// a list/create selection queued `pendingScrollPageID` — do not scroll to the current page
+  /// on every close or dragging back to the counter card jumps the pager.
   private func flushPendingScroll() {
-    guard let pageID = pendingScrollPageID ?? selectedPageID,
+    guard let pageID = pendingScrollPageID,
           pageIDs.contains(pageID) else { return }
     queuePagerScroll(to: pageID)
   }

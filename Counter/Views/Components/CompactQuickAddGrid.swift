@@ -1,24 +1,24 @@
 import SwiftUI
 
 struct CompactQuickAddGrid: View {
-  let values: [Int]
-  let defaultPresets: [Int]
+  let values: [Double]
+  let defaultPresets: [Double]
   var buttonHeight: CGFloat = SizeToken.quickAddHeight
-  let onTap: (Int) -> Void
+  let onTap: (Double) -> Void
   let onCustom: () -> Void
 
   private var columns: [GridItem] {
     Array(repeating: GridItem(.flexible(), spacing: SizeToken.gridSpacing), count: SizeToken.gridColumnCount)
   }
 
-  private var displayValues: [Int] {
+  private var displayValues: [Double] {
     QuickAddConfiguration.filledPresets(from: values, defaults: defaultPresets)
   }
 
   var body: some View {
     LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
       ForEach(Array(displayValues.enumerated()), id: \.offset) { _, value in
-        CounterActionButton("\(value)", height: buttonHeight) {
+        CounterActionButton(CounterFormatting.amount(value), height: buttonHeight) {
           onTap(value)
         }
       }

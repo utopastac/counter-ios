@@ -45,7 +45,7 @@ struct CounterPeriodEntryLogScreen: View {
     WidgetSnapshotSync.publish(counter: counter, in: modelContext)
   }
 
-  private func updateEntry(id: UUID, value: Int) {
+  private func updateEntry(id: UUID, value: Double) {
     EntryActions.updateCounterEntry(id: id, value: value, in: modelContext)
     WidgetSnapshotSync.publish(counter: counter, in: modelContext)
   }
@@ -55,8 +55,21 @@ struct CounterPeriodEntryLogContent: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   let entries: [CounterEntry]
+  let emptyDescription: String
   let onDelete: (UUID) -> Void
-  let onValueCommit: (UUID, Int) -> Void
+  let onValueCommit: (UUID, Double) -> Void
+
+  init(
+    entries: [CounterEntry],
+    emptyDescription: String = "Entries for the current period will appear here.",
+    onDelete: @escaping (UUID) -> Void,
+    onValueCommit: @escaping (UUID, Double) -> Void
+  ) {
+    self.entries = entries
+    self.emptyDescription = emptyDescription
+    self.onDelete = onDelete
+    self.onValueCommit = onValueCommit
+  }
 
   private var insertAnimation: Animation {
     MotionToken.entryInsert(reduceMotion: reduceMotion)
@@ -72,7 +85,7 @@ struct CounterPeriodEntryLogContent: View {
         ContentUnavailableView(
           "No Entries Yet",
           systemImage: "list.bullet",
-          description: Text("Entries for the current period will appear here.")
+          description: Text(emptyDescription)
         )
       } else {
         List {
@@ -83,7 +96,7 @@ struct CounterPeriodEntryLogContent: View {
                   .padding(.horizontal, SheetToken.horizontal)
               }
 
-              EntryLogEditableRow(value: entry.value, timestamp: entry.timestamp) { newValue in
+              EntryLogEditableRow(value: entry.amount, timestamp: entry.timestamp) { newValue in
                 onValueCommit(entry.id, newValue)
               }
               .frame(height: SheetToken.tableRowHeight)

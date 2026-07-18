@@ -2,13 +2,15 @@ import SwiftUI
 
 struct HistoryListItem: Identifiable, Equatable {
   let date: Date
-  let value: Int
+  let value: Double
 
   var id: Date { date }
 }
 
 struct HistoryList: View {
   let items: [HistoryListItem]
+  var dateFormat: Date.FormatStyle = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
+  var onSelect: ((HistoryListItem) -> Void)?
 
   var body: some View {
     VStack(spacing: 0) {
@@ -17,7 +19,7 @@ struct HistoryList: View {
           SettingsDivider()
         }
 
-        HistoryListRow(item: item)
+        HistoryListRow(item: item, dateFormat: dateFormat, onSelect: onSelect)
       }
     }
   }
@@ -25,31 +27,36 @@ struct HistoryList: View {
 
 private struct HistoryListRow: View {
   let item: HistoryListItem
+  let dateFormat: Date.FormatStyle
+  let onSelect: ((HistoryListItem) -> Void)?
 
   var body: some View {
-    HStack(alignment: .center, spacing: SpaceToken.x3) {
-      Text("\(item.value)")
-        .counterTextStyle(.historyListValue)
+    Button {
+      onSelect?(item)
+    } label: {
+      HStack(alignment: .center, spacing: SpaceToken.x3) {
+        Text(CounterFormatting.amount(item.value))
+          .counterTextStyle(.historyListValue)
 
-      Spacer(minLength: 0)
+        Spacer(minLength: 0)
 
-      Text(item.date, format: HistoryListRow.dateFormat)
-        .counterTextStyle(.historyListDate)
+        Text(item.date, format: dateFormat)
+          .counterTextStyle(.historyListDate)
+      }
+      .frame(height: HistoryToken.listRowHeight)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .contentShape(Rectangle())
     }
-    .frame(height: HistoryToken.listRowHeight)
-    .frame(maxWidth: .infinity, alignment: .leading)
+    .buttonStyle(.plain)
+    .disabled(onSelect == nil)
   }
-
-  private static let dateFormat = Date.FormatStyle()
-    .month(.abbreviated)
-    .day(.twoDigits)
 }
 
 #Preview {
   HistoryList(
     items: [
       HistoryListItem(date: .now, value: 10),
-      HistoryListItem(date: Calendar.current.date(byAdding: .day, value: -1, to: .now)!, value: 24),
+      HistoryListItem(date: Calendar.current.date(byAdding: .day, value: -1, to: .now)!, value: 24.5),
       HistoryListItem(date: Calendar.current.date(byAdding: .day, value: -2, to: .now)!, value: 8)
     ]
   )

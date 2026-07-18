@@ -27,8 +27,10 @@ struct HistoryChartScaleTests {
     #expect(ticks == [0, 1000, 2000, 3000])
   }
 
-  @Test func formattedTickRoundsToTheNearestInteger() {
+  @Test func formattedTickRoundsToWholeNumbers() {
     #expect(HistoryChartScale.formattedTick(499.6) == "500")
+    #expect(HistoryChartScale.formattedTick(833.333) == "833")
     #expect(HistoryChartScale.formattedTick(0) == "0")
+    #expect(HistoryChartScale.formattedTick(500) == "500")
   }
 }

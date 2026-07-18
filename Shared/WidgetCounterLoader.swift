@@ -16,7 +16,7 @@ enum WidgetCounterLoader {
   }
 
   @MainActor
-  static func addEntryQuick(counterID: String, amount: Int) {
+  static func addEntryQuick(counterID: String, amount: Double) {
     guard amount > 0 else { return }
 
     let context = ModelContext(SharedModelContainer.shared)
@@ -41,7 +41,7 @@ enum WidgetCounterLoader {
     let total = counter.currentTotal()
     let progress = counter.currentProgress()
     let buttons = QuickAddConfiguration.filledPresets(
-      from: counter.buttonValues,
+      from: counter.presetAmounts,
       defaults: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     )
 
@@ -49,7 +49,7 @@ enum WidgetCounterLoader {
       counterID: counter.id.uuidString,
       title: counter.name,
       paletteIndex: paletteIndex,
-      heroValue: progress?.heroValue ?? "\(total)",
+      heroValue: progress?.heroValue ?? CounterFormatting.amount(total),
       heroSubtitle: progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption.capitalized,
       ringProgress: progress,
       buttonValues: widgetButtonValues(from: buttons),
@@ -57,9 +57,9 @@ enum WidgetCounterLoader {
     )
   }
 
-  private static func widgetButtonValues(from presets: [Int]) -> [Int] {
-    var seen = Set<Int>()
-    var values: [Int] = []
+  private static func widgetButtonValues(from presets: [Double]) -> [Double] {
+    var seen = Set<Double>()
+    var values: [Double] = []
 
     for value in presets {
       guard values.count < 8 else { break }
@@ -72,7 +72,7 @@ enum WidgetCounterLoader {
 
   private static func fetchCounters(in context: ModelContext) -> [CustomCounter] {
     let descriptor = FetchDescriptor<CustomCounter>(
-      sortBy: [SortDescriptor(\.createdAt)]
+      sortBy: [SortDescriptor(\.sortOrder)]
     )
     return (try? context.fetch(descriptor)) ?? []
   }
@@ -88,10 +88,7 @@ enum WidgetCounterLoader {
   @MainActor
   static func defaultCounterID() -> String? {
     let context = ModelContext(SharedModelContainer.shared)
-    var descriptor = FetchDescriptor<CustomCounter>(
-      sortBy: [SortDescriptor(\.createdAt)]
-    )
-    descriptor.fetchLimit = 1
-    return try? context.fetch(descriptor).first?.id.uuidString
+    let counters = fetchCounters(in: context)
+    return counters.first?.id.uuidString
   }
 }

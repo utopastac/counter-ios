@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct WatchCounterPagerView: View {
-  @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
+  @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
 
   var body: some View {
     Group {

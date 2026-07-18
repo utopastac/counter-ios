@@ -11,39 +11,46 @@ nonisolated enum AmountInput {
     String(raw.filter(\.isWholeNumber).prefix(maxLength))
   }
 
-  /// Like `sanitizedDigits`, but keeps a single leading `-`. Used only by entry-log editing,
-  /// where a past entry may legitimately need correcting to a negative value — quick-add,
-  /// goal, and amount-entry fields never allow that.
-  static func sanitizedSignedDigits(_ raw: String, maxLength: Int) -> String {
+  /// Like `sanitizedDigits`, but keeps a single leading `-` and at most one `.` with up to
+  /// two fractional digits. Used by entry-log editing, where a past entry may legitimately
+  /// need correcting to a negative or fractional value.
+  static func sanitizedSignedDecimal(_ raw: String, maxLength: Int) -> String {
     var result = ""
+    var hasDecimal = false
+    var fractionalDigits = 0
+
     for (index, character) in raw.enumerated() {
       if character.isWholeNumber {
+        if hasDecimal {
+          guard fractionalDigits < 2 else { continue }
+          fractionalDigits += 1
+        }
         result.append(character)
-      } else if character == "-", index == 0 {
+      } else if character == "-", index == 0, result.isEmpty {
+        result.append(character)
+      } else if character == ".", !hasDecimal {
+        hasDecimal = true
+        if result.isEmpty || result == "-" {
+          result.append("0")
+        }
         result.append(character)
       }
     }
+
     return String(result.prefix(maxLength))
   }
 
-  /// Parses text as a strictly positive integer. Accepts optional two-digit decimals
-  /// (`"12."`, `"12.5"`, `"12.50"`); the integer part is used (fractional digits are for
-  /// keypad display — entry storage remains whole numbers).
-  /// `0`, negative numbers, and unparseable text are all `nil`.
-  static func parsePositiveInt(_ text: String) -> Int? {
-    let trimmed = text.trimmingCharacters(in: .whitespaces)
-    guard !trimmed.isEmpty else { return nil }
+  /// Parses text as a strictly positive amount. Accepts optional two-digit decimals
+  /// (`"12."`, `"12.5"`, `"12.50"`). `0`, negative numbers, and unparseable text are `nil`.
+  static func parsePositiveAmount(_ text: String) -> Double? {
+    guard let decimal = parseDecimal(text), decimal > 0 else { return nil }
+    return NSDecimalNumber(decimal: decimal).doubleValue
+  }
 
-    let normalized = trimmed.hasSuffix(".") ? String(trimmed.dropLast()) : trimmed
-    guard let decimal = Decimal(string: normalized, locale: Locale(identifier: "en_US_POSIX")),
-          decimal > 0
-    else {
-      return nil
-    }
-
-    let value = NSDecimalNumber(decimal: decimal).intValue
-    guard value > 0 else { return nil }
-    return value
+  /// Parses text as any finite amount, including negatives and zero (entry-log edits).
+  static func parseSignedAmount(_ text: String) -> Double? {
+    guard let decimal = parseDecimal(text) else { return nil }
+    return NSDecimalNumber(decimal: decimal).doubleValue
   }
 
   /// Appends `digit` to `text` respecting `maxDigits` on the integer part and at most two
@@ -64,5 +71,13 @@ nonisolated enum AmountInput {
   static func appendingDecimalSeparator(to text: String) -> String {
     guard !text.contains(".") else { return text }
     return text.isEmpty ? "0." : text + "."
+  }
+
+  private static func parseDecimal(_ text: String) -> Decimal? {
+    let trimmed = text.trimmingCharacters(in: .whitespaces)
+    guard !trimmed.isEmpty else { return nil }
+
+    let normalized = trimmed.hasSuffix(".") ? String(trimmed.dropLast()) : trimmed
+    return Decimal(string: normalized, locale: Locale(identifier: "en_US_POSIX"))
   }
 }

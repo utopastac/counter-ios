@@ -93,6 +93,11 @@ enum EntryLogPreviewLimit {
   static let count = 5
 }
 
+enum EntryLogToken {
+  /// Entry row height on the counter card and in the full entry log (5 grid units / 40pt).
+  static let rowHeight: CGFloat = GridToken.units(5)
+}
+
 enum SizeToken {
   /// Visual size of the icon glyph inside an icon button.
   static let iconButton: CGFloat = 24
@@ -295,8 +300,8 @@ enum HistoryToken {
 enum SheetToken {
   /// Gap between the top of the screen and modal sheets (5 grid units / 40pt).
   static let topOffset: CGFloat = GridToken.units(5)
-  /// Entry log row height in modal sheet presentations (6 grid units / 48pt).
-  static let tableRowHeight: CGFloat = GridToken.units(6)
+  /// Entry log row height in modal sheet presentations (5 grid units / 40pt).
+  static let tableRowHeight: CGFloat = EntryLogToken.rowHeight
   /// Horizontal inset for modal sheet content (2 grid units / 16pt).
   static let horizontal: CGFloat = SpaceToken.u2
   /// Top corner radius for modal sheet presentations (16pt).

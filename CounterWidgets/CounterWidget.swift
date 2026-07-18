@@ -14,7 +14,8 @@ struct CounterWidgetProvider: AppIntentTimelineProvider {
       counter: CounterWidgetEntity(
         id: "preview",
         title: "Calories",
-        paletteIndex: 0
+        paletteIndex: 0,
+        sortOrder: 0
       ),
       snapshot: .placeholder
     )
@@ -38,7 +39,8 @@ struct CounterWidgetProvider: AppIntentTimelineProvider {
     let resolved = counter ?? CounterWidgetEntity(
       id: "preview",
       title: CustomCounter.untitledName,
-      paletteIndex: 0
+      paletteIndex: 0,
+      sortOrder: 0
     )
     return CounterWidgetEntry(
       date: .now,
@@ -182,7 +184,7 @@ struct CounterWidgetView: View {
 } timeline: {
   CounterWidgetEntry(
     date: .now,
-    counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0),
+    counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0, sortOrder: 0),
     snapshot: .placeholder
   )
 }
@@ -192,7 +194,7 @@ struct CounterWidgetView: View {
 } timeline: {
   CounterWidgetEntry(
     date: .now,
-    counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0),
+    counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0, sortOrder: 0),
     snapshot: .placeholder
   )
 }

@@ -148,14 +148,15 @@ enum WatchSyncEngine {
   @MainActor
   private static func publishWidgetSnapshotIfNeeded(in context: ModelContext) {
     #if os(iOS)
-    var descriptor = FetchDescriptor<CustomCounter>(
-      sortBy: [SortDescriptor(\.createdAt)]
+    let descriptor = FetchDescriptor<CustomCounter>(
+      sortBy: [SortDescriptor(\.sortOrder)]
     )
-    descriptor.fetchLimit = 1
-    if let counter = try? context.fetch(descriptor).first {
+    let counters = (try? context.fetch(descriptor)) ?? []
+    if let counter = counters.first {
       WidgetSnapshot.publish(
         title: counter.name,
-        heroValue: counter.currentProgress()?.heroValue ?? "\(counter.currentTotal())"
+        heroValue: counter.currentProgress()?.heroValue
+          ?? CounterFormatting.amount(counter.currentTotal())
       )
     }
     #endif

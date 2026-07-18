@@ -14,7 +14,7 @@ struct CustomCounterModelTests {
     counter.goal = -10
     #expect(counter.effectiveGoal == nil)
 
-    counter.goal = 50
+    counter.goal = CounterAmount.storage(50)
     #expect(counter.effectiveGoal == 50)
     #expect(counter.hasGoal)
   }
@@ -48,13 +48,13 @@ struct CustomCounterModelTests {
     let counter = CustomCounter(name: "Water", sliderMax: 0)
     #expect(counter.effectiveSliderMax == 100)
 
-    counter.sliderMax = 250
+    counter.sliderMax = CounterAmount.storage(250)
     #expect(counter.effectiveSliderMax == 250)
   }
 
   @Test func defaultButtonValuesAreUsedWhenNoneProvided() {
     let counter = CustomCounter(name: "Water")
-    #expect(counter.buttonValues == CustomCounter.defaultButtonValues)
+    #expect(counter.presetAmounts == CustomCounter.defaultButtonValues)
   }
 
   @Test func nextPaletteIndexCyclesThroughEverySlotBeforeRepeating() {

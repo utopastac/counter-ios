@@ -197,12 +197,12 @@ private struct WidgetRingTipHalo: Shape {
 
 struct WidgetQuickAddButton: View {
   let counter: CounterWidgetEntity
-  let value: Int
+  let value: Double
   let colors: WidgetThemeColors
 
   var body: some View {
     Button(intent: AddCounterEntryIntent(counterID: counter.id, amount: value)) {
-      Text("\(value)")
+      Text(CounterFormatting.amount(value))
         .font(.system(size: 15, weight: .semibold, design: .rounded))
         .foregroundStyle(colors.buttonText)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

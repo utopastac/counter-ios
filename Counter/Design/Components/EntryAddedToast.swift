@@ -3,12 +3,23 @@ import SwiftUI
 struct EntryAddedToast: View {
   @Environment(\.semanticColors) private var colors
 
-  let value: Int
+  let value: Double
+  var kind: EntryToastState.Kind = .added
   let onUndo: () -> Void
+
+  private var message: String {
+    let amount = CounterFormatting.amount(value)
+    switch kind {
+    case .added:
+      return "\(amount) added"
+    case .removed:
+      return "\(amount) removed"
+    }
+  }
 
   var body: some View {
     HStack(spacing: 0) {
-      Text("\(value) added")
+      Text(message)
         .counterTextStyle(.button, color: .onInteractiveFill, compact: true)
         .padding(.horizontal, SpaceToken.u2)
 
@@ -33,6 +44,18 @@ struct EntryAddedToast: View {
 }
 
 struct EntryToastState: Equatable {
+  enum Kind: Equatable {
+    case added
+    case removed(timestamp: Date)
+  }
+
   let entryID: UUID
-  let value: Int
+  let value: Double
+  let kind: Kind
+
+  init(entryID: UUID, value: Double, kind: Kind = .added) {
+    self.entryID = entryID
+    self.value = value
+    self.kind = kind
+  }
 }

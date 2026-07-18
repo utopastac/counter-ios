@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CustomAmountSheet: View {
-  let onAdd: (Int) -> Void
+  let onAdd: (Double) -> Void
 
   var body: some View {
     AmountEntrySheet(

@@ -36,7 +36,7 @@ struct CustomCounterPageContent: View {
     CounterPeriodCalculator.currentEntries(for: counter)
   }
 
-  private var periodTotal: Int {
+  private var periodTotal: Double {
     counter.currentTotal()
   }
 
@@ -45,7 +45,7 @@ struct CustomCounterPageContent: View {
       EntryLogPreviewItem(
         id: entry.id,
         timestamp: entry.timestamp,
-        valueText: "\(entry.value)"
+        valueText: CounterFormatting.amount(entry.amount)
       )
     }
   }
@@ -54,10 +54,22 @@ struct CustomCounterPageContent: View {
     var rows: [CounterStatRow] = []
 
     if let goal = counter.effectiveGoal {
-      rows.append(CounterStatRow(id: "target", value: "\(goal)", label: "Target"))
+      rows.append(
+        CounterStatRow(
+          id: "target",
+          value: CounterFormatting.amount(goal),
+          label: "Target"
+        )
+      )
     }
 
-    rows.append(CounterStatRow(id: "added", value: "\(periodTotal)", label: "Added"))
+    rows.append(
+      CounterStatRow(
+        id: "added",
+        value: CounterFormatting.amount(periodTotal),
+        label: "Added"
+      )
+    )
 
     if let goalProgress = counter.currentProgress() {
       rows.append(
@@ -77,7 +89,10 @@ struct CustomCounterPageContent: View {
     Group {
       if isCompact {
         CompactCounterCardLayout(
-          title: counter.name,
+          title: CounterFormatting.titleWithUnit(
+            name: counter.name,
+            unit: counter.effectiveUnit
+          ),
           heroValue: heroValue,
           heroSubtitle: heroSubtitle,
           ringProgress: counter.currentProgress(),
@@ -86,7 +101,7 @@ struct CustomCounterPageContent: View {
           onShowButtonSettings: onShowButtonSettings
         ) {
           CompactQuickAddGrid(
-            values: counter.buttonValues,
+            values: counter.presetAmounts,
             defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
             buttonHeight: CompactCardToken.quickAddHeight
           ) { value in
@@ -96,8 +111,8 @@ struct CustomCounterPageContent: View {
           }
         } toast: {
           if let entryToast {
-            EntryAddedToast(value: entryToast.value) {
-              undoToastEntry(entryToast.entryID)
+            EntryAddedToast(value: entryToast.value, kind: entryToast.kind) {
+              undoToast(entryToast)
             }
             .transition(toastTransition)
           }
@@ -110,23 +125,23 @@ struct CustomCounterPageContent: View {
             ringProgress: counter.currentProgress()
           ) {
             VStack(alignment: .leading, spacing: 0) {
+              CompactEntryLogPreview(items: previewItems) { entryID in
+                deletePreviewEntry(id: entryID)
+              }
+
               Button {
                 guard !counterRevealIsDragging else { return }
                 sheets.present(.entryLog(counterID: counter.id))
               } label: {
-                VStack(alignment: .leading, spacing: 0) {
-                  CompactEntryLogPreview(items: previewItems)
-
-                  EntryLogAllEntriesControl()
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
+                EntryLogAllEntriesControl()
+                  .frame(maxWidth: .infinity, alignment: .center)
+                  .contentShape(Rectangle())
               }
               .buttonStyle(.noHighlight)
             }
           } footer: {
             CompactQuickAddGrid(
-              values: counter.buttonValues,
+              values: counter.presetAmounts,
               defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
             ) { value in
               addEntryQuick(value)
@@ -135,8 +150,8 @@ struct CustomCounterPageContent: View {
             }
           } toast: {
             if let entryToast {
-              EntryAddedToast(value: entryToast.value) {
-                undoToastEntry(entryToast.entryID)
+              EntryAddedToast(value: entryToast.value, kind: entryToast.kind) {
+                undoToast(entryToast)
               }
               .transition(toastTransition)
             }
@@ -174,7 +189,8 @@ struct CustomCounterPageContent: View {
   }
 
   private var heroValue: String {
-    counter.currentProgress()?.heroValue ?? "\(periodTotal)"
+    counter.currentProgress()?.heroValue
+      ?? CounterFormatting.amount(periodTotal)
   }
 
   private var heroSubtitle: String? {
@@ -183,22 +199,22 @@ struct CustomCounterPageContent: View {
 
   private func migratePresetButtons(for counter: CustomCounter) {
     let filled = QuickAddConfiguration.filledPresets(
-      from: counter.buttonValues,
+      from: counter.presetAmounts,
       defaults: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     )
-    if filled != counter.buttonValues {
-      counter.buttonValues = filled
+    if filled != counter.presetAmounts {
+      counter.presetAmounts = filled
     }
   }
 
-  private func addEntry(_ value: Int) {
+  private func addEntry(_ value: Double) {
     let added = EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
     impactHapticTrigger &+= 1
     presentToast(for: added)
     syncWidgets()
   }
 
-  private func addEntryQuick(_ value: Int) {
+  private func addEntryQuick(_ value: Double) {
     let added = quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
     impactHapticTrigger &+= 1
     presentToast(for: added)
@@ -207,12 +223,38 @@ struct CustomCounterPageContent: View {
 
   private func presentToast(for added: EntryActions.AddedEntry) {
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
-      entryToast = EntryToastState(entryID: added.entryID, value: added.value)
+      entryToast = EntryToastState(entryID: added.entryID, value: added.value, kind: .added)
     }
   }
 
-  private func undoToastEntry(_ entryID: UUID) {
-    EntryActions.deleteCounterEntry(id: entryID, in: modelContext)
+  private func deletePreviewEntry(id: UUID) {
+    guard let entry = periodEntries.first(where: { $0.id == id }) else { return }
+    let toast = EntryToastState(
+      entryID: entry.id,
+      value: entry.amount,
+      kind: .removed(timestamp: entry.timestamp)
+    )
+    EntryActions.deleteCounterEntry(id: id, in: modelContext)
+    impactHapticTrigger &+= 1
+    withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
+      entryToast = toast
+    }
+    syncWidgets()
+  }
+
+  private func undoToast(_ toast: EntryToastState) {
+    switch toast.kind {
+    case .added:
+      EntryActions.deleteCounterEntry(id: toast.entryID, in: modelContext)
+    case .removed(let timestamp):
+      _ = EntryActions.restoreCounterEntry(
+        id: toast.entryID,
+        value: toast.value,
+        timestamp: timestamp,
+        counter: counter,
+        in: modelContext
+      )
+    }
     undoHapticTrigger &+= 1
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
       entryToast = nil

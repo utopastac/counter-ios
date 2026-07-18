@@ -2,11 +2,8 @@ import Foundation
 import SwiftData
 
 /// `nonisolated` so `migrateIfNeeded` can run synchronously from `CounterMigrationPlan`'s
-/// `willMigrate` closure, which SwiftData invokes off the main actor as a `@Sendable`
-/// closure. `ModelContext` itself isn't `Sendable`, but SwiftData hands this specific
-/// context to the closure precisely so it can be mutated synchronously during migration —
-/// there's no cross-actor hop here, just a context that was never main-actor-bound to begin
-/// with (unlike `SharedModelContainer`'s context, which is only ever touched from the main actor).
+/// `willMigrate` closure. Legacy calorie values are written as hundredths immediately, and
+/// `SampleDataSeeder`'s hundredths flag is set so they aren't scaled a second time.
 nonisolated enum CalorieMigration {
   static func migrateIfNeeded(in context: ModelContext) {
     let calorieEntries = fetchCalorieEntries(in: context)
@@ -18,7 +15,7 @@ nonisolated enum CalorieMigration {
 
     for entry in calorieEntries {
       let counterEntry = CounterEntry(
-        value: entry.value,
+        value: Double(entry.value),
         timestamp: entry.timestamp,
         counter: counter
       )
@@ -32,6 +29,7 @@ nonisolated enum CalorieMigration {
     }
 
     AppLog.attempt("Save calorie migration") { try context.save() }
+    UserDefaults.standard.set(true, forKey: "counterAmountsAreHundredths")
   }
 
   private static func findCaloriesCounter(in context: ModelContext) -> CustomCounter? {
@@ -47,14 +45,23 @@ nonisolated enum CalorieMigration {
     from settings: AppSettings?,
     in context: ModelContext
   ) -> CustomCounter {
+    let presets: [Double]
+    if let values = settings?.calorieButtonValues, !values.isEmpty {
+      presets = values.map(Double.init)
+    } else {
+      presets = QuickAddConfiguration.defaultCaloriePresets
+    }
+
     let counter = CustomCounter(
       name: "Calories",
-      buttonValues: settings?.calorieButtonValues ?? QuickAddConfiguration.defaultCaloriePresets,
-      sliderMax: settings?.effectiveCalorieSliderMax ?? 2000,
-      goal: settings?.effectiveCalorieGoal ?? CustomCounter.defaultCalorieGoal,
+      unit: CounterTemplate.calories.defaultUnit,
+      buttonValues: presets,
+      sliderMax: Double(settings?.effectiveCalorieSliderMax ?? 2000),
+      goal: settings?.effectiveCalorieGoal.map(Double.init) ?? CustomCounter.defaultCalorieGoal,
       resetPeriod: settings?.calorieResetPeriod ?? .daily,
       resetAnchorDay: settings?.effectiveCalorieResetAnchorDay ?? 1,
-      goalDirection: settings?.calorieGoalDirection ?? .countDown
+      goalDirection: settings?.calorieGoalDirection ?? .countDown,
+      sortOrder: 0
     )
     counter.createdAt = .distantPast
     context.insert(counter)
@@ -62,9 +69,10 @@ nonisolated enum CalorieMigration {
   }
 
   private static func applySettings(_ settings: AppSettings, to counter: CustomCounter) {
-    counter.buttonValues = settings.calorieButtonValues
-    counter.sliderMax = settings.effectiveCalorieSliderMax
-    counter.goal = settings.effectiveCalorieGoal
+    counter.unit = CounterTemplate.calories.defaultUnit
+    counter.presetAmounts = settings.calorieButtonValues.map(Double.init)
+    counter.sliderMax = CounterAmount.storage(Double(settings.effectiveCalorieSliderMax))
+    counter.goal = settings.effectiveCalorieGoal.map { CounterAmount.storage(Double($0)) }
     counter.resetPeriod = settings.calorieResetPeriod
     counter.resetAnchorDay = settings.effectiveCalorieResetAnchorDay
     counter.goalDirection = settings.calorieGoalDirection

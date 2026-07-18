@@ -9,6 +9,7 @@ struct CounterWidgetEntity: AppEntity, Sendable {
   var id: String
   var title: String
   var paletteIndex: Int
+  var sortOrder: Double
 
   var displayRepresentation: DisplayRepresentation {
     DisplayRepresentation(title: "\(title)")
@@ -28,14 +29,15 @@ struct CounterWidgetEntityQuery: EntityQuery {
   }
 
   func defaultResult() async -> CounterWidgetEntity? {
-    try? await allEntities().first
+    let all = try? await allEntities()
+    return all?.first
   }
 
   @MainActor
   private func allEntities() async throws -> [CounterWidgetEntity] {
     let context = ModelContext(SharedModelContainer.shared)
     let descriptor = FetchDescriptor<CustomCounter>(
-      sortBy: [SortDescriptor(\.createdAt)]
+      sortBy: [SortDescriptor(\.sortOrder)]
     )
     let counters = try context.fetch(descriptor)
 
@@ -43,7 +45,8 @@ struct CounterWidgetEntityQuery: EntityQuery {
       CounterWidgetEntity(
         id: counter.id.uuidString,
         title: counter.name,
-        paletteIndex: AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex)
+        paletteIndex: AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex),
+        sortOrder: counter.sortOrder
       )
     }
   }

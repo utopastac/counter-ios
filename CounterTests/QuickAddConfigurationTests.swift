@@ -2,7 +2,7 @@ import Testing
 
 struct QuickAddConfigurationTests {
   @Test func normalizedPresetsSortsAndCapsAtPresetCount() {
-    let values = [100, 1, 50, 20, 10, 5, 2, 75, 25, 999]
+    let values: [Double] = [100, 1, 50, 20, 10, 5, 2, 75, 25, 999]
     let normalized = QuickAddConfiguration.normalizedPresets(values)
 
     #expect(normalized.count == QuickAddConfiguration.presetCount)
@@ -10,14 +10,14 @@ struct QuickAddConfigurationTests {
   }
 
   @Test func filledPresetsKeepsExistingValuesUntouched() {
-    let stored = [10, 20, 30]
+    let stored: [Double] = [10, 20, 30]
     let filled = QuickAddConfiguration.filledPresets(from: stored, defaults: QuickAddConfiguration.defaultCounterPresets)
 
     #expect(Set(stored).isSubset(of: Set(filled)))
   }
 
   @Test func filledPresetsPadsUpToPresetCountWithoutDuplicates() {
-    let stored = [10]
+    let stored: [Double] = [10]
     let filled = QuickAddConfiguration.filledPresets(from: stored, defaults: QuickAddConfiguration.defaultCounterPresets)
 
     #expect(filled.count == QuickAddConfiguration.presetCount)
@@ -64,7 +64,7 @@ struct QuickAddConfigurationTests {
   }
 
   @Test func replacingPresetDoesNotExceedPresetCountWhenAppending() {
-    let full = Array(1...QuickAddConfiguration.presetCount)
+    let full = (1...QuickAddConfiguration.presetCount).map(Double.init)
     let updated = QuickAddConfiguration.replacingPreset(999, with: 1000, in: full)
     #expect(updated.count == QuickAddConfiguration.presetCount)
     #expect(!updated.contains(1000))

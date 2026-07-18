@@ -4,17 +4,20 @@ import SwiftData
 struct CreateCounterView: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.dismiss) private var dismiss
-  @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
+  @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
 
   var onCreated: ((CustomCounter) -> Void)?
 
+  @State private var template: CounterTemplate = .blank
   @State private var name = ""
+  @State private var unit = ""
   @State private var goalText = ""
   @State private var goalDirection: GoalDirection = .countUp
   @State private var resetPeriod = AppAppearancePreference.defaultResetPeriod
   @State private var resetAnchorDay = AppAppearancePreference.defaultResetPeriod.defaultAnchorDay()
   @State private var paletteIndex = 0
+  @State private var buttonValues: [Double] = QuickAddConfiguration.defaultCounterPresets
 
   private var colors: SemanticColors {
     SemanticColors.forColorScheme(isDarkModeEnabled ? .dark : .light)
@@ -31,10 +34,38 @@ struct CreateCounterView: View {
 
         ScrollView {
           VStack(alignment: .leading, spacing: 0) {
-            SettingsLabeledField(label: "Title", text: $name, placeholder: CustomCounter.untitledName)
+            SettingsPickerRow(
+              icon: .rows3,
+              label: "Template",
+              selection: $template,
+              options: CounterTemplate.allCases.map { ($0, $0.label) }
+            )
+
+            SettingsSectionDivider()
+
+            VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
+              SettingsLabeledField(label: "Title", text: $name, placeholder: CustomCounter.untitledName)
+
+              SettingsLabeledField(
+                label: "Unit",
+                text: $unit,
+                placeholder: "e.g. kcal, g, $"
+              )
+            }
+
             SettingsSectionDivider()
 
             goalAndResetContent
+
+            SettingsSectionDivider()
+
+            SettingsSectionHeader(title: "Quick add presets")
+
+            SettingsPresetGrid(
+              values: $buttonValues,
+              defaults: template.defaultPresets
+            )
+
             colourSection
           }
           .padding(.horizontal, SheetToken.horizontal)
@@ -55,10 +86,14 @@ struct CreateCounterView: View {
       .onChange(of: resetPeriod) { _, newPeriod in
         resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)
       }
+      .onChange(of: template) { _, newTemplate in
+        applyTemplate(newTemplate)
+      }
       .onAppear {
         resetPeriod = AppAppearancePreference.defaultResetPeriod
         resetAnchorDay = resetPeriod.defaultAnchorDay()
         paletteIndex = CustomCounter.nextPaletteIndex(forExistingCount: counters.count)
+        applyTemplate(template)
       }
       .counterDesignSystemFromAppearancePreference()
     }
@@ -70,7 +105,7 @@ struct CreateCounterView: View {
     SettingsLabeledField(
       label: "Target",
       text: $goalText,
-      keyboardType: .numberPad,
+      keyboardType: .decimalPad,
       placeholder: "0"
     )
 
@@ -131,18 +166,29 @@ struct CreateCounterView: View {
     parsedGoal != nil
   }
 
-  private var parsedGoal: Int? {
-    AmountInput.parsePositiveInt(goalText)
+  private var parsedGoal: Double? {
+    AmountInput.parsePositiveAmount(goalText)
+  }
+
+  private func applyTemplate(_ template: CounterTemplate) {
+    name = template.defaultName
+    unit = template.defaultUnit
+    goalText = template.defaultGoal.map(CounterFormatting.editingText) ?? ""
+    goalDirection = template.defaultGoalDirection
+    buttonValues = QuickAddConfiguration.normalizedPresets(template.defaultPresets)
   }
 
   private func createCounter() {
     let counter = CustomCounter(
       name: CustomCounter.normalizedName(from: name),
+      unit: CustomCounter.normalizedUnit(from: unit),
+      buttonValues: QuickAddConfiguration.normalizedPresets(buttonValues),
       goal: parsedGoal,
       resetPeriod: resetPeriod,
       resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
       goalDirection: goalDirection,
-      paletteIndex: paletteIndex
+      paletteIndex: paletteIndex,
+      sortOrder: CustomCounter.nextSortOrder(forExisting: counters)
     )
     // Keep list insertion out of the sheet-dismiss animation transaction so underlay row
     // hit targets don't lag behind the visible layout (which made the new row open Create).

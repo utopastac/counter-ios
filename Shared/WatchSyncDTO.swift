@@ -4,10 +4,12 @@ import SwiftData
 struct CounterSnapshot: Codable, Sendable, Equatable {
   let id: UUID
   let name: String
-  let buttonValues: [Int]
-  let sliderMax: Int
+  let unit: String
+  let buttonValues: [Double]
+  let sliderMax: Double
   let createdAt: Date
-  let goal: Int?
+  let sortOrder: Double
+  let goal: Double?
   let resetPeriodRaw: String
   let resetAnchorDay: Int
   let goalDirectionRaw: String
@@ -16,10 +18,12 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
   init(counter: CustomCounter) {
     id = counter.id
     name = counter.name
-    buttonValues = counter.buttonValues
-    sliderMax = counter.sliderMax
+    unit = counter.unit
+    buttonValues = counter.presetAmounts
+    sliderMax = counter.effectiveSliderMax
     createdAt = counter.createdAt
-    goal = counter.goal
+    sortOrder = counter.sortOrder
+    goal = counter.effectiveGoal
     resetPeriodRaw = counter.resetPeriodRaw
     resetAnchorDay = counter.resetAnchorDay
     goalDirectionRaw = counter.goalDirectionRaw
@@ -29,10 +33,12 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
   @MainActor
   func apply(to counter: CustomCounter) {
     counter.name = name
-    counter.buttonValues = buttonValues
-    counter.sliderMax = sliderMax
+    counter.unit = unit
+    counter.presetAmounts = buttonValues
+    counter.sliderMax = CounterAmount.storage(sliderMax)
     counter.createdAt = createdAt
-    counter.goal = goal
+    counter.sortOrder = sortOrder
+    counter.goal = goal.map { CounterAmount.storage($0) }
     counter.resetPeriodRaw = resetPeriodRaw
     counter.resetAnchorDay = resetAnchorDay
     counter.goalDirectionRaw = goalDirectionRaw
@@ -49,13 +55,15 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
 
     let counter = CustomCounter(
       name: snapshot.name,
+      unit: snapshot.unit,
       buttonValues: snapshot.buttonValues,
       sliderMax: snapshot.sliderMax,
       goal: snapshot.goal,
       resetPeriod: CounterResetPeriod(rawValue: snapshot.resetPeriodRaw) ?? .daily,
       resetAnchorDay: snapshot.resetAnchorDay,
       goalDirection: GoalDirection(rawValue: snapshot.goalDirectionRaw) ?? .countUp,
-      paletteIndex: snapshot.paletteIndex
+      paletteIndex: snapshot.paletteIndex,
+      sortOrder: snapshot.sortOrder
     )
     counter.id = snapshot.id
     counter.createdAt = snapshot.createdAt
@@ -76,13 +84,13 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
 struct EntrySnapshot: Codable, Sendable, Equatable {
   let id: UUID
   let counterID: UUID
-  let value: Int
+  let value: Double
   let timestamp: Date
 
   init(entry: CounterEntry, counterID: UUID) {
     id = entry.id
     self.counterID = counterID
-    value = entry.value
+    value = entry.amount
     timestamp = entry.timestamp
   }
 
@@ -94,7 +102,7 @@ struct EntrySnapshot: Codable, Sendable, Equatable {
     }
 
     if let existing = fetchEntry(id: snapshot.id, in: context) {
-      existing.value = snapshot.value
+      existing.amount = snapshot.value
       existing.timestamp = snapshot.timestamp
       existing.counter = counter
       return existing

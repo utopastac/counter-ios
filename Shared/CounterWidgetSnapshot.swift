@@ -10,7 +10,7 @@ struct CounterWidgetSnapshot {
   /// single-word caption used elsewhere, so the widget reads the same as the app.
   let heroSubtitle: String
   let ringProgress: GoalProgress?
-  let buttonValues: [Int]
+  let buttonValues: [Double]
   let lastUpdated: Date?
 
   static let placeholder = CounterWidgetSnapshot(

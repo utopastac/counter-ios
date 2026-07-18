@@ -35,8 +35,11 @@ struct EntryLogRowDivider: View {
 }
 
 struct EntryLogRow: View {
+  @Environment(\.semanticColors) private var colors
+
   let valueText: String
   let timestamp: Date
+  var onDelete: (() -> Void)?
 
   var body: some View {
     HStack(alignment: .center, spacing: SpaceToken.x3) {
@@ -47,6 +50,18 @@ struct EntryLogRow: View {
 
       Text(timestamp, format: Self.timestampFormat)
         .counterTextStyle(.entryLogTimestamp)
+
+      if let onDelete {
+        Button(action: onDelete) {
+          Image(systemName: "xmark")
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(colors.textPrimary)
+            .frame(width: SizeToken.iconGlyph, height: SizeToken.iconGlyph)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Delete entry")
+      }
     }
   }
 
@@ -58,18 +73,18 @@ struct EntryLogRow: View {
 }
 
 struct EntryLogEditableRow: View {
-  let value: Int
+  let value: Double
   let timestamp: Date
-  let onCommit: (Int) -> Void
+  let onCommit: (Double) -> Void
 
   @State private var text: String
   @FocusState private var isFocused: Bool
 
-  init(value: Int, timestamp: Date, onCommit: @escaping (Int) -> Void) {
+  init(value: Double, timestamp: Date, onCommit: @escaping (Double) -> Void) {
     self.value = value
     self.timestamp = timestamp
     self.onCommit = onCommit
-    _text = State(initialValue: String(value))
+    _text = State(initialValue: CounterFormatting.editingText(for: value))
   }
 
   var body: some View {
@@ -80,14 +95,14 @@ struct EntryLogEditableRow: View {
         .keyboardType(.numbersAndPunctuation)
         .focused($isFocused)
         .onChange(of: text) { _, newValue in
-          let sanitized = AmountInput.sanitizedSignedDigits(newValue, maxLength: 7)
+          let sanitized = AmountInput.sanitizedSignedDecimal(newValue, maxLength: 8)
           if sanitized != newValue {
             text = sanitized
           }
         }
         .onChange(of: value) { _, newValue in
           guard !isFocused else { return }
-          text = String(newValue)
+          text = CounterFormatting.editingText(for: newValue)
         }
         .onChange(of: isFocused) { _, focused in
           if !focused {
@@ -103,8 +118,8 @@ struct EntryLogEditableRow: View {
   }
 
   private func commit() {
-    guard let parsed = Int(text) else {
-      text = String(value)
+    guard let parsed = AmountInput.parseSignedAmount(text) else {
+      text = CounterFormatting.editingText(for: value)
       return
     }
 
@@ -118,6 +133,7 @@ struct CompactEntryLogPreview: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   let items: [EntryLogPreviewItem]
+  var onDelete: ((UUID) -> Void)?
 
   private var displayItems: [EntryLogPreviewItem] {
     Array(items.prefix(EntryLogPreviewLimit.count))
@@ -142,8 +158,12 @@ struct CompactEntryLogPreview: View {
               EntryLogRowDivider()
             }
 
-            EntryLogRow(valueText: item.valueText, timestamp: item.timestamp)
-              .frame(height: SizeToken.tableRowHeight)
+            EntryLogRow(
+              valueText: item.valueText,
+              timestamp: item.timestamp,
+              onDelete: onDelete.map { delete in { delete(item.id) } }
+            )
+              .frame(height: EntryLogToken.rowHeight)
               .frame(maxWidth: .infinity, alignment: .leading)
               .contentShape(Rectangle())
           }

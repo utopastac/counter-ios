@@ -36,7 +36,7 @@ struct CalorieMigrationTests {
 
     let entries = fetchEntries(in: context)
     #expect(entries.count == 1)
-    #expect(entries.first?.value == -40)
+    #expect(entries.first?.amount == -40)
 
     let remainingLegacyEntries = (try? context.fetch(FetchDescriptor<CalorieEntry>())) ?? []
     #expect(remainingLegacyEntries.isEmpty)

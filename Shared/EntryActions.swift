@@ -10,16 +10,16 @@ enum EntryActions {
 
   struct AddedEntry: Equatable {
     let entryID: UUID
-    let value: Int
+    let value: Double
   }
 
   @discardableResult
   @MainActor
-  static func addCounterEntry(value: Int, counter: CustomCounter, in context: ModelContext) -> AddedEntry {
+  static func addCounterEntry(value: Double, counter: CustomCounter, in context: ModelContext) -> AddedEntry {
     let entry = CounterEntry(value: value, counter: counter)
     context.insert(entry)
     WatchSyncEngine.publishEntryUpsert(entry)
-    return AddedEntry(entryID: entry.id, value: entry.value)
+    return AddedEntry(entryID: entry.id, value: entry.amount)
   }
 
   @MainActor
@@ -31,11 +31,30 @@ enum EntryActions {
   }
 
   @MainActor
-  static func updateCounterEntry(id: UUID, value: Int, in context: ModelContext) {
+  static func updateCounterEntry(id: UUID, value: Double, in context: ModelContext) {
     guard let entry = fetchCounterEntry(id: id, in: context) else { return }
-    entry.value = value
+    entry.amount = value
     AppLog.attempt("Save entry update") { try context.save() }
     WatchSyncEngine.publishEntryUpsert(entry)
+  }
+
+  /// Re-inserts a previously deleted entry with its original id/timestamp — used by the
+  /// entry-log "removed" toast undo path.
+  @discardableResult
+  @MainActor
+  static func restoreCounterEntry(
+    id: UUID,
+    value: Double,
+    timestamp: Date,
+    counter: CustomCounter,
+    in context: ModelContext
+  ) -> AddedEntry {
+    let entry = CounterEntry(value: value, timestamp: timestamp, counter: counter)
+    entry.id = id
+    context.insert(entry)
+    AppLog.attempt("Save entry restore") { try context.save() }
+    WatchSyncEngine.publishEntryUpsert(entry)
+    return AddedEntry(entryID: entry.id, value: entry.amount)
   }
 
   /// Not `private`: `QuickAddSessionStore` looks up the entry a batching window is tracking

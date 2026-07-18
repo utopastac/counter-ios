@@ -144,7 +144,7 @@ final class CounterSheetCoordinator {
 struct CounterSheetHost: View {
   @Environment(\.modelContext) private var modelContext
   @Bindable var coordinator: CounterSheetCoordinator
-  @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
+  @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
 
   var body: some View {
     Color.clear
@@ -196,14 +196,15 @@ private struct CounterButtonSettingsSheetContent: View {
   var body: some View {
     CounterSettingsView(
       title: "\(counter.name) Settings",
-      values: counter.buttonValues,
+      values: counter.presetAmounts,
       counter: counter,
       onSave: { save in
         if let name = save.name {
           counter.name = CustomCounter.normalizedName(from: name)
         }
-        counter.buttonValues = save.buttonValues
-        counter.goal = save.goal
+        counter.presetAmounts = save.buttonValues
+        counter.goal = save.goal.map(CounterAmount.storage)
+        counter.unit = save.unit
         counter.resetPeriod = save.resetPeriod
         counter.resetAnchorDay = save.resetAnchorDay
         counter.goalDirection = save.goalDirection

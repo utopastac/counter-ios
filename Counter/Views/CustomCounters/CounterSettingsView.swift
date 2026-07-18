@@ -2,8 +2,9 @@ import SwiftUI
 
 struct CounterSettingsSave {
   let name: String?
-  let buttonValues: [Int]
-  let goal: Int?
+  let buttonValues: [Double]
+  let goal: Double?
+  let unit: String
   let resetPeriod: CounterResetPeriod
   let resetAnchorDay: Int
   let goalDirection: GoalDirection
@@ -15,9 +16,10 @@ struct CounterSettingsView: View {
   let includeGoalAndReset: Bool
   let includeNameField: Bool
   let locksGoalDirection: Bool
-  let defaultPresets: [Int]
-  @State private var values: [Int]
+  let defaultPresets: [Double]
+  @State private var values: [Double]
   @State private var nameText: String
+  @State private var unitText: String
   @State private var goalText: String
   @State private var resetPeriod: CounterResetPeriod
   @State private var resetAnchorDay: Int
@@ -37,7 +39,7 @@ struct CounterSettingsView: View {
 
   init(
     title: String,
-    values: [Int],
+    values: [Double],
     onSave: @escaping (CounterSettingsSave) -> Void
   ) {
     self.title = title
@@ -47,6 +49,7 @@ struct CounterSettingsView: View {
     self.defaultPresets = QuickAddConfiguration.defaultCounterPresets
     self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
     self._nameText = State(initialValue: "")
+    self._unitText = State(initialValue: "")
     self._goalText = State(initialValue: "")
     self._resetPeriod = State(initialValue: .daily)
     self._resetAnchorDay = State(initialValue: 1)
@@ -59,7 +62,7 @@ struct CounterSettingsView: View {
 
   init(
     title: String,
-    values: [Int],
+    values: [Double],
     counter: CustomCounter,
     onSave: @escaping (CounterSettingsSave) -> Void,
     onDelete: (() -> Void)? = nil,
@@ -72,7 +75,10 @@ struct CounterSettingsView: View {
     self.defaultPresets = QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
     self._nameText = State(initialValue: counter.name)
-    self._goalText = State(initialValue: counter.effectiveGoal.map(String.init) ?? "")
+    self._unitText = State(initialValue: counter.unit)
+    self._goalText = State(
+      initialValue: counter.effectiveGoal.map(CounterFormatting.editingText) ?? ""
+    )
     self._resetPeriod = State(initialValue: counter.resetPeriod)
     self._resetAnchorDay = State(initialValue: counter.effectiveResetAnchorDay)
     self._goalDirection = State(initialValue: counter.goalDirection)
@@ -100,6 +106,16 @@ struct CounterSettingsView: View {
 
             if includeGoalAndReset {
               goalAndResetContent
+            }
+
+            if includeNameField {
+              SettingsLabeledField(
+                label: "Unit",
+                text: $unitText,
+                placeholder: "e.g. kcal, g, $"
+              )
+
+              SettingsSectionDivider()
             }
 
             quickAddSection
@@ -144,7 +160,7 @@ struct CounterSettingsView: View {
     SettingsLabeledField(
       label: "Target",
       text: $goalText,
-      keyboardType: .numberPad,
+      keyboardType: .decimalPad,
       placeholder: "0"
     )
 
@@ -247,8 +263,8 @@ struct CounterSettingsView: View {
     CounterFormValidation.canSave(name: includeNameField ? nameText : nil, goalText: goalText)
   }
 
-  private var parsedGoal: Int? {
-    AmountInput.parsePositiveInt(goalText)
+  private var parsedGoal: Double? {
+    AmountInput.parsePositiveAmount(goalText)
   }
 
   private func saveAndDismiss() {
@@ -257,6 +273,7 @@ struct CounterSettingsView: View {
         name: includeNameField ? trimmedName : nil,
         buttonValues: QuickAddConfiguration.normalizedPresets(values),
         goal: parsedGoal,
+        unit: CustomCounter.normalizedUnit(from: unitText),
         resetPeriod: resetPeriod,
         resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
         goalDirection: locksGoalDirection ? .countDown : goalDirection,

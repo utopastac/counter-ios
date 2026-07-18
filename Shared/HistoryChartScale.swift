@@ -27,6 +27,6 @@ nonisolated enum HistoryChartScale {
   }
 
   static func formattedTick(_ value: Double) -> String {
-    "\(Int(value.rounded()))"
+    CounterFormatting.amount(value.rounded())
   }
 }

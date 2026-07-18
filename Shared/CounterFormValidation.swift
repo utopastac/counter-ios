@@ -10,7 +10,7 @@ nonisolated enum CounterFormValidation {
   static func canSave(name: String?, goalText: String) -> Bool {
     _ = name
     let trimmedGoal = goalText.trimmingCharacters(in: .whitespaces)
-    if !trimmedGoal.isEmpty, AmountInput.parsePositiveInt(goalText) == nil {
+    if !trimmedGoal.isEmpty, AmountInput.parsePositiveAmount(goalText) == nil {
       return false
     }
     return true

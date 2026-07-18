@@ -15,7 +15,7 @@ import Foundation
 /// only the act of reading the model's stored properties requires this.
 @MainActor
 extension CustomCounter {
-  func currentTotal(on date: Date = .now, calendar: Calendar = .current) -> Int {
+  func currentTotal(on date: Date = .now, calendar: Calendar = .current) -> Double {
     CounterPeriodCalculator.total(from: entries, for: self, on: date, calendar: calendar)
   }
 

@@ -1,6 +1,6 @@
 import Foundation
 
-nonisolated struct DailyValue: Identifiable {
+nonisolated struct DailyValue: Identifiable, Hashable {
   let date: Date
   let value: Double
 
@@ -24,7 +24,7 @@ nonisolated enum HistoryPeriod: String, CaseIterable, Identifiable {
 
   var dayCount: Int {
     switch self {
-    case .daily: 7
+    case .daily: 24 // hourly buckets for a single day
     case .weekly: 8
     case .monthly: 30
     }

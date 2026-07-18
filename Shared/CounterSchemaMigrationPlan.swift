@@ -12,9 +12,11 @@ enum CounterSchemaV1: VersionedSchema {
   }
 }
 
-/// The current schema: legacy calorie models are gone. `CalorieMigration` (run once, in
-/// `CounterMigrationPlan`'s custom stage) moves any of their data into a `CustomCounter`
-/// before the store is upgraded to this version.
+/// Current schema: legacy calorie models are gone. `unit` / `sortOrder` live on
+/// `CustomCounter` here. A separate V3 VersionedSchema that pointed at the *same* model
+/// types was removed — SwiftData treats identical model graphs as duplicate checksums and
+/// crashes container creation (even for a fresh store). Additive fields for existing
+/// installs are handled by bumping `AppGroup.storeFilename` instead.
 enum CounterSchemaV2: VersionedSchema {
   static let versionIdentifier = Schema.Version(2, 0, 0)
 
@@ -26,14 +28,6 @@ enum CounterSchemaV2: VersionedSchema {
 /// Drives the one-time migration from the legacy single-counter calorie model into
 /// `CustomCounter`/`CounterEntry`, and formally retires `CalorieEntry`/`AppSettings` from the
 /// live schema once that data has moved.
-///
-/// This replaces an earlier design where `CalorieMigration.migrateIfNeeded` was called by hand
-/// from `SampleDataSeeder` on every app launch, re-checking "is there legacy data?" every time
-/// via a guard clause. `SchemaMigrationPlan` is SwiftData's own mechanism for exactly this kind
-/// of migration (moving data between distinct model types, not just adding/removing a
-/// property) — it runs the stage automatically, exactly once, when a V1-shaped store is opened
-/// against a V2 schema, instead of the app re-deriving "should I check for legacy data?" itself
-/// on the hot path of every launch.
 enum CounterMigrationPlan: SchemaMigrationPlan {
   static var schemas: [any VersionedSchema.Type] {
     [CounterSchemaV1.self, CounterSchemaV2.self]

@@ -40,7 +40,7 @@ final class QuickAddSessionStore {
   init() {}
 
   @discardableResult
-  func addCounterEntryQuick(value: Int, counter: CustomCounter, in context: ModelContext) -> EntryActions.AddedEntry {
+  func addCounterEntryQuick(value: Double, counter: CustomCounter, in context: ModelContext) -> EntryActions.AddedEntry {
     let now = Date.now
 
     if
@@ -48,18 +48,18 @@ final class QuickAddSessionStore {
       now.timeIntervalSince(session.lastTap) <= Self.batchInterval,
       let entry = EntryActions.fetchCounterEntry(id: session.entryID, in: context)
     {
-      entry.value += value
+      entry.amount += value
       sessionsByCounterID[counter.id] = Session(entryID: entry.id, lastTap: now)
       AppLog.attempt("Save quick-add batch") { try context.save() }
       WatchSyncEngine.publishEntryUpsert(entry)
-      return EntryActions.AddedEntry(entryID: entry.id, value: entry.value)
+      return EntryActions.AddedEntry(entryID: entry.id, value: entry.amount)
     }
 
     let entry = CounterEntry(value: value, counter: counter)
     context.insert(entry)
     sessionsByCounterID[counter.id] = Session(entryID: entry.id, lastTap: now)
     WatchSyncEngine.publishEntryUpsert(entry)
-    return EntryActions.AddedEntry(entryID: entry.id, value: entry.value)
+    return EntryActions.AddedEntry(entryID: entry.id, value: entry.amount)
   }
 
   /// Drops every in-flight batching window. Used after a full data reset so `.shared`
