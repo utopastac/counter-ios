@@ -234,6 +234,8 @@ enum CompactCardToken {
   /// Trims the `mainNumber` font's built-in leading above the glyph so the compact
   /// card's visible gap below the header matches `headerToHeroSpacing`.
   static let heroNumberLeadingTrim: CGFloat = -23
+  /// Optical nudge so the hero text block centers against the display ring.
+  static let heroTextRingOpticalOffset: CGFloat = SpaceToken.x1
   /// Gap between the hero number row and the quick-add footer.
   static let heroToFooterSpacing: CGFloat = SpaceToken.u2
   /// Quick-add button height — 8pt shorter than the standard button height.

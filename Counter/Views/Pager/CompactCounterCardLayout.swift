@@ -64,7 +64,7 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   }
 
   private var heroRow: some View {
-    HStack(alignment: .top, spacing: SpaceToken.u2) {
+    HStack(alignment: .center, spacing: SpaceToken.u2) {
       VStack(alignment: .leading, spacing: CounterPageToken.heroSubtitleSpacing) {
         Text(heroValue)
           .counterTextStyle(.mainNumber)
@@ -81,6 +81,7 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
+      .offset(y: CompactCardToken.heroTextRingOpticalOffset)
 
       if let ringProgress {
         GoalProgressRing(
@@ -90,8 +91,6 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
           trackColor: palette.progressRingTrack(for: colorScheme),
           fillColor: palette.foreground(for: colorScheme)
         )
-        .frame(width: SizeToken.Ring.display, height: CounterPageToken.heroBandHeight, alignment: .center)
-        .padding(.top, CounterPageToken.headerContentOffset)
       }
     }
   }
