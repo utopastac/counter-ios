@@ -32,7 +32,8 @@ struct AllCountersListView: View {
     .safeAreaPadding(.bottom, SpaceToken.componentPadding)
     .scrollClipDisabled()
     .scrollDisabled(scrollDisabled)
-    .safeAreaInset(edge: .top, spacing: 0) {
+    .scrollEdgeEffectStyle(.soft, for: .top)
+    .safeAreaBar(edge: .top, spacing: 0) {
       listHeader
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -43,7 +44,7 @@ struct AllCountersListView: View {
 
   private var listHeader: some View {
     HStack {
-      Spacer()
+      Spacer(minLength: 0)
       HStack(spacing: SpaceToken.toolbarIconSpacing) {
         if let onAddCounter {
           CounterIconButton(icon: .plus, action: onAddCounter)
@@ -52,11 +53,9 @@ struct AllCountersListView: View {
           sheets.present(.appSettings)
         }
       }
+      .glassEffect(.regular.interactive())
     }
-    .padding(.horizontal, SpaceToken.pageMargin)
-    .padding(.top, SpaceToken.toolbarTop)
-    .padding(.bottom, SpaceToken.u2)
-    .background(colors.surfacePrimary)
+    .frame(maxWidth: .infinity)
   }
 
   private var listCards: some View {
