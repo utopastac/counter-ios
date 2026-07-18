@@ -115,8 +115,13 @@ enum SizeToken {
   static let toggleThumbHeight: CGFloat = 14
 
   enum Ring {
-    static let display: CGFloat = GridToken.units(8)
-    static let displayStroke: CGFloat = 16
+    /// Full counter page progress ring.
+    static let display: CGFloat = 96
+    /// Keeps a 25% stroke-to-size ratio (`displayStroke` / `display`).
+    static let displayStroke: CGFloat = 24
+    /// Mid-size ring for standard (non-compact) list cards.
+    static let card: CGFloat = GridToken.units(8)
+    static let cardStroke: CGFloat = 16
     static let `default`: CGFloat = display
     static let progressStroke: CGFloat = displayStroke
     static let overfillOutlineWidth: CGFloat = 2
@@ -202,7 +207,7 @@ enum CounterPageToken {
   /// Fixed header block height (15 grid units).
   static let headerContentHeight: CGFloat = GridToken.units(15)
   /// Height of the hero number band that the progress ring is centered within.
-  static let heroBandHeight: CGFloat = TypeStyle.x5xlSemibold.lineHeight
+  static let heroBandHeight: CGFloat = max(TypeStyle.x5xlSemibold.lineHeight, SizeToken.Ring.display)
   /// Pulls the hero subtitle closer to the main number.
   static let heroSubtitleSpacing: CGFloat = -SpaceToken.u1
   /// Vertical offset for the ring and expanded stats table.
@@ -237,9 +242,9 @@ enum CompactCardToken {
   static let toastTopOffset: CGFloat = SpaceToken.u1
 
   /// Underlay list row ring — smaller than the full display ring so a single-line row stays short.
-  static let listRingSize: CGFloat = 40
+  static let listRingSize: CGFloat = 30
   /// Keeps the same 25% stroke-to-size ratio as `SizeToken.Ring.displayStroke` / `display`.
-  static let listRingStroke: CGFloat = 10
+  static let listRingStroke: CGFloat = listRingSize * 0.25
 }
 
 /// Counters list underlay reveal — card peeks on the trailing edge when open.

@@ -62,8 +62,8 @@ struct CounterListCard: View {
       if let ringProgress {
         GoalProgressRing(
           progress: ringProgress,
-          size: SizeToken.Ring.display,
-          lineWidth: SizeToken.Ring.displayStroke,
+          size: SizeToken.Ring.card,
+          lineWidth: SizeToken.Ring.cardStroke,
           trackColor: palette.progressRingTrack(for: colorScheme),
           fillColor: palette.foreground(for: colorScheme)
         )
@@ -71,10 +71,20 @@ struct CounterListCard: View {
     }
   }
 
-  /// Single-line row: title leading, value then ring trailing — matches the compact-mode
-  /// underlay list mockup (no caption, smaller ring, rounder corners).
+  /// Single-line row: ring leading, title, value trailing — matches the compact-mode
+  /// underlay list mockup (no caption, 30pt ring, rounder corners).
   private var compactRow: some View {
     HStack(alignment: .center, spacing: SpaceToken.u1) {
+      if let ringProgress {
+        GoalProgressRing(
+          progress: ringProgress,
+          size: CompactCardToken.listRingSize,
+          lineWidth: CompactCardToken.listRingStroke,
+          trackColor: palette.progressRingTrack(for: colorScheme),
+          fillColor: palette.foreground(for: colorScheme)
+        )
+      }
+
       Text(title)
         .counterTextStyle(.listCardTitle, compact: true)
         .lineLimit(1)
@@ -86,16 +96,6 @@ struct CounterListCard: View {
         .counterTextStyle(.listCardNumberCompact, compact: true)
         .minimumScaleFactor(0.7)
         .lineLimit(1)
-
-      if let ringProgress {
-        GoalProgressRing(
-          progress: ringProgress,
-          size: CompactCardToken.listRingSize,
-          lineWidth: CompactCardToken.listRingStroke,
-          trackColor: palette.progressRingTrack(for: colorScheme),
-          fillColor: palette.foreground(for: colorScheme)
-        )
-      }
     }
   }
 }

@@ -9,7 +9,7 @@ enum WidgetTheme {
   /// Ring size the design calls for — the app's own ring shrunk down to widget scale.
   static let ringSize: CGFloat = 48
   /// Scaled to the same proportion as the app's ring (`SizeToken.Ring.displayStroke` /
-  /// `SizeToken.Ring.display` = 16 / 64 = 25%) so the stroke reads the same relative
+  /// `SizeToken.Ring.display` = 24 / 96 = 25%) so the stroke reads the same relative
   /// thickness at the smaller widget size.
   static let ringStroke: CGFloat = 12
   static let ringOverfillOutlineWidth: CGFloat = 2
@@ -97,7 +97,12 @@ struct WidgetGoalProgressRing: View {
       }
 
       if progress.overflowLoopProgress > 0 {
-        loopOverlapArc(fraction: progress.overflowLoopProgress)
+        ProgressRingArc(fraction: progress.overflowLoopProgress, lineWidth: lineWidth)
+          .stroke(fillColor, style: ringStrokeStyle)
+      }
+
+      if tipFraction > 0 {
+        ringTip(at: tipFraction)
       }
     }
     .frame(width: size, height: size)
@@ -105,19 +110,34 @@ struct WidgetGoalProgressRing: View {
     .accessibilityValue(progress.detailLabel)
   }
 
+  private var tipFraction: Double {
+    if progress.overflowLoopProgress > 0 {
+      progress.overflowLoopProgress
+    } else {
+      fillFraction
+    }
+  }
+
   private var ringStrokeStyle: StrokeStyle {
     StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
   }
 
-  private func loopOverlapArc(fraction: Double) -> some View {
+  /// Mirrors `GoalProgressRing.ringTip(at:)`.
+  private func ringTip(at fraction: Double) -> some View {
+    let tipRadius = lineWidth / 2
     let outlineWidth = WidgetTheme.ringOverfillOutlineWidth
 
     return ZStack {
-      WidgetRingTipHalo(fraction: fraction, lineWidth: lineWidth, haloRadius: lineWidth / 2 + outlineWidth)
-        .fill(overfillOutlineColor)
+      WidgetRingTipHalo(
+        fraction: fraction,
+        lineWidth: lineWidth,
+        haloRadius: tipRadius + outlineWidth,
+        frontHalfOnly: true
+      )
+      .fill(overfillOutlineColor)
 
-      ProgressRingArc(fraction: fraction, lineWidth: lineWidth)
-        .stroke(fillColor, style: ringStrokeStyle)
+      WidgetRingTipHalo(fraction: fraction, lineWidth: lineWidth, haloRadius: tipRadius)
+        .fill(fillColor)
     }
   }
 }
@@ -128,6 +148,7 @@ private struct WidgetRingTipHalo: Shape {
   var fraction: Double
   var lineWidth: CGFloat
   var haloRadius: CGFloat
+  var frontHalfOnly = false
 
   func path(in rect: CGRect) -> Path {
     let clamped = Self.lapFraction(for: fraction)
@@ -143,6 +164,19 @@ private struct WidgetRingTipHalo: Shape {
       x: center.x + radius * cos(tipAngle.radians),
       y: center.y + radius * sin(tipAngle.radians)
     )
+
+    if frontHalfOnly {
+      var path = Path()
+      path.addArc(
+        center: tipPoint,
+        radius: haloRadius,
+        startAngle: tipAngle,
+        endAngle: tipAngle + .degrees(180),
+        clockwise: false
+      )
+      path.closeSubpath()
+      return path
+    }
 
     return Path(
       ellipseIn: CGRect(

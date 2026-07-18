@@ -30,7 +30,13 @@ struct GoalProgressRing: View {
       }
 
       if progress.overflowLoopProgress > 0 {
-        loopOverlapArc(fraction: progress.overflowLoopProgress)
+        ProgressRingArc(fraction: progress.overflowLoopProgress, lineWidth: lineWidth)
+          .stroke(resolvedFillColor, style: ringStrokeStyle)
+      }
+
+      // Tip rim always sits above stroke geometry so it stays visible on and past target.
+      if tipFraction > 0 {
+        ringTip(at: tipFraction)
       }
     }
     .animation(MotionToken.ringProgress(reduceMotion: reduceMotion), value: progress.current)
@@ -39,27 +45,39 @@ struct GoalProgressRing: View {
     .accessibilityValue(progress.detailLabel)
   }
 
+  /// Tip follows the overflow lap when wrapping; otherwise the primary fill.
+  private var tipFraction: Double {
+    if progress.overflowLoopProgress > 0 {
+      progress.overflowLoopProgress
+    } else {
+      fillFraction
+    }
+  }
+
   private var ringStrokeStyle: StrokeStyle {
     StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
   }
 
-  /// Draws the wound-again lap(s) on top of the completed base ring — an Apple Watch–style
-  /// "activity ring" overlap. A halo sits underneath *only* the growing tip end of the arc
-  /// (not the fixed 12 o'clock start, which just resumes the previous lap), so the fill drawn
-  /// on top leaves a visible rim around the tip's rounded cap without touching the start cap.
+  /// Bordered tip cap stacked above the ring. Outline is only the *front* semicircle (leading
+  /// half in the direction of travel) so the rim never paints under the lap behind the tip.
   ///
-  /// `fraction` is the continuous, unwrapped `overflowLoopProgress` (can be > 1) — both shapes
-  /// below wrap it into `(0, 1]` themselves when drawing, which keeps the animatable value
-  /// monotonic and avoids it snapping backwards at each lap boundary.
-  private func loopOverlapArc(fraction: Double) -> some View {
+  /// `fraction` may be the continuous, unwrapped `overflowLoopProgress` (can be > 1) — the tip
+  /// shape wraps it into `(0, 1]` when drawing so animation stays monotonic across lap boundaries.
+  private func ringTip(at fraction: Double) -> some View {
+    let tipRadius = lineWidth / 2
     let outlineWidth = SizeToken.Ring.overfillOutlineWidth
 
     return ZStack {
-      RingTipHalo(fraction: fraction, lineWidth: lineWidth, haloRadius: lineWidth / 2 + outlineWidth)
-        .fill(colors.progressRingOverfillOutline)
+      RingTipHalo(
+        fraction: fraction,
+        lineWidth: lineWidth,
+        haloRadius: tipRadius + outlineWidth,
+        frontHalfOnly: true
+      )
+      .fill(colors.progressRingOverfillOutline)
 
-      ProgressRingArc(fraction: fraction, lineWidth: lineWidth)
-        .stroke(resolvedFillColor, style: ringStrokeStyle)
+      RingTipHalo(fraction: fraction, lineWidth: lineWidth, haloRadius: tipRadius)
+        .fill(resolvedFillColor)
     }
   }
 
@@ -72,13 +90,16 @@ struct GoalProgressRing: View {
   }
 }
 
-/// A small filled disc centered on the tip (leading end) of a `ProgressRingArc` with the same
-/// `fraction`/`lineWidth` — used to draw the overlap "halo" at just the growing end of a loop,
-/// without also touching its fixed start at 12 o'clock.
+/// A filled disc (or leading semicircle) centered on the tip of a `ProgressRingArc` with the
+/// same `fraction`/`lineWidth`. Used for the progress tip's outline rim and matching fill cap —
+/// always drawn only at the growing end, never at the fixed 12 o'clock start.
 private struct RingTipHalo: Shape {
   var fraction: Double
   var lineWidth: CGFloat
   var haloRadius: CGFloat
+  /// When true, draws only the leading semicircle (bulging in the direction of travel) so the
+  /// outline rim sits on the front of the tip and not on the half that overlaps earlier ring.
+  var frontHalfOnly = false
 
   var animatableData: Double {
     get { fraction }
@@ -99,6 +120,20 @@ private struct RingTipHalo: Shape {
       x: center.x + radius * cos(tipAngle.radians),
       y: center.y + radius * sin(tipAngle.radians)
     )
+
+    if frontHalfOnly {
+      // Diameter along the radial axis; arc sweeps CCW through the clockwise-travel direction.
+      var path = Path()
+      path.addArc(
+        center: tipPoint,
+        radius: haloRadius,
+        startAngle: tipAngle,
+        endAngle: tipAngle + .degrees(180),
+        clockwise: false
+      )
+      path.closeSubpath()
+      return path
+    }
 
     return Path(
       ellipseIn: CGRect(
