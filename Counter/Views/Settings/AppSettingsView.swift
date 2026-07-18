@@ -76,14 +76,13 @@ struct AppSettingsView: View {
               .padding(.top, SpaceToken.u1)
 
             SettingsColorSwatchGrid(selection: $monoPaletteIndex)
-              .padding(.bottom, SpaceToken.u2)
           }
 
-          SettingsDivider()
+          SettingsSectionDivider()
 
           SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
 
-          SettingsDivider()
+          SettingsSectionDivider()
 
           SettingsDestructiveRow(label: "Reset all data") {
             showResetConfirmation = true

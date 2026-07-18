@@ -47,7 +47,7 @@ struct SettingsToggleRow: View {
 
       CounterToggle(isOn: $isOn)
     }
-    .padding(.vertical, SpaceToken.u2)
+    .frame(minHeight: SizeToken.quickAddHeight)
   }
 }
 

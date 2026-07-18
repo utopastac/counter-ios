@@ -38,6 +38,7 @@ struct CreateCounterView: View {
             colourSection
           }
           .padding(.horizontal, SheetToken.horizontal)
+          .padding(.top, SettingsToken.sectionSpacing)
           .padding(.bottom, SpaceToken.u2)
         }
 

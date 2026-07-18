@@ -7,8 +7,10 @@ import SwiftUI
 // independently of the sheet's own state and save/delete logic.
 
 enum SettingsToken {
-  static let sectionHeaderOpacity: CGFloat = 0.5
-  static let sectionSpacing: CGFloat = SpaceToken.x5
+  /// Equal space above and below each section divider.
+  static let sectionSpacing: CGFloat = SpaceToken.u2
+  /// Space from a section header/label to its content.
+  static let headerToContent: CGFloat = SpaceToken.u1
 }
 
 struct SettingsSectionDivider: View {
@@ -27,8 +29,8 @@ struct SettingsSectionHeader: View {
     Text(title)
       .font(CounterTextStyle.settingsSectionHeader.font)
       .tracking(CounterTextStyle.settingsSectionHeader.tracking ?? 0)
-      .foregroundStyle(colors.textPrimary.opacity(SettingsToken.sectionHeaderOpacity))
-      .padding(.bottom, SpaceToken.u1)
+      .foregroundStyle(colors.textPrimary)
+      .padding(.bottom, SettingsToken.headerToContent)
   }
 }
 
@@ -41,11 +43,11 @@ struct SettingsLabeledField: View {
   var placeholder: String = ""
 
   var body: some View {
-    VStack(alignment: .leading, spacing: SpaceToken.x1) {
+    VStack(alignment: .leading, spacing: SettingsToken.headerToContent) {
       Text(label)
         .font(CounterTextStyle.settingsSectionHeader.font)
         .tracking(CounterTextStyle.settingsSectionHeader.tracking ?? 0)
-        .foregroundStyle(colors.textPrimary.opacity(SettingsToken.sectionHeaderOpacity))
+        .foregroundStyle(colors.textPrimary)
 
       TextField(placeholder, text: $text)
         .font(CounterTextStyle.settingsFieldValue.font)
@@ -53,7 +55,6 @@ struct SettingsLabeledField: View {
         .foregroundStyle(colors.textPrimary)
         .keyboardType(keyboardType)
     }
-    .padding(.vertical, SpaceToken.u2)
     .frame(maxWidth: .infinity, alignment: .leading)
   }
 }
@@ -77,7 +78,7 @@ struct SettingsStaticRow: View {
       Text(value)
         .counterTextStyle(.settingsRowValue)
     }
-    .padding(.vertical, SpaceToken.u2)
+    .frame(minHeight: SizeToken.quickAddHeight)
   }
 }
 
@@ -108,7 +109,7 @@ struct SettingsPickerRow<Option: Hashable>: View {
 
         CounterLucideIcon(icon: .chevronsUpDown, color: colors.textPrimary)
       }
-      .padding(.vertical, SpaceToken.u2)
+      .frame(minHeight: SizeToken.quickAddHeight)
       .frame(maxWidth: .infinity, alignment: .leading)
       .allowsHitTesting(false)
 
@@ -161,6 +162,12 @@ struct SettingsEditablePresetField: View {
         let sanitized = AmountInput.sanitizedDigits(newValue, maxLength: 6)
         if sanitized != newValue {
           text = sanitized
+          return
+        }
+        // Commit as-you-type so Done can save without an explicit blur (number pads have
+        // no return key, and sheet dismiss used to race the focus-loss commit).
+        if let parsed = AmountInput.parsePositiveInt(sanitized), parsed != value {
+          onCommit(parsed)
         }
       }
       .onChange(of: value) { _, newValue in
@@ -189,6 +196,10 @@ struct SettingsPresetGrid: View {
   @Binding var values: [Int]
   let defaults: [Int]
 
+  /// Stable slot order while editing. Re-sorting `values` on every commit used to reshuffle
+  /// the grid under the focused field (and fight the sheet's dismiss gesture).
+  @State private var slots: [Int] = []
+
   private var columns: [GridItem] {
     Array(
       repeating: GridItem(.flexible(), spacing: SizeToken.gridSpacing),
@@ -196,22 +207,27 @@ struct SettingsPresetGrid: View {
     )
   }
 
-  private var displayValues: [Int] {
-    QuickAddConfiguration.filledPresets(from: values, defaults: defaults)
-  }
-
   var body: some View {
     LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
-      ForEach(Array(displayValues.enumerated()), id: \.offset) { _, presetValue in
+      ForEach(Array(slots.enumerated()), id: \.offset) { index, presetValue in
         SettingsEditablePresetField(value: presetValue) { newValue in
-          commitPreset(replacing: presetValue, with: newValue)
+          commitPreset(at: index, to: newValue)
         }
+      }
+    }
+    .onAppear {
+      if slots.isEmpty {
+        slots = QuickAddConfiguration.filledPresets(from: values, defaults: defaults)
       }
     }
   }
 
-  private func commitPreset(replacing old: Int, with new: Int) {
-    values = QuickAddConfiguration.replacingPreset(old, with: new, in: values)
+  private func commitPreset(at index: Int, to newValue: Int) {
+    guard newValue > 0, slots.indices.contains(index) else { return }
+    slots[index] = newValue
+    // Persist the full visible set (including previously default-filled slots) without
+    // reassigning `slots`, so the focused field doesn't jump when values are normalized.
+    values = QuickAddConfiguration.normalizedPresets(slots)
   }
 }
 

@@ -25,10 +25,14 @@ struct CounterSheetHeader: View {
 
       Spacer(minLength: SpaceToken.u1)
 
-      Button(trailingTitle, action: onDone)
-        .counterTextStyle(.settingsRowLabel, color: isDoneEnabled ? .primary : .disabled)
-        .buttonStyle(.plain)
-        .disabled(!isDoneEnabled)
+      Button(trailingTitle) {
+        // Resign before the caller's dismiss so keyboard safe-area teardown finishes while
+        // the sheet still covers the pager — otherwise page content shifts up under the toolbar.
+        CounterKeyboard.resignThen(onDone)
+      }
+      .counterTextStyle(.settingsRowLabel, color: isDoneEnabled ? .primary : .disabled)
+      .buttonStyle(.plain)
+      .disabled(!isDoneEnabled)
     }
     .padding(.horizontal, SheetToken.horizontal)
     .padding(.top, SpaceToken.u2)
@@ -47,7 +51,7 @@ struct SettingsDivider: View {
   var body: some View {
     Rectangle()
       .fill(ComponentColor.settingsDividerFill(colors))
-      .frame(height: BorderToken.statsRow)
+      .frame(height: BorderToken.settingsDivider)
   }
 }
 
@@ -65,7 +69,7 @@ struct SettingsDestructiveRow: View {
 
         Spacer(minLength: SpaceToken.u1)
       }
-      .padding(.vertical, SpaceToken.u2)
+      .frame(minHeight: SizeToken.quickAddHeight)
     }
     .buttonStyle(.plain)
     .tint(colors.statusDanger)

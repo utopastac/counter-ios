@@ -53,7 +53,7 @@ struct SemanticColors: Equatable {
     textHistoryChartAxis: BaseColor.WhiteAlpha.a500,
     surfacePrimary: BaseColor.Neutral.darkBackdrop,
     borderSubtle: BaseColor.WhiteAlpha.a100,
-    borderSettingsDivider: BaseColor.WhiteAlpha.a250,
+    borderSettingsDivider: BaseColor.WhiteAlpha.a400,
     borderColourSwatch: BaseColor.WhiteAlpha.a250,
     accentPrimary: BaseColor.Brand.blue500,
     interactivePrimaryFill: BaseColor.white,
@@ -84,7 +84,7 @@ struct SemanticColors: Equatable {
     textHistoryChartAxis: BaseColor.BlackAlpha.a500,
     surfacePrimary: BaseColor.white,
     borderSubtle: BaseColor.BlackAlpha.a080,
-    borderSettingsDivider: BaseColor.black,
+    borderSettingsDivider: BaseColor.BlackAlpha.a400,
     borderColourSwatch: BaseColor.Neutral.keypadKey,
     accentPrimary: BaseColor.Brand.blue500,
     interactivePrimaryFill: BaseColor.black,
@@ -128,7 +128,7 @@ struct SemanticColors: Equatable {
     copy.textInverse = palette.buttonForeground(for: colorScheme)
     copy.textHistoryChartAxis = foreground.opacity(0.5)
     copy.borderSubtle = foreground.opacity(0.14)
-    copy.borderSettingsDivider = foreground.opacity(0.22)
+    copy.borderSettingsDivider = foreground.opacity(0.40)
     copy.borderColourSwatch = foreground.opacity(colorScheme == .dark ? 0.28 : 0.18)
     copy.interactivePrimaryFill = foreground
     copy.interactivePrimaryForeground = background

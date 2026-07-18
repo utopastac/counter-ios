@@ -85,6 +85,7 @@ enum BorderToken {
   static let toolbar: CGFloat = 2
   static let statsRow: CGFloat = 0.5
   static let statsRowStrong: CGFloat = 3
+  static let settingsDivider: CGFloat = 1
   static let colourSwatch: CGFloat = 2
 }
 

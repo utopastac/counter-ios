@@ -49,6 +49,7 @@ enum BaseColor {
     static let a550 = Color.white.opacity(0.55)
     static let a500 = Color.white.opacity(0.50)
     static let a450 = Color.white.opacity(0.45)
+    static let a400 = Color.white.opacity(0.40)
     static let a250 = Color.white.opacity(0.25)
     static let a140 = Color.white.opacity(0.14)
     static let a120 = Color.white.opacity(0.12)
@@ -57,6 +58,7 @@ enum BaseColor {
 
   enum BlackAlpha {
     static let a500 = Color.black.opacity(0.50)
+    static let a400 = Color.black.opacity(0.40)
     static let a180 = Color.black.opacity(0.18)
     static let a140 = Color.black.opacity(0.14)
     static let a120 = Color.black.opacity(0.12)

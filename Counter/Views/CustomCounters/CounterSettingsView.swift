@@ -113,6 +113,7 @@ struct CounterSettingsView: View {
             }
           }
           .padding(.horizontal, SheetToken.horizontal)
+          .padding(.top, SettingsToken.sectionSpacing)
         }
       }
       .background(colors.surfaceSheet)
@@ -198,7 +199,6 @@ struct CounterSettingsView: View {
       SettingsSectionHeader(title: "Quick add presets")
 
       SettingsPresetGrid(values: $values, defaults: defaultPresets)
-        .padding(.bottom, SpaceToken.u2)
     }
   }
 
@@ -209,7 +209,6 @@ struct CounterSettingsView: View {
       SettingsSectionHeader(title: "Colour")
 
       SettingsColorSwatchGrid(selection: $paletteIndex)
-        .padding(.bottom, SpaceToken.u2)
     }
   }
 
