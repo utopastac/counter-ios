@@ -54,6 +54,7 @@ struct AllCountersListView: View {
         }
       }
       .glassEffect(.regular.interactive())
+      .padding(.trailing, SpaceToken.u1)
     }
     .frame(maxWidth: .infinity)
   }
