@@ -403,6 +403,8 @@ struct CounterPagerView: View {
 }
 
 private struct PagerToolbarBar: View {
+  @Environment(\.counterAccent) private var counterAccent
+  @Environment(\.colorScheme) private var colorScheme
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
   let activePageTitle: String
@@ -410,6 +412,10 @@ private struct PagerToolbarBar: View {
   let onOpenCounterList: () -> Void
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
+
+  private var accentTint: Color {
+    (counterAccent ?? .forCustomCounter(at: 0)).palette.background(for: colorScheme)
+  }
 
   var body: some View {
     HStack(spacing: SpaceToken.toolbarIconSpacing) {
@@ -427,7 +433,7 @@ private struct PagerToolbarBar: View {
       }
     }
     .glassEffect(
-      .clear.interactive(),
+      .clear.tint(accentTint).interactive(),
       in: .rect(
         topLeadingRadius: RadiusToken.scrollContainer,
         bottomLeadingRadius: 0,
