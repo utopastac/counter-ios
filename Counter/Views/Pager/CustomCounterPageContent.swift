@@ -16,6 +16,7 @@ struct CustomCounterPageContent: View {
     AppAppearancePreference.monoPaletteIndexKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
+  @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
 
   var isCompact = false
   var onShowHistory: () -> Void = {}
@@ -23,6 +24,8 @@ struct CustomCounterPageContent: View {
 
   @State private var entryToast: EntryToastState?
   @State private var quickAddStore = QuickAddSessionStore()
+  @State private var impactHapticTrigger = 0
+  @State private var undoHapticTrigger = 0
 
   private var pageAccent: CounterAccent {
     let _ = (isMonoEnabled, monoPaletteIndex)
@@ -141,6 +144,12 @@ struct CustomCounterPageContent: View {
       }
     }
     .counterAccent(pageAccent)
+    .sensoryFeedback(.impact(weight: .light), trigger: impactHapticTrigger) { _, _ in
+      isHapticsEnabled
+    }
+    .sensoryFeedback(.warning, trigger: undoHapticTrigger) { _, _ in
+      isHapticsEnabled
+    }
     .onAppear {
       migratePresetButtons(for: counter)
     }
@@ -184,14 +193,14 @@ struct CustomCounterPageContent: View {
 
   private func addEntry(_ value: Int) {
     let added = EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
-    AppHaptics.impact()
+    impactHapticTrigger &+= 1
     presentToast(for: added)
     syncWidgets()
   }
 
   private func addEntryQuick(_ value: Int) {
     let added = quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
-    AppHaptics.impact()
+    impactHapticTrigger &+= 1
     presentToast(for: added)
     syncWidgets()
   }
@@ -204,7 +213,7 @@ struct CustomCounterPageContent: View {
 
   private func undoToastEntry(_ entryID: UUID) {
     EntryActions.deleteCounterEntry(id: entryID, in: modelContext)
-    AppHaptics.undo()
+    undoHapticTrigger &+= 1
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
       entryToast = nil
     }

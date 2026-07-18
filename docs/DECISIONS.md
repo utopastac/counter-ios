@@ -79,7 +79,7 @@ independent copy.
 
 **Why:** Both were previously hand-duplicated, byte-for-byte, in two places (confirmed
 identical RGB values in `CounterPaletteTokens.swift` and `WidgetPalette.swift`; identical
-`Shape` geometry in `GoalProgressView.swift` and `WidgetTheme.swift`). A widget-only fix
+`Shape` geometry in `GoalProgressRing.swift` and `WidgetTheme.swift`). A widget-only fix
 (e.g. just editing `WidgetPalette`) would have left the drift risk in place for the next
 person who changes a color or tweaks the ring math and only updates one side. `Shared/` was
 chosen over a new framework/SPM package because the codebase already uses "compile the same
@@ -294,9 +294,44 @@ extraction quota. The bar was "is this the same rule appearing more than once, a
 call site plausibly get it subtly wrong" — the same bar `EntryActions`/`QuickAddSessionStore`
 were held to earlier in this log.
 
+## `FPSMonitor` uses Observation, not `ObservableObject`
+
+**Decision:** Convert the debug FPS HUD's `FPSMonitor` from `ObservableObject` /
+`@Published` / `@StateObject` to `@Observable` / `@State`.
+
+**Why:** It was the last Combine-era observation type in the app. Everything else that
+needs a reference-type observation surface (`RevealState`, sheet helpers) already uses the
+Observation framework. Aligning the HUD removes the odd one out without changing behavior;
+`CADisplayLink` stays — there is no SwiftUI equivalent for frame sampling.
+
+## iPhone haptics via `.sensoryFeedback`; Watch keeps `AppHaptics`
+
+**Decision:** Drive iPhone impact/undo feedback with SwiftUI `.sensoryFeedback` triggers
+gated by `@AppStorage(AppAppearancePreference.hapticsEnabledKey)`. Leave
+`Shared/AppHaptics.swift` as the Watch path (`WKInterfaceDevice`).
+
+**Why:** `.sensoryFeedback` is the platform idiom for view-tied haptics on iOS and
+composes with SwiftUI state. Watch has no equivalent modifier surface for the same call
+sites, so the shared imperative helper remains there. The user preference still gates both
+paths.
+
+## `ScrollPanDisabler` kept on iOS 26
+
+**Decision:** Keep the `UIViewRepresentable` that disables the enclosing `UIScrollView`
+pan recognizer during underlay reveal, even though call sites also use `.scrollDisabled`
+for the same flag.
+
+**Why:** A removal spike was considered during the iOS 26 modernization pass. Pure
+`.scrollDisabled` is not a full substitute: it does not hard-disable the underlying
+UIKit pan recognizer or freeze an in-flight content offset the way the bridge does. iOS 26
+also stopped `simultaneousGesture` from applying to ancestor gestures (release notes
+147970990), which makes the pager/list scroll pan *more* likely to compete with the
+horizontal reveal gesture, not less. The bridge stays as the hard lock; see the doc
+comment on `ScrollPanDisabler`.
+
 ## What was deliberately left alone
 
-- **`RingTipHalo.lapFraction` (`Counter/Views/Components/GoalProgressView.swift`) duplicates
+- **`RingTipHalo.lapFraction` (`Counter/Views/Components/GoalProgressRing.swift`) duplicates
   `ProgressRingArc.lapFraction`** rather than sharing it. Both are tiny (4-line), private,
   file-local helpers on otherwise-unrelated `Shape`s; the type's own doc comment explains why
   a cross-file dependency isn't worth it for something this small and self-contained. Revisited
@@ -317,3 +352,5 @@ were held to earlier in this log.
   removing them from the schema would break migration for anyone upgrading from a version
   before `CustomCounter` existed. This is a "leave until a major version bump that drops
   legacy-upgrade support" decision, not an oversight.
+- **Liquid Glass chrome / `CounterToggle` → system `Toggle`** — deferred; branded solid
+  surfaces and the custom toggle stay as-is for this pass.

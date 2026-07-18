@@ -230,13 +230,18 @@ private struct CounterButtonSettingsSheetContent: View {
 
 private struct CounterCustomAmountSheetContent: View {
   @Environment(\.modelContext) private var modelContext
+  @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
+  @State private var impactHapticTrigger = 0
   let counter: CustomCounter
 
   var body: some View {
     CustomAmountSheet { value in
       _ = EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
-      AppHaptics.impact()
+      impactHapticTrigger &+= 1
       WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+    }
+    .sensoryFeedback(.impact(weight: .light), trigger: impactHapticTrigger) { _, _ in
+      isHapticsEnabled
     }
   }
 }

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Arc segment for a progress ring, starting at 12 o'clock and sweeping clockwise.
 ///
-/// Shared by the app's `GoalProgressRing` (`Counter/Views/Components/GoalProgressView.swift`)
+/// Shared by the app's `GoalProgressRing` (`Counter/Views/Components/GoalProgressRing.swift`)
 /// and the home-screen widget's `WidgetProgressRing` (`CounterWidgets/WidgetTheme.swift`) so
 /// the two rings stay pixel-identical instead of maintaining two copies of the same geometry.
 struct ProgressRingArc: Shape {

@@ -60,8 +60,10 @@ flowchart TB
 
 ## State management
 
-There is no MVVM layer, `ObservableObject`, or `@Observable` view model anywhere in the
-app. Views are the state:
+There is no MVVM layer and no `ObservableObject` view-model layer. Views own UI state
+directly. A few small `@Observable` helpers exist for performance or presentation plumbing
+(e.g. `RevealState` so per-frame reveal offsets don't rebuild the whole pager tree;
+`FPSMonitor` for the debug HUD) — these are not screen view models.
 
 - `@Query` drives lists directly from SwiftData (`AllCountersListView`, `CounterPagerView`,
   `WatchCounterListView`, …) — SwiftData notifies SwiftUI on changes, so this is already

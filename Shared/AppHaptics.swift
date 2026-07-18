@@ -8,6 +8,8 @@ import UIKit
 import WatchKit
 #endif
 
+/// Watch-side haptics. The iPhone app triggers feedback via SwiftUI `.sensoryFeedback`
+/// gated by `AppAppearancePreference.isHapticsEnabled` / `@AppStorage`.
 enum AppHaptics {
   static func impact() {
     guard AppAppearancePreference.isHapticsEnabled else { return }

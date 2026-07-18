@@ -1,10 +1,13 @@
+import Observation
+import QuartzCore
 import SwiftUI
 
 /// Tracks the display refresh rate using a `CADisplayLink` and publishes a
 /// smoothed frames-per-second reading roughly twice a second.
+@Observable
 @MainActor
-final class FPSMonitor: ObservableObject {
-  @Published private(set) var fps: Int = 0
+final class FPSMonitor {
+  private(set) var fps: Int = 0
 
   private var displayLink: CADisplayLink?
   private var frameCount: Int = 0
@@ -44,7 +47,7 @@ final class FPSMonitor: ObservableObject {
 /// Lightweight debug HUD pinned to a corner that reports the current frame rate.
 struct FPSCounterView: View {
   @Environment(\.semanticColors) private var colors
-  @StateObject private var monitor = FPSMonitor()
+  @State private var monitor = FPSMonitor()
 
   var body: some View {
     Text("\(monitor.fps) FPS")
