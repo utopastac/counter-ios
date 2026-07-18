@@ -164,7 +164,7 @@ against the V2 schema — not re-checked by hand on every launch (see
 ```
 Design/
   Tokens/      BaseColorTokens, SemanticColorTokens, TypographyTokens, LayoutTokens,
-               CounterPaletteTokens (20-slot counter color palette)
+               CounterPaletteTokens (10-slot counter color palette)
   Theme/       CounterPalette / CounterAccent (per-counter accent resolution),
                CounterAppearance (light/dark)
   System/      DesignSystemEnvironment — `@Entry`-backed environment values for colors/accent/pager state
@@ -178,7 +178,7 @@ purpose-named: `textPrimary`, `surfaceSheet`, …), injected via
 `.counterDesignSystemFromColorScheme()` / `.counterDesignSystemFromAppearancePreference()`
 and read with `@Environment(\.semanticColors)`. Layout uses an 8pt grid
 (`GridToken`/`SpaceToken`), and typography is expressed as named `TypeStyle`s applied via
-`.counterTextStyle(_:)`. The 20-slot counter palette (`CounterPaletteTokens`) and the
+`.counterTextStyle(_:)`. The 10-slot counter palette (`CounterPaletteTokens`) and the
 progress ring geometry (`ProgressRingArc`) are shared with the widget extension via
 `Shared/CounterPaletteData.swift` and `Shared/ProgressRingArc.swift` respectively, so the
 app and widget can't visually drift apart (see [DECISIONS.md](DECISIONS.md)).

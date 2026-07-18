@@ -1,12 +1,16 @@
 import Foundation
 
-/// Raw RGB values for the 20-slot counter palette.
+/// Raw RGB values for the counter palette.
 ///
 /// This is the single source of truth for palette colors. Both the app's
 /// `CounterPaletteTokens` (which builds `SwiftUI.Color` + naming/sorting for
 /// the settings swatch grid) and the widget extension's `WidgetPalette`
 /// (which can't depend on `Counter/Design`) build their colors from this
 /// list, so the two color tables can no longer drift apart.
+///
+/// Colors are muted and desaturated so cards feel calm rather than candy-like.
+/// Slot order is chosen so consecutive indices (new-counter defaults) alternate
+/// cool / warm / green / neutral families for clearer separation.
 struct CounterPaletteColorData {
   let name: String
   let lightRGB: (red: Double, green: Double, blue: Double)
@@ -14,108 +18,58 @@ struct CounterPaletteColorData {
 }
 
 enum CounterPaletteData {
-  static let slotCount = 20
+  static let slotCount = 10
 
   static let entries: [CounterPaletteColorData] = [
     CounterPaletteColorData(
-      name: "Yellow",
-      lightRGB: (0.97, 0.91, 0.45),
-      darkRGB: (0.24, 0.22, 0.10)
-    ),
-    CounterPaletteColorData(
-      name: "Lavender",
-      lightRGB: (0.84, 0.77, 0.96),
-      darkRGB: (0.22, 0.18, 0.30)
-    ),
-    CounterPaletteColorData(
-      name: "Mint",
-      lightRGB: (0.71, 0.92, 0.84),
-      darkRGB: (0.12, 0.26, 0.22)
-    ),
-    CounterPaletteColorData(
-      name: "Peach",
-      lightRGB: (1.0, 0.85, 0.76),
-      darkRGB: (0.30, 0.18, 0.14)
-    ),
-    CounterPaletteColorData(
-      name: "Sky",
-      lightRGB: (0.78, 0.90, 0.96),
-      darkRGB: (0.12, 0.22, 0.28)
-    ),
-    CounterPaletteColorData(
-      name: "Rose",
-      lightRGB: (0.96, 0.78, 0.84),
-      darkRGB: (0.30, 0.14, 0.20)
-    ),
-    CounterPaletteColorData(
-      name: "Lime",
-      lightRGB: (0.89, 0.94, 0.64),
-      darkRGB: (0.20, 0.24, 0.10)
-    ),
-    CounterPaletteColorData(
-      name: "Coral",
-      lightRGB: (1.0, 0.71, 0.64),
-      darkRGB: (0.32, 0.14, 0.12)
-    ),
-    CounterPaletteColorData(
       name: "Periwinkle",
-      lightRGB: (0.77, 0.83, 0.96),
-      darkRGB: (0.14, 0.18, 0.30)
+      lightRGB: (0.79, 0.81, 0.88),
+      darkRGB: (0.16, 0.17, 0.24)
     ),
     CounterPaletteColorData(
       name: "Sand",
-      lightRGB: (0.93, 0.88, 0.78),
-      darkRGB: (0.24, 0.20, 0.16)
+      lightRGB: (0.91, 0.87, 0.81),
+      darkRGB: (0.24, 0.21, 0.17)
     ),
     CounterPaletteColorData(
-      name: "White",
-      lightRGB: (0.99, 0.99, 1.0),
+      name: "Lime",
+      lightRGB: (0.84, 0.88, 0.66),
+      darkRGB: (0.20, 0.22, 0.12)
+    ),
+    CounterPaletteColorData(
+      name: "Mist",
+      lightRGB: (0.96, 0.96, 0.97),
       darkRGB: (0.22, 0.22, 0.24)
     ),
     CounterPaletteColorData(
-      name: "Fog",
-      lightRGB: (0.90, 0.91, 0.93),
-      darkRGB: (0.26, 0.27, 0.29)
+      name: "Blush",
+      lightRGB: (0.90, 0.83, 0.84),
+      darkRGB: (0.26, 0.16, 0.18)
     ),
     CounterPaletteColorData(
-      name: "Stone",
-      lightRGB: (0.86, 0.84, 0.80),
-      darkRGB: (0.22, 0.20, 0.18)
+      name: "Sage",
+      lightRGB: (0.78, 0.84, 0.80),
+      darkRGB: (0.14, 0.22, 0.18)
     ),
     CounterPaletteColorData(
-      name: "Teal",
-      lightRGB: (0.62, 0.88, 0.84),
-      darkRGB: (0.10, 0.24, 0.22)
+      name: "Sky",
+      lightRGB: (0.76, 0.84, 0.89),
+      darkRGB: (0.12, 0.20, 0.26)
     ),
     CounterPaletteColorData(
-      name: "Indigo",
-      lightRGB: (0.72, 0.74, 0.96),
-      darkRGB: (0.16, 0.14, 0.32)
+      name: "Clay",
+      lightRGB: (0.88, 0.77, 0.70),
+      darkRGB: (0.28, 0.18, 0.14)
     ),
     CounterPaletteColorData(
-      name: "Plum",
-      lightRGB: (0.88, 0.72, 0.88),
-      darkRGB: (0.26, 0.14, 0.26)
+      name: "Slate",
+      lightRGB: (0.75, 0.78, 0.83),
+      darkRGB: (0.18, 0.19, 0.23)
     ),
     CounterPaletteColorData(
-      name: "Berry",
-      lightRGB: (0.92, 0.68, 0.82),
-      darkRGB: (0.28, 0.12, 0.22)
-    ),
-    CounterPaletteColorData(
-      name: "Olive",
-      lightRGB: (0.82, 0.86, 0.62),
-      darkRGB: (0.18, 0.22, 0.10)
-    ),
-    CounterPaletteColorData(
-      name: "Apricot",
-      lightRGB: (1.0, 0.82, 0.68),
-      darkRGB: (0.32, 0.20, 0.14)
-    ),
-    CounterPaletteColorData(
-      name: "Aqua",
-      lightRGB: (0.68, 0.92, 0.96),
-      darkRGB: (0.10, 0.22, 0.26)
+      name: "Butter",
+      lightRGB: (0.92, 0.89, 0.72),
+      darkRGB: (0.24, 0.22, 0.12)
     )
   ]
 

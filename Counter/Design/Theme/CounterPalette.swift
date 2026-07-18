@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Per-counter theme derived from the shared 20-slot palette.
+/// Per-counter theme derived from the shared counter palette.
 struct CounterAccent: Equatable {
   let paletteIndex: Int
 

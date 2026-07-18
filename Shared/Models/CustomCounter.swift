@@ -52,7 +52,7 @@ final class CustomCounter {
     Self.normalizedPaletteIndex(paletteIndex)
   }
 
-  static let paletteSlotCount = 20
+  static let paletteSlotCount = 10
 
   static func normalizedPaletteIndex(_ index: Int) -> Int {
     let count = paletteSlotCount
