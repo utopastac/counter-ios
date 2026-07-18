@@ -138,6 +138,7 @@ private struct CounterPageHeader: View {
       } label: {
         ZStack(alignment: .topLeading) {
           HeroSimpleDisplay(value: heroValue, subtitle: heroSubtitle)
+            .offset(y: CounterPageToken.heroTextOpticalOffset)
             .opacity(isExpanded ? 0 : 1)
             .allowsHitTesting(!isExpanded)
 

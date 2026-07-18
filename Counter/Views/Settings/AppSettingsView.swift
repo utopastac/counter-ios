@@ -84,9 +84,6 @@ struct AppSettingsView: View {
           SettingsSectionHeader(title: "Debug")
 
           SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
-
-          SettingsSectionDivider()
-
           SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
 
           SettingsSectionDivider()

@@ -195,6 +195,8 @@ enum CounterPageToken {
   static let heroBandHeight: CGFloat = max(TypeStyle.x5xlSemibold.lineHeight, SizeToken.Ring.display)
   /// Pulls the hero subtitle closer to the main number.
   static let heroSubtitleSpacing: CGFloat = -SpaceToken.u1
+  /// Optical nudge so the hero text sits slightly above the progress ring.
+  static let heroTextOpticalOffset: CGFloat = -SpaceToken.u1
   /// Vertical offset for the ring and expanded stats table.
   static let headerContentOffset: CGFloat = SpaceToken.u1
   /// Gap between the header and quick-add actions (3 grid units).
