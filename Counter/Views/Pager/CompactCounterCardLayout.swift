@@ -29,10 +29,12 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
 
       heroRow
         .padding(.bottom, CompactCardToken.heroToFooterSpacing)
+        .padding(.horizontal, CompactCardToken.cardPadding)
 
       footer()
+        .padding(.horizontal, CompactCardToken.cardPadding)
+        .padding(.bottom, CompactCardToken.cardPadding)
     }
-    .padding(CompactCardToken.cardPadding)
     .frame(maxWidth: .infinity, alignment: .leading)
     .background(palette.background(for: colorScheme), in: RadiusToken.continuous(RadiusToken.compactCard))
     .overlay(alignment: .top) {
@@ -49,6 +51,7 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         .counterTextStyle(.pageTitle, compact: true)
         .lineLimit(1)
         .truncationMode(.tail)
+        .padding(.leading, CompactCardToken.cardPadding)
 
       Spacer(minLength: SpaceToken.u1)
 

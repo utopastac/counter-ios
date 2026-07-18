@@ -428,9 +428,6 @@ private struct PagerToolbarBar: View {
           CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
         }
       }
-      .padding(.horizontal, SpaceToken.toolbarHorizontal)
-      .padding(.top, SpaceToken.toolbarTop)
-      .padding(.bottom, SpaceToken.toolbarBottom)
 
       Rectangle()
         .fill(colors.textPrimary)

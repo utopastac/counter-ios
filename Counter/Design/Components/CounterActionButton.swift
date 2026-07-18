@@ -59,11 +59,10 @@ struct CounterIconButton: View {
     } label: {
       CounterLucideIcon(icon: icon, color: colors.textPrimary)
         .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
-        .padding(SizeToken.iconButtonHitOutset)
+        .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
         .contentShape(Rectangle())
     }
     .buttonStyle(.icon)
-    .padding(-SizeToken.iconButtonHitOutset)
   }
 }
 

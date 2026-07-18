@@ -23,13 +23,13 @@ enum SpaceToken {
   static let pageMargin: CGFloat = u1
   static let componentPadding: CGFloat = u1
 
-  static let toolbarHorizontal: CGFloat = pageMargin
-
-  static let pageTopInset: CGFloat = toolbarTop + SizeToken.iconButton + toolbarBottom + BorderToken.toolbar
+  /// Pager toolbar is flush to the card edges; icon-button hit areas provide the chrome.
+  static let pageTopInset: CGFloat = SizeToken.iconButtonHitArea + BorderToken.toolbar
   static let pageFooterBottom: CGFloat = u7
   static let toolbarTop: CGFloat = u1
   static let toolbarBottom: CGFloat = u1
-  static let toolbarIconSpacing: CGFloat = u1
+  /// Gap between adjacent icon-button frames (hit areas already provide glyph spacing).
+  static let toolbarIconSpacing: CGFloat = 0
 
   /// Inset around the vertical counter pager card from the screen edge.
   static let scrollContainerInset: CGFloat = u1
@@ -94,13 +94,10 @@ enum EntryLogPreviewLimit {
 }
 
 enum SizeToken {
+  /// Visual size of the icon glyph inside an icon button.
   static let iconButton: CGFloat = 24
-  /// Minimum tappable area for toolbar and header icon buttons.
+  /// Layout and tap size for toolbar and header icon buttons (Apple HIG minimum).
   static let iconButtonHitArea: CGFloat = 44
-
-  static var iconButtonHitOutset: CGFloat {
-    (iconButtonHitArea - iconButton) / 2
-  }
 
   static let iconGlyph: CGFloat = 20
   static let quickAddHeight: CGFloat = 44
@@ -213,7 +210,7 @@ enum CounterPageToken {
 /// Compact-mode counter card — a shrunken, non-full-screen card with compressed spacing.
 /// Row entries are hidden on-card and only shown via the entry log modal sheet.
 enum CompactCardToken {
-  /// Inner padding around a compact card's content.
+  /// Inner padding for compact card body content (hero + footer). Header icons are flush to the card edges.
   static let cardPadding: CGFloat = SpaceToken.u2
   /// Gap between stacked compact cards.
   static let cardSpacing: CGFloat = SpaceToken.u1
