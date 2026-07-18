@@ -7,8 +7,7 @@ struct CustomCounterPageContent: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
-  @Environment(\.onPagerHostedSheetPresent) private var onPagerHostedSheetPresent
-  @Environment(\.onPagerHostedSheetDismiss) private var onPagerHostedSheetDismiss
+  @Environment(CounterSheetCoordinator.self) private var sheets
   @AppStorage(
     AppAppearancePreference.monoEnabledKey,
     store: AppAppearancePreference.sharedDefaults
@@ -22,8 +21,6 @@ struct CustomCounterPageContent: View {
   var onShowHistory: () -> Void = {}
   var onShowButtonSettings: () -> Void = {}
 
-  @State private var showCustomAmount = false
-  @State private var showsEntryLog = false
   @State private var entryToast: EntryToastState?
   @State private var quickAddStore = QuickAddSessionStore()
 
@@ -81,7 +78,7 @@ struct CustomCounterPageContent: View {
           heroValue: heroValue,
           heroSubtitle: heroSubtitle,
           ringProgress: counter.currentProgress(),
-          onSelectEntryLog: { showsEntryLog = true },
+          onSelectEntryLog: { sheets.present(.entryLog(counterID: counter.id)) },
           onShowHistory: onShowHistory,
           onShowButtonSettings: onShowButtonSettings
         ) {
@@ -92,7 +89,7 @@ struct CustomCounterPageContent: View {
           ) { value in
             addEntryQuick(value)
           } onCustom: {
-            showCustomAmount = true
+            sheets.present(.customAmount(counterID: counter.id))
           }
         } toast: {
           if let entryToast {
@@ -112,7 +109,7 @@ struct CustomCounterPageContent: View {
             VStack(alignment: .leading, spacing: 0) {
               Button {
                 guard !counterRevealIsDragging else { return }
-                showsEntryLog = true
+                sheets.present(.entryLog(counterID: counter.id))
               } label: {
                 VStack(alignment: .leading, spacing: 0) {
                   CompactEntryLogPreview(items: previewItems)
@@ -131,7 +128,7 @@ struct CustomCounterPageContent: View {
             ) { value in
               addEntryQuick(value)
             } onCustom: {
-              showCustomAmount = true
+              sheets.present(.customAmount(counterID: counter.id))
             }
           } toast: {
             if let entryToast {
@@ -144,17 +141,6 @@ struct CustomCounterPageContent: View {
       }
     }
     .counterAccent(pageAccent)
-    .counterModalScrim(isPresented: showCustomAmount || showsEntryLog)
-    .sheet(isPresented: $showCustomAmount, onDismiss: onPagerHostedSheetDismiss) {
-      CustomAmountSheet { value in
-        addEntry(value)
-      }
-      .onAppear(perform: onPagerHostedSheetPresent)
-    }
-    .sheet(isPresented: $showsEntryLog, onDismiss: onPagerHostedSheetDismiss) {
-      CounterTodayLogView(counter: counter)
-        .onAppear(perform: onPagerHostedSheetPresent)
-    }
     .onAppear {
       migratePresetButtons(for: counter)
     }

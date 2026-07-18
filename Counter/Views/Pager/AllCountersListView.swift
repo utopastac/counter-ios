@@ -3,6 +3,7 @@ import SwiftData
 
 struct AllCountersListView: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(CounterSheetCoordinator.self) private var sheets
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
   @AppStorage(
     AppAppearancePreference.monoEnabledKey,
@@ -13,8 +14,6 @@ struct AllCountersListView: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
   @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
-
-  @State private var showAppSettings = false
 
   var scrollDisabled = false
   let onSelectPage: (String) -> Void
@@ -38,10 +37,7 @@ struct AllCountersListView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(colors.surfacePrimary)
-    .counterModalScrim(isPresented: showAppSettings)
-    .sheet(isPresented: $showAppSettings) {
-      AppSettingsView()
-    }
+    .counterModalScrim(isPresented: sheets.route == .appSettings)
     .counterDesignSystemFromColorScheme()
   }
 
@@ -53,7 +49,7 @@ struct AllCountersListView: View {
           CounterIconButton(icon: .plus, action: onAddCounter)
         }
         CounterIconButton(icon: .cog) {
-          showAppSettings = true
+          sheets.present(.appSettings)
         }
       }
     }

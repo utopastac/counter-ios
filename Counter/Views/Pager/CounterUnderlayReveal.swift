@@ -1,8 +1,18 @@
+import Observation
 import SwiftUI
+
+/// Holds the live reveal drag offset. Kept in a dedicated `@Observable` object so that
+/// per-frame offset changes during a drag only invalidate the two transform modifiers that
+/// read `cardOffset` — not `CounterPagerView`/`CounterUnderlayReveal` bodies, which would
+/// otherwise rebuild the entire pager + list tree on every frame and halve the framerate.
+@Observable
+final class RevealState {
+  var cardOffset: CGFloat = 0
+}
 
 /// List at fixed width underneath; counter card slides right, scales, and rounds with spring physics.
 struct CounterUnderlayReveal<List: View, Card: View>: View {
-  @Binding var cardOffset: CGFloat
+  let state: RevealState
   @Binding var isRevealed: Bool
   @Binding var locksRevealScroll: Bool
   /// Compact mode uses a narrower underlay list and a smaller open drag offset.
@@ -28,7 +38,6 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       let listWidth = RevealToken.listWidth(for: width, isCompact: isCompact)
       let maxScaleReduction = RevealToken.maxScaleReduction
       let maxOffset = RevealToken.openOffset(forCardWidth: cardWidth, isCompact: isCompact)
-      let progress = RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
 
       ZStack(alignment: .topLeading) {
         colors.surfacePrimary
@@ -38,20 +47,20 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           .frame(width: listWidth, height: height, alignment: .topLeading)
           .modifier(
             ListRevealParallax(
-              cardOffset: cardOffset,
+              state: state,
               maxOffset: maxOffset,
               maxParallax: reduceMotion ? 0 : width * listParallaxFraction,
               reduceMotion: reduceMotion
             )
           )
-          .allowsHitTesting(progress > 0.12)
+          .allowsHitTesting(isRevealed)
 
         card()
           .frame(width: cardWidth, height: height, alignment: .topLeading)
           .modifier(
             CardRevealTransform(
+              state: state,
               maxOffset: maxOffset,
-              cardOffset: cardOffset,
               maxScaleReduction: maxScaleReduction,
               cornerRadius: RadiusToken.scrollContainer
             )
@@ -105,7 +114,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           switch dragAxis {
           case .horizontal:
             isDraggingReveal = true
-            dragStartOffset = cardOffset
+            dragStartOffset = state.cardOffset
             setRevealScrollLocked(true)
           case .vertical:
             return
@@ -117,7 +126,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
         var transaction = Transaction()
         transaction.disablesAnimations = true
         withTransaction(transaction) {
-          cardOffset = rubberBand(dragStartOffset + value.translation.width, max: maxOffset)
+          state.cardOffset = rubberBand(dragStartOffset + value.translation.width, max: maxOffset)
         }
       }
       .onEnded { value in
@@ -142,7 +151,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
         )
 
         withAnimation(settleSpring) {
-          cardOffset = shouldOpen ? maxOffset : 0
+          state.cardOffset = shouldOpen ? maxOffset : 0
           isRevealed = shouldOpen
         }
         scheduleRevealScrollUnlock()
@@ -216,13 +225,13 @@ private enum RevealMetrics {
 private struct CardRevealTransform: ViewModifier {
   @Environment(\.semanticColors) private var colors
 
+  var state: RevealState
   let maxOffset: CGFloat
-  let cardOffset: CGFloat
   let maxScaleReduction: CGFloat
   let cornerRadius: CGFloat
 
   private var progress: CGFloat {
-    RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
+    RevealMetrics.progress(for: state.cardOffset, maxOffset: maxOffset)
   }
 
   private var scale: CGFloat {
@@ -230,22 +239,19 @@ private struct CardRevealTransform: ViewModifier {
   }
 
   func body(content: Content) -> some View {
-    let shadow = ShadowToken.reveal(progress: progress)
-
     content
       .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
       .overlay {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
           .strokeBorder(ComponentColor.revealCardStroke(colors, progress: progress), lineWidth: 1)
       }
-      .shadow(color: shadow.color, radius: shadow.radius, x: shadow.x, y: shadow.y)
       .scaleEffect(scale, anchor: .topTrailing)
-      .offset(x: cardOffset)
+      .offset(x: state.cardOffset)
   }
 }
 
 private struct ListRevealParallax: ViewModifier {
-  let cardOffset: CGFloat
+  var state: RevealState
   let maxOffset: CGFloat
   let maxParallax: CGFloat
   let reduceMotion: Bool
@@ -254,7 +260,7 @@ private struct ListRevealParallax: ViewModifier {
   private let hiddenBlur: CGFloat = 7
 
   private var progress: CGFloat {
-    RevealMetrics.progress(for: cardOffset, maxOffset: maxOffset)
+    RevealMetrics.progress(for: state.cardOffset, maxOffset: maxOffset)
   }
 
   private var scale: CGFloat {

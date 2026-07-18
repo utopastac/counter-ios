@@ -5,6 +5,7 @@ struct CounterPagerView: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.semanticColors) private var colors
+  @Environment(CounterSheetCoordinator.self) private var sheets
   @Query(sort: \CustomCounter.createdAt) private var counters: [CustomCounter]
   @AppStorage(
     AppAppearancePreference.monoEnabledKey,
@@ -17,11 +18,8 @@ struct CounterPagerView: View {
   @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
 
   @State private var selectedPageID: String?
-  @State private var showButtonSettings = false
-  @State private var showHistory = false
-  @State private var showAddCounter = false
   @State private var isCounterListRevealed = false
-  @State private var cardOffset: CGFloat = 0
+  @State private var revealState = RevealState()
   @State private var locksRevealScroll = false
   @State private var containerWidth: CGFloat = 0
   @State private var scrollProgress: CGFloat = 0
@@ -31,14 +29,6 @@ struct CounterPagerView: View {
   /// underlay list is open the main scroll view is disabled, and `scrollPosition` would otherwise
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
-  /// Count of page-hosted sheets (custom amount / entry log) currently presented over the pager.
-  /// Combined with the top-level sheet flags to freeze the pager's scroll inset while any sheet
-  /// is up — otherwise the system's safe-area animation on present/dismiss shifts page content.
-  @State private var pagerHostedSheetDepth = 0
-  /// Resting page height, captured while no sheet is presented. Presenting a sheet shrinks the
-  /// presenter's safe area (card-stack), which would otherwise resize pages mid-flight and shove
-  /// content up. We hold this fixed for the duration of any presentation.
-  @State private var restingPageHeight: CGFloat = 0
 
   /// Two-way `scrollPosition` binding that ignores scroll-view writebacks while the list
   /// reveal has the main pager locked — keeps create/list selection from being clobbered.
@@ -90,23 +80,21 @@ struct CounterPagerView: View {
     )
   }
 
+  // Discrete flags derived from settled state, not the live drag offset, so that per-frame
+  // `revealState.cardOffset` changes never invalidate this view's body. `locksRevealScroll` is
+  // already true for the whole duration of a drag/settle, so it stands in for "mid-transition".
   private var isRevealSettledOpen: Bool {
-    maxRevealOffset > 0 && cardOffset >= maxRevealOffset - 1
+    isCounterListRevealed && !locksRevealScroll
   }
 
   private var isRevealActive: Bool {
-    isCounterListRevealed || cardOffset > 0.5
-  }
-
-  /// True while any sheet (top-level or page-hosted) is presented over the pager.
-  private var isAnyPagerSheetPresented: Bool {
-    showButtonSettings || showHistory || showAddCounter || pagerHostedSheetDepth > 0
+    isCounterListRevealed || locksRevealScroll
   }
 
   var body: some View {
     GeometryReader { geometry in
       CounterUnderlayReveal(
-        cardOffset: $cardOffset,
+        state: revealState,
         isRevealed: $isCounterListRevealed,
         locksRevealScroll: $locksRevealScroll,
         isCompact: isCompactModeEnabled
@@ -114,7 +102,7 @@ struct CounterPagerView: View {
         AllCountersListView(
           scrollDisabled: locksRevealScroll || !isRevealSettledOpen,
           onSelectPage: selectPageFromList,
-          onAddCounter: { showAddCounter = true }
+          onAddCounter: { sheets.present(.addCounter) }
         )
       } card: {
         counterScreen()
@@ -126,7 +114,7 @@ struct CounterPagerView: View {
       .onChange(of: geometry.size.width) { _, newWidth in
         containerWidth = newWidth
         if isCounterListRevealed {
-          cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
+          revealState.cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
             for: newWidth,
             isCompact: isCompactModeEnabled
           )
@@ -137,7 +125,7 @@ struct CounterPagerView: View {
       .onChange(of: isCompactModeEnabled) { _, _ in
         guard isCounterListRevealed else { return }
         withAnimation(settleSpring) {
-          cardOffset = maxRevealOffset
+          revealState.cardOffset = maxRevealOffset
         }
       }
     }
@@ -146,24 +134,7 @@ struct CounterPagerView: View {
       colors.surfacePrimary
         .ignoresSafeArea(edges: [.top, .horizontal])
     }
-    .counterModalScrim(isPresented: showButtonSettings || showHistory || showAddCounter)
-    .sheet(isPresented: $showButtonSettings) {
-      buttonSettingsSheet
-    }
-    .sheet(isPresented: $showHistory) {
-      if let counter = activeCounter {
-        CounterHistoryView(counter: counter)
-      }
-    }
-    .sheet(isPresented: $showAddCounter) {
-      CreateCounterView { counter in
-        // Sheet dismiss carries an animation transaction — apply selection without it so the
-        // pager/compact stack jumps to the new counter instead of fighting the dismiss spring.
-        scrollToPage(counter.id.uuidString, animated: false)
-      }
-    }
-    .environment(\.onPagerHostedSheetPresent, notePagerHostedSheetPresented)
-    .environment(\.onPagerHostedSheetDismiss, notePagerHostedSheetDismissed)
+    .counterModalScrim(isPresented: sheets.isPagerScrimActive)
     .onChange(of: counters.map(\.id)) { _, ids in
       let idStrings = ids.map(\.uuidString)
       if let selectedPageID, !idStrings.contains(selectedPageID) {
@@ -187,41 +158,27 @@ struct CounterPagerView: View {
         selectedPageID = counters.first?.id.uuidString
       }
       syncScrollProgressToSelectedPage()
+      sheets.onCounterCreated = { counter in
+        scrollToPage(counter.id.uuidString, animated: false)
+      }
     }
   }
 
   @ViewBuilder
   private func counterScreen() -> some View {
     GeometryReader { geometry in
-      // While a sheet is up, hold the last resting height so the safe-area animation can't
-      // resize pages and shift content. Otherwise track the live geometry height.
-      let pageHeight = (isAnyPagerSheetPresented && restingPageHeight > 0)
-        ? restingPageHeight
-        : geometry.size.height
-
       ZStack(alignment: .top) {
         CounterPagerPageRoot {
           if isCompactModeEnabled {
             compactStack()
           } else {
-            verticalPager(height: pageHeight)
+            verticalPager(height: geometry.size.height)
           }
         }
 
         if !isCompactModeEnabled {
           pagerToolbar
         }
-      }
-      .onAppear {
-        if restingPageHeight < 1 {
-          restingPageHeight = geometry.size.height
-        }
-      }
-      .onChange(of: geometry.size.height) { _, newHeight in
-        guard !isAnyPagerSheetPresented, newHeight > 1 else { return }
-        // Only grow: the presenter's safe-area animation only ever shrinks height transiently,
-        // and a page-hosted sheet's "presented" flag can arrive a beat late.
-        restingPageHeight = max(restingPageHeight, newHeight)
       }
     }
     .counterAccent(activeAccent)
@@ -249,7 +206,6 @@ struct CounterPagerView: View {
         .padding(.bottom, SpaceToken.pageFooterBottom)
         .background {
           ScrollPanDisabler(isDisabled: locksRevealScroll)
-          PagerScrollInsetLock(isSheetPresented: isAnyPagerSheetPresented)
         }
       }
       .scrollContentBackground(.hidden)
@@ -283,7 +239,6 @@ struct CounterPagerView: View {
         .counterPagerBackground(accents: pageAccents, scrollProgress: scrollProgress)
         .background {
           ScrollPanDisabler(isDisabled: locksRevealScroll)
-          PagerScrollInsetLock(isSheetPresented: isAnyPagerSheetPresented)
         }
       }
       .scrollContentBackground(.hidden)
@@ -345,12 +300,14 @@ struct CounterPagerView: View {
     queuePagerScroll(to: pageID)
   }
 
-  private func notePagerHostedSheetPresented() {
-    pagerHostedSheetDepth += 1
+  private func presentHistory(for counter: CustomCounter) {
+    selectedPageID = counter.id.uuidString
+    sheets.present(.history(counterID: counter.id))
   }
 
-  private func notePagerHostedSheetDismissed() {
-    pagerHostedSheetDepth = max(0, pagerHostedSheetDepth - 1)
+  private func presentButtonSettings(for counter: CustomCounter) {
+    selectedPageID = counter.id.uuidString
+    sheets.present(.buttonSettings(counterID: counter.id))
   }
 
   private func queuePagerScroll(to pageID: String) {
@@ -391,14 +348,14 @@ struct CounterPagerView: View {
     }
     if animated {
       withAnimation(settleSpring) {
-        cardOffset = maxOffset
+        revealState.cardOffset = maxOffset
         isCounterListRevealed = true
       }
     } else {
       var transaction = Transaction()
       transaction.disablesAnimations = true
       withTransaction(transaction) {
-        cardOffset = maxOffset
+        revealState.cardOffset = maxOffset
         isCounterListRevealed = true
       }
     }
@@ -409,16 +366,6 @@ struct CounterPagerView: View {
     hasAppliedInitialListReveal = true
     containerWidth = width
     openCounterList(animated: false)
-  }
-
-  private func presentHistory(for counter: CustomCounter) {
-    selectedPageID = counter.id.uuidString
-    showHistory = true
-  }
-
-  private func presentButtonSettings(for counter: CustomCounter) {
-    selectedPageID = counter.id.uuidString
-    showButtonSettings = true
   }
 
   private func selectPageFromList(_ pageID: String) {
@@ -432,7 +379,7 @@ struct CounterPagerView: View {
       reduceMotion: reduceMotion
     )
     withAnimation(settleSpring) {
-      cardOffset = 0
+      revealState.cardOffset = 0
       isCounterListRevealed = false
     }
   }
@@ -443,46 +390,15 @@ struct CounterPagerView: View {
       activePageTitle: activePageTitle,
       isPagerDragging: isPagerDragging,
       onOpenCounterList: { openCounterList() },
-      onShowHistory: { showHistory = true },
-      onShowButtonSettings: { showButtonSettings = true }
+      onShowHistory: {
+        guard let counter = activeCounter else { return }
+        sheets.present(.history(counterID: counter.id))
+      },
+      onShowButtonSettings: {
+        guard let counter = activeCounter else { return }
+        sheets.present(.buttonSettings(counterID: counter.id))
+      }
     )
-  }
-
-  @ViewBuilder
-  private var buttonSettingsSheet: some View {
-    if let counter = activeCounter {
-      CounterSettingsView(
-        title: "\(counter.name) Settings",
-        values: counter.buttonValues,
-        counter: counter,
-        onSave: { save in
-          if let name = save.name {
-            counter.name = CustomCounter.normalizedName(from: name)
-          }
-          counter.buttonValues = save.buttonValues
-          counter.goal = save.goal
-          counter.resetPeriod = save.resetPeriod
-          counter.resetAnchorDay = save.resetAnchorDay
-          counter.goalDirection = save.goalDirection
-          if let paletteIndex = save.paletteIndex {
-            counter.paletteIndex = paletteIndex
-          }
-          WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-          WatchSyncEngine.publishCounterUpsert(counter)
-        },
-        onDelete: {
-          let counterID = counter.id
-          modelContext.delete(counter)
-          WidgetSnapshot.reloadTimelines()
-          WatchSyncEngine.publishCounterDelete(counterID)
-        },
-        onPaletteChange: { index in
-          counter.paletteIndex = index
-          WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-          WatchSyncEngine.publishCounterUpsert(counter)
-        }
-      )
-    }
   }
 }
 
@@ -529,5 +445,6 @@ private struct PagerToolbarBar: View {
 #Preview {
   PreviewModel.appRoot {
     CounterPagerView()
+      .environment(CounterSheetCoordinator())
   }
 }
