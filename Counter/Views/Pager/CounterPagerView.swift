@@ -403,7 +403,6 @@ struct CounterPagerView: View {
 }
 
 private struct PagerToolbarBar: View {
-  @Environment(\.semanticColors) private var colors
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
   let activePageTitle: String
@@ -413,28 +412,29 @@ private struct PagerToolbarBar: View {
   let onShowButtonSettings: () -> Void
 
   var body: some View {
-    VStack(spacing: 0) {
+    HStack(spacing: SpaceToken.toolbarIconSpacing) {
+      CounterIconButton(icon: .listSortDescending, action: onOpenCounterList)
+
+      Text(activePageTitle)
+        .counterTextStyle(.pageTitle)
+        .lineLimit(1)
+
+      Spacer(minLength: 0)
+
       HStack(spacing: SpaceToken.toolbarIconSpacing) {
-        CounterIconButton(icon: .listSortDescending, action: onOpenCounterList)
-
-        Text(activePageTitle)
-          .counterTextStyle(.pageTitle)
-          .lineLimit(1)
-
-        Spacer(minLength: 0)
-
-        HStack(spacing: SpaceToken.toolbarIconSpacing) {
-          CounterIconButton(icon: .chartBar, action: onShowHistory)
-          CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
-        }
+        CounterIconButton(icon: .chartBar, action: onShowHistory)
+        CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
       }
-
-      Rectangle()
-        .fill(colors.textPrimary)
-        .frame(height: BorderToken.toolbar)
-        .padding(.horizontal, SpaceToken.u1)
     }
-    .background(Color.clear)
+    .glassEffect(
+      .clear.interactive(),
+      in: .rect(
+        topLeadingRadius: RadiusToken.scrollContainer,
+        bottomLeadingRadius: 0,
+        bottomTrailingRadius: 0,
+        topTrailingRadius: RadiusToken.scrollContainer
+      )
+    )
     .allowsHitTesting(!isPagerDragging && !counterRevealIsDragging)
   }
 }

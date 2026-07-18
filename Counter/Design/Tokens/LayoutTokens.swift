@@ -24,7 +24,7 @@ enum SpaceToken {
   static let componentPadding: CGFloat = u1
 
   /// Pager toolbar is flush to the card edges; icon-button hit areas provide the chrome.
-  static let pageTopInset: CGFloat = SizeToken.iconButtonHitArea + BorderToken.toolbar
+  static let pageTopInset: CGFloat = SizeToken.iconButtonHitArea
   static let pageFooterBottom: CGFloat = u7
   static let toolbarTop: CGFloat = u1
   static let toolbarBottom: CGFloat = u1
