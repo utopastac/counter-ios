@@ -41,6 +41,7 @@ struct CreateCounterView: View {
           .padding(.top, SettingsToken.sectionSpacing)
           .padding(.bottom, SpaceToken.u2)
         }
+        .settingsKeyboardDismissible()
 
         PrimaryCapsuleButton(title: "Create", isEnabled: canCreate) {
           createCounter()

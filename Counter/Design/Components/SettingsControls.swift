@@ -20,6 +20,21 @@ struct SettingsSectionDivider: View {
   }
 }
 
+extension View {
+  /// Gives number-pad settings fields (which have no return key) a way to dismiss the keyboard
+  /// without committing the whole sheet: an accessory "Done" button plus swipe-to-dismiss.
+  /// Apply to the sheet's `ScrollView`.
+  func settingsKeyboardDismissible() -> some View {
+    scrollDismissesKeyboard(.interactively)
+      .toolbar {
+        ToolbarItemGroup(placement: .keyboard) {
+          Spacer(minLength: 0)
+          Button("Done") { CounterKeyboard.resign() }
+        }
+      }
+  }
+}
+
 struct SettingsSectionHeader: View {
   @Environment(\.semanticColors) private var colors
 

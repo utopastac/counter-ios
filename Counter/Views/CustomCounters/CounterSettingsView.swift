@@ -115,6 +115,7 @@ struct CounterSettingsView: View {
           .padding(.horizontal, SheetToken.horizontal)
           .padding(.top, SettingsToken.sectionSpacing)
         }
+        .settingsKeyboardDismissible()
       }
       .background(colors.surfaceSheet)
       .toolbar(.hidden, for: .navigationBar)
