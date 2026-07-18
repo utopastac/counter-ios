@@ -8,6 +8,7 @@ enum AppAppearancePreference {
   static let monoEnabledKey = "app.appearance.monoEnabled"
   static let monoPaletteIndexKey = "app.appearance.monoPaletteIndex"
   static let quickAddBatchWindowKey = "app.quickAdd.batchWindowSeconds"
+  static let fpsCounterEnabledKey = "app.debug.fpsCounterEnabled"
 
   /// Shared across the app, widgets, and watch for prefs that affect other processes.
   static let sharedDefaults = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
@@ -34,6 +35,10 @@ enum AppAppearancePreference {
 
   static var isCompactModeEnabled: Bool {
     UserDefaults.standard.bool(forKey: compactModeEnabledKey)
+  }
+
+  static var isFPSCounterEnabled: Bool {
+    UserDefaults.standard.bool(forKey: fpsCounterEnabledKey)
   }
 
   static var monoPaletteIndex: Int {

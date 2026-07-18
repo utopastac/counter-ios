@@ -122,6 +122,7 @@
 		Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
 		Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
 		L10000010000000000000003 /* GoalProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000002 /* GoalProgressRing.swift */; };
+		FPS0000010000000000000001 /* FPSCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPS0000010000000000000002 /* FPSCounterView.swift */; };
 		N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000001 /* CompactQuickAddGrid.swift */; };
 		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
 		P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* CounterUnderlayReveal.swift */; };
@@ -399,6 +400,7 @@
 		CCPFILEREF01 /* CustomCounter+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomCounter+Progress.swift"; sourceTree = "<group>"; };
 		LOGFILEREF01 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		L20000010000000000000002 /* GoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressRing.swift; sourceTree = "<group>"; };
+		FPS0000010000000000000002 /* FPSCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FPSCounterView.swift; sourceTree = "<group>"; };
 		N20000010000000000000001 /* CompactQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactQuickAddGrid.swift; sourceTree = "<group>"; };
 		N20000010000000000000002 /* CustomAmountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountSheet.swift; sourceTree = "<group>"; };
 		P20000010000000000000001 /* CounterUnderlayReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUnderlayReveal.swift; sourceTree = "<group>"; };
@@ -619,6 +621,7 @@
 			isa = PBXGroup;
 			children = (
 				BS20000010000000000000001 /* BootSplashView.swift */,
+				FPS0000010000000000000002 /* FPSCounterView.swift */,
 				L20000010000000000000002 /* GoalProgressRing.swift */,
 				N20000010000000000000001 /* CompactQuickAddGrid.swift */,
 				N20000010000000000000002 /* CustomAmountSheet.swift */,
@@ -972,6 +975,7 @@
 				T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */,
 				SCTBFCOUNTER01 /* SettingsControls.swift in Sources */,
 				L10000010000000000000003 /* GoalProgressRing.swift in Sources */,
+				FPS0000010000000000000001 /* FPSCounterView.swift in Sources */,
 				N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */,
 				N10000010000000000000002 /* CustomAmountSheet.swift in Sources */,
 				S10000010000000000000001 /* AmountEntrySheet.swift in Sources */,

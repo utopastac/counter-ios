@@ -21,6 +21,7 @@ struct AppSettingsView: View {
     AppAppearancePreference.quickAddBatchWindowKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
+  @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
   @State private var showResetConfirmation = false
 
   private var colors: SemanticColors {
@@ -77,6 +78,12 @@ struct AppSettingsView: View {
 
             SettingsColorSwatchGrid(selection: $monoPaletteIndex)
           }
+
+          SettingsSectionDivider()
+
+          SettingsSectionHeader(title: "Debug")
+
+          SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
 
           SettingsSectionDivider()
 

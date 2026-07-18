@@ -128,18 +128,6 @@ enum SizeToken {
   }
 }
 
-enum ShadowToken {
-  static func reveal(progress: CGFloat) -> (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
-    let amount = min(max(progress, 0), 1)
-    return (
-      Color.black.opacity(0.15 * amount),
-      20 * amount,
-      -4 * amount,
-      4 * amount
-    )
-  }
-}
-
 enum OpacityToken {
   static let iconButtonPressed: CGFloat = 0.5
   /// Primary action buttons when `isEnabled` is false.
