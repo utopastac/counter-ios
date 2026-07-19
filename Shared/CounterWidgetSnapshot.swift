@@ -1,6 +1,6 @@
 import Foundation
 
-struct CounterWidgetSnapshot {
+nonisolated struct CounterWidgetSnapshot: Sendable {
   let counterID: String
   let title: String
   let paletteIndex: Int
@@ -13,7 +13,7 @@ struct CounterWidgetSnapshot {
   let buttonValues: [Double]
   let lastUpdated: Date?
   /// Configured counter was deleted (or otherwise missing from the store).
-  var isUnavailable: Bool = false
+  let isUnavailable: Bool
 
   /// Gallery / loading sample — not shown when a real counter is missing.
   static let placeholder = CounterWidgetSnapshot(
@@ -24,7 +24,8 @@ struct CounterWidgetSnapshot {
     heroSubtitle: "Remaining",
     ringProgress: GoalProgress(current: 0, goal: 2200, direction: .countDown),
     buttonValues: [5, 10, 25, 50, 100, 200, 500, 1000],
-    lastUpdated: .now
+    lastUpdated: nil,
+    isUnavailable: false
   )
 
   /// Explicit empty state when the widget's counter no longer exists.
@@ -36,7 +37,7 @@ struct CounterWidgetSnapshot {
     heroSubtitle: "Edit widget to choose another",
     ringProgress: nil,
     buttonValues: [],
-    lastUpdated: .now,
+    lastUpdated: nil,
     isUnavailable: true
   )
 }

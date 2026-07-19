@@ -36,16 +36,25 @@ struct CounterWidgetProvider: AppIntentTimelineProvider {
   }
 
   private func currentEntry(for counter: CounterWidgetEntity?) -> CounterWidgetEntry {
-    let resolved = counter ?? CounterWidgetEntity(
-      id: "preview",
-      title: CustomCounter.untitledName,
-      paletteIndex: 0,
-      sortOrder: 0
-    )
+    guard let counter else {
+      // Unconfigured, or WidgetKit cleared a deleted selection — never use the gallery
+      // "preview" placeholder here (that path always looks like a live Calories counter).
+      return CounterWidgetEntry(
+        date: .now,
+        counter: CounterWidgetEntity(
+          id: "",
+          title: "Counter removed",
+          paletteIndex: 0,
+          sortOrder: 0
+        ),
+        snapshot: .unavailable
+      )
+    }
+
     return CounterWidgetEntry(
       date: .now,
-      counter: resolved,
-      snapshot: WidgetCounterLoader.snapshot(for: resolved.id)
+      counter: counter,
+      snapshot: WidgetCounterLoader.snapshot(for: counter.id)
     )
   }
 }

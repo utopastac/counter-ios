@@ -144,6 +144,8 @@ struct AllCountersListView: View {
       modelContext.delete(counter)
       WatchSyncEngine.publishCounterDelete(counterID)
     }
+    // Persist before the widget extension opens its own store context.
+    AppLog.attempt("Save counter delete") { try modelContext.save() }
     WidgetSnapshot.reloadTimelines()
   }
 

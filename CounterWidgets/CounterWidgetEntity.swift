@@ -19,8 +19,16 @@ struct CounterWidgetEntity: AppEntity, Sendable {
 struct CounterWidgetEntityQuery: EntityQuery {
   func entities(for identifiers: [CounterWidgetEntity.ID]) async throws -> [CounterWidgetEntity] {
     let all = try await allEntities()
-    return identifiers.compactMap { id in
+    // Keep a stub for missing IDs so WidgetKit doesn't clear the configuration to nil
+    // (nil was previously mapped to the gallery "preview" placeholder).
+    return identifiers.map { id in
       all.first { $0.id == id }
+        ?? CounterWidgetEntity(
+          id: id,
+          title: "Counter removed",
+          paletteIndex: 0,
+          sortOrder: 0
+        )
     }
   }
 

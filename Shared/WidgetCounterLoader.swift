@@ -8,12 +8,14 @@ enum WidgetCounterLoader {
       return .placeholder
     }
 
-    let context = ModelContext(SharedModelContainer.shared)
-
     guard
-      let uuid = UUID(uuidString: counterID),
-      let counter = fetchCounter(id: uuid, in: context)
+      let uuid = UUID(uuidString: counterID)
     else {
+      return .unavailable
+    }
+
+    let context = ModelContext(SharedModelContainer.shared)
+    guard let counter = fetchCounter(id: uuid, in: context) else {
       return .unavailable
     }
 
@@ -58,7 +60,8 @@ enum WidgetCounterLoader {
       heroSubtitle: progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption.capitalized,
       ringProgress: progress,
       buttonValues: widgetButtonValues(from: buttons),
-      lastUpdated: .now
+      lastUpdated: .now,
+      isUnavailable: false
     )
   }
 

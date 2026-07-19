@@ -216,6 +216,7 @@ private struct CounterButtonSettingsSheetContent: View {
       onDelete: {
         let counterID = counter.id
         modelContext.delete(counter)
+        AppLog.attempt("Save counter delete") { try modelContext.save() }
         WidgetSnapshot.reloadTimelines()
         WatchSyncEngine.publishCounterDelete(counterID)
       },
