@@ -29,13 +29,6 @@ struct CounterPagerView: View {
   /// underlay list is open the main scroll view is disabled, and `scrollPosition` would otherwise
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
-  @State private var pagerSnapTrigger = 0
-
-  private var selectedPageIndex: Int {
-    guard let selectedPageID,
-          let index = pageIDs.firstIndex(of: selectedPageID) else { return 0 }
-    return index
-  }
 
   /// Two-way `scrollPosition` binding that ignores scroll-view writebacks while the list
   /// reveal has the main pager locked — keeps create/list selection from being clobbered.
@@ -73,7 +66,7 @@ struct CounterPagerView: View {
   }
 
   private var activePageTitle: String {
-    guard let activeCounter else { return CustomCounter.untitledName }
+    guard let activeCounter else { return "" }
     return CounterFormatting.titleWithUnit(
       name: activeCounter.name,
       unit: activeCounter.effectiveUnit
@@ -148,6 +141,12 @@ struct CounterPagerView: View {
     .counterModalScrim(isPresented: sheets.isPagerScrimActive)
     .onChange(of: counters.map(\.id)) { _, ids in
       let idStrings = ids.map(\.uuidString)
+      if idStrings.isEmpty {
+        selectedPageID = nil
+        pendingScrollPageID = nil
+        pagerScrollState.value = 0
+        return
+      }
       if let selectedPageID, !idStrings.contains(selectedPageID) {
         scrollToPage(idStrings.first, animated: false)
         return
@@ -161,7 +160,6 @@ struct CounterPagerView: View {
     }
     .onChange(of: isRevealActive) { wasActive, active in
       if wasActive && !active {
-        pagerSnapTrigger += 1
         flushPendingScroll()
         syncScrollProgressToSelectedPage()
       }
@@ -182,7 +180,9 @@ struct CounterPagerView: View {
     GeometryReader { geometry in
       ZStack(alignment: .top) {
         CounterPagerPageRoot {
-          if isCompactModeEnabled {
+          if counters.isEmpty {
+            emptyCountersState
+          } else if isCompactModeEnabled {
             compactStack()
           } else {
             verticalPager(height: geometry.size.height)
@@ -190,7 +190,11 @@ struct CounterPagerView: View {
         }
 
         if !isCompactModeEnabled {
-          pagerToolbar
+          if counters.isEmpty {
+            emptyPagerToolbar
+          } else {
+            pagerToolbar
+          }
         }
       }
     }
@@ -198,6 +202,49 @@ struct CounterPagerView: View {
     .counterDesignSystemFromColorScheme()
     .counterPagerDragging(isPagerDragging)
     .ignoresSafeArea(.keyboard)
+  }
+
+  private var emptyCountersState: some View {
+    VStack(spacing: SpaceToken.u3) {
+      Spacer(minLength: 0)
+
+      Text("No counters yet")
+        .counterTextStyle(.pageTitle)
+        .multilineTextAlignment(.center)
+
+      Text("Add a counter to start tracking.")
+        .counterTextStyle(.bodySecondary, color: .secondary)
+        .multilineTextAlignment(.center)
+
+      PrimaryCapsuleButton(title: "Add counter", isEnabled: true) {
+        sheets.present(.addCounter)
+      }
+      .padding(.top, SpaceToken.u1)
+      .frame(maxWidth: GridToken.units(20))
+
+      Spacer(minLength: 0)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .padding(.horizontal, SpaceToken.u4)
+    .background(colors.surfacePrimary)
+  }
+
+  private var emptyPagerToolbar: some View {
+    HStack(spacing: SpaceToken.toolbarIconSpacing) {
+      CounterIconButton(icon: .listSortDescending) {
+        openCounterList()
+      }
+      Spacer(minLength: 0)
+    }
+    .glassEffect(
+      .clear.interactive(),
+      in: .rect(
+        topLeadingRadius: RadiusToken.scrollContainer,
+        bottomLeadingRadius: 0,
+        bottomTrailingRadius: 0,
+        topTrailingRadius: RadiusToken.scrollContainer
+      )
+    )
   }
 
   @ViewBuilder
@@ -251,11 +298,7 @@ struct CounterPagerView: View {
         .scrollTargetLayout()
         .counterPagerBackground(accents: pageAccents, scrollState: pagerScrollState)
         .background {
-          ScrollPanDisabler(
-            isDisabled: locksRevealScroll,
-            pageIndex: selectedPageIndex,
-            snapTrigger: pagerSnapTrigger
-          )
+          ScrollPanDisabler(isDisabled: locksRevealScroll)
         }
       }
       .scrollContentBackground(.hidden)

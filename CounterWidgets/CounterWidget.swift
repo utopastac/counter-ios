@@ -94,12 +94,39 @@ struct CounterWidgetView: View {
   }
 
   var body: some View {
-    switch family {
-    case .systemMedium:
-      mediumLayout
-    default:
-      smallLayout
+    if entry.snapshot.isUnavailable {
+      unavailableLayout
+    } else {
+      switch family {
+      case .systemMedium:
+        mediumLayout
+      default:
+        smallLayout
+      }
     }
+  }
+
+  /// Minimal copy when the configured counter was deleted — no ring, totals, or quick-add.
+  private var unavailableLayout: some View {
+    VStack(alignment: .leading, spacing: 6) {
+      Text(entry.snapshot.title)
+        .font(WidgetTheme.smallTitleFont)
+        .tracking(WidgetTheme.smallTitleTracking)
+        .foregroundStyle(colors.foreground)
+        .lineLimit(2)
+        .minimumScaleFactor(0.8)
+
+      Text(entry.snapshot.heroSubtitle)
+        .font(WidgetTheme.smallSubtitleFont)
+        .tracking(WidgetTheme.smallSubtitleTracking)
+        .foregroundStyle(colors.foreground.opacity(0.7))
+        .lineLimit(3)
+        .minimumScaleFactor(0.8)
+
+      Spacer(minLength: 0)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    .padding(widgetMargins)
   }
 
   private var smallLayout: some View {
@@ -189,6 +216,16 @@ struct CounterWidgetView: View {
   )
 }
 
+#Preview("Unavailable", as: .systemSmall) {
+  CounterWidget()
+} timeline: {
+  CounterWidgetEntry(
+    date: .now,
+    counter: CounterWidgetEntity(id: "missing", title: "Calories", paletteIndex: 0, sortOrder: 0),
+    snapshot: .unavailable
+  )
+}
+
 #Preview(as: .systemMedium) {
   CounterWidget()
 } timeline: {
@@ -196,5 +233,15 @@ struct CounterWidgetView: View {
     date: .now,
     counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0, sortOrder: 0),
     snapshot: .placeholder
+  )
+}
+
+#Preview("Unavailable", as: .systemMedium) {
+  CounterWidget()
+} timeline: {
+  CounterWidgetEntry(
+    date: .now,
+    counter: CounterWidgetEntity(id: "missing", title: "Calories", paletteIndex: 0, sortOrder: 0),
+    snapshot: .unavailable
   )
 }

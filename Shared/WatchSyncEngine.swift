@@ -134,15 +134,12 @@ enum WatchSyncEngine {
 
   @MainActor
   private static func deleteAllData(in context: ModelContext) {
+    // Cascade delete clears entries — do not delete `CounterEntry` afterward.
     for counter in (try? context.fetch(FetchDescriptor<CustomCounter>())) ?? [] {
       context.delete(counter)
     }
-    for entry in (try? context.fetch(FetchDescriptor<CounterEntry>())) ?? [] {
-      context.delete(entry)
-    }
     QuickAddSessionStore.shared.reset()
     WidgetSnapshot.clear()
-    UserDefaults.standard.set(true, forKey: "app.data.suppressSampleSeeding")
   }
 
   @MainActor

@@ -68,6 +68,9 @@ enum RadiusToken {
   /// Compact-mode counter card corners.
   static let compactCard: CGFloat = xl
 
+  /// Compact-mode underlay list row corners (8pt).
+  static let compactListCard: CGFloat = xs
+
   static var continuousButton: RoundedRectangle {
     RoundedRectangle(cornerRadius: button, style: .continuous)
   }

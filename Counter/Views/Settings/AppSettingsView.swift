@@ -131,7 +131,7 @@ struct AppSettingsView: View {
       }
       Button("Cancel", role: .cancel) {}
     } message: {
-      Text("This will permanently delete everything. This can't be undone.")
+      Text("This deletes your counters and restores the default Calories, Protein, and Money setup.")
     }
   }
 

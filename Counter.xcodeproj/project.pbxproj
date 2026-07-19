@@ -133,6 +133,8 @@
 		CTWATCHBF001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
 		CTWIDGETBF001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
 		CTGBFCounterTemplate01 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
+		CTGBFAppDataReset01 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
+		CTGBFSampleDataSeeder01 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
 		CE10000010000000000000001 /* CounterExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20000010000000000000001 /* CounterExport.swift */; };
 		CFV10000010000000000000001 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
 		CTGBFCounterFormValidation01 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
@@ -141,6 +143,7 @@
 		AITBFTEST01 /* AmountInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AITFILEREF01 /* AmountInputTests.swift */; };
 		CFTBFTEST01 /* CounterFormattingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFTFILEREF01 /* CounterFormattingTests.swift */; };
 		CATBFTEST01 /* CounterAmountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CATFILEREF01 /* CounterAmountTests.swift */; };
+		ADRBFTEST01 /* AppDataResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADRFILEREF01 /* AppDataResetTests.swift */; };
 		CFVTBFTEST01 /* CounterFormValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFVTFILEREF01 /* CounterFormValidationTests.swift */; };
 		HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCTFILEREF01 /* HistoryChartScaleTests.swift */; };
 
@@ -376,6 +379,7 @@
 		AITFILEREF01 /* AmountInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputTests.swift; sourceTree = "<group>"; };
 		CFTFILEREF01 /* CounterFormattingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormattingTests.swift; sourceTree = "<group>"; };
 		CATFILEREF01 /* CounterAmountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterAmountTests.swift; sourceTree = "<group>"; };
+		ADRFILEREF01 /* AppDataResetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataResetTests.swift; sourceTree = "<group>"; };
 		CFVTFILEREF01 /* CounterFormValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidationTests.swift; sourceTree = "<group>"; };
 		HCTFILEREF01 /* HistoryChartScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScaleTests.swift; sourceTree = "<group>"; };
 		QAS20000010000000000000001 /* QuickAddSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStore.swift; sourceTree = "<group>"; };
@@ -471,6 +475,7 @@
 				AITFILEREF01 /* AmountInputTests.swift */,
 				CFTFILEREF01 /* CounterFormattingTests.swift */,
 				CATFILEREF01 /* CounterAmountTests.swift */,
+				ADRFILEREF01 /* AppDataResetTests.swift */,
 				CFVTFILEREF01 /* CounterFormValidationTests.swift */,
 				HCTFILEREF01 /* HistoryChartScaleTests.swift */,
 			);
@@ -1140,6 +1145,8 @@
 				WS10000010000000000000011 /* WatchSyncEngine.swift in Sources */,
 				QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */,
 				CTGBFCounterTemplate01 /* CounterTemplate.swift in Sources */,
+				CTGBFAppDataReset01 /* AppDataReset.swift in Sources */,
+				CTGBFSampleDataSeeder01 /* SampleDataSeeder.swift in Sources */,
 				LOGBFTEST01 /* Logging.swift in Sources */,
 				CTGBFAmountInput01 /* AmountInput.swift in Sources */,
 				CTGBFCounterFormatting01 /* CounterFormatting.swift in Sources */,
@@ -1149,6 +1156,7 @@
 				AITBFTEST01 /* AmountInputTests.swift in Sources */,
 				CFTBFTEST01 /* CounterFormattingTests.swift in Sources */,
 				CATBFTEST01 /* CounterAmountTests.swift in Sources */,
+				ADRBFTEST01 /* AppDataResetTests.swift in Sources */,
 				CFVTBFTEST01 /* CounterFormValidationTests.swift in Sources */,
 				HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */,
 			);

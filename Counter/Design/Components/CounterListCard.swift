@@ -30,7 +30,7 @@ struct CounterListCard: View {
       .frame(maxWidth: .infinity, alignment: .leading)
       .background(
         palette.background(for: colorScheme),
-        in: RadiusToken.continuous(isCompact ? RadiusToken.compactCard : RadiusToken.listCard)
+        in: RadiusToken.continuous(isCompact ? RadiusToken.compactListCard : RadiusToken.listCard)
       )
       .counterAccent(accent)
     }

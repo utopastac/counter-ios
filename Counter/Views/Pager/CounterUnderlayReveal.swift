@@ -108,10 +108,6 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
     DragGesture(minimumDistance: 0, coordinateSpace: .local)
       .onChanged { value in
         if dragAxis == nil {
-          // Provisional lock while the axis is still ambiguous — without this, a diagonal
-          // swipe to open the list can nudge the vertical pager (most visible on later pages).
-          setRevealScrollLocked(true)
-
           dragAxis = resolvedDragAxis(for: value)
           guard let dragAxis else { return }
 
@@ -119,8 +115,8 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           case .horizontal:
             isDraggingReveal = true
             dragStartOffset = state.cardOffset
+            setRevealScrollLocked(true)
           case .vertical:
-            setRevealScrollLocked(false)
             return
           }
         }

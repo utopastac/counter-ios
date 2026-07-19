@@ -12,15 +12,31 @@ struct CounterWidgetSnapshot {
   let ringProgress: GoalProgress?
   let buttonValues: [Double]
   let lastUpdated: Date?
+  /// Configured counter was deleted (or otherwise missing from the store).
+  var isUnavailable: Bool = false
 
+  /// Gallery / loading sample — not shown when a real counter is missing.
   static let placeholder = CounterWidgetSnapshot(
     counterID: "preview",
-    title: CustomCounter.untitledName,
+    title: "Calories",
     paletteIndex: 0,
-    heroValue: "2424",
-    heroSubtitle: "80 Remaining",
-    ringProgress: GoalProgress(current: 2424, goal: 2504, direction: .countDown),
+    heroValue: "0",
+    heroSubtitle: "Remaining",
+    ringProgress: GoalProgress(current: 0, goal: 2200, direction: .countDown),
     buttonValues: [5, 10, 25, 50, 100, 200, 500, 1000],
     lastUpdated: .now
+  )
+
+  /// Explicit empty state when the widget's counter no longer exists.
+  static let unavailable = CounterWidgetSnapshot(
+    counterID: "",
+    title: "Counter removed",
+    paletteIndex: 0,
+    heroValue: "",
+    heroSubtitle: "Edit widget to choose another",
+    ringProgress: nil,
+    buttonValues: [],
+    lastUpdated: .now,
+    isUnavailable: true
   )
 }

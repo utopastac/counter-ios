@@ -3,13 +3,18 @@ import SwiftData
 
 enum WidgetCounterLoader {
   static func snapshot(for counterID: String) -> CounterWidgetSnapshot {
+    // Gallery / WidgetKit placeholder id — keep the sample layout.
+    if counterID == "preview" {
+      return .placeholder
+    }
+
     let context = ModelContext(SharedModelContainer.shared)
 
     guard
       let uuid = UUID(uuidString: counterID),
       let counter = fetchCounter(id: uuid, in: context)
     else {
-      return .placeholder
+      return .unavailable
     }
 
     return counterSnapshot(counter: counter, context: context)

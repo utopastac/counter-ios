@@ -11,11 +11,6 @@ import UIKit
 /// reveal-vs-pager gesture arbitration.
 struct ScrollPanDisabler: UIViewRepresentable {
   let isDisabled: Bool
-  /// Zero-based index of the selected pager page — used to snap content offset back to a
-  /// page boundary whenever reveal locking toggles.
-  var pageIndex: Int = 0
-  /// Bump to force a snap (e.g. when the list reveal fully closes).
-  var snapTrigger: Int = 0
 
   func makeCoordinator() -> Coordinator {
     Coordinator()
@@ -29,30 +24,26 @@ struct ScrollPanDisabler: UIViewRepresentable {
   }
 
   func updateUIView(_ uiView: UIView, context: Context) {
-    context.coordinator.apply(
-      isDisabled: isDisabled,
-      pageIndex: pageIndex,
-      snapTrigger: snapTrigger,
-      from: uiView
-    )
+    context.coordinator.setDisabled(isDisabled, from: uiView)
   }
 
   final class Coordinator {
     private weak var scrollView: UIScrollView?
-    private var lastDisabled: Bool?
-    private var lastSnapTrigger = 0
+    private var wasDisabled = false
 
-    func apply(isDisabled: Bool, pageIndex: Int, snapTrigger: Int, from view: UIView) {
+    func setDisabled(_ disabled: Bool, from view: UIView) {
       resolveScrollView(from: view)
       guard let scrollView else { return }
 
-      if snapTrigger != lastSnapTrigger || lastDisabled != isDisabled {
-        snapToPage(scrollView, pageIndex: pageIndex)
-        lastSnapTrigger = snapTrigger
-        lastDisabled = isDisabled
+      if disabled, !wasDisabled {
+        // Horizontal reveal just locked scrolling — snap to the nearest page first. The last
+        // page often sits slightly off-boundary (paging rounding / bounce), and freezing that
+        // drift is what causes the visible jump when the drag ends.
+        snapToNearestPageBoundary(scrollView)
       }
+      wasDisabled = disabled
 
-      if isDisabled {
+      if disabled {
         scrollView.panGestureRecognizer.isEnabled = false
         scrollView.setContentOffset(scrollView.contentOffset, animated: false)
         return
@@ -61,11 +52,19 @@ struct ScrollPanDisabler: UIViewRepresentable {
       scrollView.panGestureRecognizer.isEnabled = true
     }
 
-    private func snapToPage(_ scrollView: UIScrollView, pageIndex: Int) {
+    /// Aligns to the closest page boundary using live scroll-view metrics (not SwiftUI state).
+    private func snapToNearestPageBoundary(_ scrollView: UIScrollView) {
       let pageHeight = scrollView.bounds.height
-      guard pageHeight > 1, pageIndex >= 0 else { return }
+      guard pageHeight > 1 else { return }
 
-      let targetY = CGFloat(pageIndex) * pageHeight
+      let pageCount = max(1, Int(round(scrollView.contentSize.height / pageHeight)))
+      let maxPageIndex = max(0, pageCount - 1)
+      let nearestPage = min(
+        max(Int(round(scrollView.contentOffset.y / pageHeight)), 0),
+        maxPageIndex
+      )
+      let targetY = CGFloat(nearestPage) * pageHeight
+
       if abs(scrollView.contentOffset.y - targetY) > 0.5 {
         scrollView.setContentOffset(CGPoint(x: 0, y: targetY), animated: false)
       }
