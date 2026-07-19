@@ -43,12 +43,9 @@
 		C10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
 		C10000010000000000000002 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
 		C10000010000000000000003 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
-		CSMP10000010000000000001 /* CounterSchemaMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */; };
 		C10000010000000000000004 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
-		C10000010000000000000005 /* CalorieEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000005 /* CalorieEntry.swift */; };
 		C10000010000000000000006 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
 		C10000010000000000000007 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
-		C10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
 		C10000010000000000000009 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		C10000010000000000000011 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
 		WS10000010000000000000001 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
@@ -59,12 +56,9 @@
 		D10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
 		D10000010000000000000002 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
 		D10000010000000000000003 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
-		CSMP10000010000000000002 /* CounterSchemaMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */; };
 		D10000010000000000000004 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
-		D10000010000000000000005 /* CalorieEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000005 /* CalorieEntry.swift */; };
 		D10000010000000000000006 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
 		D10000010000000000000007 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
-		D10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
 		D10000010000000000000010 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		D10000010000000000000012 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
 		WS10000010000000000000004 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
@@ -101,9 +95,6 @@
 		DS10000010000000000000021 /* CounterListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000021 /* CounterListCard.swift */; };
 		DS10000010000000000000022 /* CounterLucideIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000022 /* CounterLucideIcon.swift */; };
 		DS10000010000000000000028 /* EntryAddedToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000028 /* EntryAddedToast.swift */; };
-		CM10000010000000000000001 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
-		CM10000010000000000000002 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
-		CM10000010000000000000003 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
 		SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
 		SD10000010000000000000002 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
 		S10000010000000000000001 /* AmountEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = S20000010000000000000001 /* AmountEntrySheet.swift */; };
@@ -167,10 +158,8 @@
 		LOGBFWIDGET01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
 		LOGBFTEST01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
 
-		CTGBFCalorieEntry01 /* CalorieEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000005 /* CalorieEntry.swift */; };
 		CTGBFCustomCounter01 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
 		CTGBFCounterEntry01 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
-		CTGBFAppSettings01 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
 		CTGBFHistoryTypes01 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
 		CTGBFCounterPeriod01 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
 		CTGBFGoalDirection01 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
@@ -182,9 +171,6 @@
 		CTGBFWidgetSnapshot01 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		CTGBFCustomCounterProgress01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
 		QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
-		CTGBFCalorieMigration01 /* CalorieMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CM20000010000000000000001 /* CalorieMigration.swift */; };
-		CSMP10000010000000000004 /* CounterSchemaMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */; };
-		SMPTBFTEST01 /* SchemaMigrationPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SMPTFILEREF01 /* SchemaMigrationPlanTests.swift */; };
 		QASTBFTEST01 /* QuickAddSessionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = QASTFILEREF01 /* QuickAddSessionStoreTests.swift */; };
 
 		TMCBFTEST01 /* TestModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMCFILEREF01 /* TestModelContainer.swift */; };
@@ -194,7 +180,6 @@
 		QCTBFTEST01 /* QuickAddConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = QCTFILEREF01 /* QuickAddConfigurationTests.swift */; };
 		CMTBFTEST01 /* CustomCounterModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CMTFILEREF01 /* CustomCounterModelTests.swift */; };
 		EATBFTEST01 /* EntryActionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EATFILEREF01 /* EntryActionsTests.swift */; };
-		CMGBFTEST01 /* CalorieMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CMGFILEREF01 /* CalorieMigrationTests.swift */; };
 
 		IW10000010000000000000001 /* CounterHomeWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */; };
 		IW10000010000000000000002 /* CounterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000002 /* CounterWidget.swift */; };
@@ -212,11 +197,8 @@
 		IW10000010000000000000007 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
 		IW10000010000000000000008 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		IW10000010000000000000010 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
-		CSMP10000010000000000003 /* CounterSchemaMigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */; };
-		IW10000010000000000000011 /* CalorieEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000005 /* CalorieEntry.swift */; };
 		IW10000010000000000000012 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
 		IW10000010000000000000013 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
-		IW10000010000000000000014 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000008 /* AppSettings.swift */; };
 		IW10000010000000000000015 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
 		QAS10000010000000000000003 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
 		IW10000010000000000000016 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
@@ -324,10 +306,8 @@
 		C20000010000000000000002 /* HistoryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTypes.swift; sourceTree = "<group>"; };
 		C20000010000000000000003 /* SharedModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModelContainer.swift; sourceTree = "<group>"; };
 		C20000010000000000000004 /* HistoryAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAggregator.swift; sourceTree = "<group>"; };
-		C20000010000000000000005 /* CalorieEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieEntry.swift; sourceTree = "<group>"; };
 		C20000010000000000000006 /* CustomCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounter.swift; sourceTree = "<group>"; };
 		C20000010000000000000007 /* CounterEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterEntry.swift; sourceTree = "<group>"; };
-		C20000010000000000000008 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		C20000010000000000000009 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
 		C20000010000000000000011 /* EntryActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActions.swift; sourceTree = "<group>"; };
 		WS20000010000000000000001 /* WatchSyncDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncDTO.swift; sourceTree = "<group>"; };
@@ -365,8 +345,6 @@
 		QCTFILEREF01 /* QuickAddConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddConfigurationTests.swift; sourceTree = "<group>"; };
 		CMTFILEREF01 /* CustomCounterModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterModelTests.swift; sourceTree = "<group>"; };
 		EATFILEREF01 /* EntryActionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActionsTests.swift; sourceTree = "<group>"; };
-		CMGFILEREF01 /* CalorieMigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieMigrationTests.swift; sourceTree = "<group>"; };
-		SMPTFILEREF01 /* SchemaMigrationPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaMigrationPlanTests.swift; sourceTree = "<group>"; };
 		QASTFILEREF01 /* QuickAddSessionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStoreTests.swift; sourceTree = "<group>"; };
 		DS20000010000000000000001 /* BaseColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseColorTokens.swift; sourceTree = "<group>"; };
 		DS20000010000000000000002 /* SemanticColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticColorTokens.swift; sourceTree = "<group>"; };
@@ -400,8 +378,6 @@
 		CATFILEREF01 /* CounterAmountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterAmountTests.swift; sourceTree = "<group>"; };
 		CFVTFILEREF01 /* CounterFormValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidationTests.swift; sourceTree = "<group>"; };
 		HCTFILEREF01 /* HistoryChartScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScaleTests.swift; sourceTree = "<group>"; };
-		CM20000010000000000000001 /* CalorieMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieMigration.swift; sourceTree = "<group>"; };
-		CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSchemaMigrationPlan.swift; sourceTree = "<group>"; };
 		QAS20000010000000000000001 /* QuickAddSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStore.swift; sourceTree = "<group>"; };
 		SD20000010000000000000001 /* SampleDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataSeeder.swift; sourceTree = "<group>"; };
 		S20000010000000000000001 /* AmountEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountEntrySheet.swift; sourceTree = "<group>"; };
@@ -491,8 +467,6 @@
 				QCTFILEREF01 /* QuickAddConfigurationTests.swift */,
 				CMTFILEREF01 /* CustomCounterModelTests.swift */,
 				EATFILEREF01 /* EntryActionsTests.swift */,
-				CMGFILEREF01 /* CalorieMigrationTests.swift */,
-				SMPTFILEREF01 /* SchemaMigrationPlanTests.swift */,
 				QASTFILEREF01 /* QuickAddSessionStoreTests.swift */,
 				AITFILEREF01 /* AmountInputTests.swift */,
 				CFTFILEREF01 /* CounterFormattingTests.swift */,
@@ -678,7 +652,6 @@
 				C20000010000000000000001 /* AppGroup.swift */,
 				C20000010000000000000002 /* HistoryTypes.swift */,
 				C20000010000000000000003 /* SharedModelContainer.swift */,
-				CSMP20000010000000000001 /* CounterSchemaMigrationPlan.swift */,
 				C20000010000000000000004 /* HistoryAggregator.swift */,
 				K20000010000000000000001 /* CounterPeriod.swift */,
 				L20000010000000000000001 /* GoalDirection.swift */,
@@ -695,7 +668,6 @@
 				QAS20000010000000000000001 /* QuickAddSessionStore.swift */,
 				C20000010000000000000012 /* PreviewModel.swift */,
 				SD20000010000000000000001 /* SampleDataSeeder.swift */,
-				CM20000010000000000000001 /* CalorieMigration.swift */,
 				AP20000010000000000000002 /* AppAppearancePreference.swift */,
 				AH20000010000000000000001 /* AppHaptics.swift */,
 				ADR20000010000000000000001 /* AppDataReset.swift */,
@@ -718,10 +690,8 @@
 		C50000010000000000000002 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C20000010000000000000005 /* CalorieEntry.swift */,
 				C20000010000000000000006 /* CustomCounter.swift */,
 				C20000010000000000000007 /* CounterEntry.swift */,
-				C20000010000000000000008 /* AppSettings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1018,12 +988,9 @@
 				C10000010000000000000001 /* AppGroup.swift in Sources */,
 				C10000010000000000000002 /* HistoryTypes.swift in Sources */,
 				C10000010000000000000003 /* SharedModelContainer.swift in Sources */,
-				CSMP10000010000000000001 /* CounterSchemaMigrationPlan.swift in Sources */,
 				C10000010000000000000004 /* HistoryAggregator.swift in Sources */,
-				C10000010000000000000005 /* CalorieEntry.swift in Sources */,
 				C10000010000000000000006 /* CustomCounter.swift in Sources */,
 				C10000010000000000000007 /* CounterEntry.swift in Sources */,
-				C10000010000000000000008 /* AppSettings.swift in Sources */,
 				C10000010000000000000009 /* WidgetSnapshot.swift in Sources */,
 				C10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */,
 				C10000010000000000000011 /* EntryActions.swift in Sources */,
@@ -1036,7 +1003,6 @@
 				Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */,
 				SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */,
 				ADR10000010000000000000001 /* AppDataReset.swift in Sources */,
-				CM10000010000000000000001 /* CalorieMigration.swift in Sources */,
 				C10000010000000000000012 /* PreviewModel.swift in Sources */,
 				CPDBFCOUNTER01 /* CounterPaletteData.swift in Sources */,
 				PRABFCOUNTER01 /* ProgressRingArc.swift in Sources */,
@@ -1071,12 +1037,9 @@
 				AH10000010000000000000002 /* AppHaptics.swift in Sources */,
 				D10000010000000000000002 /* HistoryTypes.swift in Sources */,
 				D10000010000000000000003 /* SharedModelContainer.swift in Sources */,
-				CSMP10000010000000000002 /* CounterSchemaMigrationPlan.swift in Sources */,
 				D10000010000000000000004 /* HistoryAggregator.swift in Sources */,
-				D10000010000000000000005 /* CalorieEntry.swift in Sources */,
 				D10000010000000000000006 /* CustomCounter.swift in Sources */,
 				D10000010000000000000007 /* CounterEntry.swift in Sources */,
-				D10000010000000000000008 /* AppSettings.swift in Sources */,
 				D10000010000000000000010 /* WidgetSnapshot.swift in Sources */,
 				D10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */,
 				D10000010000000000000012 /* EntryActions.swift in Sources */,
@@ -1089,7 +1052,6 @@
 				Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */,
 				SD10000010000000000000002 /* SampleDataSeeder.swift in Sources */,
 				ADR10000010000000000000002 /* AppDataReset.swift in Sources */,
-				CM10000010000000000000002 /* CalorieMigration.swift in Sources */,
 				CTWATCHBF001 /* CounterTemplate.swift in Sources */,
 				CCPBFWATCH01 /* CustomCounter+Progress.swift in Sources */,
 				CFWATCHBFCounterFormatting01 /* CounterFormatting.swift in Sources */,
@@ -1129,13 +1091,9 @@
 				AP10000010000000000000004 /* AppAppearancePreference.swift in Sources */,
 				IW10000010000000000000008 /* WidgetSnapshot.swift in Sources */,
 				IW10000010000000000000010 /* SharedModelContainer.swift in Sources */,
-				CSMP10000010000000000003 /* CounterSchemaMigrationPlan.swift in Sources */,
-				CM10000010000000000000003 /* CalorieMigration.swift in Sources */,
 				CTWIDGETBF001 /* CounterTemplate.swift in Sources */,
-				IW10000010000000000000011 /* CalorieEntry.swift in Sources */,
 				IW10000010000000000000012 /* CustomCounter.swift in Sources */,
 				IW10000010000000000000013 /* CounterEntry.swift in Sources */,
-				IW10000010000000000000014 /* AppSettings.swift in Sources */,
 				IW10000010000000000000015 /* EntryActions.swift in Sources */,
 				WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */,
 				WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */,
@@ -1163,14 +1121,9 @@
 				QCTBFTEST01 /* QuickAddConfigurationTests.swift in Sources */,
 				CMTBFTEST01 /* CustomCounterModelTests.swift in Sources */,
 				EATBFTEST01 /* EntryActionsTests.swift in Sources */,
-				CMGBFTEST01 /* CalorieMigrationTests.swift in Sources */,
-				CSMP10000010000000000004 /* CounterSchemaMigrationPlan.swift in Sources */,
-				SMPTBFTEST01 /* SchemaMigrationPlanTests.swift in Sources */,
 				QASTBFTEST01 /* QuickAddSessionStoreTests.swift in Sources */,
-				CTGBFCalorieEntry01 /* CalorieEntry.swift in Sources */,
 				CTGBFCustomCounter01 /* CustomCounter.swift in Sources */,
 				CTGBFCounterEntry01 /* CounterEntry.swift in Sources */,
-				CTGBFAppSettings01 /* AppSettings.swift in Sources */,
 				CTGBFHistoryTypes01 /* HistoryTypes.swift in Sources */,
 				CTGBFCounterPeriod01 /* CounterPeriod.swift in Sources */,
 				CTGBFGoalDirection01 /* GoalDirection.swift in Sources */,
@@ -1186,7 +1139,6 @@
 				WS10000010000000000000010 /* WatchSyncDTO.swift in Sources */,
 				WS10000010000000000000011 /* WatchSyncEngine.swift in Sources */,
 				QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */,
-				CTGBFCalorieMigration01 /* CalorieMigration.swift in Sources */,
 				CTGBFCounterTemplate01 /* CounterTemplate.swift in Sources */,
 				LOGBFTEST01 /* Logging.swift in Sources */,
 				CTGBFAmountInput01 /* AmountInput.swift in Sources */,

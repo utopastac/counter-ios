@@ -8,12 +8,6 @@ enum SampleDataSeeder {
 
   @MainActor
   static func seedIfNeeded(in context: ModelContext) {
-    // Legacy calorie -> CustomCounter migration now runs automatically, once, at store-open
-    // time via `CounterMigrationPlan` (see `SharedModelContainer`), so it doesn't need to be
-    // re-checked here on every launch.
-    migratePaletteIndicesIfNeeded(in: context)
-    migrateSortOrderIfNeeded(in: context)
-    migrateAmountsToHundredthsIfNeeded(in: context)
     guard !UserDefaults.standard.bool(forKey: AppDataReset.suppressSampleSeedingKey) else { return }
     guard !hasAnyCounters(in: context) else { return }
 
@@ -99,72 +93,5 @@ enum SampleDataSeeder {
     (0..<count).map { index in
       base.addingTimeInterval(TimeInterval(-index * 60))
     }
-  }
-
-  private static let paletteMigrationKey = "counterPaletteIndexMigrated"
-  private static let sortOrderMigrationKey = "counterSortOrderMigrated"
-  static let hundredthsMigrationKey = "counterAmountsAreHundredths"
-
-  @MainActor
-  private static func migratePaletteIndicesIfNeeded(in context: ModelContext) {
-    guard !UserDefaults.standard.bool(forKey: paletteMigrationKey) else { return }
-
-    let descriptor = FetchDescriptor<CustomCounter>(
-      sortBy: [SortDescriptor(\.createdAt)]
-    )
-    let counters = (try? context.fetch(descriptor)) ?? []
-
-    for (index, counter) in counters.enumerated() {
-      counter.paletteIndex = CustomCounter.normalizedPaletteIndex(index)
-    }
-
-    AppLog.attempt("Save palette index migration") { try context.save() }
-    UserDefaults.standard.set(true, forKey: paletteMigrationKey)
-  }
-
-  /// After V2→V3, existing counters may all have `sortOrder == 0`. Seed from `createdAt`
-  /// once so pager/list order matches the previous creation order.
-  @MainActor
-  private static func migrateSortOrderIfNeeded(in context: ModelContext) {
-    guard !UserDefaults.standard.bool(forKey: sortOrderMigrationKey) else { return }
-
-    let descriptor = FetchDescriptor<CustomCounter>(
-      sortBy: [SortDescriptor(\.createdAt)]
-    )
-    let counters = (try? context.fetch(descriptor)) ?? []
-    let allZero = counters.allSatisfy { $0.sortOrder == 0 }
-    guard allZero, counters.count > 1 else {
-      UserDefaults.standard.set(true, forKey: sortOrderMigrationKey)
-      return
-    }
-
-    for (index, counter) in counters.enumerated() {
-      counter.sortOrder = Double(index)
-    }
-
-    AppLog.attempt("Save sort order migration") { try context.save() }
-    UserDefaults.standard.set(true, forKey: sortOrderMigrationKey)
-  }
-
-  /// Whole-number Int amounts shipped before decimals. Multiply by 100 once so storage
-  /// matches `CounterAmount` hundredths (2200 → 220_000 = 2200.00).
-  @MainActor
-  private static func migrateAmountsToHundredthsIfNeeded(in context: ModelContext) {
-    guard !UserDefaults.standard.bool(forKey: hundredthsMigrationKey) else { return }
-
-    let counters = (try? context.fetch(FetchDescriptor<CustomCounter>())) ?? []
-    for counter in counters {
-      counter.buttonValues = counter.buttonValues.map { $0 * CounterAmount.scale }
-      counter.sliderMax *= CounterAmount.scale
-      if let goal = counter.goal {
-        counter.goal = goal * CounterAmount.scale
-      }
-      for entry in counter.entries {
-        entry.value *= CounterAmount.scale
-      }
-    }
-
-    AppLog.attempt("Save hundredths amount migration") { try context.save() }
-    UserDefaults.standard.set(true, forKey: hundredthsMigrationKey)
   }
 }

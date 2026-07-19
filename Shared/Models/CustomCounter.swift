@@ -19,15 +19,13 @@ final class CustomCounter {
   var id: UUID
   var name: String
   var unit: String = ""
-  /// Quick-add presets stored as hundredths (`CounterAmount`).
-  var buttonValues: [Int]
-  var sliderMax: Int
+  var buttonValues: [Double]
+  var sliderMax: Double
   var createdAt: Date
-  /// Lower values appear first in the pager and list. Defaults to `createdAt` so existing
-  /// counters keep their prior order after migration.
+  /// Lower values appear first in the pager and list.
   var sortOrder: Double = 0
-  /// Goal stored as hundredths (`CounterAmount`); `nil` / non-positive means no goal.
-  var goal: Int?
+  /// `nil` / non-positive means no goal.
+  var goal: Double?
   var resetPeriodRaw: String = CounterResetPeriod.daily.rawValue
   var resetAnchorDay: Int = 1
   var goalDirectionRaw: String = GoalDirection.countUp.rawValue
@@ -51,11 +49,11 @@ final class CustomCounter {
     self.id = UUID()
     self.name = name
     self.unit = Self.normalizedUnit(from: unit)
-    self.buttonValues = CounterAmount.storage(buttonValues ?? Self.defaultButtonValues)
-    self.sliderMax = CounterAmount.storage(sliderMax)
+    self.buttonValues = CounterAmount.rounded(buttonValues ?? Self.defaultButtonValues)
+    self.sliderMax = CounterAmount.rounded(sliderMax)
     self.createdAt = createdAt
     self.sortOrder = sortOrder ?? createdAt.timeIntervalSinceReferenceDate
-    self.goal = goal.map { CounterAmount.storage($0) }
+    self.goal = goal.map(CounterAmount.rounded)
     self.resetPeriodRaw = resetPeriod.rawValue
     self.resetAnchorDay = resetAnchorDay
     self.goalDirectionRaw = goalDirection.rawValue
@@ -97,8 +95,8 @@ final class CustomCounter {
   }
 
   var presetAmounts: [Double] {
-    get { CounterAmount.display(buttonValues) }
-    set { buttonValues = CounterAmount.storage(newValue) }
+    get { buttonValues }
+    set { buttonValues = CounterAmount.rounded(newValue) }
   }
 
   var effectiveResetAnchorDay: Int {
@@ -113,8 +111,7 @@ final class CustomCounter {
   }
 
   var effectiveSliderMax: Double {
-    let display = CounterAmount.display(sliderMax)
-    return display > 0 ? display : 100
+    sliderMax > 0 ? sliderMax : 100
   }
 
   var hasGoal: Bool {
@@ -124,6 +121,6 @@ final class CustomCounter {
 
   var effectiveGoal: Double? {
     guard let goal, goal > 0 else { return nil }
-    return CounterAmount.display(goal)
+    return goal
   }
 }

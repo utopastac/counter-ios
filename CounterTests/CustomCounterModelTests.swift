@@ -14,7 +14,7 @@ struct CustomCounterModelTests {
     counter.goal = -10
     #expect(counter.effectiveGoal == nil)
 
-    counter.goal = CounterAmount.storage(50)
+    counter.goal = 50
     #expect(counter.effectiveGoal == 50)
     #expect(counter.hasGoal)
   }
@@ -48,7 +48,7 @@ struct CustomCounterModelTests {
     let counter = CustomCounter(name: "Water", sliderMax: 0)
     #expect(counter.effectiveSliderMax == 100)
 
-    counter.sliderMax = CounterAmount.storage(250)
+    counter.sliderMax = 250
     #expect(counter.effectiveSliderMax == 250)
   }
 

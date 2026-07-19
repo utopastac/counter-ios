@@ -171,8 +171,7 @@ nonisolated enum CounterPeriodCalculator {
     calendar: Calendar = .current
   ) -> Double {
     let range = currentRange(for: counter, on: date, calendar: calendar)
-    let totalHundredths = entries(from: allEntries, in: range).reduce(0) { $0 + $1.value }
-    return CounterAmount.display(totalHundredths)
+    return entries(from: allEntries, in: range).reduce(0) { $0 + $1.value }
   }
 
   /// `counter`'s own entries, filtered to its current period and sorted newest-first — the

@@ -3,10 +3,9 @@ import SwiftData
 
 nonisolated enum HistoryAggregator {
   static func counterTotal(from entries: [CounterEntry], on date: Date) -> Double {
-    let hundredths = entries
+    entries
       .filter { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
       .reduce(0) { $0 + $1.value }
-    return CounterAmount.display(hundredths)
   }
 
   static func groupedCounterTotals(
@@ -24,11 +23,11 @@ nonisolated enum HistoryAggregator {
               let hourEnd = calendar.date(byAdding: .hour, value: 1, to: hourStart)
         else { return nil }
 
-        let hundredths = entries
+        let total = entries
           .filter { $0.timestamp >= hourStart && $0.timestamp < hourEnd }
           .reduce(0) { $0 + $1.value }
 
-        return DailyValue(date: hourStart, value: CounterAmount.display(hundredths))
+        return DailyValue(date: hourStart, value: total)
       }
 
     case .weekly:
@@ -39,14 +38,14 @@ nonisolated enum HistoryAggregator {
           let weekEndExclusive = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: weekEnd))
         else { return nil }
 
-        let hundredths = entries
+        let total = entries
           .filter {
             $0.timestamp >= calendar.startOfDay(for: weekStart) &&
             $0.timestamp < weekEndExclusive
           }
           .reduce(0) { $0 + $1.value }
 
-        return DailyValue(date: calendar.startOfDay(for: weekEnd), value: CounterAmount.display(hundredths))
+        return DailyValue(date: calendar.startOfDay(for: weekEnd), value: total)
       }
       .reversed()
 

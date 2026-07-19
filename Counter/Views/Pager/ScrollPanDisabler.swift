@@ -11,6 +11,11 @@ import UIKit
 /// reveal-vs-pager gesture arbitration.
 struct ScrollPanDisabler: UIViewRepresentable {
   let isDisabled: Bool
+  /// Zero-based index of the selected pager page — used to snap content offset back to a
+  /// page boundary whenever reveal locking toggles.
+  var pageIndex: Int = 0
+  /// Bump to force a snap (e.g. when the list reveal fully closes).
+  var snapTrigger: Int = 0
 
   func makeCoordinator() -> Coordinator {
     Coordinator()
@@ -24,23 +29,46 @@ struct ScrollPanDisabler: UIViewRepresentable {
   }
 
   func updateUIView(_ uiView: UIView, context: Context) {
-    context.coordinator.setDisabled(isDisabled, from: uiView)
+    context.coordinator.apply(
+      isDisabled: isDisabled,
+      pageIndex: pageIndex,
+      snapTrigger: snapTrigger,
+      from: uiView
+    )
   }
 
   final class Coordinator {
     private weak var scrollView: UIScrollView?
+    private var lastDisabled: Bool?
+    private var lastSnapTrigger = 0
 
-    func setDisabled(_ disabled: Bool, from view: UIView) {
+    func apply(isDisabled: Bool, pageIndex: Int, snapTrigger: Int, from view: UIView) {
       resolveScrollView(from: view)
       guard let scrollView else { return }
 
-      if disabled {
+      if snapTrigger != lastSnapTrigger || lastDisabled != isDisabled {
+        snapToPage(scrollView, pageIndex: pageIndex)
+        lastSnapTrigger = snapTrigger
+        lastDisabled = isDisabled
+      }
+
+      if isDisabled {
         scrollView.panGestureRecognizer.isEnabled = false
         scrollView.setContentOffset(scrollView.contentOffset, animated: false)
         return
       }
 
       scrollView.panGestureRecognizer.isEnabled = true
+    }
+
+    private func snapToPage(_ scrollView: UIScrollView, pageIndex: Int) {
+      let pageHeight = scrollView.bounds.height
+      guard pageHeight > 1, pageIndex >= 0 else { return }
+
+      let targetY = CGFloat(pageIndex) * pageHeight
+      if abs(scrollView.contentOffset.y - targetY) > 0.5 {
+        scrollView.setContentOffset(CGPoint(x: 0, y: targetY), animated: false)
+      }
     }
 
     private func resolveScrollView(from view: UIView) {

@@ -2,7 +2,10 @@ import Foundation
 import SwiftData
 
 enum SharedModelContainer {
-  static let schema = Schema(versionedSchema: CounterSchemaV2.self)
+  static let schema = Schema([
+    CustomCounter.self,
+    CounterEntry.self
+  ])
 
   private static var usesInMemoryStore: Bool {
     ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
@@ -30,22 +33,14 @@ enum SharedModelContainer {
     let configuration = ModelConfiguration(schema: schema, url: storeURL)
 
     do {
-      return try ModelContainer(
-        for: schema,
-        migrationPlan: CounterMigrationPlan.self,
-        configurations: [configuration]
-      )
+      return try ModelContainer(for: schema, configurations: [configuration])
     } catch {
       AppLog.data.error(
         "ModelContainer open failed; resetting store at \(storeURL.path, privacy: .public): \(error.localizedDescription, privacy: .public)"
       )
       removeStore(at: storeURL)
       do {
-        return try ModelContainer(
-          for: schema,
-          migrationPlan: CounterMigrationPlan.self,
-          configurations: [configuration]
-        )
+        return try ModelContainer(for: schema, configurations: [configuration])
       } catch {
         fatalError("Failed to create shared ModelContainer: \(error)")
       }

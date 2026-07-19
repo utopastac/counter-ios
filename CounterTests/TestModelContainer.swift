@@ -7,10 +7,8 @@ import SwiftData
 enum TestModelContainer {
   static func make() -> ModelContainer {
     let schema = Schema([
-      CalorieEntry.self,
       CustomCounter.self,
-      CounterEntry.self,
-      AppSettings.self
+      CounterEntry.self
     ])
     let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
     do {

@@ -203,7 +203,7 @@ private struct CounterButtonSettingsSheetContent: View {
           counter.name = CustomCounter.normalizedName(from: name)
         }
         counter.presetAmounts = save.buttonValues
-        counter.goal = save.goal.map(CounterAmount.storage)
+        counter.goal = save.goal.map(CounterAmount.rounded)
         counter.unit = save.unit
         counter.resetPeriod = save.resetPeriod
         counter.resetAnchorDay = save.resetAnchorDay

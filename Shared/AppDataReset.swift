@@ -8,8 +8,6 @@ enum AppDataReset {
   static func resetAll(in context: ModelContext) {
     deleteAll(CustomCounter.self, in: context)
     deleteAll(CounterEntry.self, in: context)
-    deleteAll(CalorieEntry.self, in: context)
-    deleteAll(AppSettings.self, in: context)
     AppLog.attempt("Save full data reset") { try context.save() }
 
     QuickAddSessionStore.shared.reset()

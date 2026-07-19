@@ -29,6 +29,13 @@ struct CounterPagerView: View {
   /// underlay list is open the main scroll view is disabled, and `scrollPosition` would otherwise
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
+  @State private var pagerSnapTrigger = 0
+
+  private var selectedPageIndex: Int {
+    guard let selectedPageID,
+          let index = pageIDs.firstIndex(of: selectedPageID) else { return 0 }
+    return index
+  }
 
   /// Two-way `scrollPosition` binding that ignores scroll-view writebacks while the list
   /// reveal has the main pager locked — keeps create/list selection from being clobbered.
@@ -154,6 +161,7 @@ struct CounterPagerView: View {
     }
     .onChange(of: isRevealActive) { wasActive, active in
       if wasActive && !active {
+        pagerSnapTrigger += 1
         flushPendingScroll()
         syncScrollProgressToSelectedPage()
       }
@@ -243,7 +251,11 @@ struct CounterPagerView: View {
         .scrollTargetLayout()
         .counterPagerBackground(accents: pageAccents, scrollState: pagerScrollState)
         .background {
-          ScrollPanDisabler(isDisabled: locksRevealScroll)
+          ScrollPanDisabler(
+            isDisabled: locksRevealScroll,
+            pageIndex: selectedPageIndex,
+            snapTrigger: pagerSnapTrigger
+          )
         }
       }
       .scrollContentBackground(.hidden)

@@ -35,10 +35,10 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     counter.name = name
     counter.unit = unit
     counter.presetAmounts = buttonValues
-    counter.sliderMax = CounterAmount.storage(sliderMax)
+    counter.sliderMax = CounterAmount.rounded(sliderMax)
     counter.createdAt = createdAt
     counter.sortOrder = sortOrder
-    counter.goal = goal.map { CounterAmount.storage($0) }
+    counter.goal = goal.map(CounterAmount.rounded)
     counter.resetPeriodRaw = resetPeriodRaw
     counter.resetAnchorDay = resetAnchorDay
     counter.goalDirectionRaw = goalDirectionRaw
