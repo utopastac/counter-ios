@@ -9,6 +9,10 @@ import UIKit
 /// `simultaneousGesture`. On iOS 26, `simultaneousGesture` no longer propagates to ancestor
 /// scroll pans (release-notes fix for 147970990), so this bridge remains the hard lock for
 /// reveal-vs-pager gesture arbitration.
+///
+/// Critical: never call `setContentOffset` here. Freezing or "correcting" the offset when the
+/// pan is interrupted is what caused visible jumps (especially on the last page, where bounce
+/// leaves the offset past the final page boundary). Just gate the recognizer.
 struct ScrollPanDisabler: UIViewRepresentable {
   let isDisabled: Bool
 
@@ -29,50 +33,39 @@ struct ScrollPanDisabler: UIViewRepresentable {
 
   final class Coordinator {
     private weak var scrollView: UIScrollView?
-    private var wasDisabled = false
 
     func setDisabled(_ disabled: Bool, from view: UIView) {
       resolveScrollView(from: view)
       guard let scrollView else { return }
-
-      if disabled, !wasDisabled {
-        // Horizontal reveal just locked scrolling — snap to the nearest page first. The last
-        // page often sits slightly off-boundary (paging rounding / bounce), and freezing that
-        // drift is what causes the visible jump when the drag ends.
-        snapToNearestPageBoundary(scrollView)
-      }
-      wasDisabled = disabled
-
-      if disabled {
-        scrollView.panGestureRecognizer.isEnabled = false
-        scrollView.setContentOffset(scrollView.contentOffset, animated: false)
-        return
-      }
-
-      scrollView.panGestureRecognizer.isEnabled = true
-    }
-
-    /// Aligns to the closest page boundary using live scroll-view metrics (not SwiftUI state).
-    private func snapToNearestPageBoundary(_ scrollView: UIScrollView) {
-      let pageHeight = scrollView.bounds.height
-      guard pageHeight > 1 else { return }
-
-      let pageCount = max(1, Int(round(scrollView.contentSize.height / pageHeight)))
-      let maxPageIndex = max(0, pageCount - 1)
-      let nearestPage = min(
-        max(Int(round(scrollView.contentOffset.y / pageHeight)), 0),
-        maxPageIndex
-      )
-      let targetY = CGFloat(nearestPage) * pageHeight
-
-      if abs(scrollView.contentOffset.y - targetY) > 0.5 {
-        scrollView.setContentOffset(CGPoint(x: 0, y: targetY), animated: false)
-      }
+      scrollView.panGestureRecognizer.isEnabled = !disabled
     }
 
     private func resolveScrollView(from view: UIView) {
       guard scrollView == nil else { return }
       scrollView = view.enclosingScrollView()
+    }
+  }
+}
+
+/// One-time UIKit configuration for the vertical paging `ScrollView`.
+///
+/// Disables vertical bounce so the last page cannot rubber-band past its boundary. An interrupted
+/// bounce (horizontal reveal starting mid-overscroll) was a primary source of last-page jumps.
+struct PagerScrollViewConfiguration: UIViewRepresentable {
+  func makeUIView(context: Context) -> UIView {
+    let view = UIView(frame: .zero)
+    view.isUserInteractionEnabled = false
+    view.backgroundColor = .clear
+    return view
+  }
+
+  func updateUIView(_ uiView: UIView, context: Context) {
+    guard let scrollView = uiView.enclosingScrollView() else { return }
+    if scrollView.bounces {
+      scrollView.bounces = false
+    }
+    if scrollView.alwaysBounceVertical {
+      scrollView.alwaysBounceVertical = false
     }
   }
 }

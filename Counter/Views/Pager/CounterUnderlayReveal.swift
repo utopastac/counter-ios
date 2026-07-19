@@ -66,7 +66,9 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
             )
           )
           .offset(x: inset)
-          .counterRevealDragging(isDraggingReveal)
+          // Block card controls while the list is peeking or mid-drag; the reveal gesture
+          // still receives hits on the card because child views opt out of hit testing.
+          .counterRevealDragging(isDraggingReveal || isRevealed)
           .simultaneousGesture(revealGesture(maxOffset: maxOffset))
       }
       .frame(width: width, height: height, alignment: .topLeading)

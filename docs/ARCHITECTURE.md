@@ -1,8 +1,9 @@
 # Architecture
 
-Counter is a SwiftUI + SwiftData app for logging counters (calories, custom metrics)
+Numo is a SwiftUI + SwiftData app for logging counters (calories, custom metrics)
 against a repeating goal period, with a watchOS companion and home-screen/watch-face
-widgets. This document describes how the pieces fit together and why.
+widgets. Xcode targets and bundle IDs still use the historical `Counter` name; the
+product display name is Numo. This document describes how the pieces fit together and why.
 
 ## Module map
 
@@ -32,15 +33,15 @@ snapshot data rather than querying SwiftData directly — see "Two widget data p
 ```mermaid
 flowchart TB
   subgraph store ["App Group container (group.com.becter.counter)"]
-    db["Counter-v4.store (SwiftData)"]
+    db["Counter-v7.store (SwiftData)"]
     defaults["UserDefaults (widget snapshot)"]
   end
 
-  iphone["Counter (iPhone app)"] -->|ModelContainer| db
-  watch["CounterWatch"] -->|ModelContainer| db
-  homeWidget["CounterWidgets"] -->|ModelContainer, async query| db
+  iphone["Numo (iPhone)"] -->|ModelContainer| db
+  watch["Numo Watch"] -->|ModelContainer| db
+  homeWidget["Numo Widgets"] -->|ModelContainer, async query| db
   iphone -->|WidgetSnapshot.publish| defaults
-  watchWidget["CounterWatchWidgets"] -->|read only| defaults
+  watchWidget["Numo Watch Widgets"] -->|read only| defaults
 ```
 
 - `Shared/SharedModelContainer.swift` builds one `ModelContainer` backed by a file in the
@@ -48,7 +49,7 @@ flowchart TB
   directory if the group URL can't be resolved (e.g. entitlements misconfigured locally).
 - iPhone, Watch, and the home-screen widget extension all open that same container and can
   read/write `CustomCounter` / `CounterEntry` directly — SwiftData handles cross-process
-  consistency.
+  consistency. Store file: `AppGroup.storeFilename` (`Counter-v7.store`).
 - The watch *complication* (`CounterWatchWidgets`) does **not** query SwiftData. It reads a
   small `title` / `heroValue` snapshot from shared `UserDefaults`
   (`Shared/WidgetSnapshot.swift`), published by the iPhone app (`WidgetSnapshotSync`)
@@ -91,7 +92,6 @@ namespaced pure/near-pure functions:
 | `AmountInput` (`Shared/AmountInput.swift`) | Text-field sanitization/parsing rules for numeric input — amount entry, quick-add preset editing, goal fields, entry-log editing, the numeric keypad |
 | `CounterFormValidation` (`Shared/CounterFormValidation.swift`) | The create/edit form save-gating rule (name required if present, goal text optional but must parse if non-empty) |
 | `HistoryChartScale` (`Shared/HistoryChartScale.swift`) | Y-axis "nice maximum" and tick-value math for the history bar chart |
-| `CalorieMigration` (`Shared/CalorieMigration.swift`) | One-time migration of the legacy single-counter calorie model into `CustomCounter`, run automatically by `CounterMigrationPlan` — see "Schema migration" below |
 | `CustomCounter.currentTotal/currentProgress/currentRingDisplay` (`Shared/CustomCounter+Progress.swift`) | Convenience combinators tying the above together for "this counter's current period" — used by the pager, list, widgets, and watch so they can't quietly diverge |
 
 Views call into these directly. This keeps the object graph flat (a view either owns UI
@@ -148,18 +148,14 @@ class` that call sites hold explicitly:
   own this state, so it explicitly opts into `QuickAddSessionStore.shared` — the one
   legitimate singleton here, now visible and named instead of smuggled into `EntryActions`.
 
-## Schema migration
+## Schema
 
-`CustomCounter`/`CounterEntry` didn't always exist — early installs stored a single calorie
-counter as `CalorieEntry`/`AppSettings`. That upgrade is modeled as a SwiftData
-`VersionedSchema`/`SchemaMigrationPlan` (`Shared/CounterSchemaMigrationPlan.swift`):
-`CounterSchemaV1` (legacy models included) → `CounterSchemaV2` (current models only), with a
-custom migration stage whose `willMigrate` closure runs `CalorieMigration.migrateIfNeeded`
-while the store is still V1-shaped and `CalorieEntry`/`AppSettings` are still fetchable.
-`SharedModelContainer` passes this plan to `ModelContainer(for:migrationPlan:configurations:)`,
-so the migration runs automatically, exactly once, the first time a V1-shaped store is opened
-against the V2 schema — not re-checked by hand on every launch (see
-[DECISIONS.md](DECISIONS.md)).
+There is no `VersionedSchema` / migration plan. The live schema is
+`Schema([CustomCounter.self, CounterEntry.self])` in `SharedModelContainer`. Amounts are
+stored as `Double` (rounded to two decimal places via `CounterAmount.rounded`). Schema
+breaks bump `AppGroup.storeFilename` (currently `Counter-v7.store`) for a clean store; if
+open still fails, `SharedModelContainer` deletes the store files and recreates an empty
+container.
 
 ## Design system
 
@@ -223,12 +219,10 @@ and a module-wide default actor isolation of `MainActor`
   `@MainActor` and doesn't need explicit annotations.
 - Pure calculators with no `ModelContext`/UI dependency — `CounterPeriodCalculator`,
   `GoalProgressCalculator`, `HistoryAggregator`, `QuickAddConfiguration`, `AmountInput`,
-  `CounterFormValidation`, `HistoryChartScale`, `CalorieMigration`, `AppLog`, and the plain
+  `CounterFormValidation`, `HistoryChartScale`, `AppLog`, and the plain
   value types they operate on (`CounterResetPeriod`, `GoalDirection`, `DailyValue`,
   `HistoryPeriod`, …) — are explicitly `nonisolated`. They do real work off the main actor in
-  tests and don't need the main-actor hop the module default would otherwise force on them;
-  `CalorieMigration.migrateIfNeeded` specifically *needs* to be `nonisolated` so it can run
-  synchronously from `CounterMigrationPlan`'s `willMigrate` closure.
+  tests and don't need the main-actor hop the module default would otherwise force on them.
 - `@Model` types (`CustomCounter`, `CounterEntry`, …) opt out of the module's default
   `MainActor` isolation — unlike plain enums/structs, which inherit it. Code that reads a
   model's stored properties (e.g. `CustomCounter+Progress.swift`, which reads `self.entries`)

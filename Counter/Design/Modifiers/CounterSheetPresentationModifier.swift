@@ -195,7 +195,6 @@ private struct CounterButtonSettingsSheetContent: View {
 
   var body: some View {
     CounterSettingsView(
-      title: "\(counter.name) Settings",
       values: counter.presetAmounts,
       counter: counter,
       onSave: { save in

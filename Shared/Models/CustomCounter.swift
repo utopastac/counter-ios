@@ -20,7 +20,6 @@ final class CustomCounter {
   var name: String
   var unit: String = ""
   var buttonValues: [Double]
-  var sliderMax: Double
   var createdAt: Date
   /// Lower values appear first in the pager and list.
   var sortOrder: Double = 0
@@ -37,7 +36,6 @@ final class CustomCounter {
     name: String,
     unit: String = "",
     buttonValues: [Double]? = nil,
-    sliderMax: Double = 100,
     goal: Double? = nil,
     resetPeriod: CounterResetPeriod = .daily,
     resetAnchorDay: Int = 1,
@@ -50,7 +48,6 @@ final class CustomCounter {
     self.name = name
     self.unit = Self.normalizedUnit(from: unit)
     self.buttonValues = CounterAmount.rounded(buttonValues ?? Self.defaultButtonValues)
-    self.sliderMax = CounterAmount.rounded(sliderMax)
     self.createdAt = createdAt
     self.sortOrder = sortOrder ?? createdAt.timeIntervalSinceReferenceDate
     self.goal = goal.map(CounterAmount.rounded)
@@ -108,10 +105,6 @@ final class CustomCounter {
     case .monthly:
       return min(max(resetAnchorDay, 1), 31)
     }
-  }
-
-  var effectiveSliderMax: Double {
-    sliderMax > 0 ? sliderMax : 100
   }
 
   var hasGoal: Bool {

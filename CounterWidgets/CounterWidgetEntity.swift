@@ -3,7 +3,7 @@ import Foundation
 import SwiftData
 
 struct CounterWidgetEntity: AppEntity, Sendable {
-  static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Counter")
+  static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Numo Counter")
   static let defaultQuery = CounterWidgetEntityQuery()
 
   var id: String

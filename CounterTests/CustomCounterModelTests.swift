@@ -44,14 +44,6 @@ struct CustomCounterModelTests {
     #expect(counter.effectiveResetAnchorDay == 31)
   }
 
-  @Test func effectiveSliderMaxFallsBackWhenNonPositive() {
-    let counter = CustomCounter(name: "Water", sliderMax: 0)
-    #expect(counter.effectiveSliderMax == 100)
-
-    counter.sliderMax = 250
-    #expect(counter.effectiveSliderMax == 250)
-  }
-
   @Test func defaultButtonValuesAreUsedWhenNoneProvided() {
     let counter = CustomCounter(name: "Water")
     #expect(counter.presetAmounts == CustomCounter.defaultButtonValues)

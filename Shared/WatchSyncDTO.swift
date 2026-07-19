@@ -6,7 +6,6 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
   let name: String
   let unit: String
   let buttonValues: [Double]
-  let sliderMax: Double
   let createdAt: Date
   let sortOrder: Double
   let goal: Double?
@@ -20,7 +19,6 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     name = counter.name
     unit = counter.unit
     buttonValues = counter.presetAmounts
-    sliderMax = counter.effectiveSliderMax
     createdAt = counter.createdAt
     sortOrder = counter.sortOrder
     goal = counter.effectiveGoal
@@ -35,7 +33,6 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     counter.name = name
     counter.unit = unit
     counter.presetAmounts = buttonValues
-    counter.sliderMax = CounterAmount.rounded(sliderMax)
     counter.createdAt = createdAt
     counter.sortOrder = sortOrder
     counter.goal = goal.map(CounterAmount.rounded)
@@ -57,7 +54,6 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
       name: snapshot.name,
       unit: snapshot.unit,
       buttonValues: snapshot.buttonValues,
-      sliderMax: snapshot.sliderMax,
       goal: snapshot.goal,
       resetPeriod: CounterResetPeriod(rawValue: snapshot.resetPeriodRaw) ?? .daily,
       resetAnchorDay: snapshot.resetAnchorDay,

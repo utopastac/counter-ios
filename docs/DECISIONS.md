@@ -208,6 +208,11 @@ to express cleanly when the state was `private` inside `EntryActions`.
 
 ## SwiftData `VersionedSchema`/`SchemaMigrationPlan` instead of an imperative migration call
 
+> **Superseded.** Pre-release cleanup removed `VersionedSchema`, `CalorieMigration`, and
+> legacy `CalorieEntry`/`AppSettings`. The live schema is a plain
+> `Schema([CustomCounter, CounterEntry])`; breaking changes bump `AppGroup.storeFilename`.
+> Left below for historical context.
+
 **Decision:** Replace the imperative `CalorieMigration.migrateIfNeeded(in:)` call (previously
 made by hand from `SampleDataSeeder.seedIfNeeded` on every launch) with a declarative
 `CounterSchemaV1` → `CounterSchemaV2` `SchemaMigrationPlan`

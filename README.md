@@ -1,6 +1,6 @@
-# Counter
+# Numo
 
-A simple iOS calorie and custom counter app.
+A simple iOS counter app (calories, custom metrics, and more).
 
 ## Features
 
@@ -23,22 +23,22 @@ A simple iOS calorie and custom counter app.
 2. Select the **Counter** and **CounterWatch** targets → **Signing & Capabilities**
 3. Set your **Team** on **Counter**, **CounterWatch**, and **CounterWatchWidgets** targets
 4. Enable **App Groups** (`group.com.becter.counter`) on iPhone and Watch targets (entitlements are included)
-5. Build and run **Counter** on your iPhone — the Watch app installs automatically when paired
+5. Build and run the **Counter** scheme (Numo) on your iPhone — the Watch app installs automatically when paired
 
 ### Apple Watch
 
-The Watch app lists all counters (including Calories) and lets you log entries from your wrist.
+The Watch app lists all counters and lets you log entries from your wrist.
 
 Entries logged on Watch appear instantly on iPhone (and vice versa) via the shared SwiftData store.
 
-**Complication:** Long-press your watch face → Edit → add the Counter complication. It shows your default counter total.
+**Complication:** Long-press your watch face → Edit → add the Numo complication. It shows your default counter total.
 
 **Undo:** Tap the ↩ button in the toolbar after logging an entry to remove your last add.
 
 ## Project structure
 
 ```
-Counter/             iOS app
+Counter/             iOS app (Numo)
 CounterWatch/        watchOS companion
 CounterWidgets/      Home screen widgets (WidgetKit + App Intents)
 CounterWatchWidgets/ Watch complication (WidgetKit)
@@ -52,8 +52,7 @@ log of the specific engineering decisions made while building and refactoring it
 
 ## Testing
 
-Domain logic in `Shared/` (period math, goal progress, history aggregation, quick-add
-batching, calorie migration) is covered by the `CounterTests` target, using Swift Testing.
+Domain logic in `Shared/` is covered by the `CounterTests` target, using Swift Testing.
 
 ```sh
 xcodebuild -project Counter.xcodeproj -scheme Counter \

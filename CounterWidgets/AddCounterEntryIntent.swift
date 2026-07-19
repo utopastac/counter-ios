@@ -39,7 +39,7 @@ struct CounterWidgetShortcuts: AppShortcutsProvider {
         "Add to counter in \(.applicationName)",
         "Log counter in \(.applicationName)"
       ],
-      shortTitle: "Add to Counter",
+      shortTitle: "Add in Numo",
       systemImageName: "plus.circle.fill"
     )
   }

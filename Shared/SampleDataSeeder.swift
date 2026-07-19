@@ -37,7 +37,6 @@ enum SampleDataSeeder {
       name: "Calories",
       unit: CounterTemplate.calories.defaultUnit,
       buttonValues: mockQuickAddPresets,
-      sliderMax: 2000,
       goal: CustomCounter.defaultCalorieGoal,
       goalDirection: .countDown,
       sortOrder: 0

@@ -265,17 +265,18 @@ struct CounterPagerView: View {
         .scrollTargetLayout()
         .padding(.bottom, SpaceToken.pageFooterBottom)
         .background {
-          ScrollPanDisabler(isDisabled: locksRevealScroll)
+          // Gate the UIKit pan only — never toggle SwiftUI `.scrollDisabled` mid-reveal.
+          // Toggling `.scrollDisabled` reconciles content offset and jumps (worst on the last page).
+          ScrollPanDisabler(
+            isDisabled: (locksRevealScroll || isCounterListRevealed) && pendingScrollPageID == nil
+          )
         }
       }
       .scrollContentBackground(.hidden)
       .background(colors.surfacePrimary)
       .scrollPosition(id: pagerScrollPosition, anchor: .top)
       .scrollIndicators(.hidden)
-      // Keep user scroll locked while the list is open, but allow a brief unlock while a
-      // pending programmatic scroll is in flight so ScrollViewReader.scrollTo can move pages.
-      .scrollDisabled(locksRevealScroll || (isRevealActive && pendingScrollPageID == nil))
-      .scrollClipDisabled(!isRevealActive)
+      .scrollClipDisabled(true)
       .onChange(of: pendingScrollPageID) { _, pageID in
         guard let pageID else { return }
         scrollProxy(proxy, to: pageID)
@@ -298,7 +299,12 @@ struct CounterPagerView: View {
         .scrollTargetLayout()
         .counterPagerBackground(accents: pageAccents, scrollState: pagerScrollState)
         .background {
-          ScrollPanDisabler(isDisabled: locksRevealScroll)
+          PagerScrollViewConfiguration()
+          // Gate the UIKit pan only — never toggle SwiftUI `.scrollDisabled` mid-reveal.
+          // Toggling `.scrollDisabled` reconciles content offset and jumps (worst on the last page).
+          ScrollPanDisabler(
+            isDisabled: (locksRevealScroll || isCounterListRevealed) && pendingScrollPageID == nil
+          )
         }
       }
       .scrollContentBackground(.hidden)
@@ -306,8 +312,7 @@ struct CounterPagerView: View {
       .scrollTargetBehavior(.paging)
       .scrollPosition(id: pagerScrollPosition, anchor: .top)
       .scrollIndicators(.hidden)
-      .scrollDisabled(locksRevealScroll || (isRevealActive && pendingScrollPageID == nil))
-      .scrollClipDisabled(!isRevealActive)
+      .scrollClipDisabled(true)
       .onScrollGeometryChange(for: CGFloat.self) { geometry in
         geometry.contentOffset.y + geometry.contentInsets.top
       } action: { _, offset in

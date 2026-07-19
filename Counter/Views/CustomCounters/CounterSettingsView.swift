@@ -12,10 +12,6 @@ struct CounterSettingsSave {
 }
 
 struct CounterSettingsView: View {
-  let title: String
-  let includeGoalAndReset: Bool
-  let includeNameField: Bool
-  let locksGoalDirection: Bool
   let defaultPresets: [Double]
   @State private var values: [Double]
   @State private var nameText: String
@@ -38,40 +34,12 @@ struct CounterSettingsView: View {
   }
 
   init(
-    title: String,
-    values: [Double],
-    onSave: @escaping (CounterSettingsSave) -> Void
-  ) {
-    self.title = title
-    self.includeGoalAndReset = false
-    self.includeNameField = false
-    self.locksGoalDirection = false
-    self.defaultPresets = QuickAddConfiguration.defaultCounterPresets
-    self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
-    self._nameText = State(initialValue: "")
-    self._unitText = State(initialValue: "")
-    self._goalText = State(initialValue: "")
-    self._resetPeriod = State(initialValue: .daily)
-    self._resetAnchorDay = State(initialValue: 1)
-    self._goalDirection = State(initialValue: .countUp)
-    self._paletteIndex = State(initialValue: 0)
-    self.onSave = onSave
-    self.onPaletteChange = nil
-    self.onDelete = nil
-  }
-
-  init(
-    title: String,
     values: [Double],
     counter: CustomCounter,
     onSave: @escaping (CounterSettingsSave) -> Void,
     onDelete: (() -> Void)? = nil,
     onPaletteChange: ((Int) -> Void)? = nil
   ) {
-    self.title = title
-    self.includeGoalAndReset = true
-    self.includeNameField = true
-    self.locksGoalDirection = false
     self.defaultPresets = QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
     self._nameText = State(initialValue: counter.name)
@@ -92,37 +60,28 @@ struct CounterSettingsView: View {
     NavigationStack {
       VStack(spacing: 0) {
         CounterSheetHeader(
-          title: navigationTitle,
+          title: "Settings",
           isDoneEnabled: canSave,
           onDone: saveAndDismiss
         )
 
         ScrollView {
           VStack(alignment: .leading, spacing: 0) {
-            if includeNameField {
-              SettingsLabeledField(label: "Title", text: $nameText)
-              SettingsSectionDivider()
-            }
+            SettingsLabeledField(label: "Title", text: $nameText)
+            SettingsSectionDivider()
 
-            if includeGoalAndReset {
-              goalAndResetContent
-            }
+            goalAndResetContent
 
-            if includeNameField {
-              SettingsLabeledField(
-                label: "Unit",
-                text: $unitText,
-                placeholder: "e.g. kcal, g, $"
-              )
+            SettingsLabeledField(
+              label: "Unit",
+              text: $unitText,
+              placeholder: "e.g. kcal, g, $"
+            )
 
-              SettingsSectionDivider()
-            }
+            SettingsSectionDivider()
 
             quickAddSection
-
-            if includeNameField {
-              colourSection
-            }
+            colourSection
 
             if onDelete != nil {
               deleteSection
@@ -164,18 +123,12 @@ struct CounterSettingsView: View {
       placeholder: "0"
     )
 
-    if hasActiveGoal, !locksGoalDirection {
+    if hasActiveGoal {
       SettingsPickerRow(
         icon: .arrowUpToLine,
         label: "Direction",
         selection: $goalDirection,
         options: GoalDirection.allCases.map { ($0, $0.label) }
-      )
-    } else if hasActiveGoal, locksGoalDirection {
-      SettingsStaticRow(
-        icon: .arrowUpToLine,
-        label: "Direction",
-        value: GoalDirection.countDown.label
       )
     }
 
@@ -240,13 +193,6 @@ struct CounterSettingsView: View {
     }
   }
 
-  private var navigationTitle: String {
-    if includeNameField {
-      return "Settings"
-    }
-    return title
-  }
-
   private var displayName: String {
     CustomCounter.normalizedName(from: trimmedName)
   }
@@ -260,7 +206,7 @@ struct CounterSettingsView: View {
   }
 
   private var canSave: Bool {
-    CounterFormValidation.canSave(name: includeNameField ? nameText : nil, goalText: goalText)
+    CounterFormValidation.canSave(name: nameText, goalText: goalText)
   }
 
   private var parsedGoal: Double? {
@@ -270,14 +216,14 @@ struct CounterSettingsView: View {
   private func saveAndDismiss() {
     onSave(
       CounterSettingsSave(
-        name: includeNameField ? trimmedName : nil,
+        name: trimmedName,
         buttonValues: QuickAddConfiguration.normalizedPresets(values),
         goal: parsedGoal,
         unit: CustomCounter.normalizedUnit(from: unitText),
         resetPeriod: resetPeriod,
         resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
-        goalDirection: locksGoalDirection ? .countDown : goalDirection,
-        paletteIndex: includeNameField ? paletteIndex : nil
+        goalDirection: goalDirection,
+        paletteIndex: paletteIndex
       )
     )
     dismiss()
@@ -285,5 +231,5 @@ struct CounterSettingsView: View {
 }
 
 #Preview {
-  CounterSettingsView(title: "Protein Settings", values: [10, 20, 50], counter: CustomCounter(name: "Protein")) { _ in }
+  CounterSettingsView(values: [10, 20, 50], counter: CustomCounter(name: "Protein")) { _ in }
 }
