@@ -2,6 +2,14 @@ import SwiftUI
 
 struct CounterListCard: View {
   @Environment(\.colorScheme) private var colorScheme
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
 
   let accent: CounterAccent
   let title: String
@@ -13,7 +21,8 @@ struct CounterListCard: View {
   let action: () -> Void
 
   private var palette: CounterPaletteSlot {
-    accent.palette
+    let _ = (isTintEnabled, colorPackRaw)
+    return accent.palette
   }
 
   var body: some View {

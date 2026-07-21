@@ -20,6 +20,9 @@ struct SemanticColors: Equatable {
 
   var interactivePrimaryFill: Color
   var interactivePrimaryForeground: Color
+  /// Soft fill for secondary actions (e.g. Back) — light grey in light mode.
+  var interactiveSecondaryFill: Color
+  var interactiveSecondaryForeground: Color
   var interactiveDisabledFill: Color
   var interactiveDisabledForeground: Color
 
@@ -58,6 +61,8 @@ struct SemanticColors: Equatable {
     accentPrimary: BaseColor.Brand.blue500,
     interactivePrimaryFill: BaseColor.white,
     interactivePrimaryForeground: BaseColor.black,
+    interactiveSecondaryFill: BaseColor.Neutral.darkMutedSurface,
+    interactiveSecondaryForeground: BaseColor.white,
     interactiveDisabledFill: BaseColor.WhiteAlpha.a250,
     interactiveDisabledForeground: BaseColor.WhiteAlpha.a450,
     toggleTrackOff: BaseColor.Neutral.toggleTrackOffDark,
@@ -89,6 +94,8 @@ struct SemanticColors: Equatable {
     accentPrimary: BaseColor.Brand.blue500,
     interactivePrimaryFill: BaseColor.black,
     interactivePrimaryForeground: BaseColor.white,
+    interactiveSecondaryFill: BaseColor.Neutral.mutedSurface,
+    interactiveSecondaryForeground: BaseColor.black,
     interactiveDisabledFill: BaseColor.BlackAlpha.a060,
     interactiveDisabledForeground: BaseColor.BlackAlpha.a100,
     toggleTrackOff: BaseColor.Neutral.toggleTrackOffLight,
@@ -132,6 +139,8 @@ struct SemanticColors: Equatable {
     copy.borderColourSwatch = foreground.opacity(colorScheme == .dark ? 0.28 : 0.18)
     copy.interactivePrimaryFill = foreground
     copy.interactivePrimaryForeground = background
+    copy.interactiveSecondaryFill = foreground.opacity(0.12)
+    copy.interactiveSecondaryForeground = foreground
     copy.interactiveDisabledFill = foreground.opacity(0.18)
     copy.interactiveDisabledForeground = palette.buttonForeground(for: colorScheme).opacity(0.45)
     copy.progressRingFill = foreground
@@ -150,6 +159,18 @@ struct SemanticColors: Equatable {
 enum ComponentColor {
   static func listActionButtonFill(_ colors: SemanticColors) -> Color {
     colors.borderSubtle
+  }
+
+  static func interactiveSecondaryFill(_ colors: SemanticColors) -> Color {
+    colors.interactiveSecondaryFill
+  }
+
+  static func interactiveSecondaryForeground(_ colors: SemanticColors) -> Color {
+    colors.interactiveSecondaryForeground
+  }
+
+  static func settingsFieldFill(_ colors: SemanticColors) -> Color {
+    colors.surfaceHistoryMuted
   }
 
   static func settingsDividerFill(_ colors: SemanticColors) -> Color {

@@ -101,8 +101,21 @@ enum WatchSyncEngine {
 
     switch envelope.payload {
     case let .fullSnapshot(counters, entries):
+      let incomingCounterIDs = Set(counters.map(\.id))
+      for existing in (try? context.fetch(FetchDescriptor<CustomCounter>())) ?? [] {
+        if !incomingCounterIDs.contains(existing.id) {
+          context.delete(existing)
+        }
+      }
       for snapshot in counters {
         CounterSnapshot.upsert(into: context, from: snapshot)
+      }
+
+      let incomingEntryIDs = Set(entries.map(\.id))
+      for existing in (try? context.fetch(FetchDescriptor<CounterEntry>())) ?? [] {
+        if !incomingEntryIDs.contains(existing.id) {
+          context.delete(existing)
+        }
       }
       for snapshot in entries {
         EntrySnapshot.upsert(into: context, from: snapshot)

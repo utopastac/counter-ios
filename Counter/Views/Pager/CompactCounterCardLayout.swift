@@ -7,6 +7,14 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   @Environment(\.counterAccent) private var counterAccent
   @Environment(\.colorScheme) private var colorScheme
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
 
   let title: String
   let heroValue: String
@@ -19,7 +27,8 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   @ViewBuilder var toast: () -> Toast
 
   private var palette: CounterPaletteSlot {
-    (counterAccent ?? .forCustomCounter(at: 0)).palette
+    let _ = (isTintEnabled, colorPackRaw)
+    return (counterAccent ?? .forCustomCounter(at: 0)).palette
   }
 
   var body: some View {

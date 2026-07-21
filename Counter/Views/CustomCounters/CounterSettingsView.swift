@@ -40,17 +40,45 @@ struct CounterSettingsView: View {
     onDelete: (() -> Void)? = nil,
     onPaletteChange: ((Int) -> Void)? = nil
   ) {
-    self.defaultPresets = QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
-    self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
-    self._nameText = State(initialValue: counter.name)
-    self._unitText = State(initialValue: counter.unit)
-    self._goalText = State(
-      initialValue: counter.effectiveGoal.map(CounterFormatting.editingText) ?? ""
+    self.init(
+      values: values,
+      name: counter.name,
+      unit: counter.unit,
+      goalText: counter.effectiveGoal.map(CounterFormatting.editingText) ?? "",
+      resetPeriod: counter.resetPeriod,
+      resetAnchorDay: counter.effectiveResetAnchorDay,
+      goalDirection: counter.goalDirection,
+      paletteIndex: counter.effectivePaletteIndex,
+      defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
+      onSave: onSave,
+      onDelete: onDelete,
+      onPaletteChange: onPaletteChange
     )
-    self._resetPeriod = State(initialValue: counter.resetPeriod)
-    self._resetAnchorDay = State(initialValue: counter.effectiveResetAnchorDay)
-    self._goalDirection = State(initialValue: counter.goalDirection)
-    self._paletteIndex = State(initialValue: counter.effectivePaletteIndex)
+  }
+
+  init(
+    values: [Double],
+    name: String,
+    unit: String,
+    goalText: String,
+    resetPeriod: CounterResetPeriod,
+    resetAnchorDay: Int,
+    goalDirection: GoalDirection,
+    paletteIndex: Int,
+    defaultPresets: [Double],
+    onSave: @escaping (CounterSettingsSave) -> Void,
+    onDelete: (() -> Void)? = nil,
+    onPaletteChange: ((Int) -> Void)? = nil
+  ) {
+    self.defaultPresets = defaultPresets
+    self._values = State(initialValue: QuickAddConfiguration.normalizedPresets(values))
+    self._nameText = State(initialValue: name)
+    self._unitText = State(initialValue: unit)
+    self._goalText = State(initialValue: goalText)
+    self._resetPeriod = State(initialValue: resetPeriod)
+    self._resetAnchorDay = State(initialValue: resetAnchorDay)
+    self._goalDirection = State(initialValue: goalDirection)
+    self._paletteIndex = State(initialValue: CustomCounter.normalizedPaletteIndex(paletteIndex))
     self.onSave = onSave
     self.onPaletteChange = onPaletteChange
     self.onDelete = onDelete
@@ -66,20 +94,9 @@ struct CounterSettingsView: View {
         )
 
         ScrollView {
-          VStack(alignment: .leading, spacing: 0) {
-            SettingsLabeledField(label: "Title", text: $nameText)
-            SettingsSectionDivider()
-
-            goalAndResetContent
-
-            SettingsLabeledField(
-              label: "Unit",
-              text: $unitText,
-              placeholder: "e.g. kcal, g, $"
-            )
-
-            SettingsSectionDivider()
-
+          VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
+            fieldsSection
+            resetPeriodSection
             quickAddSection
             colourSection
 
@@ -88,7 +105,8 @@ struct CounterSettingsView: View {
             }
           }
           .padding(.horizontal, SheetToken.horizontal)
-          .padding(.top, SettingsToken.sectionSpacing)
+          .padding(.top, SpaceToken.u1)
+          .padding(.bottom, SpaceToken.u4)
         }
         .settingsKeyboardDismissible()
       }
@@ -114,82 +132,88 @@ struct CounterSettingsView: View {
     }
   }
 
-  @ViewBuilder
-  private var goalAndResetContent: some View {
-    SettingsLabeledField(
-      label: "Target",
-      text: $goalText,
-      keyboardType: .decimalPad,
-      placeholder: "0"
-    )
+  private var fieldsSection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
+        SettingsLabeledField(label: "Title", text: $nameText)
 
-    if hasActiveGoal {
-      SettingsPickerRow(
-        icon: .arrowUpToLine,
-        label: "Direction",
-        selection: $goalDirection,
-        options: GoalDirection.allCases.map { ($0, $0.label) }
-      )
+        SettingsLabeledField(
+          label: "Units",
+          text: $unitText,
+          placeholder: "e.g. kcal, g, $"
+        )
+
+        SettingsLabeledField(
+          label: "Target",
+          text: $goalText,
+          keyboardType: .decimalPad,
+          placeholder: "0"
+        )
+      }
+
+      if hasActiveGoal {
+        SettingsPickerRow(
+          icon: .arrowUpToLine,
+          label: "Direction",
+          selection: $goalDirection,
+          options: GoalDirection.allCases.map { ($0, $0.label) }
+        )
+        .padding(.top, SpaceToken.x1)
+      }
     }
+  }
 
-    SettingsSectionDivider()
+  private var resetPeriodSection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      SettingsSectionHeader(title: "Reset period")
 
-    SettingsSectionHeader(title: "Reset period")
-
-    SettingsPickerRow(
-      icon: .calendar,
-      label: "Period",
-      selection: $resetPeriod,
-      options: CounterResetPeriod.allCases.map { ($0, $0.label) }
-    )
-
-    if resetPeriod == .weekly {
       SettingsPickerRow(
-        icon: .listRestart,
-        label: "Resets on",
-        selection: $resetAnchorDay,
-        options: (1...7).map { ($0, Calendar.current.weekdaySymbols[$0 - 1]) }
+        icon: .calendar,
+        label: "Period",
+        selection: $resetPeriod,
+        options: CounterResetPeriod.allCases.map { ($0, $0.label) }
       )
-    }
 
-    if resetPeriod == .monthly {
-      SettingsPickerRow(
-        icon: .listRestart,
-        label: "Resets on",
-        selection: $resetAnchorDay,
-        options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
-      )
-    }
+      if resetPeriod == .weekly {
+        SettingsPickerRow(
+          icon: .listRestart,
+          label: "Resets on",
+          selection: $resetAnchorDay,
+          options: (1...7).map { ($0, Calendar.current.weekdaySymbols[$0 - 1]) }
+        )
+      }
 
-    SettingsSectionDivider()
+      if resetPeriod == .monthly {
+        SettingsPickerRow(
+          icon: .listRestart,
+          label: "Resets on",
+          selection: $resetAnchorDay,
+          options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
+        )
+      }
+    }
   }
 
   private var quickAddSection: some View {
-    Group {
+    VStack(alignment: .leading, spacing: 0) {
       SettingsSectionHeader(title: "Quick add presets")
-
       SettingsPresetGrid(values: $values, defaults: defaultPresets)
     }
   }
 
   private var colourSection: some View {
-    Group {
-      SettingsSectionDivider()
-
+    VStack(alignment: .leading, spacing: 0) {
       SettingsSectionHeader(title: "Colour")
-
       SettingsColorSwatchGrid(selection: $paletteIndex)
     }
   }
 
   private var deleteSection: some View {
-    Group {
-      SettingsSectionDivider()
-
+    VStack(alignment: .leading, spacing: 0) {
+      SettingsDivider()
       SettingsDestructiveRow(label: "Delete") {
         showDeleteConfirmation = true
       }
-      .padding(.bottom, SpaceToken.u3)
     }
   }
 

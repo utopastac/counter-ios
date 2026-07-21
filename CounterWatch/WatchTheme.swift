@@ -13,8 +13,19 @@ struct WatchThemeColors {
       green: entry.darkRGB.green,
       blue: entry.darkRGB.blue
     )
-    foreground = .white
-    mutedForeground = .white.opacity(0.72)
+    if AppAppearancePreference.isTintEnabled {
+      // Watch always uses the dark background; tint content with the light pair.
+      let tint = Color(
+        red: entry.lightRGB.red,
+        green: entry.lightRGB.green,
+        blue: entry.lightRGB.blue
+      )
+      foreground = tint
+      mutedForeground = tint.opacity(0.72)
+    } else {
+      foreground = .white
+      mutedForeground = .white.opacity(0.72)
+    }
     // Darken (rather than fade) the background so the track reads as a
     // visible ring against a same-colored page background — matching
     // `CounterPaletteSlot.progressRingTrack`.

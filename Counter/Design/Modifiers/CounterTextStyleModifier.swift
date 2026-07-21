@@ -16,6 +16,7 @@ struct CounterTextStyleModifier: ViewModifier {
     case inverse
     case accent
     case onInteractiveFill
+    case onInteractiveSecondaryFill
     case historyChartAxis
     case danger
   }
@@ -57,6 +58,8 @@ struct CounterTextStyleModifier: ViewModifier {
       return colors.accentPrimary
     case .onInteractiveFill:
       return colors.interactivePrimaryForeground
+    case .onInteractiveSecondaryFill:
+      return colors.interactiveSecondaryForeground
     case .historyChartAxis:
       return ComponentColor.historyChartAxisLabel(colors)
     case .danger:

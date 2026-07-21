@@ -7,6 +7,8 @@ enum AppAppearancePreference {
   static let defaultResetPeriodKey = "app.defaults.resetPeriod"
   static let monoEnabledKey = "app.appearance.monoEnabled"
   static let monoPaletteIndexKey = "app.appearance.monoPaletteIndex"
+  static let tintEnabledKey = "app.appearance.tintEnabled"
+  static let colorPackKey = "app.appearance.colorPack"
   static let quickAddBatchWindowKey = "app.quickAdd.batchWindowSeconds"
   static let fpsCounterEnabledKey = "app.debug.fpsCounterEnabled"
 
@@ -31,6 +33,21 @@ enum AppAppearancePreference {
 
   static var isMonoEnabled: Bool {
     sharedDefaults.bool(forKey: monoEnabledKey)
+  }
+
+  /// When on, counter content uses the opposite-scheme palette colour
+  /// (dark background in light mode / light background in dark mode)
+  /// instead of black / white. Defaults to on.
+  static var isTintEnabled: Bool {
+    if sharedDefaults.object(forKey: tintEnabledKey) == nil {
+      return true
+    }
+    return sharedDefaults.bool(forKey: tintEnabledKey)
+  }
+
+  static var colorPack: CounterColorPack {
+    let raw = sharedDefaults.string(forKey: colorPackKey) ?? CounterColorPack.muted.rawValue
+    return CounterColorPack(rawValue: raw) ?? .muted
   }
 
   static var isCompactModeEnabled: Bool {

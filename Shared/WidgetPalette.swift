@@ -13,7 +13,10 @@ struct WidgetPaletteSlot {
   }
 
   func foreground(for scheme: ColorScheme) -> Color {
-    scheme == .dark ? .white : .black
+    if AppAppearancePreference.isTintEnabled {
+      return scheme == .dark ? lightBackground : darkBackground
+    }
+    return scheme == .dark ? .white : .black
   }
 
   func mutedForeground(for scheme: ColorScheme) -> Color {
@@ -63,20 +66,23 @@ struct WidgetPaletteSlot {
 enum WidgetPalette {
   /// Built from the shared `CounterPaletteData` so the widget extension's
   /// colors can never drift from the app's `CounterPaletteTokens`.
-  static let slots: [WidgetPaletteSlot] = CounterPaletteData.entries.map { entry in
-    WidgetPaletteSlot(
-      lightBackground: Color(red: entry.lightRGB.red, green: entry.lightRGB.green, blue: entry.lightRGB.blue),
-      darkBackground: Color(red: entry.darkRGB.red, green: entry.darkRGB.green, blue: entry.darkRGB.blue)
-    )
+  static var slots: [WidgetPaletteSlot] {
+    CounterPaletteData.entries.map { entry in
+      WidgetPaletteSlot(
+        lightBackground: Color(red: entry.lightRGB.red, green: entry.lightRGB.green, blue: entry.lightRGB.blue),
+        darkBackground: Color(red: entry.darkRGB.red, green: entry.darkRGB.green, blue: entry.darkRGB.blue)
+      )
+    }
   }
 
   static func slot(at index: Int) -> WidgetPaletteSlot {
-    let normalized = ((index % slots.count) + slots.count) % slots.count
+    let count = max(slots.count, 1)
+    let normalized = ((index % count) + count) % count
     return slots[normalized]
   }
 
   static func paletteIndex(forCustomCounterAt index: Int) -> Int {
-    index % slots.count
+    index % CounterPaletteData.slotCount
   }
 }
 

@@ -5,6 +5,8 @@ import SwiftUI
 /// Pages are ordered oldest → newest left to right, so swiping right goes further back.
 struct HistoryBarChart: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.counterAccent) private var accent
+  @Environment(\.colorScheme) private var colorScheme
 
   let period: HistoryPeriod
   @Binding var windowOffset: Int
@@ -21,6 +23,18 @@ struct HistoryBarChart: View {
         }
       }
     )
+  }
+
+  /// Counter's chosen colour when themed; otherwise the default muted surface.
+  private var chartBackground: Color {
+    accent?.palette.background(for: colorScheme)
+      ?? ComponentColor.historyChartBackground(colors)
+  }
+
+  /// Opposite-scheme palette colour for contrast on the chosen background.
+  private var barFill: Color {
+    accent?.palette.inverseBackground(for: colorScheme)
+      ?? ComponentColor.historyChartBarFill(colors)
   }
 
   var body: some View {
@@ -41,7 +55,7 @@ struct HistoryBarChart: View {
     .frame(height: HistoryToken.chartHeight)
     .padding(HistoryToken.chartPadding)
     .background(
-      ComponentColor.historyChartBackground(colors),
+      chartBackground,
       in: RoundedRectangle(cornerRadius: HistoryToken.chartCornerRadius, style: .continuous)
     )
   }
@@ -74,7 +88,7 @@ struct HistoryBarChart: View {
         y: .value("Value", item.value),
         width: .ratio(0.55)
       )
-      .foregroundStyle(ComponentColor.historyChartBarFill(colors))
+      .foregroundStyle(barFill)
       .cornerRadius(HistoryToken.chartBarCornerRadius)
     }
     .chartYScale(domain: 0...yAxisMaximum)
@@ -122,8 +136,9 @@ struct HistoryBarChart: View {
           .fill(.clear)
           .contentShape(Rectangle())
           .onTapGesture { location in
-            guard let onSelectBar else { return }
-            let plotFrame = geometry[proxy.plotAreaFrame]
+            guard let onSelectBar,
+                  let plotFrameAnchor = proxy.plotFrame else { return }
+            let plotFrame = geometry[plotFrameAnchor]
             let xPosition = location.x - plotFrame.origin.x
             guard plotFrame.width > 0,
                   let date: Date = proxy.value(atX: xPosition, as: Date.self) else { return }
@@ -187,7 +202,8 @@ struct HistoryBarChart: View {
         }
       )
       .padding()
-      .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: nil))
+      .counterAccent(.calories)
+      .counterDesignSystem(CounterDesignSystem(colorScheme: .light, accent: .calories))
     }
   }
 

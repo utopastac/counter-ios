@@ -4,6 +4,9 @@ import SwiftUI
 struct CounterDesignSystem: Equatable {
   var colorScheme: ColorScheme
   var accent: CounterAccent?
+  /// Mirrored from prefs so environment updates when tint or colour pack changes.
+  var isTintEnabled: Bool = true
+  var colorPackRaw: String = CounterColorPack.muted.rawValue
 
   var colors: SemanticColors {
     var resolved = colorScheme.counterSemanticColors
@@ -14,7 +17,12 @@ struct CounterDesignSystem: Equatable {
   }
 
   static func automatic(colorScheme: ColorScheme) -> CounterDesignSystem {
-    CounterDesignSystem(colorScheme: colorScheme, accent: nil)
+    CounterDesignSystem(
+      colorScheme: colorScheme,
+      accent: nil,
+      isTintEnabled: AppAppearancePreference.isTintEnabled,
+      colorPackRaw: AppAppearancePreference.colorPack.rawValue
+    )
   }
 }
 
@@ -81,18 +89,39 @@ extension View {
 private struct CounterDesignSystemProvider: ViewModifier {
   @Environment(\.colorScheme) private var colorScheme
   @Environment(\.counterAccent) private var counterAccent
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
 
   func body(content: Content) -> some View {
     content
       .environment(
         \.designSystem,
-        CounterDesignSystem(colorScheme: colorScheme, accent: counterAccent)
+        CounterDesignSystem(
+          colorScheme: colorScheme,
+          accent: counterAccent,
+          isTintEnabled: isTintEnabled,
+          colorPackRaw: colorPackRaw
+        )
       )
   }
 }
 
 private struct CounterAppearancePreferenceProvider: ViewModifier {
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
 
   private var colorScheme: ColorScheme {
     isDarkModeEnabled ? .dark : .light
@@ -102,7 +131,12 @@ private struct CounterAppearancePreferenceProvider: ViewModifier {
     content
       .environment(
         \.designSystem,
-        CounterDesignSystem(colorScheme: colorScheme, accent: nil)
+        CounterDesignSystem(
+          colorScheme: colorScheme,
+          accent: nil,
+          isTintEnabled: isTintEnabled,
+          colorPackRaw: colorPackRaw
+        )
       )
       .preferredColorScheme(colorScheme)
   }

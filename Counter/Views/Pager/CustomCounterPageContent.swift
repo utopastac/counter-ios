@@ -16,6 +16,14 @@ struct CustomCounterPageContent: View {
     AppAppearancePreference.monoPaletteIndexKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
 
   var isCompact = false
@@ -28,7 +36,7 @@ struct CustomCounterPageContent: View {
   @State private var undoHapticTrigger = 0
 
   private var pageAccent: CounterAccent {
-    let _ = (isMonoEnabled, monoPaletteIndex)
+    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     return CounterAccent.forCounter(counter)
   }
 

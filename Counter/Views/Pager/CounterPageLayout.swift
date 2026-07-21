@@ -7,6 +7,14 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   @Environment(\.counterPagerIsDragging) private var counterPagerIsDragging
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
   @Environment(\.colorScheme) private var colorScheme
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
 
   let heroValue: String
   let heroSubtitle: String?
@@ -19,7 +27,8 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   @State private var isHeaderExpanded = false
 
   private var ringPalette: CounterPaletteSlot {
-    (counterAccent ?? .forCustomCounter(at: 0)).palette
+    let _ = (isTintEnabled, colorPackRaw)
+    return (counterAccent ?? .forCustomCounter(at: 0)).palette
   }
 
   private var canExpandHeader: Bool {

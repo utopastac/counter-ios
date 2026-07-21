@@ -17,6 +17,7 @@ enum SpaceToken {
   static let u2: CGFloat = GridToken.units(2)
   static let u3: CGFloat = GridToken.units(3)
   static let u4: CGFloat = GridToken.units(4)
+  static let u5: CGFloat = GridToken.units(5)
   static let u7: CGFloat = GridToken.units(7)
 
   /// Page horizontal inset and default component padding (1 grid unit).
@@ -90,6 +91,10 @@ enum BorderToken {
   static let statsRowStrong: CGFloat = 3
   static let settingsDivider: CGFloat = 1
   static let colourSwatch: CGFloat = 2
+  /// Unselected bordered option cards (colour pack / starter counters).
+  static let selectionUnselected: CGFloat = 1
+  /// Selected bordered option cards.
+  static let selectionSelected: CGFloat = 2
 }
 
 enum EntryLogPreviewLimit {
@@ -110,7 +115,7 @@ enum SizeToken {
   static let iconGlyph: CGFloat = 20
   static let quickAddHeight: CGFloat = 44
   static let tableRowHeight: CGFloat = GridToken.units(4)
-  static let primaryButtonHeight: CGFloat = 56
+  static let primaryButtonHeight: CGFloat = 40
   static let gridColumnCount: Int = 5
   static let gridSpacing: CGFloat = SpaceToken.x2
   static let toggleWidth: CGFloat = 64
@@ -118,6 +123,14 @@ enum SizeToken {
   static let toggleThumbPadding: CGFloat = 5
   static let toggleThumbWidth: CGFloat = 32
   static let toggleThumbHeight: CGFloat = 14
+
+  /// Outer size of radio / checkbox indicators in selection rows.
+  static let selectionControl: CGFloat = 22
+  /// Filled radio glyph when selected (rounded square from the design spec).
+  static let selectionRadioFill: CGFloat = 14
+  static let selectionCheckboxCorner: CGFloat = 4
+  /// Corner radius for the mini palette swatches inside colour-pack cards.
+  static let onboardingSwatchCorner: CGFloat = 2
 
   enum Ring {
     /// Full counter page progress ring.
@@ -137,6 +150,8 @@ enum OpacityToken {
   static let iconButtonPressed: CGFloat = 0.5
   /// Primary action buttons when `isEnabled` is false.
   static let disabledButton: CGFloat = 0.5
+  /// Unselected starter-counter labels keep primary colour at reduced opacity.
+  static let unselectedLabel: CGFloat = 0.6
 }
 
 enum MotionToken {
@@ -322,4 +337,38 @@ enum SheetToken {
   static let keypadKeyHeight: CGFloat = GridToken.units(6)
   static let keypadKeyCornerRadius: CGFloat = RadiusToken.button
   static let keypadBottom: CGFloat = SpaceToken.u2
+}
+
+/// Fresh-install onboarding layout — matches the colour-pack / starter-counter mockups.
+enum OnboardingToken {
+  /// Gap between option cards (colour-pack grid and starter-counter list).
+  static let optionGap: CGFloat = SpaceToken.u1
+  /// Gap between mini colour swatches inside a pack card.
+  static let swatchGap: CGFloat = 2
+  /// Inset inside each option card (12pt per starter-counter mock).
+  static let cardPadding: CGFloat = 12
+  /// Space from pack title to its swatch grid.
+  static let titleToSwatches: CGFloat = SpaceToken.u1
+  /// Space from counter title to its goal subtitle.
+  static let titleToSubtitle: CGFloat = 2
+  /// Gap between a starter-counter card and its trailing edit control.
+  static let cardToEditGap: CGFloat = SpaceToken.u1
+  /// Space from the progress ring to the step title.
+  static let ringToTitle: CGFloat = SpaceToken.u2
+  /// Onboarding progress ring — same mid size as list cards (`SizeToken.Ring.card` = 64).
+  static let progressRingSize: CGFloat = SizeToken.Ring.card
+  static let progressRingStroke: CGFloat = SizeToken.Ring.cardStroke
+  /// Step-1 ring fill (25%).
+  static let stepOneProgress = GoalProgress(current: 25, goal: 100, direction: .countUp)
+  /// Step-2 ring fill (75%).
+  static let stepTwoProgress = GoalProgress(current: 75, goal: 100, direction: .countUp)
+
+  static var cardShape: RoundedRectangle {
+    RadiusToken.continuous(RadiusToken.xs)
+  }
+
+  /// Softer pill used by coloured starter-counter rows.
+  static var counterCardShape: RoundedRectangle {
+    RadiusToken.continuous(RadiusToken.sm)
+  }
 }

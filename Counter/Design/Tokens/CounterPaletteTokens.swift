@@ -14,8 +14,17 @@ struct CounterPaletteSlot: Equatable, Identifiable {
     scheme == .dark ? darkBackground : lightBackground
   }
 
+  /// Opposite-scheme palette colour (dark companion in light mode, light in dark).
+  func inverseBackground(for scheme: ColorScheme) -> Color {
+    scheme == .dark ? lightBackground : darkBackground
+  }
+
   func foreground(for scheme: ColorScheme) -> Color {
-    scheme == .dark ? BaseColor.white : BaseColor.black
+    if AppAppearancePreference.isTintEnabled {
+      // Opposite-scheme palette colour: dark tint on light cards, light tint on dark.
+      return inverseBackground(for: scheme)
+    }
+    return scheme == .dark ? BaseColor.white : BaseColor.black
   }
 
   func subtleForeground(for scheme: ColorScheme) -> Color {
@@ -23,7 +32,10 @@ struct CounterPaletteSlot: Equatable, Identifiable {
   }
 
   func buttonForeground(for scheme: ColorScheme) -> Color {
-    scheme == .dark ? BaseColor.black : BaseColor.white
+    if AppAppearancePreference.isTintEnabled {
+      return background(for: scheme)
+    }
+    return scheme == .dark ? BaseColor.black : BaseColor.white
   }
 
   /// Muted track color for progress rings sitting on the card background.
@@ -56,13 +68,15 @@ enum CounterPaletteTokens {
 
   /// Built from the shared `CounterPaletteData` so the app and widget
   /// extension can never end up with mismatched palette colors.
-  static let slots: [CounterPaletteSlot] = CounterPaletteData.entries.enumerated().map { index, entry in
-    CounterPaletteSlot(
-      id: index,
-      name: entry.name,
-      lightBackground: Color(red: entry.lightRGB.red, green: entry.lightRGB.green, blue: entry.lightRGB.blue),
-      darkBackground: Color(red: entry.darkRGB.red, green: entry.darkRGB.green, blue: entry.darkRGB.blue)
-    )
+  static var slots: [CounterPaletteSlot] {
+    CounterPaletteData.entries.enumerated().map { index, entry in
+      CounterPaletteSlot(
+        id: index,
+        name: entry.name,
+        lightBackground: Color(red: entry.lightRGB.red, green: entry.lightRGB.green, blue: entry.lightRGB.blue),
+        darkBackground: Color(red: entry.darkRGB.red, green: entry.darkRGB.green, blue: entry.darkRGB.blue)
+      )
+    }
   }
 
   /// Palette slots ordered for display: neutrals first (brightest to darkest), then chromatic hues.

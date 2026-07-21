@@ -29,16 +29,21 @@ enum WidgetSnapshot {
     reloadTimelines()
   }
 
-  static func clear() {
+  static func clear(reloadWidgets: Bool = true) {
     defaults?.removeObject(forKey: Keys.title)
     defaults?.removeObject(forKey: Keys.heroValue)
     defaults?.removeObject(forKey: Keys.updated)
-    reloadTimelines()
+    if reloadWidgets {
+      reloadTimelines()
+    }
   }
 
   static func reloadTimelines() {
     #if canImport(WidgetKit)
-    WidgetCenter.shared.reloadAllTimelines()
+    // Defer so callers can finish SwiftData saves before the widget extension opens the store.
+    DispatchQueue.main.async {
+      WidgetCenter.shared.reloadAllTimelines()
+    }
     #endif
   }
 }

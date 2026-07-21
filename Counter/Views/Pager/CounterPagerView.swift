@@ -15,6 +15,14 @@ struct CounterPagerView: View {
     AppAppearancePreference.monoPaletteIndexKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
 
   @State private var selectedPageID: String?
@@ -53,12 +61,12 @@ struct CounterPagerView: View {
   }
 
   private var pageAccents: [CounterAccent] {
-    let _ = (isMonoEnabled, monoPaletteIndex)
+    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     return counters.map { CounterAccent.forCounter($0) }
   }
 
   private var activeAccent: CounterAccent {
-    let _ = (isMonoEnabled, monoPaletteIndex)
+    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     guard let counter = activeCounter else {
       return CounterAccent.forCustomCounter(at: 0)
     }

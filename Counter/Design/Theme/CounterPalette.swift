@@ -3,6 +3,13 @@ import SwiftUI
 /// Per-counter theme derived from the shared counter palette.
 struct CounterAccent: Equatable {
   let paletteIndex: Int
+  /// Captured so pack changes invalidate environment equality and refresh themed views.
+  let colorPackRaw: String
+
+  init(paletteIndex: Int, colorPackRaw: String = AppAppearancePreference.colorPack.rawValue) {
+    self.paletteIndex = paletteIndex
+    self.colorPackRaw = colorPackRaw
+  }
 
   var palette: CounterPaletteSlot {
     CounterPaletteTokens.slot(at: paletteIndex)

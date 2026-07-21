@@ -19,6 +19,14 @@ struct AppSettingsView: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
   @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
+  @AppStorage(
     AppAppearancePreference.quickAddBatchWindowKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
@@ -37,6 +45,13 @@ struct AppSettingsView: View {
     )
   }
 
+  private var colorPack: Binding<CounterColorPack> {
+    Binding(
+      get: { CounterColorPack(rawValue: colorPackRaw) ?? .muted },
+      set: { colorPackRaw = $0.rawValue }
+    )
+  }
+
   private var appVersionText: String {
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
@@ -51,61 +66,78 @@ struct AppSettingsView: View {
       )
 
       ScrollView {
-        VStack(alignment: .leading, spacing: 0) {
-          SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
-          SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isHapticsEnabled)
-          SettingsToggleRow(icon: .rows3, label: "Compact mode", isOn: $isCompactModeEnabled)
+        VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
+          VStack(alignment: .leading, spacing: 0) {
+            SettingsSectionHeader(title: "General")
+            SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isHapticsEnabled)
+            SettingsPickerRow(
+              icon: .calendar,
+              label: "Default reset",
+              selection: defaultResetPeriod,
+              options: CounterResetPeriod.allCases.map { ($0, $0.label) }
+            )
+            SettingsPickerRow(
+              icon: .timer,
+              label: "Batch window",
+              selection: $batchWindowSeconds,
+              options: AppAppearancePreference.batchWindowOptions.map {
+                ($0, AppAppearancePreference.batchWindowLabel(for: $0))
+              }
+            )
+          }
 
-          SettingsPickerRow(
-            icon: .calendar,
-            label: "Default reset",
-            selection: defaultResetPeriod,
-            options: CounterResetPeriod.allCases.map { ($0, $0.label) }
-          )
-
-          SettingsPickerRow(
-            icon: .timer,
-            label: "Batch window",
-            selection: $batchWindowSeconds,
-            options: AppAppearancePreference.batchWindowOptions.map {
-              ($0, AppAppearancePreference.batchWindowLabel(for: $0))
-            }
-          )
-
-          SettingsToggleRow(icon: .palette, label: "Mono", isOn: $isMonoEnabled)
+          VStack(alignment: .leading, spacing: 0) {
+            SettingsSectionHeader(title: "Theme")
+            SettingsToggleRow(icon: .rows3, label: "Compact", isOn: $isCompactModeEnabled)
+            SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
+            SettingsPickerRow(
+              icon: .palette,
+              label: "Colour pack",
+              selection: colorPack,
+              options: CounterColorPack.allCases.map { ($0, $0.label) }
+            )
+            SettingsToggleRow(icon: .droplet, label: "Tint", isOn: $isTintEnabled)
+            SettingsToggleRow(icon: .palette, label: "Mono", isOn: $isMonoEnabled)
+          }
 
           if isMonoEnabled {
-            SettingsSectionHeader(title: "Colour")
-              .padding(.top, SpaceToken.u1)
-
-            SettingsColorSwatchGrid(selection: $monoPaletteIndex)
-          }
-
-          SettingsSectionDivider()
-
-          SettingsSectionHeader(title: "Data")
-
-          if let exportURL {
-            ShareLink(item: exportURL) {
-              SettingsStaticRow(icon: .logs, label: "Export CSV", value: "Share")
+            VStack(alignment: .leading, spacing: 0) {
+              SettingsSectionHeader(title: "Color")
+              SettingsColorSwatchGrid(selection: $monoPaletteIndex)
             }
           }
 
-          SettingsSectionDivider()
+          VStack(alignment: .leading, spacing: 0) {
+            SettingsSectionHeader(title: "Data")
+            if let exportURL {
+              ShareLink(item: exportURL) {
+                SettingsStaticRow(icon: .logs, label: "Export CSV", value: "Export")
+              }
+            }
+          }
 
-          SettingsSectionHeader(title: "Debug")
+          VStack(alignment: .leading, spacing: 0) {
+            SettingsSectionHeader(title: "Development")
+            SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
+            SettingsActionRow(icon: .listRestart, label: "Preview fresh install") {
+              dismiss()
+              Task { @MainActor in
+                await Task.yield()
+                FreshInstallOnboarding.requestPreview()
+              }
+            }
+            SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
+          }
 
-          SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
-          SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
-
-          SettingsSectionDivider()
-
-          SettingsDestructiveRow(label: "Reset all data") {
-            showResetConfirmation = true
+          VStack(alignment: .leading, spacing: 0) {
+            SettingsDivider()
+            SettingsDestructiveRow(label: "Reset all data") {
+              showResetConfirmation = true
+            }
           }
         }
         .padding(.horizontal, SheetToken.horizontal)
-        .padding(.top, SpaceToken.u1)
+        .padding(.top, SpaceToken.u2)
         .padding(.bottom, SpaceToken.u4)
       }
     }
@@ -124,14 +156,24 @@ struct AppSettingsView: View {
     .onChange(of: monoPaletteIndex) { _, _ in
       WidgetSnapshot.reloadTimelines()
     }
+    .onChange(of: isTintEnabled) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
+    .onChange(of: colorPackRaw) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
     .alert("Reset all data?", isPresented: $showResetConfirmation) {
       Button("Reset", role: .destructive) {
-        AppDataReset.resetAll(in: modelContext)
+        // Dismiss first so @Query teardown isn't racing the wipe on the same turn.
         dismiss()
+        Task { @MainActor in
+          await Task.yield()
+          AppDataReset.resetAll(in: modelContext)
+        }
       }
       Button("Cancel", role: .cancel) {}
     } message: {
-      Text("This deletes your counters and restores the default Calories, Protein, and Money setup.")
+      Text("This deletes your counters and walks you through choosing a colour pack and starter set.")
     }
   }
 

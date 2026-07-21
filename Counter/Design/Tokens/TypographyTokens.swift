@@ -66,6 +66,14 @@ enum TypeStyle {
     monospacedDigits: false
   )
 
+  static let xxxlMedium = TypeStyleDefinition(
+    size: FontSizeToken.xxxl,
+    weight: FontWeightToken.medium,
+    lineHeight: FontSizeToken.xxxl,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
   static let xxxlSemibold = TypeStyleDefinition(
     size: FontSizeToken.xxxl,
     weight: FontWeightToken.semibold,
@@ -247,7 +255,7 @@ enum CounterTextStyle: CaseIterable {
     case .settingsSectionHeader:
       return TypeStyle.lgSemibold
     case .settingsFieldValue:
-      return TypeStyle.xxxlSemibold
+      return TypeStyle.xxxlMedium
     case .settingsRowLabel:
       return TypeStyle.mdSemibold
     case .settingsRowValue:

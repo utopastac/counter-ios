@@ -74,6 +74,7 @@ struct CounterHistoryView: View {
             dataForOffset: dataForOffset,
             onSelectBar: { selectedBucket = $0 }
           )
+          .counterAccent(.forCounter(counter))
 
           if !listItems.isEmpty {
             HistoryList(items: listItems, dateFormat: listDateFormat) { item in

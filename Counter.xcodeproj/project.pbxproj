@@ -10,6 +10,10 @@
 		AP10000010000000000000001 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000001 /* AppSettingsView.swift */; };
 		ADR10000010000000000000001 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
 		ADR10000010000000000000002 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
+		FIOBFCOUNTER01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
+		FIOBFWATCH01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
+		FIOBFTESTS01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
+		FIOVIEWBF01 /* FreshInstallOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOVIEWREF01 /* FreshInstallOnboardingView.swift */; };
 		AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
 		AP10000010000000000000003 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
 		AP10000010000000000000004 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
@@ -85,8 +89,10 @@
 		DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000007 /* DesignSystemEnvironment.swift */; };
 		DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000008 /* CounterTextStyleModifier.swift */; };
 		DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */; };
+		FPGBFCOUNTER01 /* ForcePressGestureModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPGFILEREF01 /* ForcePressGestureModifier.swift */; };
 		DS10000010000000000000010 /* CounterPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000010 /* CounterPageBackground.swift */; };
 		DS10000010000000000000014 /* PrimaryCapsuleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000014 /* PrimaryCapsuleButton.swift */; };
+		SCRBFCOUNTER01 /* SelectionControlRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCRFILEREF01 /* SelectionControlRow.swift */; };
 		DS10000010000000000000016 /* LargeAmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000016 /* LargeAmountInput.swift */; };
 		DS10000010000000000000017 /* NumericKeypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000017 /* NumericKeypad.swift */; };
 		DS10000010000000000000018 /* CounterPaletteTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000018 /* CounterPaletteTokens.swift */; };
@@ -134,6 +140,7 @@
 		CTWIDGETBF001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
 		CTGBFCounterTemplate01 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
 		CTGBFAppDataReset01 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
+		CPDBFTESTS01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
 		CTGBFSampleDataSeeder01 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
 		CE10000010000000000000001 /* CounterExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20000010000000000000001 /* CounterExport.swift */; };
 		CFV10000010000000000000001 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
@@ -276,6 +283,8 @@
 /* Begin PBXFileReference section */
 		AP20000010000000000000001 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
 		ADR20000010000000000000001 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
+		FIOFILEREF01 /* FreshInstallOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshInstallOnboarding.swift; sourceTree = "<group>"; };
+		FIOVIEWREF01 /* FreshInstallOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshInstallOnboardingView.swift; sourceTree = "<group>"; };
 		AP20000010000000000000002 /* AppAppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreference.swift; sourceTree = "<group>"; };
 		AH20000010000000000000001 /* AppHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHaptics.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
@@ -358,8 +367,10 @@
 		DS20000010000000000000007 /* DesignSystemEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemEnvironment.swift; sourceTree = "<group>"; };
 		DS20000010000000000000008 /* CounterTextStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextStyleModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetPresentationModifier.swift; sourceTree = "<group>"; };
+		FPGFILEREF01 /* ForcePressGestureModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForcePressGestureModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000010 /* CounterPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageBackground.swift; sourceTree = "<group>"; };
 		DS20000010000000000000014 /* PrimaryCapsuleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryCapsuleButton.swift; sourceTree = "<group>"; };
+		SCRFILEREF01 /* SelectionControlRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionControlRow.swift; sourceTree = "<group>"; };
 		DS20000010000000000000016 /* LargeAmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeAmountInput.swift; sourceTree = "<group>"; };
 		DS20000010000000000000017 /* NumericKeypad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericKeypad.swift; sourceTree = "<group>"; };
 		DS20000010000000000000018 /* CounterPaletteTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPaletteTokens.swift; sourceTree = "<group>"; };
@@ -542,6 +553,7 @@
 			children = (
 				DS20000010000000000000008 /* CounterTextStyleModifier.swift */,
 				DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */,
+				FPGFILEREF01 /* ForcePressGestureModifier.swift */,
 			);
 			path = Modifiers;
 			sourceTree = "<group>";
@@ -551,6 +563,7 @@
 			children = (
 				DS20000010000000000000010 /* CounterPageBackground.swift */,
 				DS20000010000000000000014 /* PrimaryCapsuleButton.swift */,
+				SCRFILEREF01 /* SelectionControlRow.swift */,
 				DS20000010000000000000016 /* LargeAmountInput.swift */,
 				DS20000010000000000000017 /* NumericKeypad.swift */,
 				DS20000010000000000000019 /* CounterStatsTable.swift */,
@@ -586,11 +599,20 @@
 			children = (
 				G50000010000000000000001 /* Pager */,
 				AP50000010000000000000001 /* Settings */,
+				FIOGROUP01 /* Onboarding */,
 				A50000010000000000000008 /* CustomCounters */,
 				A50000010000000000000009 /* History */,
 				A50000010000000000000010 /* Components */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		FIOGROUP01 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				FIOVIEWREF01 /* FreshInstallOnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		AP50000010000000000000001 /* Settings */ = {
@@ -676,6 +698,7 @@
 				AP20000010000000000000002 /* AppAppearancePreference.swift */,
 				AH20000010000000000000001 /* AppHaptics.swift */,
 				ADR20000010000000000000001 /* AppDataReset.swift */,
+				FIOFILEREF01 /* FreshInstallOnboarding.swift */,
 				CPDFILEREF01 /* CounterPaletteData.swift */,
 				PRAFILEREF01 /* ProgressRingArc.swift */,
 				CCPFILEREF01 /* CustomCounter+Progress.swift */,
@@ -949,6 +972,8 @@
 				P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */,
 				M10000010000000000000001 /* AllCountersListView.swift in Sources */,
 				AP10000010000000000000001 /* AppSettingsView.swift in Sources */,
+				FIOVIEWBF01 /* FreshInstallOnboardingView.swift in Sources */,
+				FIOBFCOUNTER01 /* FreshInstallOnboarding.swift in Sources */,
 				AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */,
 				AH10000010000000000000001 /* AppHaptics.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
@@ -963,8 +988,10 @@
 				DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */,
 				DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */,
 				DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */,
+				FPGBFCOUNTER01 /* ForcePressGestureModifier.swift in Sources */,
 				DS10000010000000000000010 /* CounterPageBackground.swift in Sources */,
 				DS10000010000000000000014 /* PrimaryCapsuleButton.swift in Sources */,
+				SCRBFCOUNTER01 /* SelectionControlRow.swift in Sources */,
 				DS10000010000000000000016 /* LargeAmountInput.swift in Sources */,
 				DS10000010000000000000017 /* NumericKeypad.swift in Sources */,
 				DS10000010000000000000018 /* CounterPaletteTokens.swift in Sources */,
@@ -1057,6 +1084,7 @@
 				Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */,
 				SD10000010000000000000002 /* SampleDataSeeder.swift in Sources */,
 				ADR10000010000000000000002 /* AppDataReset.swift in Sources */,
+				FIOBFWATCH01 /* FreshInstallOnboarding.swift in Sources */,
 				CTWATCHBF001 /* CounterTemplate.swift in Sources */,
 				CCPBFWATCH01 /* CustomCounter+Progress.swift in Sources */,
 				CFWATCHBFCounterFormatting01 /* CounterFormatting.swift in Sources */,
@@ -1146,6 +1174,8 @@
 				QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */,
 				CTGBFCounterTemplate01 /* CounterTemplate.swift in Sources */,
 				CTGBFAppDataReset01 /* AppDataReset.swift in Sources */,
+				FIOBFTESTS01 /* FreshInstallOnboarding.swift in Sources */,
+				CPDBFTESTS01 /* CounterPaletteData.swift in Sources */,
 				CTGBFSampleDataSeeder01 /* SampleDataSeeder.swift in Sources */,
 				LOGBFTEST01 /* Logging.swift in Sources */,
 				CTGBFAmountInput01 /* AmountInput.swift in Sources */,

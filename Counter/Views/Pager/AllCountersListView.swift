@@ -14,6 +14,14 @@ struct AllCountersListView: View {
     AppAppearancePreference.monoPaletteIndexKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
   @State private var editMode: EditMode = .inactive
 
@@ -102,7 +110,7 @@ struct AllCountersListView: View {
 
   @ViewBuilder
   private func counterRow(for counter: CustomCounter) -> some View {
-    let _ = (isMonoEnabled, monoPaletteIndex)
+    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     let total = counter.currentTotal()
     let progress = counter.currentProgress()
 

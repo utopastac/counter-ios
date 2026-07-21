@@ -9,6 +9,8 @@ import SwiftUI
 enum SettingsToken {
   /// Equal space above and below each section divider.
   static let sectionSpacing: CGFloat = SpaceToken.u2
+  /// Gap between settings sections when using space instead of a divider.
+  static let sectionGap: CGFloat = SpaceToken.u5
   /// Space from a section header/label to its content.
   static let headerToContent: CGFloat = SpaceToken.u1
   /// Space from a field label to its text field.
@@ -72,7 +74,15 @@ struct SettingsLabeledField: View {
         .font(CounterTextStyle.settingsFieldValue.font)
         .tracking(CounterTextStyle.settingsFieldValue.tracking ?? 0)
         .foregroundStyle(colors.textPrimary)
+        .textFieldStyle(.plain)
         .keyboardType(keyboardType)
+        .padding(.horizontal, SpaceToken.u2)
+        .padding(.vertical, SpaceToken.u1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+          ComponentColor.settingsFieldFill(colors),
+          in: RadiusToken.continuousButton
+        )
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }
@@ -98,6 +108,30 @@ struct SettingsStaticRow: View {
         .counterTextStyle(.settingsRowValue)
     }
     .frame(minHeight: SizeToken.quickAddHeight)
+  }
+}
+
+struct SettingsActionRow: View {
+  @Environment(\.semanticColors) private var colors
+
+  let icon: CounterLucideIconName
+  let label: String
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      HStack(spacing: SpaceToken.u2) {
+        CounterLucideIcon(icon: icon, color: colors.textPrimary)
+
+        Text(label)
+          .counterTextStyle(.settingsRowLabel)
+
+        Spacer(minLength: SpaceToken.u1)
+      }
+      .frame(minHeight: SizeToken.quickAddHeight)
+      .contentShape(Rectangle())
+    }
+    .buttonStyle(.plain)
   }
 }
 
@@ -280,6 +314,10 @@ struct SettingsColorSwatchButton: View {
 
 struct SettingsColorSwatchGrid: View {
   @Environment(\.colorScheme) private var colorScheme
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
 
   @Binding var selection: Int
 
@@ -290,9 +328,14 @@ struct SettingsColorSwatchGrid: View {
     )
   }
 
+  private var slots: [CounterPaletteSlot] {
+    let _ = colorPackRaw
+    return CounterPaletteTokens.slotsSortedByColor
+  }
+
   var body: some View {
     LazyVGrid(columns: columns, spacing: SizeToken.gridSpacing) {
-      ForEach(CounterPaletteTokens.slotsSortedByColor) { slot in
+      ForEach(slots) { slot in
         SettingsColorSwatchButton(
           fill: ComponentColor.colourSwatchFill(slot, colorScheme: colorScheme),
           isSelected: selection == slot.id

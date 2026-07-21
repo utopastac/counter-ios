@@ -11,9 +11,17 @@ struct WatchCounterPageView: View {
     AppAppearancePreference.monoPaletteIndexKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var monoPaletteIndex = 0
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
 
   private var theme: WatchThemeColors {
-    let _ = (isMonoEnabled, monoPaletteIndex)
+    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     return WatchThemeColors(
       paletteIndex: AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex)
     )
