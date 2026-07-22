@@ -7,8 +7,6 @@ import SwiftUI
 // independently of the sheet's own state and save/delete logic.
 
 enum SettingsToken {
-  /// Equal space above and below each section divider.
-  static let sectionSpacing: CGFloat = SpaceToken.u2
   /// Gap between settings sections when using space instead of a divider.
   static let sectionGap: CGFloat = SpaceToken.u5
   /// Space from a section header/label to its content.
@@ -17,13 +15,6 @@ enum SettingsToken {
   static let labelToField: CGFloat = SpaceToken.x1
   /// Vertical gap between stacked labeled fields (Title / Unit, etc.).
   static let fieldSpacing: CGFloat = SpaceToken.u3
-}
-
-struct SettingsSectionDivider: View {
-  var body: some View {
-    SettingsDivider()
-      .padding(.vertical, SettingsToken.sectionSpacing)
-  }
 }
 
 extension View {

@@ -33,43 +33,15 @@ struct CreateCounterView: View {
         )
 
         ScrollView {
-          VStack(alignment: .leading, spacing: 0) {
-            SettingsPickerRow(
-              icon: .rows3,
-              label: "Template",
-              selection: $template,
-              options: CounterTemplate.allCases.map { ($0, $0.label) }
-            )
-
-            SettingsSectionDivider()
-
-            VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
-              SettingsLabeledField(label: "Title", text: $name, placeholder: CustomCounter.untitledName)
-
-              SettingsLabeledField(
-                label: "Unit",
-                text: $unit,
-                placeholder: "e.g. kcal, g, $"
-              )
-            }
-
-            SettingsSectionDivider()
-
-            goalAndResetContent
-
-            SettingsSectionDivider()
-
-            SettingsSectionHeader(title: "Quick add presets")
-
-            SettingsPresetGrid(
-              values: $buttonValues,
-              defaults: template.defaultPresets
-            )
-
+          VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
+            templateSection
+            fieldsSection
+            resetPeriodSection
+            quickAddSection
             colourSection
           }
           .padding(.horizontal, SheetToken.horizontal)
-          .padding(.top, SettingsToken.sectionSpacing)
+          .padding(.top, SpaceToken.u1)
           .padding(.bottom, SpaceToken.u2)
         }
         .settingsKeyboardDismissible()
@@ -100,69 +72,99 @@ struct CreateCounterView: View {
     .counterSheetPresentation()
   }
 
-  @ViewBuilder
-  private var goalAndResetContent: some View {
-    SettingsLabeledField(
-      label: "Target",
-      text: $goalText,
-      keyboardType: .decimalPad,
-      placeholder: "0"
-    )
-
-    if hasActiveGoal {
-      SettingsPickerRow(
-        icon: .arrowUpToLine,
-        label: "Direction",
-        selection: $goalDirection,
-        options: GoalDirection.allCases.map { ($0, $0.label) }
-      )
-    }
-
-    SettingsSectionDivider()
-
-    SettingsSectionHeader(title: "Reset period")
-
+  private var templateSection: some View {
     SettingsPickerRow(
-      icon: .calendar,
-      label: "Period",
-      selection: $resetPeriod,
-      options: CounterResetPeriod.allCases.map { ($0, $0.label) }
+      icon: .rows3,
+      label: "Template",
+      selection: $template,
+      options: CounterTemplate.allCases.map { ($0, $0.label) }
     )
+  }
 
-    if resetPeriod == .weekly {
-      SettingsPickerRow(
-        icon: .listRestart,
-        label: "Resets on",
-        selection: $resetAnchorDay,
-        options: (1...7).map { ($0, Calendar.current.weekdaySymbols[$0 - 1]) }
-      )
+  private var fieldsSection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
+        SettingsLabeledField(label: "Title", text: $name, placeholder: CustomCounter.untitledName)
+
+        SettingsLabeledField(
+          label: "Unit",
+          text: $unit,
+          placeholder: "e.g. kcal, g, $"
+        )
+
+        SettingsLabeledField(
+          label: "Target",
+          text: $goalText,
+          keyboardType: .decimalPad,
+          placeholder: "0"
+        )
+      }
+
+      if hasActiveGoal {
+        SettingsPickerRow(
+          icon: .arrowUpToLine,
+          label: "Direction",
+          selection: $goalDirection,
+          options: GoalDirection.allCases.map { ($0, $0.label) }
+        )
+        .padding(.top, SpaceToken.x1)
+      }
     }
+  }
 
-    if resetPeriod == .monthly {
+  private var resetPeriodSection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      SettingsSectionHeader(title: "Reset period")
+
       SettingsPickerRow(
-        icon: .listRestart,
-        label: "Resets on",
-        selection: $resetAnchorDay,
-        options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
+        icon: .calendar,
+        label: "Period",
+        selection: $resetPeriod,
+        options: CounterResetPeriod.allCases.map { ($0, $0.label) }
       )
-    }
 
-    if resetPeriod == .yearly {
-      SettingsPickerRow(
-        icon: .listRestart,
-        label: "Resets in",
-        selection: $resetAnchorDay,
-        options: (1...12).map { ($0, Calendar.current.monthSymbols[$0 - 1]) }
+      if resetPeriod == .weekly {
+        SettingsPickerRow(
+          icon: .listRestart,
+          label: "Resets on",
+          selection: $resetAnchorDay,
+          options: (1...7).map { ($0, Calendar.current.weekdaySymbols[$0 - 1]) }
+        )
+      }
+
+      if resetPeriod == .monthly {
+        SettingsPickerRow(
+          icon: .listRestart,
+          label: "Resets on",
+          selection: $resetAnchorDay,
+          options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
+        )
+      }
+
+      if resetPeriod == .yearly {
+        SettingsPickerRow(
+          icon: .listRestart,
+          label: "Resets in",
+          selection: $resetAnchorDay,
+          options: (1...12).map { ($0, Calendar.current.monthSymbols[$0 - 1]) }
+        )
+      }
+    }
+  }
+
+  private var quickAddSection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      SettingsSectionHeader(title: "Quick add presets")
+      SettingsPresetGrid(
+        values: $buttonValues,
+        defaults: template.defaultPresets
       )
     }
   }
 
   private var colourSection: some View {
-    Group {
-      SettingsSectionDivider()
-
+    VStack(alignment: .leading, spacing: 0) {
       SettingsSectionHeader(title: "Colour")
-
       SettingsColorSwatchGrid(selection: $paletteIndex)
     }
   }
