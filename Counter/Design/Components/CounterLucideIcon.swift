@@ -18,6 +18,8 @@ enum CounterLucideIconName: String {
   case info = "lucide-info"
   case palette = "lucide-palette"
   case droplet = "lucide-droplet"
+  case blend = "lucide-blend"
+  case paintBucket = "lucide-paint-bucket"
   case timer = "lucide-timer"
   case moon = "lucide-moon"
   case rows3 = "lucide-rows-3"

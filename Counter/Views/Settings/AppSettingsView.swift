@@ -27,6 +27,10 @@ struct AppSettingsView: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(
+    AppAppearancePreference.progressRingWidthKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var progressRingWidthRaw = ProgressRingWidth.balanced.rawValue
+  @AppStorage(
     AppAppearancePreference.quickAddBatchWindowKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
@@ -49,6 +53,13 @@ struct AppSettingsView: View {
     Binding(
       get: { CounterColorPack(rawValue: colorPackRaw) ?? .muted },
       set: { colorPackRaw = $0.rawValue }
+    )
+  }
+
+  private var progressRingWidth: Binding<ProgressRingWidth> {
+    Binding(
+      get: { ProgressRingWidth(rawValue: progressRingWidthRaw) ?? .balanced },
+      set: { progressRingWidthRaw = $0.rawValue }
     )
   }
 
@@ -91,13 +102,19 @@ struct AppSettingsView: View {
             SettingsToggleRow(icon: .rows3, label: "Compact", isOn: $isCompactModeEnabled)
             SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
             SettingsPickerRow(
+              icon: .slidersHorizontal,
+              label: "Ring width",
+              selection: progressRingWidth,
+              options: ProgressRingWidth.allCases.map { ($0, $0.label) }
+            )
+            SettingsPickerRow(
               icon: .palette,
               label: "Colour pack",
               selection: colorPack,
               options: CounterColorPack.allCases.map { ($0, $0.label) }
             )
-            SettingsToggleRow(icon: .droplet, label: "Tint", isOn: $isTintEnabled)
-            SettingsToggleRow(icon: .palette, label: "Mono", isOn: $isMonoEnabled)
+            SettingsToggleRow(icon: .blend, label: "Tint", isOn: $isTintEnabled)
+            SettingsToggleRow(icon: .paintBucket, label: "Mono", isOn: $isMonoEnabled)
           }
 
           if isMonoEnabled {
@@ -160,6 +177,9 @@ struct AppSettingsView: View {
       WidgetSnapshot.reloadTimelines()
     }
     .onChange(of: colorPackRaw) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
+    .onChange(of: progressRingWidthRaw) { _, _ in
       WidgetSnapshot.reloadTimelines()
     }
     .alert("Reset all data?", isPresented: $showResetConfirmation) {

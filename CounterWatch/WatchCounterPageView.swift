@@ -19,6 +19,10 @@ struct WatchCounterPageView: View {
     AppAppearancePreference.colorPackKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var colorPackRaw = CounterColorPack.muted.rawValue
+  @AppStorage(
+    AppAppearancePreference.progressRingWidthKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var ringWidthRaw = ProgressRingWidth.balanced.rawValue
 
   private var theme: WatchThemeColors {
     let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
@@ -53,7 +57,14 @@ struct WatchCounterPageView: View {
   private var ring: some View {
     Group {
       if let progress {
-        WatchGoalProgressRing(progress: progress, theme: theme, size: 64, lineWidth: 10)
+        let ringSize: CGFloat = 64
+        let width = ProgressRingWidth(rawValue: ringWidthRaw) ?? .balanced
+        WatchGoalProgressRing(
+          progress: progress,
+          theme: theme,
+          size: ringSize,
+          lineWidth: width.strokeWidth(for: ringSize)
+        )
       } else {
         Color.clear
           .frame(width: 64, height: 64)

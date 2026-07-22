@@ -4,6 +4,7 @@ nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable
   case daily
   case weekly
   case monthly
+  case yearly
 
   var id: String { rawValue }
 
@@ -12,6 +13,7 @@ nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable
     case .daily: "Daily"
     case .weekly: "Weekly"
     case .monthly: "Monthly"
+    case .yearly: "Yearly"
     }
   }
 
@@ -20,6 +22,7 @@ nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable
     case .daily: "today"
     case .weekly: "this week"
     case .monthly: "this month"
+    case .yearly: "this year"
     }
   }
 
@@ -40,12 +43,13 @@ nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable
 
   /// The anchor day this period should start from when there's no existing anchor worth
   /// preserving (e.g. a brand-new counter). Weekly defaults to the calendar's first weekday;
-  /// daily and monthly both default to `1`.
+  /// daily, monthly, and yearly all default to `1` (day-of-month / January).
   func defaultAnchorDay(calendar: Calendar = .current) -> Int {
     switch self {
     case .daily: return 1
     case .weekly: return calendar.firstWeekday
     case .monthly: return 1
+    case .yearly: return 1
     }
   }
 
@@ -62,6 +66,8 @@ nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable
       return (1...7).contains(currentAnchorDay) ? currentAnchorDay : calendar.firstWeekday
     case .monthly:
       return (1...28).contains(currentAnchorDay) ? currentAnchorDay : 1
+    case .yearly:
+      return (1...12).contains(currentAnchorDay) ? currentAnchorDay : 1
     }
   }
 }
@@ -130,6 +136,33 @@ nonisolated enum CounterPeriodCalculator {
       currentMonth.day = clampedAnchorDay(anchorDay, for: currentMonth, calendar: calendar)
       let end = calendar.startOfDay(for: calendar.date(from: currentMonth) ?? start)
       return CounterPeriodRange(start: start, end: end)
+
+    case .yearly:
+      // Anchor is month-of-year (1...12); the period always starts on the 1st of that month.
+      let anchorMonth = min(max(resetAnchorDay, 1), 12)
+      let month = calendar.component(.month, from: date)
+      var yearComponents = calendar.dateComponents([.year], from: date)
+
+      if month >= anchorMonth {
+        yearComponents.month = anchorMonth
+        yearComponents.day = 1
+        let start = calendar.startOfDay(for: calendar.date(from: yearComponents) ?? date)
+        var nextYear = yearComponents
+        nextYear.year = (nextYear.year ?? 1) + 1
+        let end = calendar.startOfDay(for: calendar.date(from: nextYear) ?? start)
+        return CounterPeriodRange(start: start, end: end)
+      }
+
+      yearComponents.year = (yearComponents.year ?? 1) - 1
+      yearComponents.month = anchorMonth
+      yearComponents.day = 1
+      let start = calendar.startOfDay(for: calendar.date(from: yearComponents) ?? date)
+
+      var currentYear = calendar.dateComponents([.year], from: date)
+      currentYear.month = anchorMonth
+      currentYear.day = 1
+      let end = calendar.startOfDay(for: calendar.date(from: currentYear) ?? start)
+      return CounterPeriodRange(start: start, end: end)
     }
   }
 
@@ -154,6 +187,9 @@ nonisolated enum CounterPeriodCalculator {
       return "Resets weekly on \(calendar.weekdaySymbols[index])"
     case .monthly:
       return "Resets monthly on day \(resetAnchorDay)"
+    case .yearly:
+      let index = max(0, min(resetAnchorDay - 1, calendar.monthSymbols.count - 1))
+      return "Resets yearly in \(calendar.monthSymbols[index])"
     }
   }
 

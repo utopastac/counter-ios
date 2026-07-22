@@ -104,6 +104,8 @@ final class CustomCounter {
       return min(max(resetAnchorDay, 1), 7)
     case .monthly:
       return min(max(resetAnchorDay, 1), 31)
+    case .yearly:
+      return min(max(resetAnchorDay, 1), 12)
     }
   }
 

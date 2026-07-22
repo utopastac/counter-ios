@@ -96,7 +96,6 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         GoalProgressRing(
           progress: ringProgress,
           size: SizeToken.Ring.display,
-          lineWidth: SizeToken.Ring.displayStroke,
           trackColor: palette.progressRingTrack(for: colorScheme),
           fillColor: palette.foreground(for: colorScheme)
         )

@@ -191,6 +191,15 @@ struct CounterSettingsView: View {
           options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
         )
       }
+
+      if resetPeriod == .yearly {
+        SettingsPickerRow(
+          icon: .listRestart,
+          label: "Resets in",
+          selection: $resetAnchorDay,
+          options: (1...12).map { ($0, Calendar.current.monthSymbols[$0 - 1]) }
+        )
+      }
     }
   }
 

@@ -42,6 +42,11 @@
 		CPDBFWATCH01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
 		B10000010000000000000012 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000012 /* WatchTheme.swift */; };
 		PRABFWATCH01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
+		PRWBFCOUNTER01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWBFWATCH01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWBFWIDGET01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWBFTESTS01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWTBFTEST01 /* ProgressRingWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWTFILEREF01 /* ProgressRingWidthTests.swift */; };
 		B10000010000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000007 /* Assets.xcassets */; };
 		B10000010000000000000008 /* CounterWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B30000010000000000000001 /* CounterWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
@@ -409,6 +414,8 @@
 		Q20000010000000000000001 /* QuickAddConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddConfiguration.swift; sourceTree = "<group>"; };
 		CPDFILEREF01 /* CounterPaletteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPaletteData.swift; sourceTree = "<group>"; };
 		PRAFILEREF01 /* ProgressRingArc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingArc.swift; sourceTree = "<group>"; };
+		PRWFILEREF01 /* ProgressRingWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidth.swift; sourceTree = "<group>"; };
+		PRWTFILEREF01 /* ProgressRingWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidthTests.swift; sourceTree = "<group>"; };
 		CCPFILEREF01 /* CustomCounter+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomCounter+Progress.swift"; sourceTree = "<group>"; };
 		LOGFILEREF01 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		L20000010000000000000002 /* GoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressRing.swift; sourceTree = "<group>"; };
@@ -477,6 +484,7 @@
 			children = (
 				TMCFILEREF01 /* TestModelContainer.swift */,
 				CPTFILEREF01 /* CounterPeriodCalculatorTests.swift */,
+				PRWTFILEREF01 /* ProgressRingWidthTests.swift */,
 				GPTFILEREF01 /* GoalProgressTests.swift */,
 				HATFILEREF01 /* HistoryAggregatorTests.swift */,
 				QCTFILEREF01 /* QuickAddConfigurationTests.swift */,
@@ -701,6 +709,7 @@
 				FIOFILEREF01 /* FreshInstallOnboarding.swift */,
 				CPDFILEREF01 /* CounterPaletteData.swift */,
 				PRAFILEREF01 /* ProgressRingArc.swift */,
+				PRWFILEREF01 /* ProgressRingWidth.swift */,
 				CCPFILEREF01 /* CustomCounter+Progress.swift */,
 				LOGFILEREF01 /* Logging.swift */,
 				AI20000010000000000000001 /* AmountInput.swift */,
@@ -1038,6 +1047,7 @@
 				C10000010000000000000012 /* PreviewModel.swift in Sources */,
 				CPDBFCOUNTER01 /* CounterPaletteData.swift in Sources */,
 				PRABFCOUNTER01 /* ProgressRingArc.swift in Sources */,
+				PRWBFCOUNTER01 /* ProgressRingWidth.swift in Sources */,
 				CCPBFCOUNTER01 /* CustomCounter+Progress.swift in Sources */,
 				LOGBFCOUNTER01 /* Logging.swift in Sources */,
 				AI10000010000000000000001 /* AmountInput.swift in Sources */,
@@ -1064,6 +1074,7 @@
 				B10000010000000000000012 /* WatchTheme.swift in Sources */,
 				CPDBFWATCH01 /* CounterPaletteData.swift in Sources */,
 				PRABFWATCH01 /* ProgressRingArc.swift in Sources */,
+				PRWBFWATCH01 /* ProgressRingWidth.swift in Sources */,
 				D10000010000000000000001 /* AppGroup.swift in Sources */,
 				AP10000010000000000000003 /* AppAppearancePreference.swift in Sources */,
 				AH10000010000000000000002 /* AppHaptics.swift in Sources */,
@@ -1136,6 +1147,7 @@
 				IW10000010000000000000018 /* QuickAddConfiguration.swift in Sources */,
 				CPDBFWIDGET01 /* CounterPaletteData.swift in Sources */,
 				PRABFWIDGET01 /* ProgressRingArc.swift in Sources */,
+				PRWBFWIDGET01 /* ProgressRingWidth.swift in Sources */,
 				CCPBFWIDGET01 /* CustomCounter+Progress.swift in Sources */,
 				CFWBFCounterFormatting01 /* CounterFormatting.swift in Sources */,
 				CAWBFCounterAmount01 /* CounterAmount.swift in Sources */,
@@ -1165,6 +1177,8 @@
 				CTGBFEntryActions01 /* EntryActions.swift in Sources */,
 				CTGBFAppGroup01 /* AppGroup.swift in Sources */,
 				AP10000010000000000000005 /* AppAppearancePreference.swift in Sources */,
+				PRWBFTESTS01 /* ProgressRingWidth.swift in Sources */,
+				PRWTBFTEST01 /* ProgressRingWidthTests.swift in Sources */,
 				AH10000010000000000000003 /* AppHaptics.swift in Sources */,
 				CTGBFSharedModelContainer01 /* SharedModelContainer.swift in Sources */,
 				CTGBFWidgetSnapshot01 /* WidgetSnapshot.swift in Sources */,

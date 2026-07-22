@@ -8,10 +8,10 @@ enum WidgetTheme {
 
   /// Ring size the design calls for — the app's own ring shrunk down to widget scale.
   static let ringSize: CGFloat = 48
-  /// Scaled to the same proportion as the app's ring (`SizeToken.Ring.displayStroke` /
-  /// `SizeToken.Ring.display` = 24 / 96 = 25%) so the stroke reads the same relative
-  /// thickness at the smaller widget size.
-  static let ringStroke: CGFloat = 12
+  /// Stroke follows the shared `ProgressRingWidth` preference (balanced = 25% of size).
+  static var ringStroke: CGFloat {
+    AppAppearancePreference.progressRingWidth.strokeWidth(for: ringSize)
+  }
   static let ringOverfillOutlineWidth: CGFloat = 2
 
   static let heroFontSize: CGFloat = 34
@@ -78,7 +78,11 @@ struct WidgetGoalProgressRing: View {
   let fillColor: Color
   let overfillOutlineColor: Color
   var size: CGFloat = WidgetTheme.ringSize
-  var lineWidth: CGFloat = WidgetTheme.ringStroke
+  var lineWidth: CGFloat? = nil
+
+  private var resolvedLineWidth: CGFloat {
+    lineWidth ?? AppAppearancePreference.progressRingWidth.strokeWidth(for: size)
+  }
 
   private var fillFraction: Double {
     if progress.rendersEmptyRing { return 0 }
@@ -88,16 +92,16 @@ struct WidgetGoalProgressRing: View {
 
   var body: some View {
     ZStack {
-      ProgressRingArc(fraction: 1, lineWidth: lineWidth)
+      ProgressRingArc(fraction: 1, lineWidth: resolvedLineWidth)
         .stroke(trackColor, style: ringStrokeStyle)
 
       if fillFraction > 0 {
-        ProgressRingArc(fraction: fillFraction, lineWidth: lineWidth)
+        ProgressRingArc(fraction: fillFraction, lineWidth: resolvedLineWidth)
           .stroke(fillColor, style: ringStrokeStyle)
       }
 
       if progress.overflowLoopProgress > 0 {
-        ProgressRingArc(fraction: progress.overflowLoopProgress, lineWidth: lineWidth)
+        ProgressRingArc(fraction: progress.overflowLoopProgress, lineWidth: resolvedLineWidth)
           .stroke(fillColor, style: ringStrokeStyle)
       }
 
@@ -119,24 +123,24 @@ struct WidgetGoalProgressRing: View {
   }
 
   private var ringStrokeStyle: StrokeStyle {
-    StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
+    StrokeStyle(lineWidth: resolvedLineWidth, lineCap: .round, lineJoin: .round)
   }
 
   /// Mirrors `GoalProgressRing.ringTip(at:)`.
   private func ringTip(at fraction: Double) -> some View {
-    let tipRadius = lineWidth / 2
+    let tipRadius = resolvedLineWidth / 2
     let outlineWidth = WidgetTheme.ringOverfillOutlineWidth
 
     return ZStack {
       WidgetRingTipHalo(
         fraction: fraction,
-        lineWidth: lineWidth,
+        lineWidth: resolvedLineWidth,
         haloRadius: tipRadius + outlineWidth,
         frontHalfOnly: true
       )
       .fill(overfillOutlineColor)
 
-      WidgetRingTipHalo(fraction: fraction, lineWidth: lineWidth, haloRadius: tipRadius)
+      WidgetRingTipHalo(fraction: fraction, lineWidth: resolvedLineWidth, haloRadius: tipRadius)
         .fill(fillColor)
     }
   }

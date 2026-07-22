@@ -9,6 +9,7 @@ enum AppAppearancePreference {
   static let monoPaletteIndexKey = "app.appearance.monoPaletteIndex"
   static let tintEnabledKey = "app.appearance.tintEnabled"
   static let colorPackKey = "app.appearance.colorPack"
+  static let progressRingWidthKey = "app.appearance.progressRingWidth"
   static let quickAddBatchWindowKey = "app.quickAdd.batchWindowSeconds"
   static let fpsCounterEnabledKey = "app.debug.fpsCounterEnabled"
 
@@ -48,6 +49,13 @@ enum AppAppearancePreference {
   static var colorPack: CounterColorPack {
     let raw = sharedDefaults.string(forKey: colorPackKey) ?? CounterColorPack.muted.rawValue
     return CounterColorPack(rawValue: raw) ?? .muted
+  }
+
+  /// Stroke thickness for progress rings. Defaults to balanced (25% of ring size).
+  static var progressRingWidth: ProgressRingWidth {
+    let raw = sharedDefaults.string(forKey: progressRingWidthKey)
+      ?? ProgressRingWidth.balanced.rawValue
+    return ProgressRingWidth(rawValue: raw) ?? .balanced
   }
 
   static var isCompactModeEnabled: Bool {

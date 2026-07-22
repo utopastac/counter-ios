@@ -100,7 +100,6 @@ struct FreshInstallOnboardingView: View {
         GoalProgressRing(
           progress: step.progress,
           size: OnboardingToken.progressRingSize,
-          lineWidth: OnboardingToken.progressRingStroke,
           trackColor: colors.progressRingTrack,
           fillColor: colors.textPrimary
         )

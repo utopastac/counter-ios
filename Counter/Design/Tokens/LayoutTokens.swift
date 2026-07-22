@@ -135,11 +135,12 @@ enum SizeToken {
   enum Ring {
     /// Full counter page progress ring.
     static let display: CGFloat = 96
-    /// Keeps a 25% stroke-to-size ratio (`displayStroke` / `display`).
-    static let displayStroke: CGFloat = 24
+    /// Balanced (25%) stroke for the display ring — prefer
+    /// `AppAppearancePreference.progressRingWidth.strokeWidth(for:)` at draw sites.
+    static let displayStroke: CGFloat = ProgressRingWidth.balanced.strokeWidth(for: display)
     /// Mid-size ring for standard (non-compact) list cards.
     static let card: CGFloat = GridToken.units(8)
-    static let cardStroke: CGFloat = 16
+    static let cardStroke: CGFloat = ProgressRingWidth.balanced.strokeWidth(for: card)
     static let `default`: CGFloat = display
     static let progressStroke: CGFloat = displayStroke
     static let overfillOutlineWidth: CGFloat = 2
@@ -255,8 +256,8 @@ enum CompactCardToken {
 
   /// Underlay list row ring — smaller than the full display ring so a single-line row stays short.
   static let listRingSize: CGFloat = 30
-  /// Keeps the same 25% stroke-to-size ratio as `SizeToken.Ring.displayStroke` / `display`.
-  static let listRingStroke: CGFloat = listRingSize * 0.25
+  /// Balanced (25%) stroke for the compact list ring — draw sites use the global preference.
+  static let listRingStroke: CGFloat = ProgressRingWidth.balanced.strokeWidth(for: listRingSize)
 }
 
 /// Counters list underlay reveal — card peeks on the trailing edge when open.
@@ -357,7 +358,8 @@ enum OnboardingToken {
   static let ringToTitle: CGFloat = SpaceToken.u2
   /// Onboarding progress ring — same mid size as list cards (`SizeToken.Ring.card` = 64).
   static let progressRingSize: CGFloat = SizeToken.Ring.card
-  static let progressRingStroke: CGFloat = SizeToken.Ring.cardStroke
+  /// Balanced stroke reference; draw sites use the global ring-width preference.
+  static let progressRingStroke: CGFloat = ProgressRingWidth.balanced.strokeWidth(for: progressRingSize)
   /// Step-1 ring fill (25%).
   static let stepOneProgress = GoalProgress(current: 25, goal: 100, direction: .countUp)
   /// Step-2 ring fill (75%).

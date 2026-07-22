@@ -3,12 +3,23 @@ import SwiftUI
 struct GoalProgressRing: View {
   @Environment(\.semanticColors) private var colors
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
+  @AppStorage(
+    AppAppearancePreference.progressRingWidthKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var ringWidthRaw = ProgressRingWidth.balanced.rawValue
 
   let progress: GoalProgress
   var size: CGFloat = SizeToken.Ring.default
-  var lineWidth: CGFloat = SizeToken.Ring.progressStroke
+  /// Optional override; when `nil`, uses the global ring-width preference.
+  var lineWidth: CGFloat? = nil
   var trackColor: Color?
   var fillColor: Color?
+
+  private var resolvedLineWidth: CGFloat {
+    if let lineWidth { return lineWidth }
+    let width = ProgressRingWidth(rawValue: ringWidthRaw) ?? .balanced
+    return width.strokeWidth(for: size)
+  }
 
   /// The primary 0...1 lap. Snaps to the full ring once a count-up target is exceeded (the
   /// overflow arc then wraps on top of it) and drops to empty for anything else out of
@@ -21,16 +32,16 @@ struct GoalProgressRing: View {
 
   var body: some View {
     ZStack {
-      ProgressRingArc(fraction: 1, lineWidth: lineWidth)
+      ProgressRingArc(fraction: 1, lineWidth: resolvedLineWidth)
         .stroke(resolvedTrackColor, style: ringStrokeStyle)
 
       if fillFraction > 0 {
-        ProgressRingArc(fraction: fillFraction, lineWidth: lineWidth)
+        ProgressRingArc(fraction: fillFraction, lineWidth: resolvedLineWidth)
           .stroke(resolvedFillColor, style: ringStrokeStyle)
       }
 
       if progress.overflowLoopProgress > 0 {
-        ProgressRingArc(fraction: progress.overflowLoopProgress, lineWidth: lineWidth)
+        ProgressRingArc(fraction: progress.overflowLoopProgress, lineWidth: resolvedLineWidth)
           .stroke(resolvedFillColor, style: ringStrokeStyle)
       }
 
@@ -55,7 +66,7 @@ struct GoalProgressRing: View {
   }
 
   private var ringStrokeStyle: StrokeStyle {
-    StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
+    StrokeStyle(lineWidth: resolvedLineWidth, lineCap: .round, lineJoin: .round)
   }
 
   /// Bordered tip cap stacked above the ring. Outline is only the *front* semicircle (leading
@@ -64,19 +75,19 @@ struct GoalProgressRing: View {
   /// `fraction` may be the continuous, unwrapped `overflowLoopProgress` (can be > 1) — the tip
   /// shape wraps it into `(0, 1]` when drawing so animation stays monotonic across lap boundaries.
   private func ringTip(at fraction: Double) -> some View {
-    let tipRadius = lineWidth / 2
+    let tipRadius = resolvedLineWidth / 2
     let outlineWidth = SizeToken.Ring.overfillOutlineWidth
 
     return ZStack {
       RingTipHalo(
         fraction: fraction,
-        lineWidth: lineWidth,
+        lineWidth: resolvedLineWidth,
         haloRadius: tipRadius + outlineWidth,
         frontHalfOnly: true
       )
       .fill(colors.progressRingOverfillOutline)
 
-      RingTipHalo(fraction: fraction, lineWidth: lineWidth, haloRadius: tipRadius)
+      RingTipHalo(fraction: fraction, lineWidth: resolvedLineWidth, haloRadius: tipRadius)
         .fill(resolvedFillColor)
     }
   }

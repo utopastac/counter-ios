@@ -42,6 +42,13 @@ struct CustomCounterModelTests {
     counter.resetPeriod = .monthly
     counter.resetAnchorDay = 99
     #expect(counter.effectiveResetAnchorDay == 31)
+
+    counter.resetPeriod = .yearly
+    counter.resetAnchorDay = 99
+    #expect(counter.effectiveResetAnchorDay == 12)
+
+    counter.resetAnchorDay = 0
+    #expect(counter.effectiveResetAnchorDay == 1)
   }
 
   @Test func defaultButtonValuesAreUsedWhenNoneProvided() {

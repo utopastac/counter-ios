@@ -18,8 +18,9 @@ determines *what the app should compute*, independent of how it's displayed:
 
 | File | Covers |
 |---|---|
-| `CounterPeriodCalculatorTests.swift` | Daily/weekly/monthly reset-period range math (including anchor-day edge cases like short months), `resetSummary` strings, period totals, `ordinalDay` formatting |
+| `CounterPeriodCalculatorTests.swift` | Daily/weekly/monthly/yearly reset-period range math (including anchor-day edge cases like short months), `resetSummary` strings, period totals, `ordinalDay` formatting |
 | `GoalProgressTests.swift` | `GoalProgress` fraction/overflow/percent math for both count-up and count-down goals, `GoalProgressCalculator.progress`/`ringDisplay` |
+| `ProgressRingWidthTests.swift` | Thin / balanced / chunky ring stroke ratios and size scaling |
 | `HistoryAggregatorTests.swift` | Calendar-day totals and grouped daily/weekly/monthly history buckets |
 | `QuickAddConfigurationTests.swift` | Preset normalization (sort + cap), fill-to-count behavior, name-based default preset selection, single-preset replace/append editing |
 | `CustomCounterModelTests.swift` | `CustomCounter`'s derived properties: `effectiveGoal`, `effectivePaletteIndex` wraparound, `effectiveResetAnchorDay` clamping, `nextPaletteIndex` cycling |

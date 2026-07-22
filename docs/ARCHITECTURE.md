@@ -83,7 +83,7 @@ namespaced pure/near-pure functions:
 
 | Enum | Responsibility |
 |---|---|
-| `CounterPeriodCalculator` (`Shared/CounterPeriod.swift`) | Reset-period math: current range for daily/weekly/monthly, period totals, reset-summary strings |
+| `CounterPeriodCalculator` (`Shared/CounterPeriod.swift`) | Reset-period math: current range for daily/weekly/monthly/yearly, period totals, reset-summary strings |
 | `GoalProgressCalculator` (`Shared/GoalDirection.swift`) | Builds a `GoalProgress` value (fractions, hero strings, stat rows) for a counter's current total vs. its goal |
 | `HistoryAggregator` (`Shared/HistoryAggregator.swift`) | Buckets entries into `DailyValue`s for the history chart across day/week/month windows |
 | `EntryActions` (`Shared/EntryActions.swift`) | Stateless insert/update/delete of a `CounterEntry` |

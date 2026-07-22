@@ -172,7 +172,6 @@ private struct CounterPageHeader: View {
         GoalProgressRing(
           progress: ringProgress,
           size: SizeToken.Ring.display,
-          lineWidth: SizeToken.Ring.displayStroke,
           trackColor: ringPalette.progressRingTrack(for: colorScheme),
           fillColor: ringPalette.foreground(for: colorScheme)
         )

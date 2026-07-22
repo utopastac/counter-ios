@@ -99,6 +99,48 @@ struct CounterPeriodCalculatorTests {
     #expect(range.end == date(2026, 2, 28, 0))
   }
 
+  // MARK: - Yearly
+
+  @Test func yearlyRangeBeforeAnchorMonthUsesPreviousYear() {
+    // Anchor month 3 = March. From February, the period started last March.
+    let now = date(2026, 2, 14, 9)
+    let range = CounterPeriodCalculator.currentRange(
+      resetPeriod: .yearly,
+      resetAnchorDay: 3,
+      on: now,
+      calendar: calendar
+    )
+
+    #expect(range.start == date(2025, 3, 1, 0))
+    #expect(range.end == date(2026, 3, 1, 0))
+  }
+
+  @Test func yearlyRangeOnOrAfterAnchorMonthUsesCurrentYear() {
+    let now = date(2026, 7, 14, 9)
+    let range = CounterPeriodCalculator.currentRange(
+      resetPeriod: .yearly,
+      resetAnchorDay: 3,
+      on: now,
+      calendar: calendar
+    )
+
+    #expect(range.start == date(2026, 3, 1, 0))
+    #expect(range.end == date(2027, 3, 1, 0))
+  }
+
+  @Test func yearlyRangeDefaultsToJanuaryWhenAnchorIsOne() {
+    let now = date(2026, 7, 14, 9)
+    let range = CounterPeriodCalculator.currentRange(
+      resetPeriod: .yearly,
+      resetAnchorDay: 1,
+      on: now,
+      calendar: calendar
+    )
+
+    #expect(range.start == date(2026, 1, 1, 0))
+    #expect(range.end == date(2027, 1, 1, 0))
+  }
+
   // MARK: - resetSummary
 
   @Test func resetSummaryDescribesEachPeriod() {
@@ -112,6 +154,8 @@ struct CounterPeriodCalculatorTests {
     )
     let weekly = CounterPeriodCalculator.resetSummary(resetPeriod: .weekly, resetAnchorDay: 2, calendar: calendar)
     #expect(weekly.hasPrefix("Resets weekly on"))
+    let yearly = CounterPeriodCalculator.resetSummary(resetPeriod: .yearly, resetAnchorDay: 1, calendar: calendar)
+    #expect(yearly.hasPrefix("Resets yearly in"))
   }
 
   // MARK: - total
@@ -168,9 +212,10 @@ struct CounterPeriodCalculatorTests {
 
   // MARK: - defaultAnchorDay
 
-  @Test func defaultAnchorDayIsOneForDailyAndMonthly() {
+  @Test func defaultAnchorDayIsOneForDailyMonthlyAndYearly() {
     #expect(CounterResetPeriod.daily.defaultAnchorDay(calendar: calendar) == 1)
     #expect(CounterResetPeriod.monthly.defaultAnchorDay(calendar: calendar) == 1)
+    #expect(CounterResetPeriod.yearly.defaultAnchorDay(calendar: calendar) == 1)
   }
 
   @Test func defaultAnchorDayIsTheCalendarsFirstWeekdayForWeekly() {
@@ -197,6 +242,14 @@ struct CounterPeriodCalculatorTests {
 
   @Test func normalizedAnchorDayFallsBackToOneForAnOutOfRangeMonthlyAnchor() {
     #expect(CounterResetPeriod.monthly.normalizedAnchorDay(30, calendar: calendar) == 1)
+  }
+
+  @Test func normalizedAnchorDayPreservesAnAlreadyValidYearlyAnchor() {
+    #expect(CounterResetPeriod.yearly.normalizedAnchorDay(6, calendar: calendar) == 6)
+  }
+
+  @Test func normalizedAnchorDayFallsBackToOneForAnOutOfRangeYearlyAnchor() {
+    #expect(CounterResetPeriod.yearly.normalizedAnchorDay(15, calendar: calendar) == 1)
   }
 
   // MARK: - currentEntries

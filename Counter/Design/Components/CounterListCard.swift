@@ -72,7 +72,6 @@ struct CounterListCard: View {
         GoalProgressRing(
           progress: ringProgress,
           size: SizeToken.Ring.card,
-          lineWidth: SizeToken.Ring.cardStroke,
           trackColor: palette.progressRingTrack(for: colorScheme),
           fillColor: palette.foreground(for: colorScheme)
         )
@@ -88,7 +87,6 @@ struct CounterListCard: View {
         GoalProgressRing(
           progress: ringProgress,
           size: CompactCardToken.listRingSize,
-          lineWidth: CompactCardToken.listRingStroke,
           trackColor: palette.progressRingTrack(for: colorScheme),
           fillColor: palette.foreground(for: colorScheme)
         )
