@@ -26,7 +26,10 @@ struct PagerBackdropView: View {
   }
 }
 
-/// Full-screen counter backdrop that cross-fades between page palette colors.
+/// Full-screen counter backdrop that cross-fades between page palette fills.
+///
+/// Solid packs keep RGB interpolation. Gradient packs cross-fade the two page
+/// styles with opacity so the linear gradients stay intact while paging.
 struct CounterPagerBackdrop: View {
   @Environment(\.colorScheme) private var colorScheme
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -35,20 +38,79 @@ struct CounterPagerBackdrop: View {
   let scrollProgress: CGFloat
 
   var body: some View {
-    Rectangle()
-      .fill(interpolatedBackground)
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-  }
-
-  private var interpolatedBackground: Color {
-    CounterPagerBackdrop.interpolatedBackground(
+    let sample = Self.backdropSample(
       accents: accents,
       progress: scrollProgress,
       colorScheme: colorScheme,
       reduceMotion: reduceMotion
     )
+
+    Group {
+      switch sample {
+      case .solid(let color):
+        Rectangle().fill(color)
+      case .style(let style):
+        Rectangle().fill(style)
+      case .crossfade(let from, let to, let fraction):
+        ZStack {
+          Rectangle().fill(from)
+          Rectangle().fill(to).opacity(fraction)
+        }
+      }
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
 
+  enum BackdropSample {
+    case solid(Color)
+    case style(AnyShapeStyle)
+    case crossfade(from: AnyShapeStyle, to: AnyShapeStyle, fraction: CGFloat)
+  }
+
+  static func backdropSample(
+    accents: [CounterAccent],
+    progress: CGFloat,
+    colorScheme: ColorScheme,
+    reduceMotion: Bool
+  ) -> BackdropSample {
+    guard !accents.isEmpty else {
+      let palette = CounterAccent.forCustomCounter(at: 0).palette
+      return .style(palette.backgroundStyle(for: colorScheme))
+    }
+
+    if reduceMotion || accents.count == 1 {
+      let index = min(max(Int(round(progress)), 0), accents.count - 1)
+      return .style(accents[index].palette.backgroundStyle(for: colorScheme))
+    }
+
+    let clamped = min(max(progress, 0), CGFloat(accents.count - 1))
+    let lowerIndex = Int(floor(clamped))
+    let upperIndex = min(lowerIndex + 1, accents.count - 1)
+    let fraction = clamped - CGFloat(lowerIndex)
+
+    let fromPalette = accents[lowerIndex].palette
+    let toPalette = accents[upperIndex].palette
+
+    if fromPalette.hasGradient || toPalette.hasGradient {
+      if fraction <= 0.001 {
+        return .style(fromPalette.backgroundStyle(for: colorScheme))
+      }
+      if fraction >= 0.999 {
+        return .style(toPalette.backgroundStyle(for: colorScheme))
+      }
+      return .crossfade(
+        from: fromPalette.backgroundStyle(for: colorScheme),
+        to: toPalette.backgroundStyle(for: colorScheme),
+        fraction: fraction
+      )
+    }
+
+    let from = fromPalette.background(for: colorScheme)
+    let to = toPalette.background(for: colorScheme)
+    return .solid(Color.interpolated(from: from, to: to, progress: fraction))
+  }
+
+  /// Solid-only helper kept for callers that still need a single `Color` sample.
   static func interpolatedBackground(
     accents: [CounterAccent],
     progress: CGFloat,

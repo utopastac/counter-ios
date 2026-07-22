@@ -152,7 +152,8 @@ enum WatchSyncEngine {
       context.delete(counter)
     }
     QuickAddSessionStore.shared.reset()
-    WidgetSnapshot.clear()
+    // Match `AppDataReset`: don't reload widgets while the store is still mid-mutation.
+    WidgetSnapshot.clear(reloadWidgets: false)
   }
 
   @MainActor
@@ -168,6 +169,8 @@ enum WatchSyncEngine {
         heroValue: counter.currentProgress()?.heroValue
           ?? CounterFormatting.amount(counter.currentTotal())
       )
+    } else {
+      WidgetSnapshot.reloadTimelines()
     }
     #endif
   }

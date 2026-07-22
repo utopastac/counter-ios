@@ -84,10 +84,12 @@ struct CounterWidgetContainer: View {
   var body: some View {
     CounterWidgetView(entry: entry)
       .containerBackground(for: .widget) {
-        WidgetThemeColors(
-          paletteIndex: entry.snapshot.paletteIndex,
-          colorScheme: colorScheme
-        ).background
+        Rectangle().fill(
+          WidgetThemeColors(
+            paletteIndex: entry.snapshot.paletteIndex,
+            colorScheme: colorScheme
+          ).backgroundStyle
+        )
       }
   }
 }

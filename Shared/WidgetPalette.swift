@@ -7,20 +7,48 @@ import UIKit
 struct WidgetPaletteSlot {
   let lightBackground: Color
   let darkBackground: Color
+  let lightGradient: [Color]?
+  let darkGradient: [Color]?
+  let appearanceLock: CounterColorPackAppearanceLock
+
+  var hasGradient: Bool {
+    (lightGradient?.count ?? 0) >= 2 || (darkGradient?.count ?? 0) >= 2
+  }
+
+  private func effectiveScheme(_ scheme: ColorScheme) -> ColorScheme {
+    appearanceLock.resolvedScheme(for: scheme)
+  }
 
   func background(for scheme: ColorScheme) -> Color {
-    scheme == .dark ? darkBackground : lightBackground
+    effectiveScheme(scheme) == .dark ? darkBackground : lightBackground
+  }
+
+  func backgroundStyle(
+    for scheme: ColorScheme,
+    startPoint: UnitPoint = .topLeading,
+    endPoint: UnitPoint = .bottomTrailing
+  ) -> AnyShapeStyle {
+    let resolved = effectiveScheme(scheme)
+    let stops = resolved == .dark ? darkGradient : lightGradient
+    if let stops, stops.count >= 2 {
+      return AnyShapeStyle(
+        LinearGradient(colors: stops, startPoint: startPoint, endPoint: endPoint)
+      )
+    }
+    return AnyShapeStyle(background(for: scheme))
   }
 
   func foreground(for scheme: ColorScheme) -> Color {
+    let resolved = effectiveScheme(scheme)
     if AppAppearancePreference.isTintEnabled {
-      return scheme == .dark ? lightBackground : darkBackground
+      return resolved == .dark ? lightBackground : darkBackground
     }
-    return scheme == .dark ? .white : .black
+    return resolved == .dark ? .white : .black
   }
 
   func mutedForeground(for scheme: ColorScheme) -> Color {
-    foreground(for: scheme).opacity(scheme == .dark ? 0.72 : 0.62)
+    let resolved = effectiveScheme(scheme)
+    return foreground(for: scheme).opacity(resolved == .dark ? 0.72 : 0.62)
   }
 
   func buttonFill(for scheme: ColorScheme) -> Color {
@@ -35,7 +63,8 @@ struct WidgetPaletteSlot {
   /// `CounterPaletteSlot.progressRingTrack(for:)` so the widget's ring reads identically to
   /// the app's, without pulling the app-only `Counter/Design` module into this target.
   func progressRingTrack(for scheme: ColorScheme) -> Color {
-    Self.darken(background(for: scheme), amount: scheme == .dark ? 0.22 : 0.16)
+    let resolved = effectiveScheme(scheme)
+    return Self.darken(background(for: scheme), amount: resolved == .dark ? 0.22 : 0.16)
   }
 
   /// Background the overfill halo cuts back down to — same "cut-out" rationale as
@@ -67,10 +96,26 @@ enum WidgetPalette {
   /// Built from the shared `CounterPaletteData` so the widget extension's
   /// colors can never drift from the app's `CounterPaletteTokens`.
   static var slots: [WidgetPaletteSlot] {
-    CounterPaletteData.entries.map { entry in
+    let appearanceLock = CounterPaletteData.appearanceLock
+    return CounterPaletteData.entries.map { entry in
       WidgetPaletteSlot(
-        lightBackground: Color(red: entry.lightRGB.red, green: entry.lightRGB.green, blue: entry.lightRGB.blue),
-        darkBackground: Color(red: entry.darkRGB.red, green: entry.darkRGB.green, blue: entry.darkRGB.blue)
+        lightBackground: Color(
+          red: entry.lightRGB.red,
+          green: entry.lightRGB.green,
+          blue: entry.lightRGB.blue
+        ),
+        darkBackground: Color(
+          red: entry.darkRGB.red,
+          green: entry.darkRGB.green,
+          blue: entry.darkRGB.blue
+        ),
+        lightGradient: entry.lightGradient?.map {
+          Color(red: $0.red, green: $0.green, blue: $0.blue)
+        },
+        darkGradient: entry.darkGradient?.map {
+          Color(red: $0.red, green: $0.green, blue: $0.blue)
+        },
+        appearanceLock: appearanceLock
       )
     }
   }
@@ -88,6 +133,7 @@ enum WidgetPalette {
 
 struct WidgetThemeColors {
   let background: Color
+  let backgroundStyle: AnyShapeStyle
   let foreground: Color
   let mutedForeground: Color
   let buttonFill: Color
@@ -98,6 +144,7 @@ struct WidgetThemeColors {
   init(paletteIndex: Int, colorScheme: ColorScheme) {
     let slot = WidgetPalette.slot(at: paletteIndex)
     background = slot.background(for: colorScheme)
+    backgroundStyle = slot.backgroundStyle(for: colorScheme)
     foreground = slot.foreground(for: colorScheme)
     mutedForeground = slot.mutedForeground(for: colorScheme)
     buttonFill = slot.buttonFill(for: colorScheme)

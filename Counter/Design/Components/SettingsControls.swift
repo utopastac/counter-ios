@@ -135,6 +135,36 @@ struct SettingsActionRow: View {
   }
 }
 
+/// Tappable settings row that shows the current value and opens a detail picker.
+struct SettingsDisclosureRow: View {
+  @Environment(\.semanticColors) private var colors
+
+  let icon: CounterLucideIconName
+  let label: String
+  let value: String
+  let action: () -> Void
+
+  var body: some View {
+    Button(action: action) {
+      HStack(spacing: SpaceToken.u2) {
+        CounterLucideIcon(icon: icon, color: colors.textPrimary)
+
+        Text(label)
+          .counterTextStyle(.settingsRowLabel, compact: true)
+
+        Spacer(minLength: SpaceToken.u1)
+
+        Text(value)
+          .counterTextStyle(.settingsRowValue, compact: true)
+      }
+      .frame(minHeight: SizeToken.quickAddHeight)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .contentShape(Rectangle())
+    }
+    .buttonStyle(.plain)
+  }
+}
+
 struct SettingsPickerRow<Option: Hashable>: View {
   @Environment(\.semanticColors) private var colors
 
@@ -287,7 +317,7 @@ struct SettingsPresetGrid: View {
 struct SettingsColorSwatchButton: View {
   @Environment(\.semanticColors) private var colors
 
-  let fill: Color
+  let fill: AnyShapeStyle
   let isSelected: Bool
   let action: () -> Void
 

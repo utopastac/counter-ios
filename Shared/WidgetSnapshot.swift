@@ -40,6 +40,12 @@ enum WidgetSnapshot {
 
   static func reloadTimelines() {
     #if canImport(WidgetKit)
+    // Hostless `CounterTests` is an `.xctest` bundle — calling `WidgetCenter` from there
+    // while SwiftData is mid-mutation (or when reloads overlap across tests) can trap the
+    // process. Production targets are always `.app` / `.appex`.
+    let path = Bundle.main.bundlePath
+    guard path.hasSuffix(".app") || path.hasSuffix(".appex") else { return }
+
     // Defer so callers can finish SwiftData saves before the widget extension opens the store.
     DispatchQueue.main.async {
       WidgetCenter.shared.reloadAllTimelines()

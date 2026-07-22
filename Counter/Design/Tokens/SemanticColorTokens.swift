@@ -188,8 +188,8 @@ enum ComponentColor {
   static func colourSwatchFill(
     _ palette: CounterPaletteSlot,
     colorScheme: ColorScheme
-  ) -> Color {
-    palette.background(for: colorScheme)
+  ) -> AnyShapeStyle {
+    palette.backgroundStyle(for: colorScheme)
   }
 
   static func revealCardStroke(_ colors: SemanticColors, progress: CGFloat) -> Color {

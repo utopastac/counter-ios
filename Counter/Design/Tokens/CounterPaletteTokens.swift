@@ -9,22 +9,52 @@ struct CounterPaletteSlot: Equatable, Identifiable {
   let name: String
   let lightBackground: Color
   let darkBackground: Color
+  let lightGradient: [Color]?
+  let darkGradient: [Color]?
+  /// Locks fills/foregrounds to light or dark, or follows the app scheme.
+  let appearanceLock: CounterColorPackAppearanceLock
 
+  var hasGradient: Bool {
+    (lightGradient?.count ?? 0) >= 2 || (darkGradient?.count ?? 0) >= 2
+  }
+
+  private func effectiveScheme(_ scheme: ColorScheme) -> ColorScheme {
+    appearanceLock.resolvedScheme(for: scheme)
+  }
+
+  /// Solid representative colour — used for pager RGB lerp, ring darken, and glass tint.
   func background(for scheme: ColorScheme) -> Color {
-    scheme == .dark ? darkBackground : lightBackground
+    effectiveScheme(scheme) == .dark ? darkBackground : lightBackground
+  }
+
+  /// Visible card / page fill — linear gradient when the pack defines stops.
+  func backgroundStyle(
+    for scheme: ColorScheme,
+    startPoint: UnitPoint = .topLeading,
+    endPoint: UnitPoint = .bottomTrailing
+  ) -> AnyShapeStyle {
+    let resolved = effectiveScheme(scheme)
+    let stops = resolved == .dark ? darkGradient : lightGradient
+    if let stops, stops.count >= 2 {
+      return AnyShapeStyle(
+        LinearGradient(colors: stops, startPoint: startPoint, endPoint: endPoint)
+      )
+    }
+    return AnyShapeStyle(background(for: scheme))
   }
 
   /// Opposite-scheme palette colour (dark companion in light mode, light in dark).
   func inverseBackground(for scheme: ColorScheme) -> Color {
-    scheme == .dark ? lightBackground : darkBackground
+    effectiveScheme(scheme) == .dark ? lightBackground : darkBackground
   }
 
   func foreground(for scheme: ColorScheme) -> Color {
+    let resolved = effectiveScheme(scheme)
     if AppAppearancePreference.isTintEnabled {
       // Opposite-scheme palette colour: dark tint on light cards, light tint on dark.
       return inverseBackground(for: scheme)
     }
-    return scheme == .dark ? BaseColor.white : BaseColor.black
+    return resolved == .dark ? BaseColor.white : BaseColor.black
   }
 
   func subtleForeground(for scheme: ColorScheme) -> Color {
@@ -32,15 +62,17 @@ struct CounterPaletteSlot: Equatable, Identifiable {
   }
 
   func buttonForeground(for scheme: ColorScheme) -> Color {
+    let resolved = effectiveScheme(scheme)
     if AppAppearancePreference.isTintEnabled {
       return background(for: scheme)
     }
-    return scheme == .dark ? BaseColor.black : BaseColor.white
+    return resolved == .dark ? BaseColor.black : BaseColor.white
   }
 
   /// Muted track color for progress rings sitting on the card background.
   func progressRingTrack(for scheme: ColorScheme) -> Color {
-    Self.darken(background(for: scheme), amount: scheme == .dark ? 0.22 : 0.16)
+    let resolved = effectiveScheme(scheme)
+    return Self.darken(background(for: scheme), amount: resolved == .dark ? 0.22 : 0.16)
   }
 
   private static func darken(_ color: Color, amount: CGFloat) -> Color {
@@ -69,12 +101,28 @@ enum CounterPaletteTokens {
   /// Built from the shared `CounterPaletteData` so the app and widget
   /// extension can never end up with mismatched palette colors.
   static var slots: [CounterPaletteSlot] {
-    CounterPaletteData.entries.enumerated().map { index, entry in
+    let appearanceLock = CounterPaletteData.appearanceLock
+    return CounterPaletteData.entries.enumerated().map { index, entry in
       CounterPaletteSlot(
         id: index,
         name: entry.name,
-        lightBackground: Color(red: entry.lightRGB.red, green: entry.lightRGB.green, blue: entry.lightRGB.blue),
-        darkBackground: Color(red: entry.darkRGB.red, green: entry.darkRGB.green, blue: entry.darkRGB.blue)
+        lightBackground: Color(
+          red: entry.lightRGB.red,
+          green: entry.lightRGB.green,
+          blue: entry.lightRGB.blue
+        ),
+        darkBackground: Color(
+          red: entry.darkRGB.red,
+          green: entry.darkRGB.green,
+          blue: entry.darkRGB.blue
+        ),
+        lightGradient: entry.lightGradient?.map {
+          Color(red: $0.red, green: $0.green, blue: $0.blue)
+        },
+        darkGradient: entry.darkGradient?.map {
+          Color(red: $0.red, green: $0.green, blue: $0.blue)
+        },
+        appearanceLock: appearanceLock
       )
     }
   }

@@ -36,6 +36,7 @@ struct AppSettingsView: View {
   ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
   @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
   @State private var showResetConfirmation = false
+  @State private var showColorPackPicker = false
   @State private var exportURL: URL?
 
   private var colors: SemanticColors {
@@ -102,17 +103,18 @@ struct AppSettingsView: View {
             SettingsToggleRow(icon: .rows3, label: "Compact", isOn: $isCompactModeEnabled)
             SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
             SettingsPickerRow(
-              icon: .slidersHorizontal,
+              icon: .ringDot,
               label: "Ring width",
               selection: progressRingWidth,
               options: ProgressRingWidth.allCases.map { ($0, $0.label) }
             )
-            SettingsPickerRow(
+            SettingsDisclosureRow(
               icon: .palette,
               label: "Colour pack",
-              selection: colorPack,
-              options: CounterColorPack.allCases.map { ($0, $0.label) }
-            )
+              value: colorPack.wrappedValue.label
+            ) {
+              showColorPackPicker = true
+            }
             SettingsToggleRow(icon: .blend, label: "Tint", isOn: $isTintEnabled)
             SettingsToggleRow(icon: .paintBucket, label: "Mono", isOn: $isMonoEnabled)
           }
@@ -181,6 +183,9 @@ struct AppSettingsView: View {
     }
     .onChange(of: progressRingWidthRaw) { _, _ in
       WidgetSnapshot.reloadTimelines()
+    }
+    .sheet(isPresented: $showColorPackPicker) {
+      ColorPackPickerView(selection: colorPack)
     }
     .alert("Reset all data?", isPresented: $showResetConfirmation) {
       Button("Reset", role: .destructive) {

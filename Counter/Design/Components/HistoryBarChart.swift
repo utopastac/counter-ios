@@ -26,9 +26,11 @@ struct HistoryBarChart: View {
   }
 
   /// Counter's chosen colour when themed; otherwise the default muted surface.
-  private var chartBackground: Color {
-    accent?.palette.background(for: colorScheme)
-      ?? ComponentColor.historyChartBackground(colors)
+  private var chartBackground: AnyShapeStyle {
+    if let accent {
+      return accent.palette.backgroundStyle(for: colorScheme)
+    }
+    return AnyShapeStyle(ComponentColor.historyChartBackground(colors))
   }
 
   /// Opposite-scheme palette colour for contrast on the chosen background.

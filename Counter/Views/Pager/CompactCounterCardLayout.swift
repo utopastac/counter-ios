@@ -45,7 +45,7 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         .padding(.bottom, CompactCardToken.cardPadding)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
-    .background(palette.background(for: colorScheme), in: RadiusToken.continuous(RadiusToken.compactCard))
+    .background(palette.backgroundStyle(for: colorScheme), in: RadiusToken.continuous(RadiusToken.compactCard))
     .overlay(alignment: .top) {
       toast()
         .fixedSize()

@@ -37,7 +37,8 @@ struct WatchCounterPageView: View {
 
   var body: some View {
     ZStack {
-      theme.background
+      Rectangle()
+        .fill(theme.backgroundStyle)
         .ignoresSafeArea()
 
       VStack(alignment: .leading, spacing: 0) {

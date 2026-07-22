@@ -11,6 +11,9 @@ Or in Xcode: select the `Counter` scheme, open the Test navigator (⌘6), and ru
 `CounterTests` target (⌘U). `CounterTests` is a hostless unit-test bundle — it doesn't
 launch the app, a simulator boot is only needed to satisfy the platform/SDK requirement.
 
+CI runs the same suite on every push and pull request to `main` via
+[`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+
 ## What's covered
 
 `CounterTests/` covers the pure/near-pure domain logic in `Shared/` — the code that
@@ -29,7 +32,12 @@ determines *what the app should compute*, independent of how it's displayed:
 | `AppDataResetTests.swift` | Reset-all restores the three default counters at zero totals without crashing |
 | `AmountInputTests.swift` | Numeric text-field sanitization (digits-only, signed, max length) and parsing (positive-int, keypad digit append) |
 | `CounterFormValidationTests.swift` | The create/edit form save-gating rule: name requirement, optional-but-must-parse goal text |
+| `CounterFormattingTests.swift` | Amount display formatting (trailing zeros, decimals) and `titleWithUnit` joining |
+| `CounterAmountTests.swift` | Two-decimal rounding used when storing amounts |
 | `HistoryChartScaleTests.swift` | History chart Y-axis "nice maximum" selection and tick-value generation |
+| `WatchSyncTests.swift` | Watch sync envelope encode/decode round-trips, counter/entry snapshot upsert, full-snapshot replace, delete, and reset-all apply semantics |
+| `CounterExportTests.swift` | CSV header/rows, sort order, escaping, filename sanitization, UTF-8 `Data` parity |
+| `AppAppearancePreferenceTests.swift` | Default/fallback behavior for haptics, tint, color pack, ring width, reset period, batch window, and mono palette resolution |
 
 Tests use an isolated in-memory `ModelContainer` per test
 (`CounterTests/TestModelContainer.swift`) — they never touch the real App Group store, so
@@ -52,6 +60,7 @@ they can't corrupt device data and don't interfere with each other.
   watch-specific logic that *was* worth testing (period vs. calendar-day totals) is now
   exercised indirectly through `CounterPeriodCalculatorTests`, since `WatchCounterListView`
   and `WatchCounterDetailView` both call the same `CustomCounter.currentTotal()` helper.
+  Wire-format and apply semantics for Watch Connectivity live in `WatchSyncTests`.
 - **SwiftData persistence/migration at the framework level** (e.g. "does SwiftData survive
   a force-quit mid-write"). Out of scope — this is testing SwiftData itself, not this app's
   logic.

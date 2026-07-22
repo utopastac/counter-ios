@@ -101,7 +101,10 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     if let pagerAccents, let pagerScrollState {
       PagerBackdropView(accents: pagerAccents, scrollState: pagerScrollState)
     } else {
-      (counterAccent ?? .forCustomCounter(at: 0)).palette.background(for: colorScheme)
+      Rectangle()
+        .fill(
+          (counterAccent ?? .forCustomCounter(at: 0)).palette.backgroundStyle(for: colorScheme)
+        )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
   }

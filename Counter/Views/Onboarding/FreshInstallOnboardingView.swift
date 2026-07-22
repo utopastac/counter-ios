@@ -55,20 +55,6 @@ struct FreshInstallOnboardingView: View {
     MotionToken.settle(reduceMotion: reduceMotion)
   }
 
-  private var colorPackColumns: [GridItem] {
-    [
-      GridItem(.flexible(), spacing: OnboardingToken.optionGap),
-      GridItem(.flexible(), spacing: OnboardingToken.optionGap),
-    ]
-  }
-
-  private var swatchColumns: [GridItem] {
-    Array(
-      repeating: GridItem(.flexible(), spacing: OnboardingToken.swatchGap),
-      count: 5
-    )
-  }
-
   var body: some View {
     VStack(spacing: 0) {
       header
@@ -160,49 +146,7 @@ struct FreshInstallOnboardingView: View {
   }
 
   private var colorPackStep: some View {
-    LazyVGrid(columns: colorPackColumns, spacing: OnboardingToken.optionGap) {
-      ForEach(CounterColorPack.allCases) { pack in
-        colorPackCard(pack)
-      }
-    }
-  }
-
-  private func colorPackCard(_ pack: CounterColorPack) -> some View {
-    let isSelected = selectedPack == pack
-
-    return Button {
-      selectedPack = pack
-    } label: {
-      VStack(alignment: .leading, spacing: OnboardingToken.titleToSwatches) {
-        Text(pack.label)
-          .counterTextStyle(.settingsRowLabel)
-
-        LazyVGrid(columns: swatchColumns, spacing: OnboardingToken.swatchGap) {
-          ForEach(Array(pack.entries.enumerated()), id: \.offset) { _, entry in
-            RoundedRectangle(
-              cornerRadius: SizeToken.onboardingSwatchCorner,
-              style: .continuous
-            )
-            .fill(swatchColor(for: entry))
-            .aspectRatio(1, contentMode: .fit)
-          }
-        }
-      }
-      .padding(OnboardingToken.cardPadding)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .background(colors.surfaceSheet, in: OnboardingToken.cardShape)
-      .overlay {
-        OnboardingToken.cardShape
-          .stroke(
-            isSelected ? colors.textPrimary : colors.borderSubtle,
-            lineWidth: isSelected
-              ? BorderToken.selectionSelected
-              : BorderToken.selectionUnselected
-          )
-      }
-    }
-    .buttonStyle(.plain)
-    .accessibilityAddTraits(isSelected ? .isSelected : [])
+    ColorPackPickerGrid(selection: $selectedPack)
   }
 
   private var countersStep: some View {
@@ -215,8 +159,11 @@ struct FreshInstallOnboardingView: View {
 
   private func starterCounterCard(draft: Binding<FreshInstallStarterDraft>) -> some View {
     let value = draft.wrappedValue
-    let fill = packSwatchColor(at: value.paletteIndex)
+    let fill = packSwatchStyle(at: value.paletteIndex)
     let title = value.name.isEmpty ? value.template.label : value.name
+    let cardScheme = value.isSelected
+      ? selectedPack.resolvedScheme(for: colorScheme)
+      : colorScheme
 
     return HStack(alignment: .center, spacing: SpaceToken.u2) {
       VStack(alignment: .leading, spacing: OnboardingToken.titleToSubtitle) {
@@ -234,7 +181,7 @@ struct FreshInstallOnboardingView: View {
     }
     .padding(OnboardingToken.cardPadding)
     .background(
-      value.isSelected ? fill : colors.surfaceSheet,
+      value.isSelected ? fill : AnyShapeStyle(colors.surfaceSheet),
       in: OnboardingToken.counterCardShape
     )
     .overlay {
@@ -243,6 +190,14 @@ struct FreshInstallOnboardingView: View {
           .stroke(colors.borderSubtle, lineWidth: BorderToken.selectionUnselected)
       }
     }
+    .counterDesignSystem(
+      CounterDesignSystem(
+        colorScheme: cardScheme,
+        accent: nil,
+        isTintEnabled: AppAppearancePreference.isTintEnabled,
+        colorPackRaw: selectedPack.rawValue
+      )
+    )
     .contentShape(OnboardingToken.counterCardShape)
     .onTapGesture {
       draft.wrappedValue.isSelected.toggle()
@@ -353,16 +308,13 @@ struct FreshInstallOnboardingView: View {
     )
   }
 
-  private func swatchColor(for entry: CounterPaletteColorData) -> Color {
-    let rgb = colorScheme == .dark ? entry.darkRGB : entry.lightRGB
-    return Color(red: rgb.red, green: rgb.green, blue: rgb.blue)
-  }
-
   /// Colour for a starter card from the pack chosen in step 1 (not the saved preference).
-  private func packSwatchColor(at index: Int) -> Color {
+  private func packSwatchStyle(at index: Int) -> AnyShapeStyle {
     let entries = selectedPack.entries
     let normalized = ((index % entries.count) + entries.count) % entries.count
-    return swatchColor(for: entries[normalized])
+    return entries[normalized].backgroundStyle(
+      for: selectedPack.resolvedScheme(for: colorScheme)
+    )
   }
 
   private func skip() {
