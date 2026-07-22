@@ -20,6 +20,9 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   let heroSubtitle: String?
   let statRows: [CounterStatRow]
   let ringProgress: GoalProgress?
+  var ringStyleOverride: ProgressRingStyle? = nil
+  var ringWidthOverride: ProgressRingWidth? = nil
+  var ringGlowOverride: Bool? = nil
   @ViewBuilder var entryLog: () -> EntryLog
   @ViewBuilder var footer: () -> Footer
   @ViewBuilder var toast: () -> Toast
@@ -40,6 +43,9 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     heroSubtitle: String? = nil,
     statRows: [CounterStatRow],
     ringProgress: GoalProgress? = nil,
+    ringStyleOverride: ProgressRingStyle? = nil,
+    ringWidthOverride: ProgressRingWidth? = nil,
+    ringGlowOverride: Bool? = nil,
     @ViewBuilder entryLog: @escaping () -> EntryLog,
     @ViewBuilder footer: @escaping () -> Footer,
     @ViewBuilder toast: @escaping () -> Toast
@@ -48,6 +54,9 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     self.heroSubtitle = heroSubtitle
     self.statRows = statRows
     self.ringProgress = ringProgress
+    self.ringStyleOverride = ringStyleOverride
+    self.ringWidthOverride = ringWidthOverride
+    self.ringGlowOverride = ringGlowOverride
     self.entryLog = entryLog
     self.footer = footer
     self.toast = toast
@@ -67,6 +76,9 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
             heroSubtitle: heroSubtitle,
             statRows: statRows,
             ringProgress: ringProgress,
+            ringStyleOverride: ringStyleOverride,
+            ringWidthOverride: ringWidthOverride,
+            ringGlowOverride: ringGlowOverride,
             ringPalette: ringPalette,
             isExpanded: $isHeaderExpanded,
             canExpand: canExpandHeader
@@ -131,6 +143,9 @@ private struct CounterPageHeader: View {
   let heroSubtitle: String?
   let statRows: [CounterStatRow]
   let ringProgress: GoalProgress?
+  var ringStyleOverride: ProgressRingStyle? = nil
+  var ringWidthOverride: ProgressRingWidth? = nil
+  var ringGlowOverride: Bool? = nil
   let ringPalette: CounterPaletteSlot
   @Binding var isExpanded: Bool
   let canExpand: Bool
@@ -175,6 +190,9 @@ private struct CounterPageHeader: View {
         GoalProgressRing(
           progress: ringProgress,
           size: SizeToken.Ring.display,
+          ringStyleOverride: ringStyleOverride,
+          ringWidthOverride: ringWidthOverride,
+          ringGlowOverride: ringGlowOverride,
           trackColor: ringPalette.progressRingTrack(for: colorScheme),
           fillColor: ringPalette.foreground(for: colorScheme)
         )

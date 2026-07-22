@@ -4,6 +4,12 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
   let counterID: String
   let title: String
   let paletteIndex: Int
+  /// Resolved ring style raw value (counter override or app default).
+  let progressRingStyleRaw: String
+  /// Resolved ring width raw value (counter override or app default).
+  let progressRingWidthRaw: String
+  /// Resolved ring glow (counter override or app default).
+  let progressRingGlowEnabled: Bool
   let heroValue: String
   /// Full-sentence, capitalized subtitle (e.g. `"80 Remaining"`) — matches the string the
   /// main app shows under its hero number (`GoalProgress.heroSubtitle`), rather than the
@@ -15,11 +21,22 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
   /// Configured counter was deleted (or otherwise missing from the store).
   let isUnavailable: Bool
 
+  var progressRingStyle: ProgressRingStyle {
+    ProgressRingStyle(rawValue: progressRingStyleRaw) ?? .solid
+  }
+
+  var progressRingWidth: ProgressRingWidth {
+    ProgressRingWidth(rawValue: progressRingWidthRaw) ?? .balanced
+  }
+
   /// Gallery / loading sample — not shown when a real counter is missing.
   static let placeholder = CounterWidgetSnapshot(
     counterID: "preview",
     title: "Calories",
     paletteIndex: 0,
+    progressRingStyleRaw: ProgressRingStyle.solid.rawValue,
+    progressRingWidthRaw: ProgressRingWidth.balanced.rawValue,
+    progressRingGlowEnabled: false,
     heroValue: "0",
     heroSubtitle: "Remaining",
     ringProgress: GoalProgress(current: 0, goal: 2200, direction: .countDown),
@@ -33,6 +50,9 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
     counterID: "",
     title: "Counter removed",
     paletteIndex: 0,
+    progressRingStyleRaw: ProgressRingStyle.solid.rawValue,
+    progressRingWidthRaw: ProgressRingWidth.balanced.rawValue,
+    progressRingGlowEnabled: false,
     heroValue: "",
     heroSubtitle: "Edit widget to choose another",
     ringProgress: nil,

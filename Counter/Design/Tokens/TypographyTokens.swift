@@ -42,7 +42,11 @@ struct TypeStyleDefinition: Equatable {
   let monospacedDigits: Bool
 
   var font: Font {
-    let base = Font.system(size: size, weight: weight, design: .default)
+    font(pack: AppAppearancePreference.fontPack)
+  }
+
+  func font(pack: FontPack) -> Font {
+    let base = pack.font(size: size, weight: weight)
     return monospacedDigits ? base.monospacedDigit() : base
   }
 

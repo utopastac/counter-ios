@@ -71,25 +71,46 @@ struct CounterWidget: Widget {
       CounterWidgetContainer(entry: entry)
     }
     .configurationDisplayName("Numo")
-    .description("Show a total and quick-add from your home screen.")
-    .supportedFamilies([.systemSmall, .systemMedium])
+    .description("Show a total and quick-add from your home or Lock Screen.")
+    .supportedFamilies([
+      .systemSmall,
+      .systemMedium,
+      .systemLarge,
+      .accessoryCircular,
+      .accessoryRectangular,
+      .accessoryInline
+    ])
     .contentMarginsDisabled()
   }
 }
 
 struct CounterWidgetContainer: View {
   @Environment(\.colorScheme) private var colorScheme
+  @Environment(\.widgetFamily) private var family
   let entry: CounterWidgetEntry
+
+  private var isAccessoryFamily: Bool {
+    switch family {
+    case .accessoryCircular, .accessoryRectangular, .accessoryInline:
+      true
+    default:
+      false
+    }
+  }
 
   var body: some View {
     CounterWidgetView(entry: entry)
       .containerBackground(for: .widget) {
-        Rectangle().fill(
-          WidgetThemeColors(
-            paletteIndex: entry.snapshot.paletteIndex,
-            colorScheme: colorScheme
-          ).backgroundStyle
-        )
+        if isAccessoryFamily {
+          AccessoryWidgetBackground()
+        } else {
+          Rectangle().fill(
+            WidgetThemeColors(
+              paletteIndex: entry.snapshot.paletteIndex,
+              colorScheme: colorScheme
+            ).backgroundStyle
+          )
+        }
       }
   }
 }
@@ -104,6 +125,25 @@ struct CounterWidgetView: View {
     WidgetThemeColors(paletteIndex: entry.snapshot.paletteIndex, colorScheme: colorScheme)
   }
 
+  private func progressRing(
+    progress: GoalProgress,
+    size: CGFloat = WidgetTheme.ringSize,
+    trackColor: Color? = nil,
+    fillColor: Color? = nil,
+    overfillOutlineColor: Color? = nil
+  ) -> some View {
+    WidgetGoalProgressRing(
+      progress: progress,
+      trackColor: trackColor ?? colors.ringTrack,
+      fillColor: fillColor ?? colors.foreground,
+      overfillOutlineColor: overfillOutlineColor ?? colors.ringOverfillOutline,
+      size: size,
+      ringStyleOverride: entry.snapshot.progressRingStyle,
+      ringWidthOverride: entry.snapshot.progressRingWidth,
+      ringGlowOverride: entry.snapshot.progressRingGlowEnabled
+    )
+  }
+
   var body: some View {
     if entry.snapshot.isUnavailable {
       unavailableLayout
@@ -111,6 +151,14 @@ struct CounterWidgetView: View {
       switch family {
       case .systemMedium:
         mediumLayout
+      case .systemLarge:
+        largeLayout
+      case .accessoryCircular:
+        accessoryCircularLayout
+      case .accessoryRectangular:
+        accessoryRectangularLayout
+      case .accessoryInline:
+        accessoryInlineLayout
       default:
         smallLayout
       }
@@ -119,25 +167,44 @@ struct CounterWidgetView: View {
 
   /// Minimal copy when the configured counter was deleted — no ring, totals, or quick-add.
   private var unavailableLayout: some View {
-    VStack(alignment: .leading, spacing: 6) {
-      Text(entry.snapshot.title)
-        .font(WidgetTheme.smallTitleFont)
-        .tracking(WidgetTheme.smallTitleTracking)
-        .foregroundStyle(colors.foreground)
-        .lineLimit(2)
-        .minimumScaleFactor(0.8)
+    Group {
+      switch family {
+      case .accessoryCircular:
+        Image(systemName: "minus.circle")
+          .font(.title2)
+      case .accessoryInline:
+        Text(entry.snapshot.title)
+      case .accessoryRectangular:
+        VStack(alignment: .leading, spacing: 2) {
+          Text(entry.snapshot.title)
+            .font(.caption2)
+          Text(entry.snapshot.heroSubtitle)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+      default:
+        VStack(alignment: .leading, spacing: 6) {
+          Text(entry.snapshot.title)
+            .font(WidgetTheme.smallTitleFont)
+            .tracking(WidgetTheme.smallTitleTracking)
+            .foregroundStyle(colors.foreground)
+            .lineLimit(2)
+            .minimumScaleFactor(0.8)
 
-      Text(entry.snapshot.heroSubtitle)
-        .font(WidgetTheme.smallSubtitleFont)
-        .tracking(WidgetTheme.smallSubtitleTracking)
-        .foregroundStyle(colors.foreground.opacity(0.7))
-        .lineLimit(3)
-        .minimumScaleFactor(0.8)
+          Text(entry.snapshot.heroSubtitle)
+            .font(WidgetTheme.smallSubtitleFont)
+            .tracking(WidgetTheme.smallSubtitleTracking)
+            .foregroundStyle(colors.foreground.opacity(0.7))
+            .lineLimit(3)
+            .minimumScaleFactor(0.8)
 
-      Spacer(minLength: 0)
+          Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .padding(widgetMargins)
+      }
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-    .padding(widgetMargins)
   }
 
   private var smallLayout: some View {
@@ -146,12 +213,7 @@ struct CounterWidgetView: View {
       // keep their own line below it (unlike medium, which places the ring beside a combined
       // heading to free vertical space for quick-add buttons).
       if let ringProgress = entry.snapshot.ringProgress {
-        WidgetGoalProgressRing(
-          progress: ringProgress,
-          trackColor: colors.ringTrack,
-          fillColor: colors.foreground,
-          overfillOutlineColor: colors.ringOverfillOutline
-        )
+        progressRing(progress: ringProgress)
         .padding(.bottom, WidgetTheme.smallRingToTitleSpacing)
       }
 
@@ -178,6 +240,97 @@ struct CounterWidgetView: View {
     .padding(widgetMargins)
   }
 
+  private var largeLayout: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      HStack(alignment: .top, spacing: 16) {
+        VStack(alignment: .leading, spacing: -2) {
+          Text(entry.counter.title)
+            .font(WidgetTheme.subtitleFont)
+            .tracking(WidgetTheme.subtitleTracking)
+            .foregroundStyle(colors.foreground)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+
+          Text(entry.snapshot.heroValue)
+            .font(WidgetTheme.largeHeroFont)
+            .tracking(WidgetTheme.largeHeroTracking)
+            .foregroundStyle(colors.foreground)
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+
+          Text(entry.snapshot.heroSubtitle)
+            .font(WidgetTheme.largeSubtitleFont)
+            .tracking(WidgetTheme.largeSubtitleTracking)
+            .foregroundStyle(colors.foreground)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+
+        if let ringProgress = entry.snapshot.ringProgress {
+          progressRing(progress: ringProgress, size: WidgetTheme.largeRingSize)
+        }
+      }
+
+      Spacer(minLength: 16)
+
+      quickAddGrid
+    }
+    .padding(widgetMargins)
+  }
+
+  private var accessoryCircularLayout: some View {
+    ZStack {
+      if let ringProgress = entry.snapshot.ringProgress {
+        progressRing(
+          progress: ringProgress,
+          size: WidgetTheme.accessoryRingSize,
+          trackColor: .secondary.opacity(0.35),
+          fillColor: .primary,
+          overfillOutlineColor: .clear
+        )
+      }
+      Text(entry.snapshot.heroValue)
+        .font(WidgetTheme.packFont(size: 12))
+        .minimumScaleFactor(0.5)
+        .lineLimit(1)
+    }
+  }
+
+  private var accessoryRectangularLayout: some View {
+    HStack(alignment: .center, spacing: 8) {
+      VStack(alignment: .leading, spacing: 2) {
+        Text(entry.counter.title)
+          .font(.caption2)
+          .foregroundStyle(.secondary)
+          .lineLimit(1)
+        Text(entry.snapshot.heroValue)
+          .font(WidgetTheme.packFont(size: 17))
+          .lineLimit(1)
+          .minimumScaleFactor(0.7)
+        Text(entry.snapshot.heroSubtitle)
+          .font(.caption2)
+          .foregroundStyle(.secondary)
+          .lineLimit(1)
+      }
+      .frame(maxWidth: .infinity, alignment: .leading)
+
+      if let ringProgress = entry.snapshot.ringProgress {
+        progressRing(
+          progress: ringProgress,
+          size: 28,
+          trackColor: .secondary.opacity(0.35),
+          fillColor: .primary,
+          overfillOutlineColor: .clear
+        )
+      }
+    }
+  }
+
+  private var accessoryInlineLayout: some View {
+    Text("\(entry.counter.title) \(entry.snapshot.heroValue)")
+  }
+
   /// Hero heading + subtitle on the leading edge, ring on the trailing edge — matches the
   /// main app's pager header (`CounterPageHeader` in `Counter/Views/Pager/CounterPageLayout.swift`).
   private var mediumHeader: some View {
@@ -190,12 +343,7 @@ struct CounterWidgetView: View {
       )
 
       if let ringProgress = entry.snapshot.ringProgress {
-        WidgetGoalProgressRing(
-          progress: ringProgress,
-          trackColor: colors.ringTrack,
-          fillColor: colors.foreground,
-          overfillOutlineColor: colors.ringOverfillOutline
-        )
+        progressRing(progress: ringProgress)
       }
     }
   }
@@ -254,5 +402,35 @@ struct CounterWidgetView: View {
     date: .now,
     counter: CounterWidgetEntity(id: "missing", title: "Calories", paletteIndex: 0, sortOrder: 0),
     snapshot: .unavailable
+  )
+}
+
+#Preview(as: .systemLarge) {
+  CounterWidget()
+} timeline: {
+  CounterWidgetEntry(
+    date: .now,
+    counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0, sortOrder: 0),
+    snapshot: .placeholder
+  )
+}
+
+#Preview(as: .accessoryCircular) {
+  CounterWidget()
+} timeline: {
+  CounterWidgetEntry(
+    date: .now,
+    counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0, sortOrder: 0),
+    snapshot: .placeholder
+  )
+}
+
+#Preview(as: .accessoryRectangular) {
+  CounterWidget()
+} timeline: {
+  CounterWidgetEntry(
+    date: .now,
+    counter: CounterWidgetEntity(id: "preview", title: "Calories", paletteIndex: 0, sortOrder: 0),
+    snapshot: .placeholder
   )
 }

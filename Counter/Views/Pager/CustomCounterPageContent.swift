@@ -104,6 +104,9 @@ struct CustomCounterPageContent: View {
           heroValue: heroValue,
           heroSubtitle: heroSubtitle,
           ringProgress: counter.currentProgress(),
+          ringStyleOverride: counter.overrideProgressRingStyle,
+          ringWidthOverride: counter.overrideProgressRingWidth,
+          ringGlowOverride: counter.overrideProgressRingGlow,
           onSelectEntryLog: { sheets.present(.entryLog(counterID: counter.id)) },
           onShowHistory: onShowHistory,
           onShowButtonSettings: onShowButtonSettings
@@ -130,7 +133,10 @@ struct CustomCounterPageContent: View {
             heroValue: heroValue,
             heroSubtitle: heroSubtitle,
             statRows: statRows,
-            ringProgress: counter.currentProgress()
+            ringProgress: counter.currentProgress(),
+            ringStyleOverride: counter.overrideProgressRingStyle,
+            ringWidthOverride: counter.overrideProgressRingWidth,
+            ringGlowOverride: counter.overrideProgressRingGlow
           ) {
             VStack(alignment: .leading, spacing: 0) {
               CompactEntryLogPreview(items: previewItems) { entryID in
@@ -218,6 +224,7 @@ struct CustomCounterPageContent: View {
   private func addEntry(_ value: Double) {
     let added = EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
     impactHapticTrigger &+= 1
+    AppSounds.log()
     presentToast(for: added)
     syncWidgets()
   }
@@ -225,6 +232,7 @@ struct CustomCounterPageContent: View {
   private func addEntryQuick(_ value: Double) {
     let added = quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
     impactHapticTrigger &+= 1
+    AppSounds.log()
     presentToast(for: added)
     syncWidgets()
   }
@@ -244,6 +252,7 @@ struct CustomCounterPageContent: View {
     )
     EntryActions.deleteCounterEntry(id: id, in: modelContext)
     impactHapticTrigger &+= 1
+    AppSounds.log()
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
       entryToast = toast
     }
@@ -264,6 +273,7 @@ struct CustomCounterPageContent: View {
       )
     }
     undoHapticTrigger &+= 1
+    AppSounds.undo()
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
       entryToast = nil
     }

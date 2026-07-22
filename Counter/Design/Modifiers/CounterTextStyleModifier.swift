@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CounterTextStyleModifier: ViewModifier {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.designSystem) private var designSystem
 
   let style: CounterTextStyle
   var colorRole: TextColorRole = .primary
@@ -21,17 +22,25 @@ struct CounterTextStyleModifier: ViewModifier {
     case danger
   }
 
+  private var fontPack: FontPack {
+    FontPack(rawValue: designSystem.fontPackRaw) ?? .default
+  }
+
+  private var resolvedFont: Font {
+    style.definition.font(pack: fontPack)
+  }
+
   func body(content: Content) -> some View {
     Group {
       if compact {
         content
-          .font(style.font)
+          .font(resolvedFont)
           .tracking(style.tracking ?? 0)
           .foregroundStyle(foregroundColor)
           .fixedSize(horizontal: false, vertical: true)
       } else {
         content
-          .font(style.font)
+          .font(resolvedFont)
           .tracking(style.tracking ?? 0)
           .lineSpacing(style.lineSpacing)
           .frame(minHeight: style.lineHeight, alignment: .center)

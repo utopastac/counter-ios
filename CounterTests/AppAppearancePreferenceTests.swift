@@ -76,6 +76,53 @@ struct AppAppearancePreferenceTests {
     }
   }
 
+  @Test func progressRingStyleFallsBackToSolidForUnknownRawValue() {
+    withValue(
+      "dashed",
+      forKey: AppAppearancePreference.progressRingStyleKey,
+      in: AppAppearancePreference.sharedDefaults
+    ) {
+      #expect(AppAppearancePreference.progressRingStyle == .solid)
+    }
+  }
+
+  @Test func progressRingStyleMigratesRetiredGlowCaseToSolid() {
+    withValue(
+      "glow",
+      forKey: AppAppearancePreference.progressRingStyleKey,
+      in: AppAppearancePreference.sharedDefaults
+    ) {
+      #expect(AppAppearancePreference.progressRingStyle == .solid)
+    }
+  }
+
+  @Test func progressRingGlowDefaultsToOffWhenUnset() {
+    AppAppearancePreference.sharedDefaults.removeObject(
+      forKey: AppAppearancePreference.progressRingGlowEnabledKey
+    )
+    #expect(!AppAppearancePreference.isProgressRingGlowEnabled)
+  }
+
+  @Test func fontPackFallsBackToDefaultForUnknownRawValue() {
+    withValue(
+      "handwriting",
+      forKey: AppAppearancePreference.fontPackKey,
+      in: AppAppearancePreference.sharedDefaults
+    ) {
+      #expect(AppAppearancePreference.fontPack == .default)
+    }
+  }
+
+  @Test func soundStyleFallsBackToOffForUnknownRawValue() {
+    withValue(
+      "boom",
+      forKey: AppAppearancePreference.soundStyleKey,
+      in: .standard
+    ) {
+      #expect(AppAppearancePreference.soundStyle == .off)
+    }
+  }
+
   @Test func defaultResetPeriodFallsBackToDailyForUnknownRawValue() {
     withValue(
       "fortnightly",

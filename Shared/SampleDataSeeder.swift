@@ -57,6 +57,9 @@ enum SampleDataSeeder {
     )
     counter.createdAt = createdAt(for: template)
     counter.paletteIndex = CustomCounter.normalizedPaletteIndex(draft.paletteIndex)
+    counter.progressRingStyleRaw = draft.progressRingStyleRaw
+    counter.progressRingWidthRaw = draft.progressRingWidthRaw
+    counter.progressRingGlowRaw = draft.progressRingGlowRaw
     context.insert(counter)
   }
 

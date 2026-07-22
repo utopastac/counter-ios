@@ -20,6 +20,9 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   let heroValue: String
   let heroSubtitle: String?
   let ringProgress: GoalProgress?
+  var ringStyleOverride: ProgressRingStyle? = nil
+  var ringWidthOverride: ProgressRingWidth? = nil
+  var ringGlowOverride: Bool? = nil
   let onSelectEntryLog: () -> Void
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
@@ -96,6 +99,9 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         GoalProgressRing(
           progress: ringProgress,
           size: SizeToken.Ring.display,
+          ringStyleOverride: ringStyleOverride,
+          ringWidthOverride: ringWidthOverride,
+          ringGlowOverride: ringGlowOverride,
           trackColor: palette.progressRingTrack(for: colorScheme),
           fillColor: palette.foreground(for: colorScheme)
         )
@@ -110,6 +116,9 @@ extension CompactCounterCardLayout where Toast == EmptyView {
     heroValue: String,
     heroSubtitle: String? = nil,
     ringProgress: GoalProgress? = nil,
+    ringStyleOverride: ProgressRingStyle? = nil,
+    ringWidthOverride: ProgressRingWidth? = nil,
+    ringGlowOverride: Bool? = nil,
     onSelectEntryLog: @escaping () -> Void,
     onShowHistory: @escaping () -> Void,
     onShowButtonSettings: @escaping () -> Void,
@@ -120,6 +129,9 @@ extension CompactCounterCardLayout where Toast == EmptyView {
       heroValue: heroValue,
       heroSubtitle: heroSubtitle,
       ringProgress: ringProgress,
+      ringStyleOverride: ringStyleOverride,
+      ringWidthOverride: ringWidthOverride,
+      ringGlowOverride: ringGlowOverride,
       onSelectEntryLog: onSelectEntryLog,
       onShowHistory: onShowHistory,
       onShowButtonSettings: onShowButtonSettings,

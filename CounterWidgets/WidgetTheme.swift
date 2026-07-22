@@ -8,6 +8,10 @@ enum WidgetTheme {
 
   /// Ring size the design calls for — the app's own ring shrunk down to widget scale.
   static let ringSize: CGFloat = 48
+  /// Larger ring for the home-screen large widget.
+  static let largeRingSize: CGFloat = 72
+  /// Compact ring for lock-screen circular widgets.
+  static let accessoryRingSize: CGFloat = 36
   /// Stroke follows the shared `ProgressRingWidth` preference (balanced = 25% of size).
   static var ringStroke: CGFloat {
     AppAppearancePreference.progressRingWidth.strokeWidth(for: ringSize)
@@ -16,6 +20,8 @@ enum WidgetTheme {
 
   static let heroFontSize: CGFloat = 34
   static let subtitleFontSize: CGFloat = 18
+  static let largeHeroFontSize: CGFloat = 48
+  static let largeSubtitleFontSize: CGFloat = 20
   /// Matches `FontTrackingToken.tight2` in the app's type ramp.
   private static let trackingPercent: CGFloat = -2
 
@@ -36,32 +42,48 @@ enum WidgetTheme {
     size * (trackingPercent / 100)
   }
 
+  static func packFont(size: CGFloat, weight: Font.Weight = .semibold) -> Font {
+    AppAppearancePreference.fontPack.font(size: size, weight: weight)
+  }
+
   static var heroFont: Font {
-    .system(size: heroFontSize, weight: .semibold, design: .default)
+    packFont(size: heroFontSize)
   }
 
   static var heroTracking: CGFloat { tracking(forSize: heroFontSize) }
 
   static var subtitleFont: Font {
-    .system(size: subtitleFontSize, weight: .semibold, design: .default)
+    packFont(size: subtitleFontSize)
   }
 
   static var subtitleTracking: CGFloat { tracking(forSize: subtitleFontSize) }
 
+  static var largeHeroFont: Font {
+    packFont(size: largeHeroFontSize)
+  }
+
+  static var largeHeroTracking: CGFloat { tracking(forSize: largeHeroFontSize) }
+
+  static var largeSubtitleFont: Font {
+    packFont(size: largeSubtitleFontSize)
+  }
+
+  static var largeSubtitleTracking: CGFloat { tracking(forSize: largeSubtitleFontSize) }
+
   static var smallTitleFont: Font {
-    .system(size: smallTitleFontSize, weight: .semibold, design: .default)
+    packFont(size: smallTitleFontSize)
   }
 
   static var smallTitleTracking: CGFloat { tracking(forSize: smallTitleFontSize) }
 
   static var smallValueFont: Font {
-    .system(size: smallValueFontSize, weight: .semibold, design: .default)
+    packFont(size: smallValueFontSize)
   }
 
   static var smallValueTracking: CGFloat { tracking(forSize: smallValueFontSize) }
 
   static var smallSubtitleFont: Font {
-    .system(size: smallSubtitleFontSize, weight: .semibold, design: .default)
+    packFont(size: smallSubtitleFontSize)
   }
 
   static var smallSubtitleTracking: CGFloat { tracking(forSize: smallSubtitleFontSize) }
@@ -79,9 +101,26 @@ struct WidgetGoalProgressRing: View {
   let overfillOutlineColor: Color
   var size: CGFloat = WidgetTheme.ringSize
   var lineWidth: CGFloat? = nil
+  var ringStyleOverride: ProgressRingStyle? = nil
+  var ringWidthOverride: ProgressRingWidth? = nil
+  var ringGlowOverride: Bool? = nil
 
   private var resolvedLineWidth: CGFloat {
-    lineWidth ?? AppAppearancePreference.progressRingWidth.strokeWidth(for: size)
+    if let lineWidth { return lineWidth }
+    let width = ringWidthOverride ?? AppAppearancePreference.progressRingWidth
+    return width.strokeWidth(for: size)
+  }
+
+  private var ringStyle: ProgressRingStyle {
+    ringStyleOverride ?? AppAppearancePreference.progressRingStyle
+  }
+
+  private var ringGlowEnabled: Bool {
+    ringGlowOverride ?? AppAppearancePreference.isProgressRingGlowEnabled
+  }
+
+  private var ringSides: Int? {
+    ringStyle.ringSides
   }
 
   private var fillFraction: Double {
@@ -92,20 +131,24 @@ struct WidgetGoalProgressRing: View {
 
   var body: some View {
     ZStack {
-      ProgressRingArc(fraction: 1, lineWidth: resolvedLineWidth)
-        .stroke(trackColor, style: ringStrokeStyle)
+      ringLayer(fraction: 1, color: trackColor)
+
+      if ringGlowEnabled {
+        ringLayer(fraction: 1, color: Color.white.opacity(0.55))
+          .blur(radius: resolvedLineWidth * 0.35)
+          .mask { ringLayer(fraction: 1, color: .white) }
+          .blendMode(.plusLighter)
+      }
 
       if fillFraction > 0 {
-        ProgressRingArc(fraction: fillFraction, lineWidth: resolvedLineWidth)
-          .stroke(fillColor, style: ringStrokeStyle)
+        ringLayer(fraction: fillFraction, color: fillColor)
       }
 
       if progress.overflowLoopProgress > 0 {
-        ProgressRingArc(fraction: progress.overflowLoopProgress, lineWidth: resolvedLineWidth)
-          .stroke(fillColor, style: ringStrokeStyle)
+        ringLayer(fraction: progress.overflowLoopProgress, color: fillColor)
       }
 
-      if tipFraction > 0 {
+      if ringStyle.showsTip, tipFraction > 0 {
         ringTip(at: tipFraction)
       }
     }
@@ -123,25 +166,53 @@ struct WidgetGoalProgressRing: View {
   }
 
   private var ringStrokeStyle: StrokeStyle {
-    StrokeStyle(lineWidth: resolvedLineWidth, lineCap: .round, lineJoin: .round)
+    ringStyle.strokeStyle(lineWidth: resolvedLineWidth)
+  }
+
+  private func ringShape(fraction: Double) -> ProgressRingArc {
+    ProgressRingArc(fraction: fraction, lineWidth: resolvedLineWidth, sides: ringSides)
+  }
+
+  @ViewBuilder
+  private func ringLayer(fraction: Double, color: Color) -> some View {
+    let shape = ringShape(fraction: fraction)
+    if shape.usesFill {
+      shape.fill(color)
+    } else {
+      shape.stroke(color, style: ringStrokeStyle)
+    }
   }
 
   /// Mirrors `GoalProgressRing.ringTip(at:)`.
   private func ringTip(at fraction: Double) -> some View {
     let tipRadius = resolvedLineWidth / 2
     let outlineWidth = WidgetTheme.ringOverfillOutlineWidth
+    let flat = ringStyle.usesFlatTip
+    let fillExtent = flat ? outlineWidth : tipRadius
+    let outlineExtent = flat ? outlineWidth : tipRadius + outlineWidth
 
     return ZStack {
       WidgetRingTipHalo(
         fraction: fraction,
         lineWidth: resolvedLineWidth,
-        haloRadius: tipRadius + outlineWidth,
-        frontHalfOnly: true
+        haloRadius: outlineExtent,
+        sides: ringSides,
+        frontHalfOnly: true,
+        flat: flat
       )
       .fill(overfillOutlineColor)
 
-      WidgetRingTipHalo(fraction: fraction, lineWidth: resolvedLineWidth, haloRadius: tipRadius)
-        .fill(fillColor)
+      WidgetRingTipHalo(
+        fraction: fraction,
+        lineWidth: resolvedLineWidth,
+        haloRadius: fillExtent,
+        sides: ringSides,
+        flat: flat
+      )
+      .fill(fillColor)
+    }
+    .mask {
+      ringLayer(fraction: 1, color: .white)
     }
   }
 }
@@ -152,22 +223,38 @@ private struct WidgetRingTipHalo: Shape {
   var fraction: Double
   var lineWidth: CGFloat
   var haloRadius: CGFloat
+  var sides: Int? = nil
   var frontHalfOnly = false
+  var flat = false
 
   func path(in rect: CGRect) -> Path {
-    let clamped = Self.lapFraction(for: fraction)
-    guard clamped > 0 else { return Path() }
+    guard let pose = ProgressRingGeometry.tipPose(
+      fraction: fraction,
+      in: rect,
+      lineWidth: lineWidth,
+      sides: sides
+    ) else { return Path() }
 
-    let insetRect = rect.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
-    let radius = min(insetRect.width, insetRect.height) / 2
-    let center = CGPoint(x: rect.midX, y: rect.midY)
-    let sweepDegrees = clamped >= 0.999 ? 360 - 0.001 : clamped * 360
-    let tipAngle = Angle.degrees(-90 + sweepDegrees)
+    let tipPoint = pose.point
+    let travelRadians = pose.travelRadians
+    let radial = CGPoint(x: cos(travelRadians - .pi / 2), y: sin(travelRadians - .pi / 2))
+    let travel = CGPoint(x: cos(travelRadians), y: sin(travelRadians))
 
-    let tipPoint = CGPoint(
-      x: center.x + radius * cos(tipAngle.radians),
-      y: center.y + radius * sin(tipAngle.radians)
-    )
+    if flat {
+      let halfWidth = lineWidth / 2 + (frontHalfOnly ? haloRadius : 0)
+      let travelStart: CGFloat = frontHalfOnly ? 0 : -haloRadius
+      let travelEnd: CGFloat = frontHalfOnly ? haloRadius : 0
+      return Self.rectPath(
+        center: tipPoint,
+        radial: radial,
+        travel: travel,
+        halfWidth: halfWidth,
+        travelStart: travelStart,
+        travelEnd: travelEnd
+      )
+    }
+
+    let tipAngle = Angle.radians(travelRadians - .pi / 2)
 
     if frontHalfOnly {
       var path = Path()
@@ -192,10 +279,39 @@ private struct WidgetRingTipHalo: Shape {
     )
   }
 
-  private static func lapFraction(for fraction: Double) -> Double {
-    guard fraction > 0 else { return 0 }
-    let wrapped = fraction.truncatingRemainder(dividingBy: 1)
-    return wrapped == 0 ? 1 : wrapped
+  private static func rectPath(
+    center: CGPoint,
+    radial: CGPoint,
+    travel: CGPoint,
+    halfWidth: CGFloat,
+    travelStart: CGFloat,
+    travelEnd: CGFloat
+  ) -> Path {
+    let corners = [
+      CGPoint(
+        x: center.x + radial.x * (-halfWidth) + travel.x * travelStart,
+        y: center.y + radial.y * (-halfWidth) + travel.y * travelStart
+      ),
+      CGPoint(
+        x: center.x + radial.x * halfWidth + travel.x * travelStart,
+        y: center.y + radial.y * halfWidth + travel.y * travelStart
+      ),
+      CGPoint(
+        x: center.x + radial.x * halfWidth + travel.x * travelEnd,
+        y: center.y + radial.y * halfWidth + travel.y * travelEnd
+      ),
+      CGPoint(
+        x: center.x + radial.x * (-halfWidth) + travel.x * travelEnd,
+        y: center.y + radial.y * (-halfWidth) + travel.y * travelEnd
+      ),
+    ]
+    var path = Path()
+    path.move(to: corners[0])
+    path.addLine(to: corners[1])
+    path.addLine(to: corners[2])
+    path.addLine(to: corners[3])
+    path.closeSubpath()
+    return path
   }
 }
 
@@ -207,7 +323,7 @@ struct WidgetQuickAddButton: View {
   var body: some View {
     Button(intent: AddCounterEntryIntent(counterID: counter.id, amount: value)) {
       Text(CounterFormatting.amount(value))
-        .font(.system(size: 15, weight: .semibold, design: .rounded))
+        .font(WidgetTheme.packFont(size: 15))
         .foregroundStyle(colors.buttonText)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(

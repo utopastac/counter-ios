@@ -29,6 +29,12 @@ final class CustomCounter {
   var resetAnchorDay: Int = 1
   var goalDirectionRaw: String = GoalDirection.countUp.rawValue
   var paletteIndex: Int = 0
+  /// `nil` inherits the app-wide ring style.
+  var progressRingStyleRaw: String?
+  /// `nil` inherits the app-wide ring width.
+  var progressRingWidthRaw: String?
+  /// `nil` inherits the app-wide ring glow; `"on"` / `"off"` override.
+  var progressRingGlowRaw: String?
   @Relationship(deleteRule: .cascade, inverse: \CounterEntry.counter)
   var entries: [CounterEntry]
 
@@ -41,6 +47,9 @@ final class CustomCounter {
     resetAnchorDay: Int = 1,
     goalDirection: GoalDirection = .countUp,
     paletteIndex: Int = 0,
+    progressRingStyleRaw: String? = nil,
+    progressRingWidthRaw: String? = nil,
+    progressRingGlowRaw: String? = nil,
     sortOrder: Double? = nil
   ) {
     let createdAt = Date.now
@@ -55,11 +64,44 @@ final class CustomCounter {
     self.resetAnchorDay = resetAnchorDay
     self.goalDirectionRaw = goalDirection.rawValue
     self.paletteIndex = Self.normalizedPaletteIndex(paletteIndex)
+    self.progressRingStyleRaw = ProgressRingStyleChoice(storedRaw: progressRingStyleRaw).storedRaw
+    self.progressRingWidthRaw = ProgressRingWidthChoice(storedRaw: progressRingWidthRaw).storedRaw
+    self.progressRingGlowRaw = ProgressRingGlowChoice(storedRaw: progressRingGlowRaw).storedRaw
     self.entries = []
   }
 
   var effectivePaletteIndex: Int {
     Self.normalizedPaletteIndex(paletteIndex)
+  }
+
+  var progressRingStyleChoice: ProgressRingStyleChoice {
+    get { ProgressRingStyleChoice(storedRaw: progressRingStyleRaw) }
+    set { progressRingStyleRaw = newValue.storedRaw }
+  }
+
+  var progressRingWidthChoice: ProgressRingWidthChoice {
+    get { ProgressRingWidthChoice(storedRaw: progressRingWidthRaw) }
+    set { progressRingWidthRaw = newValue.storedRaw }
+  }
+
+  var progressRingGlowChoice: ProgressRingGlowChoice {
+    get { ProgressRingGlowChoice(storedRaw: progressRingGlowRaw) }
+    set { progressRingGlowRaw = newValue.storedRaw }
+  }
+
+  /// Explicit style override, or `nil` to inherit the app setting at draw time.
+  var overrideProgressRingStyle: ProgressRingStyle? {
+    progressRingStyleRaw.flatMap(ProgressRingStyle.init(rawValue:))
+  }
+
+  /// Explicit width override, or `nil` to inherit the app setting at draw time.
+  var overrideProgressRingWidth: ProgressRingWidth? {
+    progressRingWidthRaw.flatMap(ProgressRingWidth.init(rawValue:))
+  }
+
+  /// Explicit glow override, or `nil` to inherit the app setting at draw time.
+  var overrideProgressRingGlow: Bool? {
+    progressRingGlowChoice.overrideEnabled
   }
 
   static let paletteSlotCount = 10

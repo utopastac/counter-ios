@@ -67,4 +67,34 @@ struct CustomCounterModelTests {
     #expect(CustomCounter.normalizedName(from: "   ") == CustomCounter.untitledName)
     #expect(CustomCounter.normalizedName(from: "Protein") == "Protein")
   }
+
+  @Test func ringOverridesInheritAppDefaultsWhenUnset() {
+    let counter = CustomCounter(name: "Water")
+    #expect(counter.progressRingStyleChoice == .default)
+    #expect(counter.progressRingWidthChoice == .default)
+    #expect(counter.progressRingGlowChoice == .default)
+    #expect(counter.progressRingStyleRaw == nil)
+    #expect(counter.progressRingWidthRaw == nil)
+    #expect(counter.progressRingGlowRaw == nil)
+
+    counter.progressRingStyleChoice = .square
+    counter.progressRingWidthChoice = .chunky
+    counter.progressRingGlowChoice = .on
+    #expect(counter.progressRingStyleRaw == ProgressRingStyle.square.rawValue)
+    #expect(counter.progressRingWidthRaw == ProgressRingWidth.chunky.rawValue)
+    #expect(counter.progressRingGlowRaw == ProgressRingGlowChoice.on.rawValue)
+    #expect(counter.overrideProgressRingStyle == .square)
+    #expect(counter.overrideProgressRingWidth == .chunky)
+    #expect(counter.overrideProgressRingGlow == true)
+
+    counter.progressRingStyleChoice = .default
+    counter.progressRingWidthChoice = .default
+    counter.progressRingGlowChoice = .default
+    #expect(counter.progressRingStyleRaw == nil)
+    #expect(counter.progressRingWidthRaw == nil)
+    #expect(counter.progressRingGlowRaw == nil)
+    #expect(counter.overrideProgressRingStyle == nil)
+    #expect(counter.overrideProgressRingWidth == nil)
+    #expect(counter.overrideProgressRingGlow == nil)
+  }
 }

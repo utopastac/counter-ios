@@ -9,6 +9,9 @@ struct CounterSettingsSave {
   let resetAnchorDay: Int
   let goalDirection: GoalDirection
   let paletteIndex: Int?
+  let progressRingStyleRaw: String?
+  let progressRingWidthRaw: String?
+  let progressRingGlowRaw: String?
 }
 
 struct CounterSettingsView: View {
@@ -21,6 +24,9 @@ struct CounterSettingsView: View {
   @State private var resetAnchorDay: Int
   @State private var goalDirection: GoalDirection
   @State private var paletteIndex: Int
+  @State private var ringStyleChoice: ProgressRingStyleChoice
+  @State private var ringWidthChoice: ProgressRingWidthChoice
+  @State private var ringGlowChoice: ProgressRingGlowChoice
   let onSave: (CounterSettingsSave) -> Void
   let onPaletteChange: ((Int) -> Void)?
   let onDelete: (() -> Void)?
@@ -49,6 +55,9 @@ struct CounterSettingsView: View {
       resetAnchorDay: counter.effectiveResetAnchorDay,
       goalDirection: counter.goalDirection,
       paletteIndex: counter.effectivePaletteIndex,
+      ringStyleChoice: counter.progressRingStyleChoice,
+      ringWidthChoice: counter.progressRingWidthChoice,
+      ringGlowChoice: counter.progressRingGlowChoice,
       defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
       onSave: onSave,
       onDelete: onDelete,
@@ -65,6 +74,9 @@ struct CounterSettingsView: View {
     resetAnchorDay: Int,
     goalDirection: GoalDirection,
     paletteIndex: Int,
+    ringStyleChoice: ProgressRingStyleChoice = .default,
+    ringWidthChoice: ProgressRingWidthChoice = .default,
+    ringGlowChoice: ProgressRingGlowChoice = .default,
     defaultPresets: [Double],
     onSave: @escaping (CounterSettingsSave) -> Void,
     onDelete: (() -> Void)? = nil,
@@ -79,6 +91,9 @@ struct CounterSettingsView: View {
     self._resetAnchorDay = State(initialValue: resetAnchorDay)
     self._goalDirection = State(initialValue: goalDirection)
     self._paletteIndex = State(initialValue: CustomCounter.normalizedPaletteIndex(paletteIndex))
+    self._ringStyleChoice = State(initialValue: ringStyleChoice)
+    self._ringWidthChoice = State(initialValue: ringWidthChoice)
+    self._ringGlowChoice = State(initialValue: ringGlowChoice)
     self.onSave = onSave
     self.onPaletteChange = onPaletteChange
     self.onDelete = onDelete
@@ -99,6 +114,7 @@ struct CounterSettingsView: View {
             resetPeriodSection
             quickAddSection
             colourSection
+            ringSection
 
             if onDelete != nil {
               deleteSection
@@ -217,6 +233,33 @@ struct CounterSettingsView: View {
     }
   }
 
+  private var ringSection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      SettingsSectionHeader(title: "Ring")
+
+      SettingsPickerRow(
+        icon: .ringDot,
+        label: "Width",
+        selection: $ringWidthChoice,
+        options: ProgressRingWidthChoice.allCases.map { ($0, $0.label) }
+      )
+
+      SettingsPickerRow(
+        icon: .droplet,
+        label: "Style",
+        selection: $ringStyleChoice,
+        options: ProgressRingStyleChoice.allCases.map { ($0, $0.label) }
+      )
+
+      SettingsPickerRow(
+        icon: .blend,
+        label: "Glow",
+        selection: $ringGlowChoice,
+        options: ProgressRingGlowChoice.allCases.map { ($0, $0.label) }
+      )
+    }
+  }
+
   private var deleteSection: some View {
     VStack(alignment: .leading, spacing: 0) {
       SettingsDivider()
@@ -256,7 +299,10 @@ struct CounterSettingsView: View {
         resetPeriod: resetPeriod,
         resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
         goalDirection: goalDirection,
-        paletteIndex: paletteIndex
+        paletteIndex: paletteIndex,
+        progressRingStyleRaw: ringStyleChoice.storedRaw,
+        progressRingWidthRaw: ringWidthChoice.storedRaw,
+        progressRingGlowRaw: ringGlowChoice.storedRaw
       )
     )
     dismiss()

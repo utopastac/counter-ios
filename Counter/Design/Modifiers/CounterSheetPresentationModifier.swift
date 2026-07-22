@@ -210,6 +210,9 @@ private struct CounterButtonSettingsSheetContent: View {
         if let paletteIndex = save.paletteIndex {
           counter.paletteIndex = paletteIndex
         }
+        counter.progressRingStyleRaw = save.progressRingStyleRaw
+        counter.progressRingWidthRaw = save.progressRingWidthRaw
+        counter.progressRingGlowRaw = save.progressRingGlowRaw
         WidgetSnapshotSync.publish(counter: counter, in: modelContext)
         WatchSyncEngine.publishCounterUpsert(counter)
       },
@@ -239,6 +242,7 @@ private struct CounterCustomAmountSheetContent: View {
     CustomAmountSheet { value in
       _ = EntryActions.addCounterEntry(value: value, counter: counter, in: modelContext)
       impactHapticTrigger &+= 1
+      AppSounds.log()
       WidgetSnapshotSync.publish(counter: counter, in: modelContext)
     }
     .sensoryFeedback(.impact(weight: .light), trigger: impactHapticTrigger) { _, _ in

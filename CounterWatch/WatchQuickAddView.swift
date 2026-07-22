@@ -52,6 +52,7 @@ struct WatchQuickAddView: View {
   private func addEntryQuick(_ value: Double) {
     quickAddStore.addCounterEntryQuick(value: value, counter: counter, in: modelContext)
     AppHaptics.impact()
+    AppSounds.log()
   }
 }
 

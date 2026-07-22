@@ -7,6 +7,8 @@ struct CounterDesignSystem: Equatable {
   /// Mirrored from prefs so environment updates when tint or colour pack changes.
   var isTintEnabled: Bool = true
   var colorPackRaw: String = CounterColorPack.muted.rawValue
+  /// Mirrored so typography re-renders when the font pack preference changes.
+  var fontPackRaw: String = FontPack.default.rawValue
 
   var colors: SemanticColors {
     var resolved = colorScheme.counterSemanticColors
@@ -21,7 +23,8 @@ struct CounterDesignSystem: Equatable {
       colorScheme: colorScheme,
       accent: nil,
       isTintEnabled: AppAppearancePreference.isTintEnabled,
-      colorPackRaw: AppAppearancePreference.colorPack.rawValue
+      colorPackRaw: AppAppearancePreference.colorPack.rawValue,
+      fontPackRaw: AppAppearancePreference.fontPack.rawValue
     )
   }
 }
@@ -97,6 +100,10 @@ private struct CounterDesignSystemProvider: ViewModifier {
     AppAppearancePreference.colorPackKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var colorPackRaw = CounterColorPack.muted.rawValue
+  @AppStorage(
+    AppAppearancePreference.fontPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var fontPackRaw = FontPack.default.rawValue
 
   func body(content: Content) -> some View {
     content
@@ -106,7 +113,8 @@ private struct CounterDesignSystemProvider: ViewModifier {
           colorScheme: colorScheme,
           accent: counterAccent,
           isTintEnabled: isTintEnabled,
-          colorPackRaw: colorPackRaw
+          colorPackRaw: colorPackRaw,
+          fontPackRaw: fontPackRaw
         )
       )
   }
@@ -122,6 +130,10 @@ private struct CounterAppearancePreferenceProvider: ViewModifier {
     AppAppearancePreference.colorPackKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var colorPackRaw = CounterColorPack.muted.rawValue
+  @AppStorage(
+    AppAppearancePreference.fontPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var fontPackRaw = FontPack.default.rawValue
 
   private var colorScheme: ColorScheme {
     isDarkModeEnabled ? .dark : .light
@@ -135,7 +147,8 @@ private struct CounterAppearancePreferenceProvider: ViewModifier {
           colorScheme: colorScheme,
           accent: nil,
           isTintEnabled: isTintEnabled,
-          colorPackRaw: colorPackRaw
+          colorPackRaw: colorPackRaw,
+          fontPackRaw: fontPackRaw
         )
       )
       .preferredColorScheme(colorScheme)

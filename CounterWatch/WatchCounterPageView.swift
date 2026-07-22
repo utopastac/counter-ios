@@ -23,9 +23,20 @@ struct WatchCounterPageView: View {
     AppAppearancePreference.progressRingWidthKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var ringWidthRaw = ProgressRingWidth.balanced.rawValue
+  @AppStorage(
+    AppAppearancePreference.progressRingStyleKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var ringStyleRaw = ProgressRingStyle.solid.rawValue
+  @AppStorage(
+    AppAppearancePreference.progressRingGlowEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var ringGlowEnabled = false
 
   private var theme: WatchThemeColors {
-    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
+    let _ = (
+      isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw, ringWidthRaw, ringStyleRaw,
+      ringGlowEnabled
+    )
     return WatchThemeColors(
       paletteIndex: AppAppearancePreference.resolvedPaletteIndex(counter.effectivePaletteIndex)
     )
@@ -59,12 +70,15 @@ struct WatchCounterPageView: View {
     Group {
       if let progress {
         let ringSize: CGFloat = 64
-        let width = ProgressRingWidth(rawValue: ringWidthRaw) ?? .balanced
+        let width = counter.overrideProgressRingWidth ?? AppAppearancePreference.progressRingWidth
         WatchGoalProgressRing(
           progress: progress,
           theme: theme,
           size: ringSize,
-          lineWidth: width.strokeWidth(for: ringSize)
+          lineWidth: width.strokeWidth(for: ringSize),
+          ringStyle: counter.overrideProgressRingStyle ?? AppAppearancePreference.progressRingStyle,
+          ringGlowEnabled: counter.overrideProgressRingGlow
+            ?? AppAppearancePreference.isProgressRingGlowEnabled
         )
       } else {
         Color.clear

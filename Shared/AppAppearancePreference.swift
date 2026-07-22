@@ -10,6 +10,10 @@ enum AppAppearancePreference {
   static let tintEnabledKey = "app.appearance.tintEnabled"
   static let colorPackKey = "app.appearance.colorPack"
   static let progressRingWidthKey = "app.appearance.progressRingWidth"
+  static let progressRingStyleKey = "app.appearance.progressRingStyle"
+  static let progressRingGlowEnabledKey = "app.appearance.progressRingGlowEnabled"
+  static let fontPackKey = "app.appearance.fontPack"
+  static let soundStyleKey = "app.sound.style"
   static let quickAddBatchWindowKey = "app.quickAdd.batchWindowSeconds"
   static let fpsCounterEnabledKey = "app.debug.fpsCounterEnabled"
 
@@ -56,6 +60,33 @@ enum AppAppearancePreference {
     let raw = sharedDefaults.string(forKey: progressRingWidthKey)
       ?? ProgressRingWidth.balanced.rawValue
     return ProgressRingWidth(rawValue: raw) ?? .balanced
+  }
+
+  /// Stroke style for progress rings. Defaults to solid (circle, round caps + tip cutout).
+  static var progressRingStyle: ProgressRingStyle {
+    let raw = sharedDefaults.string(forKey: progressRingStyleKey)
+      ?? ProgressRingStyle.solid.rawValue
+    // Migrate the retired "glow" style case to solid.
+    if raw == "glow" { return .solid }
+    return ProgressRingStyle(rawValue: raw) ?? .solid
+  }
+
+  /// Soft inner glow on the track (background) ring. Defaults to off.
+  static var isProgressRingGlowEnabled: Bool {
+    sharedDefaults.bool(forKey: progressRingGlowEnabledKey)
+  }
+
+  /// Typeface pack for the app type ramp. Defaults to Default (system sans).
+  static var fontPack: FontPack {
+    let raw = sharedDefaults.string(forKey: fontPackKey) ?? FontPack.default.rawValue
+    return FontPack(rawValue: raw) ?? .default
+  }
+
+  /// Tap sounds for logging / undo. Defaults to off.
+  static var soundStyle: AppSoundStyle {
+    let raw = UserDefaults.standard.string(forKey: soundStyleKey)
+      ?? AppSoundStyle.off.rawValue
+    return AppSoundStyle(rawValue: raw) ?? .off
   }
 
   static var isCompactModeEnabled: Bool {

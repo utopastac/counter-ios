@@ -7,6 +7,7 @@ struct AppSettingsView: View {
   @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
   @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
+  @AppStorage(AppAppearancePreference.soundStyleKey) private var soundStyleRaw = AppSoundStyle.off.rawValue
   @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
   @AppStorage(AppAppearancePreference.defaultResetPeriodKey) private var defaultResetPeriodRaw =
     CounterResetPeriod.daily.rawValue
@@ -27,9 +28,21 @@ struct AppSettingsView: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(
+    AppAppearancePreference.fontPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var fontPackRaw = FontPack.default.rawValue
+  @AppStorage(
     AppAppearancePreference.progressRingWidthKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var progressRingWidthRaw = ProgressRingWidth.balanced.rawValue
+  @AppStorage(
+    AppAppearancePreference.progressRingStyleKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var progressRingStyleRaw = ProgressRingStyle.solid.rawValue
+  @AppStorage(
+    AppAppearancePreference.progressRingGlowEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isProgressRingGlowEnabled = false
   @AppStorage(
     AppAppearancePreference.quickAddBatchWindowKey,
     store: AppAppearancePreference.sharedDefaults
@@ -37,6 +50,7 @@ struct AppSettingsView: View {
   @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
   @State private var showResetConfirmation = false
   @State private var showColorPackPicker = false
+  @State private var showFontPackPicker = false
   @State private var exportURL: URL?
 
   private var colors: SemanticColors {
@@ -57,10 +71,31 @@ struct AppSettingsView: View {
     )
   }
 
+  private var fontPack: Binding<FontPack> {
+    Binding(
+      get: { FontPack(rawValue: fontPackRaw) ?? .default },
+      set: { fontPackRaw = $0.rawValue }
+    )
+  }
+
   private var progressRingWidth: Binding<ProgressRingWidth> {
     Binding(
       get: { ProgressRingWidth(rawValue: progressRingWidthRaw) ?? .balanced },
       set: { progressRingWidthRaw = $0.rawValue }
+    )
+  }
+
+  private var progressRingStyle: Binding<ProgressRingStyle> {
+    Binding(
+      get: { ProgressRingStyle(rawValue: progressRingStyleRaw) ?? .solid },
+      set: { progressRingStyleRaw = $0.rawValue }
+    )
+  }
+
+  private var soundStyle: Binding<AppSoundStyle> {
+    Binding(
+      get: { AppSoundStyle(rawValue: soundStyleRaw) ?? .off },
+      set: { soundStyleRaw = $0.rawValue }
     )
   }
 
@@ -83,6 +118,12 @@ struct AppSettingsView: View {
             SettingsSectionHeader(title: "General")
             SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isHapticsEnabled)
             SettingsPickerRow(
+              icon: .logs,
+              label: "Sound",
+              selection: soundStyle,
+              options: AppSoundStyle.allCases.map { ($0, $0.label) }
+            )
+            SettingsPickerRow(
               icon: .calendar,
               label: "Default reset",
               selection: defaultResetPeriod,
@@ -102,12 +143,26 @@ struct AppSettingsView: View {
             SettingsSectionHeader(title: "Theme")
             SettingsToggleRow(icon: .rows3, label: "Compact", isOn: $isCompactModeEnabled)
             SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
+            SettingsDisclosureRow(
+              icon: .slidersHorizontal,
+              label: "Font pack",
+              value: fontPack.wrappedValue.label
+            ) {
+              showFontPackPicker = true
+            }
             SettingsPickerRow(
               icon: .ringDot,
               label: "Ring width",
               selection: progressRingWidth,
               options: ProgressRingWidth.allCases.map { ($0, $0.label) }
             )
+            SettingsPickerRow(
+              icon: .droplet,
+              label: "Ring style",
+              selection: progressRingStyle,
+              options: ProgressRingStyle.allCases.map { ($0, $0.label) }
+            )
+            SettingsToggleRow(icon: .blend, label: "Ring glow", isOn: $isProgressRingGlowEnabled)
             SettingsDisclosureRow(
               icon: .palette,
               label: "Colour pack",
@@ -181,11 +236,28 @@ struct AppSettingsView: View {
     .onChange(of: colorPackRaw) { _, _ in
       WidgetSnapshot.reloadTimelines()
     }
+    .onChange(of: fontPackRaw) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
     .onChange(of: progressRingWidthRaw) { _, _ in
       WidgetSnapshot.reloadTimelines()
     }
+    .onChange(of: progressRingStyleRaw) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
+    .onChange(of: isProgressRingGlowEnabled) { _, _ in
+      WidgetSnapshot.reloadTimelines()
+    }
+    .onChange(of: soundStyleRaw) { _, newValue in
+      if let style = AppSoundStyle(rawValue: newValue), style.isEnabled {
+        AppSounds.log()
+      }
+    }
     .sheet(isPresented: $showColorPackPicker) {
       ColorPackPickerView(selection: colorPack)
+    }
+    .sheet(isPresented: $showFontPackPicker) {
+      FontPackPickerView(selection: fontPack)
     }
     .alert("Reset all data?", isPresented: $showResetConfirmation) {
       Button("Reset", role: .destructive) {

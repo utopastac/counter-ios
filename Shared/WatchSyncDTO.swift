@@ -13,6 +13,9 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
   let resetAnchorDay: Int
   let goalDirectionRaw: String
   let paletteIndex: Int
+  let progressRingStyleRaw: String?
+  let progressRingWidthRaw: String?
+  let progressRingGlowRaw: String?
 
   init(counter: CustomCounter) {
     id = counter.id
@@ -26,6 +29,9 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     resetAnchorDay = counter.resetAnchorDay
     goalDirectionRaw = counter.goalDirectionRaw
     paletteIndex = counter.paletteIndex
+    progressRingStyleRaw = counter.progressRingStyleRaw
+    progressRingWidthRaw = counter.progressRingWidthRaw
+    progressRingGlowRaw = counter.progressRingGlowRaw
   }
 
   @MainActor
@@ -40,6 +46,9 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     counter.resetAnchorDay = resetAnchorDay
     counter.goalDirectionRaw = goalDirectionRaw
     counter.paletteIndex = paletteIndex
+    counter.progressRingStyleRaw = progressRingStyleRaw
+    counter.progressRingWidthRaw = progressRingWidthRaw
+    counter.progressRingGlowRaw = progressRingGlowRaw
   }
 
   @MainActor
@@ -59,6 +68,9 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
       resetAnchorDay: snapshot.resetAnchorDay,
       goalDirection: GoalDirection(rawValue: snapshot.goalDirectionRaw) ?? .countUp,
       paletteIndex: snapshot.paletteIndex,
+      progressRingStyleRaw: snapshot.progressRingStyleRaw,
+      progressRingWidthRaw: snapshot.progressRingWidthRaw,
+      progressRingGlowRaw: snapshot.progressRingGlowRaw,
       sortOrder: snapshot.sortOrder
     )
     counter.id = snapshot.id

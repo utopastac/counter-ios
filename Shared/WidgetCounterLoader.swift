@@ -56,6 +56,14 @@ enum WidgetCounterLoader {
       counterID: counter.id.uuidString,
       title: counter.name,
       paletteIndex: paletteIndex,
+      progressRingStyleRaw: (
+        counter.overrideProgressRingStyle ?? AppAppearancePreference.progressRingStyle
+      ).rawValue,
+      progressRingWidthRaw: (
+        counter.overrideProgressRingWidth ?? AppAppearancePreference.progressRingWidth
+      ).rawValue,
+      progressRingGlowEnabled: counter.overrideProgressRingGlow
+        ?? AppAppearancePreference.isProgressRingGlowEnabled,
       heroValue: progress?.heroValue ?? CounterFormatting.amount(total),
       heroSubtitle: progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption.capitalized,
       ringProgress: progress,
