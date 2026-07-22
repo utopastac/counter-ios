@@ -1,6 +1,18 @@
 import SwiftUI
 import SwiftData
 
+@Observable
+@MainActor
+final class CounterFocusRouter {
+  /// Counter to show after a widget (or other) deep link. Cleared once the pager focuses it.
+  var pendingCounterID: UUID?
+
+  func handle(_ url: URL) {
+    guard let id = CounterDeepLink.counterID(from: url) else { return }
+    pendingCounterID = id
+  }
+}
+
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
@@ -9,6 +21,7 @@ struct ContentView: View {
   @AppStorage(FreshInstallOnboarding.previewActiveKey) private var isFreshInstallPreview = false
   @State private var isBootstrapped = false
   @State private var sheetCoordinator = CounterSheetCoordinator()
+  @State private var focusRouter = CounterFocusRouter()
 
   private var showsFreshInstall: Bool {
     isBootstrapped && (!hasCompletedFreshInstall || isFreshInstallPreview)
@@ -22,6 +35,7 @@ struct ContentView: View {
     ZStack {
       CounterPagerView()
         .environment(sheetCoordinator)
+        .environment(focusRouter)
         .counterDesignSystemFromColorScheme()
         .opacity(showsPager ? 1 : 0)
 
@@ -47,6 +61,9 @@ struct ContentView: View {
     .animation(.easeOut(duration: 0.25), value: hasCompletedFreshInstall)
     .animation(.easeOut(duration: 0.25), value: isFreshInstallPreview)
     .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
+    .onOpenURL { url in
+      focusRouter.handle(url)
+    }
     .task {
       WatchSyncCoordinator.shared.activate()
       FreshInstallOnboarding.migrateIfNeeded(

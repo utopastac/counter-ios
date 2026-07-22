@@ -112,6 +112,21 @@ struct CounterWidgetContainer: View {
           )
         }
       }
+      .modifier(CounterWidgetOpenURLModifier(counterID: entry.counter.id, isUnavailable: entry.snapshot.isUnavailable))
+  }
+}
+
+/// Opens the main app on this counter when the user taps non-interactive widget chrome.
+private struct CounterWidgetOpenURLModifier: ViewModifier {
+  let counterID: String
+  let isUnavailable: Bool
+
+  func body(content: Content) -> some View {
+    if !isUnavailable, let url = CounterDeepLink.url(counterID: counterID) {
+      content.widgetURL(url)
+    } else {
+      content
+    }
   }
 }
 

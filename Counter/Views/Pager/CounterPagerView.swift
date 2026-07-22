@@ -6,6 +6,7 @@ struct CounterPagerView: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.semanticColors) private var colors
   @Environment(CounterSheetCoordinator.self) private var sheets
+  @Environment(CounterFocusRouter.self) private var focusRouter
   @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
   @AppStorage(
     AppAppearancePreference.monoEnabledKey,
@@ -165,6 +166,7 @@ struct CounterPagerView: View {
       } else {
         syncScrollProgressToSelectedPage()
       }
+      applyPendingDeepLinkIfNeeded()
     }
     .onChange(of: isRevealActive) { wasActive, active in
       if wasActive && !active {
@@ -180,6 +182,10 @@ struct CounterPagerView: View {
       sheets.onCounterCreated = { counter in
         scrollToPage(counter.id.uuidString, animated: false)
       }
+      applyPendingDeepLinkIfNeeded()
+    }
+    .onChange(of: focusRouter.pendingCounterID) { _, _ in
+      applyPendingDeepLinkIfNeeded()
     }
   }
 
@@ -441,7 +447,35 @@ struct CounterPagerView: View {
     guard !hasAppliedInitialListReveal, width > 0 else { return }
     hasAppliedInitialListReveal = true
     containerWidth = width
+    // Widget / deep-link launches should land on the counter, not the list underlay.
+    if focusRouter.pendingCounterID != nil {
+      return
+    }
     openCounterList(animated: false)
+  }
+
+  private func applyPendingDeepLinkIfNeeded() {
+    guard let counterID = focusRouter.pendingCounterID else { return }
+    let pageID = counterID.uuidString
+
+    // Wait until the query has loaded at least once with data (or confirmed empty).
+    guard !counters.isEmpty || hasAppliedInitialListReveal else { return }
+
+    guard pageIDs.contains(pageID) else {
+      // Counter was deleted or ID is stale — drop the link so launch isn't stuck.
+      focusRouter.pendingCounterID = nil
+      return
+    }
+
+    focusRouter.pendingCounterID = nil
+    hasAppliedInitialListReveal = true
+    scrollToPage(pageID, animated: false)
+    if isRevealActive {
+      collapseCounterList()
+    } else {
+      revealState.cardOffset = 0
+      isCounterListRevealed = false
+    }
   }
 
   private func selectPageFromList(_ pageID: String) {
@@ -525,5 +559,6 @@ private struct PagerToolbarBar: View {
   PreviewModel.appRoot {
     CounterPagerView()
       .environment(CounterSheetCoordinator())
+      .environment(CounterFocusRouter())
   }
 }
