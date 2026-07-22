@@ -29,19 +29,17 @@ struct CounterPagerView: View {
   @State private var selectedPageID: String?
   @State private var isCounterListRevealed = false
   @State private var revealState = RevealState()
-  @State private var locksRevealScroll = false
   @State private var containerWidth: CGFloat = 0
   @State private var pagerScrollState = PagerScrollState()
-  @State private var isPagerDragging = false
   @State private var hasAppliedInitialListReveal = false
   /// Selection to apply to the pager/compact stack once scrolling is enabled again. While the
   /// underlay list is open the main scroll view is disabled, and `scrollPosition` would otherwise
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
 
-  /// Two-way `scrollPosition` binding that ignores scroll-view writebacks while the list
-  /// reveal has the main pager locked — keeps create/list selection from being clobbered.
-  private var pagerScrollPosition: Binding<String?> {
+  /// Compact stack still uses `scrollPosition`; the paging pager does not — two-way
+  /// `scrollPosition` re-asserts the selected ID on any view update and jumps on the last page.
+  private var compactScrollPosition: Binding<String?> {
     Binding(
       get: { selectedPageID },
       set: { newValue in
@@ -94,14 +92,14 @@ struct CounterPagerView: View {
   }
 
   // Discrete flags derived from settled state, not the live drag offset, so that per-frame
-  // `revealState.cardOffset` changes never invalidate this view's body. `locksRevealScroll` is
+  // `revealState.cardOffset` changes never invalidate this view's body. `locksScroll` is
   // already true for the whole duration of a drag/settle, so it stands in for "mid-transition".
   private var isRevealSettledOpen: Bool {
-    isCounterListRevealed && !locksRevealScroll
+    isCounterListRevealed && !revealState.locksScroll
   }
 
   private var isRevealActive: Bool {
-    isCounterListRevealed || locksRevealScroll
+    isCounterListRevealed || revealState.locksScroll
   }
 
   var body: some View {
@@ -109,11 +107,10 @@ struct CounterPagerView: View {
       CounterUnderlayReveal(
         state: revealState,
         isRevealed: $isCounterListRevealed,
-        locksRevealScroll: $locksRevealScroll,
         isCompact: isCompactModeEnabled
       ) {
         AllCountersListView(
-          scrollDisabled: locksRevealScroll || !isRevealSettledOpen,
+          scrollDisabled: revealState.locksScroll || !isRevealSettledOpen,
           onSelectPage: selectPageFromList,
           onAddCounter: { sheets.present(.addCounter) }
         )
@@ -214,7 +211,7 @@ struct CounterPagerView: View {
     }
     .counterAccent(activeAccent)
     .counterDesignSystemFromColorScheme()
-    .counterPagerDragging(isPagerDragging)
+    .environment(\.counterPagerScrollState, pagerScrollState)
     .ignoresSafeArea(.keyboard)
   }
 
@@ -279,16 +276,18 @@ struct CounterPagerView: View {
         .scrollTargetLayout()
         .padding(.bottom, SpaceToken.pageFooterBottom)
         .background {
+          // Same bounce lock as the paging pager — last-card overscroll + reveal cancel jumps.
+          PagerScrollViewConfiguration()
           // Gate the UIKit pan only — never toggle SwiftUI `.scrollDisabled` mid-reveal.
           // Toggling `.scrollDisabled` reconciles content offset and jumps (worst on the last page).
           ScrollPanDisabler(
-            isDisabled: (locksRevealScroll || isCounterListRevealed) && pendingScrollPageID == nil
+            isDisabled: (revealState.locksScroll || isCounterListRevealed) && pendingScrollPageID == nil
           )
         }
       }
       .scrollContentBackground(.hidden)
       .background(colors.surfacePrimary)
-      .scrollPosition(id: pagerScrollPosition, anchor: .top)
+      .scrollPosition(id: compactScrollPosition, anchor: .top)
       .scrollIndicators(.hidden)
       .scrollClipDisabled(true)
       .onChange(of: pendingScrollPageID) { _, pageID in
@@ -315,26 +314,38 @@ struct CounterPagerView: View {
         .background {
           PagerScrollViewConfiguration()
           // Gate the UIKit pan only — never toggle SwiftUI `.scrollDisabled` mid-reveal.
-          // Toggling `.scrollDisabled` reconciles content offset and jumps (worst on the last page).
           ScrollPanDisabler(
-            isDisabled: (locksRevealScroll || isCounterListRevealed) && pendingScrollPageID == nil
+            isDisabled: (revealState.locksScroll || isCounterListRevealed) && pendingScrollPageID == nil
           )
         }
       }
       .scrollContentBackground(.hidden)
       .background(Color.clear)
-      .scrollTargetBehavior(.paging)
-      .scrollPosition(id: pagerScrollPosition, anchor: .top)
+      // viewAligned snaps to each page view. `.paging` + two-way `scrollPosition` fought the
+      // last page's resting offset and produced an up/down jump when scrolling away from it.
+      .scrollTargetBehavior(.viewAligned(limitBehavior: .always))
       .scrollIndicators(.hidden)
       .scrollClipDisabled(true)
       .onScrollGeometryChange(for: CGFloat.self) { geometry in
         geometry.contentOffset.y + geometry.contentInsets.top
       } action: { _, offset in
-        guard height > 0, !isRevealActive else { return }
+        guard height > 0 else { return }
+        let revealActive = isCounterListRevealed || revealState.locksScroll
+        guard !revealActive else { return }
+
         pagerScrollState.value = offset / height
+
+        let index = Int((offset / height).rounded())
+        let clamped = min(max(index, 0), max(pageIDs.count - 1, 0))
+        guard pageIDs.indices.contains(clamped) else { return }
+        let pageID = pageIDs[clamped]
+        if pageID != selectedPageID {
+          selectedPageID = pageID
+        }
       }
       .onScrollPhaseChange { _, newPhase in
-        isPagerDragging = newPhase != .idle
+        // Write through the observable — do not store drag phase in @State on this view.
+        pagerScrollState.isDragging = newPhase != .idle
       }
       .onChange(of: pendingScrollPageID) { _, pageID in
         guard let pageID else { return }
@@ -368,8 +379,8 @@ struct CounterPagerView: View {
       }
     }
     syncScrollProgressToSelectedPage()
-    // Drive ScrollViewReader via pendingScrollPageID. The scrollPosition binding ignores
-    // writebacks while the list is revealed, so this selection sticks until the proxy scrolls.
+    // Drive ScrollViewReader via pendingScrollPageID. While the list reveal is active the
+    // geometry-driven selection is frozen, so this target sticks until the proxy scrolls.
     queuePagerScroll(to: pageID)
   }
 
@@ -424,7 +435,7 @@ struct CounterPagerView: View {
     )
     if animated {
       CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
-        $locksRevealScroll,
+        revealState,
         reduceMotion: reduceMotion
       )
     }
@@ -485,7 +496,7 @@ struct CounterPagerView: View {
 
   private func collapseCounterList() {
     CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
-      $locksRevealScroll,
+      revealState,
       reduceMotion: reduceMotion
     )
     withAnimation(settleSpring) {
@@ -498,7 +509,6 @@ struct CounterPagerView: View {
   private var pagerToolbar: some View {
     PagerToolbarBar(
       activePageTitle: activePageTitle,
-      isPagerDragging: isPagerDragging,
       onOpenCounterList: { openCounterList() },
       onShowHistory: {
         guard let counter = activeCounter else { return }
@@ -516,9 +526,9 @@ private struct PagerToolbarBar: View {
   @Environment(\.counterAccent) private var counterAccent
   @Environment(\.colorScheme) private var colorScheme
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+  @Environment(\.counterPagerScrollState) private var pagerScrollState
 
   let activePageTitle: String
-  let isPagerDragging: Bool
   let onOpenCounterList: () -> Void
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
@@ -551,7 +561,7 @@ private struct PagerToolbarBar: View {
         topTrailingRadius: RadiusToken.scrollContainer
       )
     )
-    .allowsHitTesting(!isPagerDragging && !counterRevealIsDragging)
+    .allowsHitTesting(!(pagerScrollState?.isDragging ?? false) && !counterRevealIsDragging)
   }
 }
 

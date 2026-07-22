@@ -1,20 +1,21 @@
 import Observation
 import SwiftUI
 
-/// Holds the live reveal drag offset. Kept in a dedicated `@Observable` object so that
-/// per-frame offset changes during a drag only invalidate the two transform modifiers that
-/// read `cardOffset` — not `CounterPagerView`/`CounterUnderlayReveal` bodies, which would
-/// otherwise rebuild the entire pager + list tree on every frame and halve the framerate.
+/// Holds the live reveal drag offset + scroll-lock flag. Kept in a dedicated `@Observable`
+/// object so per-frame `cardOffset` changes only invalidate the transform modifiers that
+/// read it — not `CounterPagerView` — and so scroll-lock can update without going through
+/// a separate `@State` that forces the paging `ScrollView` to re-apply position.
 @Observable
 final class RevealState {
   var cardOffset: CGFloat = 0
+  /// True while a reveal drag or settle animation should block pager/list scrolling.
+  var locksScroll = false
 }
 
 /// List at fixed width underneath; counter card slides right, scales, and rounds with spring physics.
 struct CounterUnderlayReveal<List: View, Card: View>: View {
   let state: RevealState
   @Binding var isRevealed: Bool
-  @Binding var locksRevealScroll: Bool
   /// Compact mode uses a narrower underlay list and a smaller open drag offset.
   var isCompact = false
   @ViewBuilder var list: () -> List
@@ -77,13 +78,13 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
 
   /// Locks pager/list scroll while a reveal animation is in flight.
   static func lockRevealScrollForAnimation(
-    _ locksRevealScroll: Binding<Bool>,
+    _ state: RevealState,
     reduceMotion: Bool
   ) {
     var transaction = Transaction()
     transaction.disablesAnimations = true
     withTransaction(transaction) {
-      locksRevealScroll.wrappedValue = true
+      state.locksScroll = true
     }
 
     let duration = reduceMotion ? 0.2 : MotionToken.revealSettleDuration
@@ -92,7 +93,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       var unlockTransaction = Transaction()
       unlockTransaction.disablesAnimations = true
       withTransaction(unlockTransaction) {
-        locksRevealScroll.wrappedValue = false
+        state.locksScroll = false
       }
     }
   }
@@ -172,7 +173,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
     var transaction = Transaction()
     transaction.disablesAnimations = true
     withTransaction(transaction) {
-      locksRevealScroll = locked
+      state.locksScroll = locked
     }
   }
 

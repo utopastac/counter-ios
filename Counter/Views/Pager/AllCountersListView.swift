@@ -64,7 +64,9 @@ struct AllCountersListView: View {
     }
     .listStyle(.plain)
     .scrollContentBackground(.hidden)
-    .scrollDisabled(scrollDisabled)
+    // Gate the UIKit pan only — never toggle SwiftUI `.scrollDisabled` mid-reveal.
+    // Toggling `.scrollDisabled` reconciles content offset and jumps (worst when scrolled
+    // to the last counter, where list bounce sits past the end).
     .background {
       ScrollPanDisabler(isDisabled: scrollDisabled)
     }

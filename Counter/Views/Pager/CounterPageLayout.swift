@@ -4,7 +4,6 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   @Environment(\.counterAccent) private var counterAccent
   @Environment(\.counterPagerAccents) private var pagerAccents
   @Environment(\.counterPagerScrollState) private var pagerScrollState
-  @Environment(\.counterPagerIsDragging) private var counterPagerIsDragging
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
   @Environment(\.colorScheme) private var colorScheme
   @AppStorage(
@@ -99,7 +98,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
         }
         .padding(.horizontal, SpaceToken.pageMargin)
         .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
-        .allowsHitTesting(!counterPagerIsDragging && !counterRevealIsDragging)
+        .allowsHitTesting(!(pagerScrollState?.isDragging ?? false) && !counterRevealIsDragging)
       }
     }
   }

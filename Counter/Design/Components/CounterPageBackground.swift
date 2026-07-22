@@ -5,13 +5,15 @@ import SwiftUI
 import UIKit
 #endif
 
-/// Holds the live pager scroll progress. Kept in a dedicated `@Observable` object so that
-/// per-frame scroll updates only invalidate the small backdrop view that reads `value` —
-/// not `CounterPagerView`/`CounterPageLayout`, which would otherwise rebuild the entire pager
-/// (list + every page) on each scroll frame.
+/// Holds live pager scroll chrome. Kept in a dedicated `@Observable` object so that
+/// per-frame scroll updates and drag-phase flips only invalidate the small views that
+/// read these properties — not `CounterPagerView`, which would otherwise rebuild the
+/// paging `ScrollView` and re-apply `scrollPosition` (a visible up/down jump on the last
+/// page, where the resting offset often sits slightly off the ideal page boundary).
 @Observable
 final class PagerScrollState {
   var value: CGFloat = 0
+  var isDragging = false
 }
 
 /// Leaf wrapper that reads the observable scroll progress and feeds it into the value-based
