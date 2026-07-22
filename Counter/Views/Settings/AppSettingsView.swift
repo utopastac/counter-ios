@@ -36,10 +36,6 @@ struct AppSettingsView: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var progressRingWidthRaw = ProgressRingWidth.balanced.rawValue
   @AppStorage(
-    AppAppearancePreference.progressRingStyleKey,
-    store: AppAppearancePreference.sharedDefaults
-  ) private var progressRingStyleRaw = ProgressRingStyle.solid.rawValue
-  @AppStorage(
     AppAppearancePreference.progressRingGlowEnabledKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var isProgressRingGlowEnabled = false
@@ -82,13 +78,6 @@ struct AppSettingsView: View {
     Binding(
       get: { ProgressRingWidth(rawValue: progressRingWidthRaw) ?? .balanced },
       set: { progressRingWidthRaw = $0.rawValue }
-    )
-  }
-
-  private var progressRingStyle: Binding<ProgressRingStyle> {
-    Binding(
-      get: { ProgressRingStyle(rawValue: progressRingStyleRaw) ?? .solid },
-      set: { progressRingStyleRaw = $0.rawValue }
     )
   }
 
@@ -155,12 +144,6 @@ struct AppSettingsView: View {
               label: "Ring width",
               selection: progressRingWidth,
               options: ProgressRingWidth.allCases.map { ($0, $0.label) }
-            )
-            SettingsPickerRow(
-              icon: .droplet,
-              label: "Ring style",
-              selection: progressRingStyle,
-              options: ProgressRingStyle.allCases.map { ($0, $0.label) }
             )
             SettingsToggleRow(icon: .blend, label: "Ring glow", isOn: $isProgressRingGlowEnabled)
             SettingsDisclosureRow(
@@ -240,9 +223,6 @@ struct AppSettingsView: View {
       WidgetSnapshot.reloadTimelines()
     }
     .onChange(of: progressRingWidthRaw) { _, _ in
-      WidgetSnapshot.reloadTimelines()
-    }
-    .onChange(of: progressRingStyleRaw) { _, _ in
       WidgetSnapshot.reloadTimelines()
     }
     .onChange(of: isProgressRingGlowEnabled) { _, _ in

@@ -138,7 +138,6 @@ struct CounterWidgetView: View {
       fillColor: fillColor ?? colors.foreground,
       overfillOutlineColor: overfillOutlineColor ?? colors.ringOverfillOutline,
       size: size,
-      ringStyleOverride: entry.snapshot.progressRingStyle,
       ringWidthOverride: entry.snapshot.progressRingWidth,
       ringGlowOverride: entry.snapshot.progressRingGlowEnabled
     )

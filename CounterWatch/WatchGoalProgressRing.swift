@@ -5,12 +5,7 @@ struct WatchGoalProgressRing: View {
   let theme: WatchThemeColors
   var size: CGFloat = 28
   var lineWidth: CGFloat = 4
-  var ringStyle: ProgressRingStyle = AppAppearancePreference.progressRingStyle
   var ringGlowEnabled: Bool = AppAppearancePreference.isProgressRingGlowEnabled
-
-  private var ringSides: Int? {
-    ringStyle.ringSides
-  }
 
   private var fillFraction: Double {
     if progress.rendersEmptyRing { return 0 }
@@ -21,10 +16,11 @@ struct WatchGoalProgressRing: View {
   var body: some View {
     ZStack {
       ringLayer(fraction: 1, color: theme.ringTrack)
+        .blur(radius: ringGlowEnabled ? ProgressRingGlowMetrics.trackBlurRadius : 0)
 
       if ringGlowEnabled {
-        ringLayer(fraction: 1, color: Color.white.opacity(0.55))
-          .blur(radius: lineWidth * 0.35)
+        ringLayer(fraction: 1, color: Color.white.opacity(ProgressRingGlowMetrics.highlightOpacity))
+          .blur(radius: lineWidth * ProgressRingGlowMetrics.highlightBlurFactor)
           .mask { ringLayer(fraction: 1, color: .white) }
           .blendMode(.plusLighter)
       }
@@ -37,21 +33,8 @@ struct WatchGoalProgressRing: View {
     .accessibilityHidden(true)
   }
 
-  private var ringStrokeStyle: StrokeStyle {
-    ringStyle.strokeStyle(lineWidth: lineWidth)
-  }
-
-  private func ringShape(fraction: Double) -> ProgressRingArc {
-    ProgressRingArc(fraction: fraction, lineWidth: lineWidth, sides: ringSides)
-  }
-
-  @ViewBuilder
   private func ringLayer(fraction: Double, color: Color) -> some View {
-    let shape = ringShape(fraction: fraction)
-    if shape.usesFill {
-      shape.fill(color)
-    } else {
-      shape.stroke(color, style: ringStrokeStyle)
-    }
+    ProgressRingArc(fraction: fraction, lineWidth: lineWidth)
+      .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
   }
 }

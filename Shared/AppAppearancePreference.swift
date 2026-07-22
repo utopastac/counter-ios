@@ -10,7 +10,6 @@ enum AppAppearancePreference {
   static let tintEnabledKey = "app.appearance.tintEnabled"
   static let colorPackKey = "app.appearance.colorPack"
   static let progressRingWidthKey = "app.appearance.progressRingWidth"
-  static let progressRingStyleKey = "app.appearance.progressRingStyle"
   static let progressRingGlowEnabledKey = "app.appearance.progressRingGlowEnabled"
   static let fontPackKey = "app.appearance.fontPack"
   static let soundStyleKey = "app.sound.style"
@@ -60,15 +59,6 @@ enum AppAppearancePreference {
     let raw = sharedDefaults.string(forKey: progressRingWidthKey)
       ?? ProgressRingWidth.balanced.rawValue
     return ProgressRingWidth(rawValue: raw) ?? .balanced
-  }
-
-  /// Stroke style for progress rings. Defaults to solid (circle, round caps + tip cutout).
-  static var progressRingStyle: ProgressRingStyle {
-    let raw = sharedDefaults.string(forKey: progressRingStyleKey)
-      ?? ProgressRingStyle.solid.rawValue
-    // Migrate the retired "glow" style case to solid.
-    if raw == "glow" { return .solid }
-    return ProgressRingStyle(rawValue: raw) ?? .solid
   }
 
   /// Soft inner glow on the track (background) ring. Defaults to off.

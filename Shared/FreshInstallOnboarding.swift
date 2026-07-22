@@ -77,7 +77,6 @@ struct FreshInstallStarterDraft: Identifiable, Hashable {
   var buttonValues: [Double]
   /// Palette slot used for the selected card fill (and seeded counter colour).
   var paletteIndex: Int
-  var progressRingStyleRaw: String? = nil
   var progressRingWidthRaw: String? = nil
   var progressRingGlowRaw: String? = nil
 

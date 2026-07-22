@@ -56,9 +56,6 @@ enum WidgetCounterLoader {
       counterID: counter.id.uuidString,
       title: counter.name,
       paletteIndex: paletteIndex,
-      progressRingStyleRaw: (
-        counter.overrideProgressRingStyle ?? AppAppearancePreference.progressRingStyle
-      ).rawValue,
       progressRingWidthRaw: (
         counter.overrideProgressRingWidth ?? AppAppearancePreference.progressRingWidth
       ).rawValue,

@@ -9,7 +9,6 @@ struct CounterSettingsSave {
   let resetAnchorDay: Int
   let goalDirection: GoalDirection
   let paletteIndex: Int?
-  let progressRingStyleRaw: String?
   let progressRingWidthRaw: String?
   let progressRingGlowRaw: String?
 }
@@ -24,7 +23,6 @@ struct CounterSettingsView: View {
   @State private var resetAnchorDay: Int
   @State private var goalDirection: GoalDirection
   @State private var paletteIndex: Int
-  @State private var ringStyleChoice: ProgressRingStyleChoice
   @State private var ringWidthChoice: ProgressRingWidthChoice
   @State private var ringGlowChoice: ProgressRingGlowChoice
   let onSave: (CounterSettingsSave) -> Void
@@ -55,7 +53,6 @@ struct CounterSettingsView: View {
       resetAnchorDay: counter.effectiveResetAnchorDay,
       goalDirection: counter.goalDirection,
       paletteIndex: counter.effectivePaletteIndex,
-      ringStyleChoice: counter.progressRingStyleChoice,
       ringWidthChoice: counter.progressRingWidthChoice,
       ringGlowChoice: counter.progressRingGlowChoice,
       defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
@@ -74,7 +71,6 @@ struct CounterSettingsView: View {
     resetAnchorDay: Int,
     goalDirection: GoalDirection,
     paletteIndex: Int,
-    ringStyleChoice: ProgressRingStyleChoice = .default,
     ringWidthChoice: ProgressRingWidthChoice = .default,
     ringGlowChoice: ProgressRingGlowChoice = .default,
     defaultPresets: [Double],
@@ -91,7 +87,6 @@ struct CounterSettingsView: View {
     self._resetAnchorDay = State(initialValue: resetAnchorDay)
     self._goalDirection = State(initialValue: goalDirection)
     self._paletteIndex = State(initialValue: CustomCounter.normalizedPaletteIndex(paletteIndex))
-    self._ringStyleChoice = State(initialValue: ringStyleChoice)
     self._ringWidthChoice = State(initialValue: ringWidthChoice)
     self._ringGlowChoice = State(initialValue: ringGlowChoice)
     self.onSave = onSave
@@ -245,13 +240,6 @@ struct CounterSettingsView: View {
       )
 
       SettingsPickerRow(
-        icon: .droplet,
-        label: "Style",
-        selection: $ringStyleChoice,
-        options: ProgressRingStyleChoice.allCases.map { ($0, $0.label) }
-      )
-
-      SettingsPickerRow(
         icon: .blend,
         label: "Glow",
         selection: $ringGlowChoice,
@@ -300,7 +288,6 @@ struct CounterSettingsView: View {
         resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
         goalDirection: goalDirection,
         paletteIndex: paletteIndex,
-        progressRingStyleRaw: ringStyleChoice.storedRaw,
         progressRingWidthRaw: ringWidthChoice.storedRaw,
         progressRingGlowRaw: ringGlowChoice.storedRaw
       )

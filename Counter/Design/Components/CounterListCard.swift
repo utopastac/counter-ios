@@ -16,7 +16,6 @@ struct CounterListCard: View {
   let value: String
   let caption: String
   let ringProgress: GoalProgress?
-  var ringStyleOverride: ProgressRingStyle? = nil
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
   /// Single-line title · value · ring row used by the underlay list when compact mode is on.
@@ -75,7 +74,6 @@ struct CounterListCard: View {
         GoalProgressRing(
           progress: ringProgress,
           size: SizeToken.Ring.card,
-          ringStyleOverride: ringStyleOverride,
           ringWidthOverride: ringWidthOverride,
           ringGlowOverride: ringGlowOverride,
           trackColor: palette.progressRingTrack(for: colorScheme),
@@ -93,7 +91,6 @@ struct CounterListCard: View {
         GoalProgressRing(
           progress: ringProgress,
           size: CompactCardToken.listRingSize,
-          ringStyleOverride: ringStyleOverride,
           ringWidthOverride: ringWidthOverride,
           ringGlowOverride: ringGlowOverride,
           trackColor: palette.progressRingTrack(for: colorScheme),

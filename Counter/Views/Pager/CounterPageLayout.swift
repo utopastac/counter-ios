@@ -20,7 +20,6 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   let heroSubtitle: String?
   let statRows: [CounterStatRow]
   let ringProgress: GoalProgress?
-  var ringStyleOverride: ProgressRingStyle? = nil
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
   @ViewBuilder var entryLog: () -> EntryLog
@@ -43,7 +42,6 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     heroSubtitle: String? = nil,
     statRows: [CounterStatRow],
     ringProgress: GoalProgress? = nil,
-    ringStyleOverride: ProgressRingStyle? = nil,
     ringWidthOverride: ProgressRingWidth? = nil,
     ringGlowOverride: Bool? = nil,
     @ViewBuilder entryLog: @escaping () -> EntryLog,
@@ -54,7 +52,6 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     self.heroSubtitle = heroSubtitle
     self.statRows = statRows
     self.ringProgress = ringProgress
-    self.ringStyleOverride = ringStyleOverride
     self.ringWidthOverride = ringWidthOverride
     self.ringGlowOverride = ringGlowOverride
     self.entryLog = entryLog
@@ -76,7 +73,6 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
             heroSubtitle: heroSubtitle,
             statRows: statRows,
             ringProgress: ringProgress,
-            ringStyleOverride: ringStyleOverride,
             ringWidthOverride: ringWidthOverride,
             ringGlowOverride: ringGlowOverride,
             ringPalette: ringPalette,
@@ -143,7 +139,6 @@ private struct CounterPageHeader: View {
   let heroSubtitle: String?
   let statRows: [CounterStatRow]
   let ringProgress: GoalProgress?
-  var ringStyleOverride: ProgressRingStyle? = nil
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
   let ringPalette: CounterPaletteSlot
@@ -190,7 +185,6 @@ private struct CounterPageHeader: View {
         GoalProgressRing(
           progress: ringProgress,
           size: SizeToken.Ring.display,
-          ringStyleOverride: ringStyleOverride,
           ringWidthOverride: ringWidthOverride,
           ringGlowOverride: ringGlowOverride,
           trackColor: ringPalette.progressRingTrack(for: colorScheme),

@@ -104,7 +104,6 @@ struct CustomCounterPageContent: View {
           heroValue: heroValue,
           heroSubtitle: heroSubtitle,
           ringProgress: counter.currentProgress(),
-          ringStyleOverride: counter.overrideProgressRingStyle,
           ringWidthOverride: counter.overrideProgressRingWidth,
           ringGlowOverride: counter.overrideProgressRingGlow,
           onSelectEntryLog: { sheets.present(.entryLog(counterID: counter.id)) },
@@ -134,8 +133,7 @@ struct CustomCounterPageContent: View {
             heroSubtitle: heroSubtitle,
             statRows: statRows,
             ringProgress: counter.currentProgress(),
-            ringStyleOverride: counter.overrideProgressRingStyle,
-            ringWidthOverride: counter.overrideProgressRingWidth,
+              ringWidthOverride: counter.overrideProgressRingWidth,
             ringGlowOverride: counter.overrideProgressRingGlow
           ) {
             VStack(alignment: .leading, spacing: 0) {

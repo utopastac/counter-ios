@@ -101,7 +101,6 @@ struct WidgetGoalProgressRing: View {
   let overfillOutlineColor: Color
   var size: CGFloat = WidgetTheme.ringSize
   var lineWidth: CGFloat? = nil
-  var ringStyleOverride: ProgressRingStyle? = nil
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
 
@@ -111,16 +110,8 @@ struct WidgetGoalProgressRing: View {
     return width.strokeWidth(for: size)
   }
 
-  private var ringStyle: ProgressRingStyle {
-    ringStyleOverride ?? AppAppearancePreference.progressRingStyle
-  }
-
   private var ringGlowEnabled: Bool {
     ringGlowOverride ?? AppAppearancePreference.isProgressRingGlowEnabled
-  }
-
-  private var ringSides: Int? {
-    ringStyle.ringSides
   }
 
   private var fillFraction: Double {
@@ -132,10 +123,11 @@ struct WidgetGoalProgressRing: View {
   var body: some View {
     ZStack {
       ringLayer(fraction: 1, color: trackColor)
+        .blur(radius: ringGlowEnabled ? ProgressRingGlowMetrics.trackBlurRadius : 0)
 
       if ringGlowEnabled {
-        ringLayer(fraction: 1, color: Color.white.opacity(0.55))
-          .blur(radius: resolvedLineWidth * 0.35)
+        ringLayer(fraction: 1, color: Color.white.opacity(ProgressRingGlowMetrics.highlightOpacity))
+          .blur(radius: resolvedLineWidth * ProgressRingGlowMetrics.highlightBlurFactor)
           .mask { ringLayer(fraction: 1, color: .white) }
           .blendMode(.plusLighter)
       }
@@ -148,7 +140,7 @@ struct WidgetGoalProgressRing: View {
         ringLayer(fraction: progress.overflowLoopProgress, color: fillColor)
       }
 
-      if ringStyle.showsTip, tipFraction > 0 {
+      if tipFraction > 0 {
         ringTip(at: tipFraction)
       }
     }
@@ -166,48 +158,32 @@ struct WidgetGoalProgressRing: View {
   }
 
   private var ringStrokeStyle: StrokeStyle {
-    ringStyle.strokeStyle(lineWidth: resolvedLineWidth)
+    StrokeStyle(lineWidth: resolvedLineWidth, lineCap: .round, lineJoin: .round)
   }
 
-  private func ringShape(fraction: Double) -> ProgressRingArc {
-    ProgressRingArc(fraction: fraction, lineWidth: resolvedLineWidth, sides: ringSides)
-  }
-
-  @ViewBuilder
   private func ringLayer(fraction: Double, color: Color) -> some View {
-    let shape = ringShape(fraction: fraction)
-    if shape.usesFill {
-      shape.fill(color)
-    } else {
-      shape.stroke(color, style: ringStrokeStyle)
-    }
+    ProgressRingArc(fraction: fraction, lineWidth: resolvedLineWidth)
+      .stroke(color, style: ringStrokeStyle)
   }
 
   /// Mirrors `GoalProgressRing.ringTip(at:)`.
   private func ringTip(at fraction: Double) -> some View {
     let tipRadius = resolvedLineWidth / 2
     let outlineWidth = WidgetTheme.ringOverfillOutlineWidth
-    let flat = ringStyle.usesFlatTip
-    let fillExtent = flat ? outlineWidth : tipRadius
-    let outlineExtent = flat ? outlineWidth : tipRadius + outlineWidth
 
     return ZStack {
       WidgetRingTipHalo(
         fraction: fraction,
         lineWidth: resolvedLineWidth,
-        haloRadius: outlineExtent,
-        sides: ringSides,
-        frontHalfOnly: true,
-        flat: flat
+        haloRadius: tipRadius + outlineWidth,
+        frontHalfOnly: true
       )
       .fill(overfillOutlineColor)
 
       WidgetRingTipHalo(
         fraction: fraction,
         lineWidth: resolvedLineWidth,
-        haloRadius: fillExtent,
-        sides: ringSides,
-        flat: flat
+        haloRadius: tipRadius
       )
       .fill(fillColor)
     }
@@ -223,38 +199,17 @@ private struct WidgetRingTipHalo: Shape {
   var fraction: Double
   var lineWidth: CGFloat
   var haloRadius: CGFloat
-  var sides: Int? = nil
   var frontHalfOnly = false
-  var flat = false
 
   func path(in rect: CGRect) -> Path {
     guard let pose = ProgressRingGeometry.tipPose(
       fraction: fraction,
       in: rect,
-      lineWidth: lineWidth,
-      sides: sides
+      lineWidth: lineWidth
     ) else { return Path() }
 
     let tipPoint = pose.point
-    let travelRadians = pose.travelRadians
-    let radial = CGPoint(x: cos(travelRadians - .pi / 2), y: sin(travelRadians - .pi / 2))
-    let travel = CGPoint(x: cos(travelRadians), y: sin(travelRadians))
-
-    if flat {
-      let halfWidth = lineWidth / 2 + (frontHalfOnly ? haloRadius : 0)
-      let travelStart: CGFloat = frontHalfOnly ? 0 : -haloRadius
-      let travelEnd: CGFloat = frontHalfOnly ? haloRadius : 0
-      return Self.rectPath(
-        center: tipPoint,
-        radial: radial,
-        travel: travel,
-        halfWidth: halfWidth,
-        travelStart: travelStart,
-        travelEnd: travelEnd
-      )
-    }
-
-    let tipAngle = Angle.radians(travelRadians - .pi / 2)
+    let tipAngle = Angle.radians(pose.travelRadians - .pi / 2)
 
     if frontHalfOnly {
       var path = Path()
@@ -277,41 +232,6 @@ private struct WidgetRingTipHalo: Shape {
         height: haloRadius * 2
       )
     )
-  }
-
-  private static func rectPath(
-    center: CGPoint,
-    radial: CGPoint,
-    travel: CGPoint,
-    halfWidth: CGFloat,
-    travelStart: CGFloat,
-    travelEnd: CGFloat
-  ) -> Path {
-    let corners = [
-      CGPoint(
-        x: center.x + radial.x * (-halfWidth) + travel.x * travelStart,
-        y: center.y + radial.y * (-halfWidth) + travel.y * travelStart
-      ),
-      CGPoint(
-        x: center.x + radial.x * halfWidth + travel.x * travelStart,
-        y: center.y + radial.y * halfWidth + travel.y * travelStart
-      ),
-      CGPoint(
-        x: center.x + radial.x * halfWidth + travel.x * travelEnd,
-        y: center.y + radial.y * halfWidth + travel.y * travelEnd
-      ),
-      CGPoint(
-        x: center.x + radial.x * (-halfWidth) + travel.x * travelEnd,
-        y: center.y + radial.y * (-halfWidth) + travel.y * travelEnd
-      ),
-    ]
-    var path = Path()
-    path.move(to: corners[0])
-    path.addLine(to: corners[1])
-    path.addLine(to: corners[2])
-    path.addLine(to: corners[3])
-    path.closeSubpath()
-    return path
   }
 }
 

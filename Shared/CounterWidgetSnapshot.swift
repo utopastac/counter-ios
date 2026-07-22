@@ -4,8 +4,6 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
   let counterID: String
   let title: String
   let paletteIndex: Int
-  /// Resolved ring style raw value (counter override or app default).
-  let progressRingStyleRaw: String
   /// Resolved ring width raw value (counter override or app default).
   let progressRingWidthRaw: String
   /// Resolved ring glow (counter override or app default).
@@ -21,10 +19,6 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
   /// Configured counter was deleted (or otherwise missing from the store).
   let isUnavailable: Bool
 
-  var progressRingStyle: ProgressRingStyle {
-    ProgressRingStyle(rawValue: progressRingStyleRaw) ?? .solid
-  }
-
   var progressRingWidth: ProgressRingWidth {
     ProgressRingWidth(rawValue: progressRingWidthRaw) ?? .balanced
   }
@@ -34,7 +28,6 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
     counterID: "preview",
     title: "Calories",
     paletteIndex: 0,
-    progressRingStyleRaw: ProgressRingStyle.solid.rawValue,
     progressRingWidthRaw: ProgressRingWidth.balanced.rawValue,
     progressRingGlowEnabled: false,
     heroValue: "0",
@@ -50,7 +43,6 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
     counterID: "",
     title: "Counter removed",
     paletteIndex: 0,
-    progressRingStyleRaw: ProgressRingStyle.solid.rawValue,
     progressRingWidthRaw: ProgressRingWidth.balanced.rawValue,
     progressRingGlowEnabled: false,
     heroValue: "",

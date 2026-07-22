@@ -228,7 +228,6 @@ struct FreshInstallOnboardingView: View {
         resetAnchorDay: draft.resetAnchorDay,
         goalDirection: draft.goalDirection,
         paletteIndex: draft.paletteIndex,
-        ringStyleChoice: ProgressRingStyleChoice(storedRaw: draft.progressRingStyleRaw),
         ringWidthChoice: ProgressRingWidthChoice(storedRaw: draft.progressRingWidthRaw),
         ringGlowChoice: ProgressRingGlowChoice(storedRaw: draft.progressRingGlowRaw),
         defaultPresets: draft.template.defaultPresets,
@@ -301,7 +300,6 @@ struct FreshInstallOnboardingView: View {
     if let paletteIndex = save.paletteIndex {
       drafts[index].paletteIndex = paletteIndex
     }
-    drafts[index].progressRingStyleRaw = save.progressRingStyleRaw
     drafts[index].progressRingWidthRaw = save.progressRingWidthRaw
     drafts[index].progressRingGlowRaw = save.progressRingGlowRaw
     drafts[index].isSelected = true

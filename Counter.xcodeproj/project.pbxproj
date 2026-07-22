@@ -55,10 +55,6 @@
 		FPKBFWATCH01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
 		FPKBFWIDGET01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
 		FPKBFTESTS01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
-		PRSBFCOUNTER01 /* ProgressRingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRSFILEREF01 /* ProgressRingStyle.swift */; };
-		PRSBFWATCH01 /* ProgressRingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRSFILEREF01 /* ProgressRingStyle.swift */; };
-		PRSBFWIDGET01 /* ProgressRingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRSFILEREF01 /* ProgressRingStyle.swift */; };
-		PRSBFTESTS01 /* ProgressRingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRSFILEREF01 /* ProgressRingStyle.swift */; };
 		PRABFTESTS01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
 		CRPBFCOUNTER01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
 		CRPBFWATCH01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
@@ -454,7 +450,6 @@
 		PRWFILEREF01 /* ProgressRingWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidth.swift; sourceTree = "<group>"; };
 		PRWTFILEREF01 /* ProgressRingWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidthTests.swift; sourceTree = "<group>"; };
 		FPKFILEREF01 /* FontPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPack.swift; sourceTree = "<group>"; };
-		PRSFILEREF01 /* ProgressRingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingStyle.swift; sourceTree = "<group>"; };
 		CRPFILEREF01 /* CounterRingPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterRingPreference.swift; sourceTree = "<group>"; };
 		ASSFILEREF01 /* AppSoundStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSoundStyle.swift; sourceTree = "<group>"; };
 		ASDFILEREF01 /* AppSounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSounds.swift; sourceTree = "<group>"; };
@@ -771,7 +766,6 @@
 				PRAFILEREF01 /* ProgressRingArc.swift */,
 				PRWFILEREF01 /* ProgressRingWidth.swift */,
 				FPKFILEREF01 /* FontPack.swift */,
-				PRSFILEREF01 /* ProgressRingStyle.swift */,
 				CRPFILEREF01 /* CounterRingPreference.swift */,
 				ASSFILEREF01 /* AppSoundStyle.swift */,
 				ASDFILEREF01 /* AppSounds.swift */,
@@ -1118,7 +1112,6 @@
 				PRABFCOUNTER01 /* ProgressRingArc.swift in Sources */,
 				PRWBFCOUNTER01 /* ProgressRingWidth.swift in Sources */,
 				FPKBFCOUNTER01 /* FontPack.swift in Sources */,
-				PRSBFCOUNTER01 /* ProgressRingStyle.swift in Sources */,
 				CRPBFCOUNTER01 /* CounterRingPreference.swift in Sources */,
 				ASSBFCOUNTER01 /* AppSoundStyle.swift in Sources */,
 				ASDBFCOUNTER01 /* AppSounds.swift in Sources */,
@@ -1150,7 +1143,6 @@
 				PRABFWATCH01 /* ProgressRingArc.swift in Sources */,
 				PRWBFWATCH01 /* ProgressRingWidth.swift in Sources */,
 				FPKBFWATCH01 /* FontPack.swift in Sources */,
-				PRSBFWATCH01 /* ProgressRingStyle.swift in Sources */,
 				CRPBFWATCH01 /* CounterRingPreference.swift in Sources */,
 				ASSBFWATCH01 /* AppSoundStyle.swift in Sources */,
 				ASDBFWATCH01 /* AppSounds.swift in Sources */,
@@ -1228,7 +1220,6 @@
 				PRABFWIDGET01 /* ProgressRingArc.swift in Sources */,
 				PRWBFWIDGET01 /* ProgressRingWidth.swift in Sources */,
 				FPKBFWIDGET01 /* FontPack.swift in Sources */,
-				PRSBFWIDGET01 /* ProgressRingStyle.swift in Sources */,
 				CRPBFWIDGET01 /* CounterRingPreference.swift in Sources */,
 				ASSBFWIDGET01 /* AppSoundStyle.swift in Sources */,
 				CCPBFWIDGET01 /* CustomCounter+Progress.swift in Sources */,
@@ -1262,7 +1253,6 @@
 				AP10000010000000000000005 /* AppAppearancePreference.swift in Sources */,
 				PRWBFTESTS01 /* ProgressRingWidth.swift in Sources */,
 				FPKBFTESTS01 /* FontPack.swift in Sources */,
-				PRSBFTESTS01 /* ProgressRingStyle.swift in Sources */,
 				PRABFTESTS01 /* ProgressRingArc.swift in Sources */,
 				CRPBFTESTS01 /* CounterRingPreference.swift in Sources */,
 				ASSBFTESTS01 /* AppSoundStyle.swift in Sources */,

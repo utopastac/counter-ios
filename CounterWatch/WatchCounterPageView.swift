@@ -24,17 +24,13 @@ struct WatchCounterPageView: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var ringWidthRaw = ProgressRingWidth.balanced.rawValue
   @AppStorage(
-    AppAppearancePreference.progressRingStyleKey,
-    store: AppAppearancePreference.sharedDefaults
-  ) private var ringStyleRaw = ProgressRingStyle.solid.rawValue
-  @AppStorage(
     AppAppearancePreference.progressRingGlowEnabledKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var ringGlowEnabled = false
 
   private var theme: WatchThemeColors {
     let _ = (
-      isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw, ringWidthRaw, ringStyleRaw,
+      isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw, ringWidthRaw,
       ringGlowEnabled
     )
     return WatchThemeColors(
@@ -76,7 +72,6 @@ struct WatchCounterPageView: View {
           theme: theme,
           size: ringSize,
           lineWidth: width.strokeWidth(for: ringSize),
-          ringStyle: counter.overrideProgressRingStyle ?? AppAppearancePreference.progressRingStyle,
           ringGlowEnabled: counter.overrideProgressRingGlow
             ?? AppAppearancePreference.isProgressRingGlowEnabled
         )

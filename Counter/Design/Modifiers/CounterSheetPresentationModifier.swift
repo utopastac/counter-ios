@@ -210,7 +210,6 @@ private struct CounterButtonSettingsSheetContent: View {
         if let paletteIndex = save.paletteIndex {
           counter.paletteIndex = paletteIndex
         }
-        counter.progressRingStyleRaw = save.progressRingStyleRaw
         counter.progressRingWidthRaw = save.progressRingWidthRaw
         counter.progressRingGlowRaw = save.progressRingGlowRaw
         WidgetSnapshotSync.publish(counter: counter, in: modelContext)

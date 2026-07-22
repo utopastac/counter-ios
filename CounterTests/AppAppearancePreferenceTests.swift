@@ -76,26 +76,6 @@ struct AppAppearancePreferenceTests {
     }
   }
 
-  @Test func progressRingStyleFallsBackToSolidForUnknownRawValue() {
-    withValue(
-      "dashed",
-      forKey: AppAppearancePreference.progressRingStyleKey,
-      in: AppAppearancePreference.sharedDefaults
-    ) {
-      #expect(AppAppearancePreference.progressRingStyle == .solid)
-    }
-  }
-
-  @Test func progressRingStyleMigratesRetiredGlowCaseToSolid() {
-    withValue(
-      "glow",
-      forKey: AppAppearancePreference.progressRingStyleKey,
-      in: AppAppearancePreference.sharedDefaults
-    ) {
-      #expect(AppAppearancePreference.progressRingStyle == .solid)
-    }
-  }
-
   @Test func progressRingGlowDefaultsToOffWhenUnset() {
     AppAppearancePreference.sharedDefaults.removeObject(
       forKey: AppAppearancePreference.progressRingGlowEnabledKey

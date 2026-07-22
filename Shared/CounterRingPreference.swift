@@ -1,41 +1,5 @@
+import CoreGraphics
 import Foundation
-
-/// Per-counter ring-style picker value. `default` inherits the app-wide setting.
-nonisolated enum ProgressRingStyleChoice: String, Codable, CaseIterable, Identifiable, Hashable {
-  case `default`
-  case solid
-  case square
-  case hexagon
-
-  var id: String { rawValue }
-
-  var label: String {
-    switch self {
-    case .default: "Default"
-    case .solid: ProgressRingStyle.solid.label
-    case .square: ProgressRingStyle.square.label
-    case .hexagon: ProgressRingStyle.hexagon.label
-    }
-  }
-
-  init(storedRaw: String?) {
-    // Migrate the old "glow" style case (glow is now a separate toggle).
-    if storedRaw == "glow" {
-      self = .solid
-      return
-    }
-    if let storedRaw, let choice = Self(rawValue: storedRaw), choice != .default {
-      self = choice
-    } else {
-      self = .default
-    }
-  }
-
-  /// `nil` means inherit the app setting.
-  var storedRaw: String? {
-    self == .default ? nil : rawValue
-  }
-}
 
 /// Per-counter ring-width picker value. `default` inherits the app-wide setting.
 nonisolated enum ProgressRingWidthChoice: String, Codable, CaseIterable, Identifiable, Hashable {
@@ -106,4 +70,14 @@ nonisolated enum ProgressRingGlowChoice: String, Codable, CaseIterable, Identifi
     case .off: false
     }
   }
+}
+
+/// Shared drawing metrics for the optional soft ring glow.
+enum ProgressRingGlowMetrics {
+  /// Soft bloom applied to the background (track) ring when glow is on.
+  static let trackBlurRadius: CGFloat = 10
+  /// White highlight layer opacity — kept low so the bloom stays subtle.
+  static let highlightOpacity: Double = 0.28
+  /// Highlight blur as a fraction of stroke width (masked to the track band).
+  static let highlightBlurFactor: CGFloat = 0.35
 }

@@ -120,7 +120,6 @@ struct AllCountersListView: View {
       value: cardValue(for: progress, total: total),
       caption: cardCaption(for: progress, counter: counter),
       ringProgress: progress,
-      ringStyleOverride: counter.overrideProgressRingStyle,
       ringWidthOverride: counter.overrideProgressRingWidth,
       ringGlowOverride: counter.overrideProgressRingGlow,
       isCompact: isCompactModeEnabled
