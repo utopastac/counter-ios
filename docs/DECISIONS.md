@@ -320,19 +320,22 @@ composes with SwiftUI state. Watch has no equivalent modifier surface for the sa
 sites, so the shared imperative helper remains there. The user preference still gates both
 paths.
 
-## `ScrollPanDisabler` kept on iOS 26
+## UIKit owns pager/reveal gesture arbitration
 
-**Decision:** Keep the `UIViewRepresentable` that disables the enclosing `UIScrollView`
-pan recognizer during underlay reveal, even though call sites also use `.scrollDisabled`
-for the same flag.
+**Decision:** Drive horizontal list-reveal with a UIKit `UIPanGestureRecognizer`
+(`RevealPanBridge`) and full-mode vertical paging with a UIKit `UIScrollView`
+(`VerticalPagerScrollView`). Keep SwiftUI for page content and the underlay list.
+Do **not** toggle SwiftUI `.scrollDisabled` or call `setContentOffset` to “fix”
+interrupted pans.
 
-**Why:** A removal spike was considered during the iOS 26 modernization pass. Pure
-`.scrollDisabled` is not a full substitute: it does not hard-disable the underlying
-UIKit pan recognizer or freeze an in-flight content offset the way the bridge does. iOS 26
-also stopped `simultaneousGesture` from applying to ancestor gestures (release notes
-147970990), which makes the pager/list scroll pan *more* likely to compete with the
-horizontal reveal gesture, not less. The bridge stays as the hard lock; see the doc
-comment on `ScrollPanDisabler`.
+**Why:** The previous SwiftUI-only stack (`DragGesture` + `simultaneousGesture` +
+paging `ScrollView` + `scrollPosition`) was structurally brittle on iOS 26, where
+`simultaneousGesture` no longer propagates to ancestor scroll pans (RN 147970990).
+Side-channel bridges (`ScrollPanDisabler`, bounce re-assert, gated `scrollPosition`)
+kept regressing as last-page jumps. UIKit can disable competing scroll pans on a
+horizontal claim and own bounce/paging as real properties. Compact mode still uses
+a SwiftUI `ScrollView` with `ScrollPanDisabler`; `ScrollPanGate` covers both when
+reveal claims the gesture.
 
 ## What was deliberately left alone
 

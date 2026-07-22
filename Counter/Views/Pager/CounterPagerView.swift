@@ -37,8 +37,8 @@ struct CounterPagerView: View {
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
 
-  /// Compact stack still uses `scrollPosition`; the paging pager does not — two-way
-  /// `scrollPosition` re-asserts the selected ID on any view update and jumps on the last page.
+  /// Compact stack still uses SwiftUI `scrollPosition`; the full pager is a UIKit scroll
+  /// shell that owns offset/bounce so last-page jumps cannot be reintroduced by SwiftUI.
   private var compactScrollPosition: Binding<String?> {
     Binding(
       get: { selectedPageID },
@@ -299,58 +299,24 @@ struct CounterPagerView: View {
 
   @ViewBuilder
   private func verticalPager(height: CGFloat) -> some View {
-    ScrollViewReader { proxy in
-      ScrollView(.vertical) {
-        VStack(spacing: 0) {
-          ForEach(counters) { counter in
-            CustomCounterPageContent(counter: counter)
-              .frame(height: height)
-              .background(Color.clear)
-              .id(counter.id.uuidString)
-          }
-        }
-        .scrollTargetLayout()
-        .counterPagerBackground(accents: pageAccents, scrollState: pagerScrollState)
-        .background {
-          PagerScrollViewConfiguration()
-          // Gate the UIKit pan only — never toggle SwiftUI `.scrollDisabled` mid-reveal.
-          ScrollPanDisabler(
-            isDisabled: (revealState.locksScroll || isCounterListRevealed) && pendingScrollPageID == nil
-          )
+    VerticalPagerScrollView(
+      pageHeight: height,
+      pageIDs: pageIDs,
+      selectedPageID: $selectedPageID,
+      scrollState: pagerScrollState,
+      revealState: revealState,
+      isListRevealed: isCounterListRevealed,
+      pendingPageID: pendingScrollPageID,
+      onPendingHandled: { pendingScrollPageID = nil }
+    ) {
+      VStack(spacing: 0) {
+        ForEach(counters) { counter in
+          CustomCounterPageContent(counter: counter)
+            .frame(height: height)
+            .background(Color.clear)
         }
       }
-      .scrollContentBackground(.hidden)
-      .background(Color.clear)
-      // viewAligned snaps to each page view. `.paging` + two-way `scrollPosition` fought the
-      // last page's resting offset and produced an up/down jump when scrolling away from it.
-      .scrollTargetBehavior(.viewAligned(limitBehavior: .always))
-      .scrollIndicators(.hidden)
-      .scrollClipDisabled(true)
-      .onScrollGeometryChange(for: CGFloat.self) { geometry in
-        geometry.contentOffset.y + geometry.contentInsets.top
-      } action: { _, offset in
-        guard height > 0 else { return }
-        let revealActive = isCounterListRevealed || revealState.locksScroll
-        guard !revealActive else { return }
-
-        pagerScrollState.value = offset / height
-
-        let index = Int((offset / height).rounded())
-        let clamped = min(max(index, 0), max(pageIDs.count - 1, 0))
-        guard pageIDs.indices.contains(clamped) else { return }
-        let pageID = pageIDs[clamped]
-        if pageID != selectedPageID {
-          selectedPageID = pageID
-        }
-      }
-      .onScrollPhaseChange { _, newPhase in
-        // Write through the observable — do not store drag phase in @State on this view.
-        pagerScrollState.isDragging = newPhase != .idle
-      }
-      .onChange(of: pendingScrollPageID) { _, pageID in
-        guard let pageID else { return }
-        scrollProxy(proxy, to: pageID)
-      }
+      .counterPagerBackground(accents: pageAccents, scrollState: pagerScrollState)
     }
   }
 
@@ -379,8 +345,8 @@ struct CounterPagerView: View {
       }
     }
     syncScrollProgressToSelectedPage()
-    // Drive ScrollViewReader via pendingScrollPageID. While the list reveal is active the
-    // geometry-driven selection is frozen, so this target sticks until the proxy scrolls.
+    // Full pager consumes pending IDs in VerticalPagerScrollView; compact still uses
+    // ScrollViewReader via onChange(of: pendingScrollPageID).
     queuePagerScroll(to: pageID)
   }
 
