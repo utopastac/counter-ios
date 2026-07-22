@@ -249,10 +249,11 @@ struct CounterWidgetView: View {
 
       quickAddGrid
         .padding(.top, WidgetTheme.headerToQuickAddSpacing)
+        .layoutPriority(0)
 
       Spacer(minLength: 0)
     }
-    .padding(widgetMargins)
+    .padding(homeScreenMargins)
   }
 
   private var largeLayout: some View {
@@ -262,17 +263,27 @@ struct CounterWidgetView: View {
       quickAddGrid
         .padding(.top, WidgetTheme.headerToQuickAddSpacing)
 
+      Spacer(minLength: WidgetTheme.largeQuickAddToEntriesSpacing)
+
       if !entry.snapshot.recentEntries.isEmpty {
         WidgetRecentEntriesList(
           entries: entry.snapshot.recentEntries,
           colors: colors
         )
-        .padding(.top, WidgetTheme.largeQuickAddToEntriesSpacing)
       }
-
-      Spacer(minLength: 0)
     }
-    .padding(widgetMargins)
+    .padding(homeScreenMargins)
+  }
+
+  /// Same insets for medium and large so family-specific `widgetContentMargins` can't
+  /// change the header's available width (and thus its `minimumScaleFactor` sizing).
+  private var homeScreenMargins: EdgeInsets {
+    EdgeInsets(
+      top: WidgetTheme.homeScreenContentMargin,
+      leading: WidgetTheme.homeScreenContentMargin,
+      bottom: WidgetTheme.homeScreenContentMargin,
+      trailing: WidgetTheme.homeScreenContentMargin
+    )
   }
 
   private var accessoryCircularLayout: some View {
@@ -329,6 +340,10 @@ struct CounterWidgetView: View {
 
   /// Hero heading + subtitle on the leading edge, ring on the trailing edge — matches the
   /// main app's pager header (`CounterPageHeader` in `Counter/Views/Pager/CounterPageLayout.swift`).
+  ///
+  /// `fixedSize` + `layoutPriority` keep this at its ideal height so a tight medium widget
+  /// can't vertically compress the hero text (which would otherwise shrink via
+  /// `minimumScaleFactor` and make the large widget's header look bigger by comparison).
   private var mediumHeader: some View {
     HStack(alignment: .top, spacing: 12) {
       WidgetHeroHeading(
@@ -342,6 +357,8 @@ struct CounterWidgetView: View {
         progressRing(progress: ringProgress)
       }
     }
+    .fixedSize(horizontal: false, vertical: true)
+    .layoutPriority(1)
   }
 
   @ViewBuilder

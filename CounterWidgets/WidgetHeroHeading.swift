@@ -11,20 +11,18 @@ struct WidgetHeroHeading: View {
   let foreground: Color
 
   var body: some View {
-    VStack(alignment: .leading, spacing: -2) {
+    VStack(alignment: .leading, spacing: WidgetTheme.heroToSubtitleSpacing) {
       Text("\(heroValue) \(title)")
         .font(WidgetTheme.heroFont)
         .tracking(WidgetTheme.heroTracking)
         .foregroundStyle(foreground)
         .lineLimit(1)
-        .minimumScaleFactor(0.6)
 
       Text(subtitle)
         .font(WidgetTheme.subtitleFont)
         .tracking(WidgetTheme.subtitleTracking)
         .foregroundStyle(foreground)
         .lineLimit(1)
-        .minimumScaleFactor(0.8)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
   }

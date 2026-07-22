@@ -251,8 +251,10 @@ enum CompactCardToken {
   static let heroToFooterSpacing: CGFloat = SpaceToken.u2
   /// Quick-add button height — 8pt shorter than the standard button height.
   static let quickAddHeight: CGFloat = SizeToken.quickAddHeight - SpaceToken.u1
-  /// Gap above the entry-added toast overlay.
+  /// Inset from the top edge for the entry-added toast overlay.
   static let toastTopOffset: CGFloat = SpaceToken.u1
+  /// Inset from the leading edge for the entry-added toast overlay.
+  static let toastLeadingOffset: CGFloat = SpaceToken.u1
 
   /// Underlay list row ring — smaller than the full display ring so a single-line row stays short.
   static let listRingSize: CGFloat = 30

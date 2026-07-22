@@ -29,7 +29,7 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
   /// Configured counter was deleted (or otherwise missing from the store).
   let isUnavailable: Bool
 
-  static let recentEntryLimit = 3
+  static let recentEntryLimit = 4
 
   var progressRingWidth: ProgressRingWidth {
     ProgressRingWidth(rawValue: progressRingWidthRaw) ?? .balanced
@@ -61,6 +61,11 @@ nonisolated struct CounterWidgetSnapshot: Sendable {
         id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!,
         valueText: "25",
         timestamp: Date.now.addingTimeInterval(-10_800)
+      ),
+      CounterWidgetRecentEntry(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
+        valueText: "10",
+        timestamp: Date.now.addingTimeInterval(-14_400)
       )
     ],
     lastUpdated: nil,

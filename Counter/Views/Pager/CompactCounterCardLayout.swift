@@ -48,10 +48,11 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .background(palette.backgroundStyle(for: colorScheme), in: RadiusToken.continuous(RadiusToken.compactCard))
-    .overlay(alignment: .top) {
+    .overlay(alignment: .topLeading) {
       toast()
         .fixedSize()
         .padding(.top, CompactCardToken.toastTopOffset)
+        .padding(.leading, CompactCardToken.toastLeadingOffset)
     }
     .allowsHitTesting(!counterRevealIsDragging)
   }

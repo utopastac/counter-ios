@@ -11,6 +11,8 @@ enum WidgetTheme {
   static let headerToQuickAddSpacing: CGFloat = 12
   /// Air between the quick-add grid and the recent-entry list on the large widget.
   static let largeQuickAddToEntriesSpacing: CGFloat = 12
+  /// Shared content inset for medium + large so both headers lay out identically.
+  static let homeScreenContentMargin: CGFloat = 16
 
   /// Ring size the design calls for — the app's own ring shrunk down to widget scale.
   static let ringSize: CGFloat = 48
@@ -22,8 +24,12 @@ enum WidgetTheme {
   }
   static let ringOverfillOutlineWidth: CGFloat = 2
 
-  static let heroFontSize: CGFloat = 34
-  static let subtitleFontSize: CGFloat = 18
+  /// Fixed hero size for medium + large — matched to the home-screen reference screenshot.
+  static let heroFontSize: CGFloat = 23
+  /// Fixed subtitle under the hero on medium + large.
+  static let subtitleFontSize: CGFloat = 16
+  /// Pulls the subtitle up under the hero (tight stacked pair from the reference).
+  static let heroToSubtitleSpacing: CGFloat = 0
   /// Matches `FontTrackingToken.tight2` in the app's type ramp.
   private static let trackingPercent: CGFloat = -2
 
@@ -44,18 +50,22 @@ enum WidgetTheme {
     size * (trackingPercent / 100)
   }
 
+  static func tracking(forSize size: CGFloat, percent: CGFloat) -> CGFloat {
+    size * (percent / 100)
+  }
+
   static func packFont(size: CGFloat, weight: Font.Weight = .semibold) -> Font {
     AppAppearancePreference.fontPack.font(size: size, weight: weight)
   }
 
   static var heroFont: Font {
-    packFont(size: heroFontSize)
+    packFont(size: heroFontSize, weight: .semibold)
   }
 
   static var heroTracking: CGFloat { tracking(forSize: heroFontSize) }
 
   static var subtitleFont: Font {
-    packFont(size: subtitleFontSize)
+    packFont(size: subtitleFontSize, weight: .semibold)
   }
 
   static var subtitleTracking: CGFloat { tracking(forSize: subtitleFontSize) }
@@ -245,23 +255,31 @@ struct WidgetQuickAddButton: View {
   }
 }
 
-/// Newest-first entry rows for the large widget — mirrors the app's `EntryLogRow` (value,
-/// timestamp, delete) without pulling app-only design tokens into the extension.
+/// Newest-first entry rows for the large widget — mirrors `CompactEntryLogPreview` /
+/// `EntryLogRow` (value, timestamp, delete) without pulling app-only design tokens into
+/// the extension.
 struct WidgetRecentEntriesList: View {
   let entries: [CounterWidgetRecentEntry]
   let colors: WidgetThemeColors
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
+      // Matches `EntryLogPreviewTableDivider` / `SettingsDivider`.
+      Rectangle()
+        .fill(colors.foreground.opacity(0.40))
+        .frame(height: 1)
+
       ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
         if index > 0 {
+          // Matches `EntryLogRowDivider`.
           Rectangle()
-            .fill(colors.foreground.opacity(0.2))
+            .fill(colors.foreground.opacity(0.40))
             .frame(height: 1)
         }
 
         WidgetRecentEntryRow(entry: entry, colors: colors)
           .frame(height: WidgetTheme.entryRowHeight)
+          .frame(maxWidth: .infinity, alignment: .leading)
       }
     }
   }
@@ -271,6 +289,7 @@ private struct WidgetRecentEntryRow: View {
   let entry: CounterWidgetRecentEntry
   let colors: WidgetThemeColors
 
+  /// Same format as `EntryLogRow.timestampFormat`.
   private static let timestampFormat = Date.FormatStyle()
     .month(.abbreviated)
     .day(.twoDigits)
@@ -278,18 +297,22 @@ private struct WidgetRecentEntryRow: View {
     .minute(.twoDigits)
 
   var body: some View {
-    HStack(alignment: .center, spacing: 8) {
+    HStack(alignment: .center, spacing: 12) {
+      // `CounterTextStyle.entryLogValue` → `TypeStyle.lgSemibold` (18 / semibold / -3%).
       Text(entry.valueText)
-        .font(WidgetTheme.packFont(size: 15))
+        .font(WidgetTheme.packFont(size: 18, weight: .semibold))
+        .tracking(WidgetTheme.tracking(forSize: 18, percent: -3))
         .foregroundStyle(colors.foreground)
         .lineLimit(1)
         .minimumScaleFactor(0.8)
 
       Spacer(minLength: 0)
 
+      // `CounterTextStyle.entryLogTimestamp` → `TypeStyle.mdRegular` (16 / regular / -2%).
       Text(entry.timestamp, format: Self.timestampFormat)
-        .font(WidgetTheme.packFont(size: 13, weight: .medium))
-        .foregroundStyle(colors.mutedForeground)
+        .font(WidgetTheme.packFont(size: 16, weight: .regular))
+        .tracking(WidgetTheme.tracking(forSize: 16, percent: -2))
+        .foregroundStyle(colors.foreground)
         .lineLimit(1)
 
       Button(intent: DeleteCounterEntryIntent(entryID: entry.id)) {
