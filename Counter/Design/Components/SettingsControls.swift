@@ -122,7 +122,7 @@ struct SettingsActionRow: View {
       .frame(minHeight: SizeToken.quickAddHeight)
       .contentShape(Rectangle())
     }
-    .buttonStyle(.plain)
+    .buttonStyle(.scrollSafe)
   }
 }
 
@@ -152,7 +152,7 @@ struct SettingsDisclosureRow: View {
       .frame(maxWidth: .infinity, alignment: .leading)
       .contentShape(Rectangle())
     }
-    .buttonStyle(.plain)
+    .buttonStyle(.scrollSafe)
   }
 }
 

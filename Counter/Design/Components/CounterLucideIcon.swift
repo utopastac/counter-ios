@@ -20,6 +20,8 @@ enum CounterLucideIconName: String {
   case palette = "lucide-palette"
   case droplet = "lucide-droplet"
   case blend = "lucide-blend"
+  case sparkle = "lucide-sparkle"
+  case type = "lucide-type"
   case paintBucket = "lucide-paint-bucket"
   case timer = "lucide-timer"
   case moon = "lucide-moon"

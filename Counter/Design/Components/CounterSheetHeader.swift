@@ -83,8 +83,9 @@ struct SettingsDestructiveRow: View {
         Spacer(minLength: SpaceToken.u1)
       }
       .frame(minHeight: SizeToken.quickAddHeight)
+      .contentShape(Rectangle())
     }
-    .buttonStyle(.plain)
+    .buttonStyle(.scrollSafe)
     .tint(colors.statusDanger)
   }
 }

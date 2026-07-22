@@ -133,7 +133,7 @@ struct AppSettingsView: View {
             SettingsToggleRow(icon: .rows3, label: "Compact", isOn: $isCompactModeEnabled)
             SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
             SettingsDisclosureRow(
-              icon: .slidersHorizontal,
+              icon: .type,
               label: "Font pack",
               value: fontPack.wrappedValue.label
             ) {
@@ -145,7 +145,7 @@ struct AppSettingsView: View {
               selection: progressRingWidth,
               options: ProgressRingWidth.allCases.map { ($0, $0.label) }
             )
-            SettingsToggleRow(icon: .blend, label: "Ring glow", isOn: $isProgressRingGlowEnabled)
+            SettingsToggleRow(icon: .sparkle, label: "Ring glow", isOn: $isProgressRingGlowEnabled)
             SettingsDisclosureRow(
               icon: .palette,
               label: "Colour pack",

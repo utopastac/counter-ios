@@ -240,7 +240,7 @@ struct CounterSettingsView: View {
       )
 
       SettingsPickerRow(
-        icon: .blend,
+        icon: .sparkle,
         label: "Glow",
         selection: $ringGlowChoice,
         options: ProgressRingGlowChoice.allCases.map { ($0, $0.label) }
