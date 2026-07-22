@@ -232,9 +232,10 @@ struct CounterWidgetView: View {
     VStack(alignment: .leading, spacing: 0) {
       mediumHeader
 
-      Spacer(minLength: 12)
-
       quickAddGrid
+        .padding(.top, WidgetTheme.headerToQuickAddSpacing)
+
+      Spacer(minLength: 0)
     }
     .padding(widgetMargins)
   }
@@ -243,9 +244,8 @@ struct CounterWidgetView: View {
     VStack(alignment: .leading, spacing: 0) {
       mediumHeader
 
-      Spacer(minLength: 16)
-
       quickAddGrid
+        .padding(.top, WidgetTheme.headerToQuickAddSpacing)
 
       if !entry.snapshot.recentEntries.isEmpty {
         WidgetRecentEntriesList(
@@ -254,6 +254,8 @@ struct CounterWidgetView: View {
         )
         .padding(.top, WidgetTheme.largeQuickAddToEntriesSpacing)
       }
+
+      Spacer(minLength: 0)
     }
     .padding(widgetMargins)
   }

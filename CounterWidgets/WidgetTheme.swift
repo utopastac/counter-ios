@@ -7,6 +7,8 @@ enum WidgetTheme {
   static let buttonColumns = 4
   /// Matches the app's `EntryLogToken.rowHeight` (40pt) for large-widget entry rows.
   static let entryRowHeight: CGFloat = 40
+  /// Gap between the hero header and the quick-add grid (medium + large).
+  static let headerToQuickAddSpacing: CGFloat = 12
   /// Air between the quick-add grid and the recent-entry list on the large widget.
   static let largeQuickAddToEntriesSpacing: CGFloat = 12
 
