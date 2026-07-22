@@ -162,8 +162,6 @@
 		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
 		P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* CounterUnderlayReveal.swift */; };
 		P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000002 /* ScrollPanDisabler.swift */; };
-		P10000010000000000000003 /* RevealPanBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000003 /* RevealPanBridge.swift */; };
-		P10000010000000000000004 /* VerticalPagerScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000004 /* VerticalPagerScrollView.swift */; };
 
 		AI10000010000000000000001 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
 		CTGBFAmountInput01 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
@@ -476,8 +474,6 @@
 		N20000010000000000000002 /* CustomAmountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountSheet.swift; sourceTree = "<group>"; };
 		P20000010000000000000001 /* CounterUnderlayReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUnderlayReveal.swift; sourceTree = "<group>"; };
 		P20000010000000000000002 /* ScrollPanDisabler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollPanDisabler.swift; sourceTree = "<group>"; };
-		P20000010000000000000003 /* RevealPanBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealPanBridge.swift; sourceTree = "<group>"; };
-		P20000010000000000000004 /* VerticalPagerScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalPagerScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -821,8 +817,6 @@
 			children = (
 				G20000010000000000000006 /* CounterPagerView.swift */,
 				P20000010000000000000001 /* CounterUnderlayReveal.swift */,
-				P20000010000000000000003 /* RevealPanBridge.swift */,
-				P20000010000000000000004 /* VerticalPagerScrollView.swift */,
 				P20000010000000000000002 /* ScrollPanDisabler.swift */,
 				G20000010000000000000004 /* CustomCounterPageContent.swift */,
 				M20000010000000000000001 /* AllCountersListView.swift */,
@@ -1051,8 +1045,6 @@
 				A10000010000000000000002 /* ContentView.swift in Sources */,
 				G10000010000000000000006 /* CounterPagerView.swift in Sources */,
 				P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */,
-				P10000010000000000000003 /* RevealPanBridge.swift in Sources */,
-				P10000010000000000000004 /* VerticalPagerScrollView.swift in Sources */,
 				P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */,
 				M10000010000000000000001 /* AllCountersListView.swift in Sources */,
 				AP10000010000000000000001 /* AppSettingsView.swift in Sources */,

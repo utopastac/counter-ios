@@ -1,15 +1,15 @@
 import Observation
 import SwiftUI
 
-/// Holds the live reveal drag offset and discrete interaction flags. Per-frame `cardOffset`
-/// changes only invalidate the transform modifiers that read it — not `CounterPagerView`.
+/// Holds the live reveal drag offset + scroll-lock flag. Kept in a dedicated `@Observable`
+/// object so per-frame `cardOffset` changes only invalidate the transform modifiers that
+/// read it — not `CounterPagerView` — and so scroll-lock can update without going through
+/// a separate `@State` that forces the paging `ScrollView` to re-apply position.
 @Observable
 final class RevealState {
   var cardOffset: CGFloat = 0
   /// True while a reveal drag or settle animation should block pager/list scrolling.
   var locksScroll = false
-  /// True while a horizontal reveal drag is actively tracking.
-  var isDragging = false
 }
 
 /// List at fixed width underneath; counter card slides right, scales, and rounds with spring physics.
@@ -23,6 +23,10 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
 
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.semanticColors) private var colors
+
+  @State private var dragStartOffset: CGFloat = 0
+  @State private var isDraggingReveal = false
+  @State private var dragAxis: RevealDragAxis?
 
   private let listParallaxFraction: CGFloat = 0.06
 
@@ -63,17 +67,10 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
             )
           )
           .offset(x: inset)
-          // Block card controls while the list is peeking or mid-drag; the reveal pan
-          // still receives touches on the card because child views opt out of hit testing.
-          .counterRevealDragging(state.isDragging || isRevealed)
-          .background {
-            RevealPanBridge(
-              state: state,
-              maxOffset: maxOffset,
-              isRevealed: $isRevealed,
-              reduceMotion: reduceMotion
-            )
-          }
+          // Block card controls while the list is peeking or mid-drag; the reveal gesture
+          // still receives hits on the card because child views opt out of hit testing.
+          .counterRevealDragging(isDraggingReveal || isRevealed)
+          .simultaneousGesture(revealGesture(maxOffset: maxOffset))
       }
       .frame(width: width, height: height, alignment: .topLeading)
     }
@@ -90,7 +87,7 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
       state.locksScroll = true
     }
 
-    let duration = reduceMotion ? MotionToken.reduceMotionDuration : MotionToken.revealSettleDuration
+    let duration = reduceMotion ? 0.2 : MotionToken.revealSettleDuration
     Task { @MainActor in
       try? await Task.sleep(for: .seconds(duration))
       var unlockTransaction = Transaction()
@@ -105,6 +102,120 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
   static func openOffset(for width: CGFloat, isCompact: Bool = false) -> CGFloat {
     RevealToken.openOffset(forScreenWidth: width, isCompact: isCompact)
   }
+
+  private var settleSpring: Animation {
+    MotionToken.settle(reduceMotion: reduceMotion)
+  }
+
+  private func revealGesture(maxOffset: CGFloat) -> some Gesture {
+    DragGesture(minimumDistance: 0, coordinateSpace: .local)
+      .onChanged { value in
+        if dragAxis == nil {
+          dragAxis = resolvedDragAxis(for: value)
+          guard let dragAxis else { return }
+
+          switch dragAxis {
+          case .horizontal:
+            isDraggingReveal = true
+            dragStartOffset = state.cardOffset
+            setRevealScrollLocked(true)
+          case .vertical:
+            return
+          }
+        }
+
+        guard dragAxis == .horizontal, isDraggingReveal else { return }
+
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+          state.cardOffset = rubberBand(dragStartOffset + value.translation.width, max: maxOffset)
+        }
+      }
+      .onEnded { value in
+        let wasDragging = isDraggingReveal
+        let axis = dragAxis
+        dragAxis = nil
+
+        guard wasDragging, axis == .horizontal else {
+          isDraggingReveal = false
+          setRevealScrollLocked(false)
+          return
+        }
+
+        let predicted = rubberBand(
+          dragStartOffset + value.predictedEndTranslation.width,
+          max: maxOffset
+        )
+        let shouldOpen = shouldSettleOpen(
+          predicted: predicted,
+          maxOffset: maxOffset,
+          startedOpen: dragStartOffset > maxOffset * 0.5
+        )
+
+        withAnimation(settleSpring) {
+          state.cardOffset = shouldOpen ? maxOffset : 0
+          isRevealed = shouldOpen
+        }
+        scheduleRevealScrollUnlock()
+        scheduleRevealDragReset()
+      }
+  }
+
+  private func resolvedDragAxis(for value: DragGesture.Value) -> RevealDragAxis? {
+    let horizontal = abs(value.translation.width)
+    let vertical = abs(value.translation.height)
+    guard max(horizontal, vertical) >= RevealToken.axisDecisionDistance else { return nil }
+    return horizontal > vertical ? .horizontal : .vertical
+  }
+
+  private func setRevealScrollLocked(_ locked: Bool) {
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      state.locksScroll = locked
+    }
+  }
+
+  private func scheduleRevealScrollUnlock() {
+    let duration = reduceMotion ? 0.2 : MotionToken.revealSettleDuration
+    Task { @MainActor in
+      try? await Task.sleep(for: .seconds(duration))
+      setRevealScrollLocked(false)
+    }
+  }
+
+  /// Clears reveal-drag state after the current touch cycle so button actions do not fire on release.
+  private func scheduleRevealDragReset() {
+    Task { @MainActor in
+      isDraggingReveal = false
+    }
+  }
+
+  private func shouldSettleOpen(
+    predicted: CGFloat,
+    maxOffset: CGFloat,
+    startedOpen: Bool
+  ) -> Bool {
+    guard maxOffset > 0 else { return false }
+    let threshold = maxOffset * (startedOpen ? 0.45 : 0.35)
+    return predicted > threshold
+  }
+
+  private func rubberBand(_ value: CGFloat, max: CGFloat) -> CGFloat {
+    if value > max {
+      return max + (value - max) * 0.16
+    }
+    if value < 0 {
+      return value * 0.16
+    }
+    return value
+  }
+}
+
+private enum RevealDragAxis {
+  case horizontal
+  case vertical
 }
 
 private enum RevealMetrics {
