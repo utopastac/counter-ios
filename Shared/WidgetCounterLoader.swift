@@ -40,6 +40,13 @@ enum WidgetCounterLoader {
     WidgetSnapshot.reloadTimelines()
   }
 
+  @MainActor
+  static func deleteEntry(id: UUID) {
+    let context = ModelContext(SharedModelContainer.shared)
+    EntryActions.deleteCounterEntry(id: id, in: context)
+    WidgetSnapshot.reloadTimelines()
+  }
+
   private static func counterSnapshot(
     counter: CustomCounter,
     context: ModelContext
@@ -51,6 +58,15 @@ enum WidgetCounterLoader {
       from: counter.presetAmounts,
       defaults: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     )
+    let recentEntries = CounterPeriodCalculator.currentEntries(for: counter)
+      .prefix(CounterWidgetSnapshot.recentEntryLimit)
+      .map { entry in
+        CounterWidgetRecentEntry(
+          id: entry.id,
+          valueText: CounterFormatting.amount(entry.amount),
+          timestamp: entry.timestamp
+        )
+      }
 
     return CounterWidgetSnapshot(
       counterID: counter.id.uuidString,
@@ -65,6 +81,7 @@ enum WidgetCounterLoader {
       heroSubtitle: progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption.capitalized,
       ringProgress: progress,
       buttonValues: widgetButtonValues(from: buttons),
+      recentEntries: Array(recentEntries),
       lastUpdated: .now,
       isUnavailable: false
     )

@@ -5,11 +5,13 @@ enum WidgetTheme {
   static let buttonSpacing: CGFloat = 8
   static let buttonCornerRadius: CGFloat = 14
   static let buttonColumns = 4
+  /// Matches the app's `EntryLogToken.rowHeight` (40pt) for large-widget entry rows.
+  static let entryRowHeight: CGFloat = 40
+  /// Air between the quick-add grid and the recent-entry list on the large widget.
+  static let largeQuickAddToEntriesSpacing: CGFloat = 12
 
   /// Ring size the design calls for — the app's own ring shrunk down to widget scale.
   static let ringSize: CGFloat = 48
-  /// Larger ring for the home-screen large widget.
-  static let largeRingSize: CGFloat = 72
   /// Compact ring for lock-screen circular widgets.
   static let accessoryRingSize: CGFloat = 36
   /// Stroke follows the shared `ProgressRingWidth` preference (balanced = 25% of size).
@@ -20,8 +22,6 @@ enum WidgetTheme {
 
   static let heroFontSize: CGFloat = 34
   static let subtitleFontSize: CGFloat = 18
-  static let largeHeroFontSize: CGFloat = 48
-  static let largeSubtitleFontSize: CGFloat = 20
   /// Matches `FontTrackingToken.tight2` in the app's type ramp.
   private static let trackingPercent: CGFloat = -2
 
@@ -57,18 +57,6 @@ enum WidgetTheme {
   }
 
   static var subtitleTracking: CGFloat { tracking(forSize: subtitleFontSize) }
-
-  static var largeHeroFont: Font {
-    packFont(size: largeHeroFontSize)
-  }
-
-  static var largeHeroTracking: CGFloat { tracking(forSize: largeHeroFontSize) }
-
-  static var largeSubtitleFont: Font {
-    packFont(size: largeSubtitleFontSize)
-  }
-
-  static var largeSubtitleTracking: CGFloat { tracking(forSize: largeSubtitleFontSize) }
 
   static var smallTitleFont: Font {
     packFont(size: smallTitleFontSize)
@@ -252,5 +240,65 @@ struct WidgetQuickAddButton: View {
         )
     }
     .buttonStyle(.plain)
+  }
+}
+
+/// Newest-first entry rows for the large widget — mirrors the app's `EntryLogRow` (value,
+/// timestamp, delete) without pulling app-only design tokens into the extension.
+struct WidgetRecentEntriesList: View {
+  let entries: [CounterWidgetRecentEntry]
+  let colors: WidgetThemeColors
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
+        if index > 0 {
+          Rectangle()
+            .fill(colors.foreground.opacity(0.2))
+            .frame(height: 1)
+        }
+
+        WidgetRecentEntryRow(entry: entry, colors: colors)
+          .frame(height: WidgetTheme.entryRowHeight)
+      }
+    }
+  }
+}
+
+private struct WidgetRecentEntryRow: View {
+  let entry: CounterWidgetRecentEntry
+  let colors: WidgetThemeColors
+
+  private static let timestampFormat = Date.FormatStyle()
+    .month(.abbreviated)
+    .day(.twoDigits)
+    .hour(.defaultDigits(amPM: .abbreviated))
+    .minute(.twoDigits)
+
+  var body: some View {
+    HStack(alignment: .center, spacing: 8) {
+      Text(entry.valueText)
+        .font(WidgetTheme.packFont(size: 15))
+        .foregroundStyle(colors.foreground)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+
+      Spacer(minLength: 0)
+
+      Text(entry.timestamp, format: Self.timestampFormat)
+        .font(WidgetTheme.packFont(size: 13, weight: .medium))
+        .foregroundStyle(colors.mutedForeground)
+        .lineLimit(1)
+
+      Button(intent: DeleteCounterEntryIntent(entryID: entry.id)) {
+        Image(systemName: "xmark")
+          .font(.system(size: 12, weight: .semibold))
+          .foregroundStyle(colors.foreground)
+          .frame(width: 20, height: 20)
+          .contentShape(Rectangle())
+      }
+      .buttonStyle(.plain)
+      .accessibilityLabel("Delete entry")
+    }
   }
 }

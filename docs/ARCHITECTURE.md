@@ -201,7 +201,8 @@ flowchart LR
 - **Home screen widgets** (`CounterWidgets`) are configurable per counter via App Intents
   (`CounterWidgetConfigurationIntent`, `CounterWidgetEntity`), query SwiftData directly and
   asynchronously (`WidgetCounterLoader`), and support interactive quick-add buttons via
-  `AddCounterEntryIntent`.
+  `AddCounterEntryIntent`. The large family also shows the last three current-period entries
+  with per-row delete via `DeleteCounterEntryIntent`.
 - **The watch complication** (`CounterWatchWidgets`) shows only the default counter's title
   and hero value, sourced from the `UserDefaults` snapshot rather than SwiftData. It uses
   WidgetKit's completion-handler `TimelineProvider` rather than `AppIntentTimelineProvider`

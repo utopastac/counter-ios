@@ -31,6 +31,29 @@ struct AddCounterEntryIntent: AppIntent {
   }
 }
 
+struct DeleteCounterEntryIntent: AppIntent {
+  static let title: LocalizedStringResource = "Delete Entry"
+  static let description = IntentDescription("Remove a logged value from a counter.")
+
+  @Parameter(title: "Entry")
+  var entryID: String
+
+  init() {
+    self.entryID = ""
+  }
+
+  init(entryID: UUID) {
+    self.entryID = entryID.uuidString
+  }
+
+  @MainActor
+  func perform() async throws -> some IntentResult {
+    guard let uuid = UUID(uuidString: entryID) else { return .result() }
+    WidgetCounterLoader.deleteEntry(id: uuid)
+    return .result()
+  }
+}
+
 struct CounterWidgetShortcuts: AppShortcutsProvider {
   static var appShortcuts: [AppShortcut] {
     AppShortcut(

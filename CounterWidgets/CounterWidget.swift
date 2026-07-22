@@ -241,39 +241,19 @@ struct CounterWidgetView: View {
 
   private var largeLayout: some View {
     VStack(alignment: .leading, spacing: 0) {
-      HStack(alignment: .top, spacing: 16) {
-        VStack(alignment: .leading, spacing: -2) {
-          Text(entry.counter.title)
-            .font(WidgetTheme.subtitleFont)
-            .tracking(WidgetTheme.subtitleTracking)
-            .foregroundStyle(colors.foreground)
-            .lineLimit(1)
-            .minimumScaleFactor(0.8)
-
-          Text(entry.snapshot.heroValue)
-            .font(WidgetTheme.largeHeroFont)
-            .tracking(WidgetTheme.largeHeroTracking)
-            .foregroundStyle(colors.foreground)
-            .lineLimit(1)
-            .minimumScaleFactor(0.5)
-
-          Text(entry.snapshot.heroSubtitle)
-            .font(WidgetTheme.largeSubtitleFont)
-            .tracking(WidgetTheme.largeSubtitleTracking)
-            .foregroundStyle(colors.foreground)
-            .lineLimit(1)
-            .minimumScaleFactor(0.8)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-
-        if let ringProgress = entry.snapshot.ringProgress {
-          progressRing(progress: ringProgress, size: WidgetTheme.largeRingSize)
-        }
-      }
+      mediumHeader
 
       Spacer(minLength: 16)
 
       quickAddGrid
+
+      if !entry.snapshot.recentEntries.isEmpty {
+        WidgetRecentEntriesList(
+          entries: entry.snapshot.recentEntries,
+          colors: colors
+        )
+        .padding(.top, WidgetTheme.largeQuickAddToEntriesSpacing)
+      }
     }
     .padding(widgetMargins)
   }

@@ -53,9 +53,10 @@ they can't corrupt device data and don't interfere with each other.
   snapshot tests of the `Design/Components/` library would likely have the best
   cost/benefit ratio (small, style-focused, don't need a running app).
 - **Widget timeline/entity rendering and App Intents** (`CounterWidgets`, `CounterWatchWidgets`).
-  The data these render (`CounterWidgetSnapshot`, ring fractions, hero strings) comes from
-  the same tested `Shared/` calculators; the WidgetKit-specific glue
-  (`AppIntentTimelineProvider`, `AddCounterEntryIntent`) needs a widget host to exercise
+  The data these render (`CounterWidgetSnapshot`, ring fractions, hero strings, recent entries)
+  comes from the same tested `Shared/` calculators; the WidgetKit-specific glue
+  (`AppIntentTimelineProvider`, `AddCounterEntryIntent`, `DeleteCounterEntryIntent`) needs a
+  widget host to exercise
   meaningfully, which is a much heavier test setup for comparatively low logic density.
 - **Watch UI** (`CounterWatch` views). Same reasoning as SwiftUI views above — the
   watch-specific logic that *was* worth testing (period vs. calendar-day totals) is now
