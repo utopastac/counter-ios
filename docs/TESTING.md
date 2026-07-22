@@ -38,6 +38,7 @@ determines *what the app should compute*, independent of how it's displayed:
 | `WatchSyncTests.swift` | Watch sync envelope encode/decode round-trips, counter/entry snapshot upsert, full-snapshot replace, delete, and reset-all apply semantics |
 | `CounterExportTests.swift` | CSV header/rows, sort order, escaping, filename sanitization, UTF-8 `Data` parity |
 | `AppAppearancePreferenceTests.swift` | Default/fallback behavior for haptics, tint, color pack, ring width, reset period, batch window, and mono palette resolution |
+| `CounterColorPackTests.swift` | Pack invariants: 10 unique named slots, RGB ranges, appearance locks, gradient stop presence for gradient packs, palette index wraparound |
 
 Tests use an isolated in-memory `ModelContainer` per test
 (`CounterTests/TestModelContainer.swift`) — they never touch the real App Group store, so

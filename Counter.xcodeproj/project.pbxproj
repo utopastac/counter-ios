@@ -52,6 +52,7 @@
 		CETBFTEST01 /* CounterExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CETFILEREF01 /* CounterExportTests.swift */; };
 		WSTBFTEST01 /* WatchSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WSTFILEREF01 /* WatchSyncTests.swift */; };
 		AAPTFBFTEST01 /* AppAppearancePreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */; };
+		CCPTBFTEST01 /* CounterColorPackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPTFILEREF01 /* CounterColorPackTests.swift */; };
 		CTGBFCounterExport01 /* CounterExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20000010000000000000001 /* CounterExport.swift */; };
 		B10000010000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000007 /* Assets.xcassets */; };
 		B10000010000000000000008 /* CounterWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B30000010000000000000001 /* CounterWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -427,6 +428,7 @@
 		CETFILEREF01 /* CounterExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterExportTests.swift; sourceTree = "<group>"; };
 		WSTFILEREF01 /* WatchSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncTests.swift; sourceTree = "<group>"; };
 		AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreferenceTests.swift; sourceTree = "<group>"; };
+		CCPTFILEREF01 /* CounterColorPackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterColorPackTests.swift; sourceTree = "<group>"; };
 		CCPFILEREF01 /* CustomCounter+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomCounter+Progress.swift"; sourceTree = "<group>"; };
 		LOGFILEREF01 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		L20000010000000000000002 /* GoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressRing.swift; sourceTree = "<group>"; };
@@ -499,6 +501,7 @@
 				CETFILEREF01 /* CounterExportTests.swift */,
 				WSTFILEREF01 /* WatchSyncTests.swift */,
 				AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */,
+				CCPTFILEREF01 /* CounterColorPackTests.swift */,
 				GPTFILEREF01 /* GoalProgressTests.swift */,
 				HATFILEREF01 /* HistoryAggregatorTests.swift */,
 				QCTFILEREF01 /* QuickAddConfigurationTests.swift */,
@@ -1200,6 +1203,7 @@
 				CETBFTEST01 /* CounterExportTests.swift in Sources */,
 				WSTBFTEST01 /* WatchSyncTests.swift in Sources */,
 				AAPTFBFTEST01 /* AppAppearancePreferenceTests.swift in Sources */,
+				CCPTBFTEST01 /* CounterColorPackTests.swift in Sources */,
 				CTGBFCounterExport01 /* CounterExport.swift in Sources */,
 				AH10000010000000000000003 /* AppHaptics.swift in Sources */,
 				CTGBFSharedModelContainer01 /* SharedModelContainer.swift in Sources */,
