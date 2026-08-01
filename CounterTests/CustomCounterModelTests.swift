@@ -89,4 +89,19 @@ struct CustomCounterModelTests {
     #expect(counter.overrideProgressRingWidth == nil)
     #expect(counter.overrideProgressRingGlow == nil)
   }
+
+  @Test func historyAverageOverridesInheritAppDefaultsWhenUnset() {
+    let counter = CustomCounter(name: "Water")
+    #expect(counter.historyAverageActiveDaysOnlyChoice == .default)
+    #expect(counter.historyAverageActiveDaysOnlyRaw == nil)
+    #expect(counter.overrideHistoryAverageActiveDaysOnly == nil)
+
+    counter.historyAverageActiveDaysOnlyChoice = .on
+    #expect(counter.historyAverageActiveDaysOnlyRaw == HistoryAverageActiveDaysChoice.on.rawValue)
+    #expect(counter.overrideHistoryAverageActiveDaysOnly == true)
+
+    counter.historyAverageActiveDaysOnlyChoice = .default
+    #expect(counter.historyAverageActiveDaysOnlyRaw == nil)
+    #expect(counter.overrideHistoryAverageActiveDaysOnly == nil)
+  }
 }

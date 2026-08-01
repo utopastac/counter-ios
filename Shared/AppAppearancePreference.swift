@@ -15,6 +15,7 @@ enum AppAppearancePreference {
   static let soundStyleKey = "app.sound.style"
   static let quickAddBatchWindowKey = "app.quickAdd.batchWindowSeconds"
   static let fpsCounterEnabledKey = "app.debug.fpsCounterEnabled"
+  static let historyAverageActiveDaysOnlyKey = "app.history.averageActiveDaysOnly"
 
   /// Shared across the app, widgets, and watch for prefs that affect other processes.
   static let sharedDefaults = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
@@ -85,6 +86,11 @@ enum AppAppearancePreference {
 
   static var isFPSCounterEnabled: Bool {
     UserDefaults.standard.bool(forKey: fpsCounterEnabledKey)
+  }
+
+  /// When on, history averages divide by days with entries only. Defaults to off.
+  static var isHistoryAverageActiveDaysOnlyEnabled: Bool {
+    UserDefaults.standard.bool(forKey: historyAverageActiveDaysOnlyKey)
   }
 
   static var monoPaletteIndex: Int {

@@ -33,6 +33,8 @@ final class CustomCounter {
   var progressRingWidthRaw: String?
   /// `nil` inherits the app-wide ring glow; `"on"` / `"off"` override.
   var progressRingGlowRaw: String?
+  /// `nil` inherits the app-wide history average mode; `"on"` / `"off"` override.
+  var historyAverageActiveDaysOnlyRaw: String?
   @Relationship(deleteRule: .cascade, inverse: \CounterEntry.counter)
   var entries: [CounterEntry]
 
@@ -47,6 +49,7 @@ final class CustomCounter {
     paletteIndex: Int = 0,
     progressRingWidthRaw: String? = nil,
     progressRingGlowRaw: String? = nil,
+    historyAverageActiveDaysOnlyRaw: String? = nil,
     sortOrder: Double? = nil
   ) {
     let createdAt = Date.now
@@ -63,6 +66,9 @@ final class CustomCounter {
     self.paletteIndex = Self.normalizedPaletteIndex(paletteIndex)
     self.progressRingWidthRaw = ProgressRingWidthChoice(storedRaw: progressRingWidthRaw).storedRaw
     self.progressRingGlowRaw = ProgressRingGlowChoice(storedRaw: progressRingGlowRaw).storedRaw
+    self.historyAverageActiveDaysOnlyRaw = HistoryAverageActiveDaysChoice(
+      storedRaw: historyAverageActiveDaysOnlyRaw
+    ).storedRaw
     self.entries = []
   }
 
@@ -80,6 +86,11 @@ final class CustomCounter {
     set { progressRingGlowRaw = newValue.storedRaw }
   }
 
+  var historyAverageActiveDaysOnlyChoice: HistoryAverageActiveDaysChoice {
+    get { HistoryAverageActiveDaysChoice(storedRaw: historyAverageActiveDaysOnlyRaw) }
+    set { historyAverageActiveDaysOnlyRaw = newValue.storedRaw }
+  }
+
   /// Explicit width override, or `nil` to inherit the app setting at draw time.
   var overrideProgressRingWidth: ProgressRingWidth? {
     progressRingWidthRaw.flatMap(ProgressRingWidth.init(rawValue:))
@@ -88,6 +99,11 @@ final class CustomCounter {
   /// Explicit glow override, or `nil` to inherit the app setting at draw time.
   var overrideProgressRingGlow: Bool? {
     progressRingGlowChoice.overrideEnabled
+  }
+
+  /// Explicit history-average override, or `nil` to inherit the app setting.
+  var overrideHistoryAverageActiveDaysOnly: Bool? {
+    historyAverageActiveDaysOnlyChoice.overrideEnabled
   }
 
   static let paletteSlotCount = 10

@@ -155,4 +155,10 @@ struct AppAppearancePreferenceTests {
     #expect(AppAppearancePreference.batchWindowLabel(for: 1) == "1 second")
     #expect(AppAppearancePreference.batchWindowLabel(for: 2) == "2 seconds")
   }
+
+  @Test func historyAverageActiveDaysOnlyDefaultsToOffWhenUnset() {
+    withClearedKey(AppAppearancePreference.historyAverageActiveDaysOnlyKey, in: .standard) {
+      #expect(!AppAppearancePreference.isHistoryAverageActiveDaysOnlyEnabled)
+    }
+  }
 }

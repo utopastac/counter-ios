@@ -9,6 +9,8 @@ struct CounterHistoryView: View {
   @State private var period: HistoryPeriod = .daily
   @State private var windowOffset = 0
   @State private var selectedBucket: DailyValue?
+  @AppStorage(AppAppearancePreference.historyAverageActiveDaysOnlyKey)
+  private var isHistoryAverageActiveDaysOnlyEnabled = false
 
   private var maxWindowOffset: Int {
     HistoryAggregator.maxWindowOffset(from: counter.entries, period: period)
@@ -50,6 +52,41 @@ struct CounterHistoryView: View {
     }
   }
 
+  private var averageActiveDaysOnly: Bool {
+    counter.overrideHistoryAverageActiveDaysOnly ?? isHistoryAverageActiveDaysOnlyEnabled
+  }
+
+  private var windowTotal: Double {
+    chartData.reduce(0) { $0 + $1.value }
+  }
+
+  private var windowSummaryValue: Double {
+    switch period {
+    case .daily:
+      return windowTotal
+    case .weekly, .monthly:
+      return HistoryAggregator.averagePerDay(
+        from: counter.entries,
+        period: period,
+        endingOn: HistoryAggregator.endingDate(forWindowOffset: windowOffset, period: period),
+        activeDaysOnly: averageActiveDaysOnly
+      )
+    }
+  }
+
+  private var windowSummaryLabel: String {
+    let amount = CounterFormatting.amount(windowSummaryValue, unit: counter.effectiveUnit)
+    switch period {
+    case .daily:
+      return "\(amount) total"
+    case .weekly, .monthly:
+      if averageActiveDaysOnly {
+        return "\(amount) avg per active day"
+      }
+      return "\(amount) avg per day"
+    }
+  }
+
   var body: some View {
     VStack(spacing: 0) {
       CounterSheetHeader(
@@ -62,9 +99,14 @@ struct CounterHistoryView: View {
           HistoryPeriodPicker(selection: $period)
 
           if !windowRangeLabel.isEmpty {
-            Text(windowRangeLabel)
-              .counterTextStyle(.sectionTitle, compact: true)
-              .frame(maxWidth: .infinity, alignment: .center)
+            VStack(spacing: SpaceToken.x1) {
+              Text(windowRangeLabel)
+                .counterTextStyle(.sectionTitle, compact: true)
+
+              Text(windowSummaryLabel)
+                .counterTextStyle(.caption, color: .secondary, compact: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
           }
 
           HistoryBarChart(

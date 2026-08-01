@@ -120,4 +120,58 @@ struct HistoryAggregatorTests {
     )
     #expect(calendar.isDate(end, inSameDayAs: date(2026, 7, 13, 12)))
   }
+
+  @Test func averagePerDayMonthlyUsesAllCalendarDaysByDefault() {
+    let endDate = date(2026, 7, 14, 12)
+    let entries = [
+      CounterEntry(value: 30, timestamp: date(2026, 7, 14, 8)),
+      CounterEntry(value: 30, timestamp: date(2026, 7, 12, 8)),
+    ]
+
+    let average = HistoryAggregator.averagePerDay(
+      from: entries,
+      period: .monthly,
+      endingOn: endDate,
+      activeDaysOnly: false,
+      calendar: calendar
+    )
+
+    #expect(average == 2)
+  }
+
+  @Test func averagePerDayMonthlyUsesActiveDaysWhenEnabled() {
+    let endDate = date(2026, 7, 14, 12)
+    let entries = [
+      CounterEntry(value: 30, timestamp: date(2026, 7, 14, 8)),
+      CounterEntry(value: 30, timestamp: date(2026, 7, 12, 8)),
+    ]
+
+    let average = HistoryAggregator.averagePerDay(
+      from: entries,
+      period: .monthly,
+      endingOn: endDate,
+      activeDaysOnly: true,
+      calendar: calendar
+    )
+
+    #expect(average == 30)
+  }
+
+  @Test func averagePerDayWeeklyUsesActiveDaysWhenEnabled() {
+    let endDate = date(2026, 7, 14, 12)
+    let entries = [
+      CounterEntry(value: 56, timestamp: date(2026, 7, 14, 8)),
+      CounterEntry(value: 56, timestamp: date(2026, 7, 1, 8)),
+    ]
+
+    let average = HistoryAggregator.averagePerDay(
+      from: entries,
+      period: .weekly,
+      endingOn: endDate,
+      activeDaysOnly: true,
+      calendar: calendar
+    )
+
+    #expect(average == 56)
+  }
 }

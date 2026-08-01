@@ -2,9 +2,13 @@ import Foundation
 import SwiftData
 
 nonisolated enum HistoryAggregator {
-  static func counterTotal(from entries: [CounterEntry], on date: Date) -> Double {
+  static func counterTotal(
+    from entries: [CounterEntry],
+    on date: Date,
+    calendar: Calendar = .current
+  ) -> Double {
     entries
-      .filter { Calendar.current.isDate($0.timestamp, inSameDayAs: date) }
+      .filter { calendar.isDate($0.timestamp, inSameDayAs: date) }
       .reduce(0) { $0 + $1.value }
   }
 
@@ -52,7 +56,7 @@ nonisolated enum HistoryAggregator {
     case .monthly:
       return (0..<period.dayCount).compactMap { offset in
         guard let day = calendar.date(byAdding: .day, value: -offset, to: startOfEndDay) else { return nil }
-        let total = counterTotal(from: entries, on: day)
+        let total = counterTotal(from: entries, on: day, calendar: calendar)
         return DailyValue(date: day, value: total)
       }
       .reversed()
@@ -127,5 +131,60 @@ nonisolated enum HistoryAggregator {
           days > 0
     else { return minimumBrowseable }
     return max(days / step, minimumBrowseable)
+  }
+
+  static func windowCalendarDayCount(for period: HistoryPeriod) -> Int {
+    switch period {
+    case .daily: 1
+    case .weekly: period.dayCount * 7
+    case .monthly: period.dayCount
+    }
+  }
+
+  static func activeDayCount(
+    from entries: [CounterEntry],
+    period: HistoryPeriod,
+    endingOn date: Date,
+    calendar: Calendar = .current
+  ) -> Int {
+    let totalDays = windowCalendarDayCount(for: period)
+    guard totalDays > 0 else { return 0 }
+
+    let startOfEndDay = calendar.startOfDay(for: date)
+    guard let windowStart = calendar.date(byAdding: .day, value: -(totalDays - 1), to: startOfEndDay)
+    else { return 0 }
+
+    var count = 0
+    for offset in 0..<totalDays {
+      guard let day = calendar.date(byAdding: .day, value: offset, to: windowStart) else { continue }
+      if counterTotal(from: entries, on: day, calendar: calendar) > 0 {
+        count += 1
+      }
+    }
+    return count
+  }
+
+  static func averagePerDay(
+    from entries: [CounterEntry],
+    period: HistoryPeriod,
+    endingOn date: Date,
+    activeDaysOnly: Bool,
+    calendar: Calendar = .current
+  ) -> Double {
+    let buckets = groupedCounterTotals(
+      from: entries,
+      period: period,
+      endingOn: date,
+      calendar: calendar
+    )
+    let total = buckets.reduce(0) { $0 + $1.value }
+    let denominator: Int
+    if activeDaysOnly {
+      denominator = activeDayCount(from: entries, period: period, endingOn: date, calendar: calendar)
+    } else {
+      denominator = windowCalendarDayCount(for: period)
+    }
+    guard denominator > 0 else { return 0 }
+    return total / Double(denominator)
   }
 }

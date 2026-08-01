@@ -72,6 +72,45 @@ nonisolated enum ProgressRingGlowChoice: String, Codable, CaseIterable, Identifi
   }
 }
 
+/// Per-counter history-average picker value. `default` inherits the app-wide setting.
+nonisolated enum HistoryAverageActiveDaysChoice: String, Codable, CaseIterable, Identifiable, Hashable {
+  case `default`
+  case on
+  case off
+
+  var id: String { rawValue }
+
+  var label: String {
+    switch self {
+    case .default: "Default"
+    case .on: "On"
+    case .off: "Off"
+    }
+  }
+
+  init(storedRaw: String?) {
+    if let storedRaw, let choice = Self(rawValue: storedRaw), choice != .default {
+      self = choice
+    } else {
+      self = .default
+    }
+  }
+
+  /// `nil` means inherit the app setting.
+  var storedRaw: String? {
+    self == .default ? nil : rawValue
+  }
+
+  /// Explicit on/off, or `nil` to inherit.
+  var overrideEnabled: Bool? {
+    switch self {
+    case .default: nil
+    case .on: true
+    case .off: false
+    }
+  }
+}
+
 /// Shared drawing metrics for the optional soft ring glow.
 enum ProgressRingGlowMetrics {
   /// Soft bloom applied to the background (track) ring when glow is on.

@@ -11,6 +11,7 @@ struct CounterSettingsSave {
   let paletteIndex: Int?
   let progressRingWidthRaw: String?
   let progressRingGlowRaw: String?
+  let historyAverageActiveDaysOnlyRaw: String?
 }
 
 struct CounterSettingsView: View {
@@ -25,6 +26,7 @@ struct CounterSettingsView: View {
   @State private var paletteIndex: Int
   @State private var ringWidthChoice: ProgressRingWidthChoice
   @State private var ringGlowChoice: ProgressRingGlowChoice
+  @State private var historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice
   let onSave: (CounterSettingsSave) -> Void
   let onPaletteChange: ((Int) -> Void)?
   let onDelete: (() -> Void)?
@@ -55,6 +57,7 @@ struct CounterSettingsView: View {
       paletteIndex: counter.effectivePaletteIndex,
       ringWidthChoice: counter.progressRingWidthChoice,
       ringGlowChoice: counter.progressRingGlowChoice,
+      historyAverageActiveDaysChoice: counter.historyAverageActiveDaysOnlyChoice,
       defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
       onSave: onSave,
       onDelete: onDelete,
@@ -73,6 +76,7 @@ struct CounterSettingsView: View {
     paletteIndex: Int,
     ringWidthChoice: ProgressRingWidthChoice = .default,
     ringGlowChoice: ProgressRingGlowChoice = .default,
+    historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice = .default,
     defaultPresets: [Double],
     onSave: @escaping (CounterSettingsSave) -> Void,
     onDelete: (() -> Void)? = nil,
@@ -89,6 +93,7 @@ struct CounterSettingsView: View {
     self._paletteIndex = State(initialValue: CustomCounter.normalizedPaletteIndex(paletteIndex))
     self._ringWidthChoice = State(initialValue: ringWidthChoice)
     self._ringGlowChoice = State(initialValue: ringGlowChoice)
+    self._historyAverageActiveDaysChoice = State(initialValue: historyAverageActiveDaysChoice)
     self.onSave = onSave
     self.onPaletteChange = onPaletteChange
     self.onDelete = onDelete
@@ -110,6 +115,7 @@ struct CounterSettingsView: View {
             quickAddSection
             colourSection
             ringSection
+            historySection
 
             if onDelete != nil {
               deleteSection
@@ -228,6 +234,19 @@ struct CounterSettingsView: View {
     }
   }
 
+  private var historySection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      SettingsSectionHeader(title: "History")
+
+      SettingsPickerRow(
+        icon: .chartBar,
+        label: "Active days only",
+        selection: $historyAverageActiveDaysChoice,
+        options: HistoryAverageActiveDaysChoice.allCases.map { ($0, $0.label) }
+      )
+    }
+  }
+
   private var ringSection: some View {
     VStack(alignment: .leading, spacing: 0) {
       SettingsSectionHeader(title: "Ring")
@@ -289,7 +308,8 @@ struct CounterSettingsView: View {
         goalDirection: goalDirection,
         paletteIndex: paletteIndex,
         progressRingWidthRaw: ringWidthChoice.storedRaw,
-        progressRingGlowRaw: ringGlowChoice.storedRaw
+        progressRingGlowRaw: ringGlowChoice.storedRaw,
+        historyAverageActiveDaysOnlyRaw: historyAverageActiveDaysChoice.storedRaw
       )
     )
     dismiss()
