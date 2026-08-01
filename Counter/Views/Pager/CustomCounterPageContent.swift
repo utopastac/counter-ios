@@ -103,6 +103,7 @@ struct CustomCounterPageContent: View {
           ),
           heroValue: heroValue,
           heroSubtitle: heroSubtitle,
+          statRows: statRows,
           ringProgress: counter.currentProgress(),
           ringWidthOverride: counter.overrideProgressRingWidth,
           ringGlowOverride: counter.overrideProgressRingGlow,

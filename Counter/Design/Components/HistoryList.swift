@@ -41,7 +41,7 @@ private struct HistoryListRow: View {
         Spacer(minLength: 0)
 
         Text(item.date, format: dateFormat)
-          .counterTextStyle(.historyListDate)
+          .counterTextStyle(.historyListDate, color: .secondary)
       }
       .frame(height: HistoryToken.listRowHeight)
       .frame(maxWidth: .infinity, alignment: .leading)

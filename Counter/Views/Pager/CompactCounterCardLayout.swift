@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// Compact-mode counter card — a shrunken, self-contained card (title, hero number,
-/// ring, and quick-add footer). Row entries are never shown inline; tapping the
-/// header's logs icon opens the entry log modal sheet instead.
+/// ring, and quick-add footer). Tapping the hero number toggles the stats table when
+/// a goal is set, matching the full-page layout.
 struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   @Environment(\.counterAccent) private var counterAccent
   @Environment(\.colorScheme) private var colorScheme
@@ -19,6 +19,7 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   let title: String
   let heroValue: String
   let heroSubtitle: String?
+  let statRows: [CounterStatRow]
   let ringProgress: GoalProgress?
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
@@ -27,6 +28,12 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   let onShowButtonSettings: () -> Void
   @ViewBuilder var footer: () -> Footer
   @ViewBuilder var toast: () -> Toast
+
+  @State private var isHeaderExpanded = false
+
+  private var canExpandHeader: Bool {
+    statRows.count > 1
+  }
 
   private var palette: CounterPaletteSlot {
     let _ = (isTintEnabled, colorPackRaw)
@@ -76,24 +83,35 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   }
 
   private var heroRow: some View {
-    HStack(alignment: .center, spacing: SpaceToken.u2) {
-      VStack(alignment: .leading, spacing: CounterPageToken.heroSubtitleSpacing) {
-        Text(heroValue)
-          .counterTextStyle(.mainNumber)
-          .minimumScaleFactor(0.6)
-          .lineLimit(1)
-          .contentTransition(.numericText())
-          .padding(.top, CompactCardToken.heroNumberLeadingTrim)
-
-        if let heroSubtitle {
-          Text(heroSubtitle)
-            .counterTextStyle(.heroSubtitle)
-            .lineLimit(1)
-            .contentTransition(.numericText())
+    HStack(alignment: .top, spacing: SpaceToken.u2) {
+      Button {
+        guard !counterRevealIsDragging else { return }
+        guard canExpandHeader else { return }
+        withAnimation(CounterPageToken.headerToggleAnimation) {
+          isHeaderExpanded.toggle()
         }
+      } label: {
+        ZStack(alignment: .topLeading) {
+          heroDisplay
+            .opacity(isHeaderExpanded ? 0 : 1)
+            .allowsHitTesting(!isHeaderExpanded)
+
+          if canExpandHeader {
+            CounterStatsTable(rows: statRows)
+              .padding(.top, CounterPageToken.headerContentOffset)
+              .opacity(isHeaderExpanded ? 1 : 0)
+              .allowsHitTesting(isHeaderExpanded)
+          }
+        }
+        .animation(CounterPageToken.headerToggleAnimation, value: isHeaderExpanded)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .frame(height: CounterPageToken.headerContentHeight, alignment: .topLeading)
+        .clipped()
+        .contentShape(Rectangle())
       }
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .offset(y: CompactCardToken.heroTextRingOpticalOffset)
+      .buttonStyle(.noHighlight)
+      .disabled(!canExpandHeader)
+      .layoutPriority(1)
 
       if let ringProgress {
         GoalProgressRing(
@@ -104,8 +122,30 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
           trackColor: palette.progressRingTrack(for: colorScheme),
           fillColor: palette.foreground(for: colorScheme)
         )
+        .frame(width: SizeToken.Ring.display, height: CounterPageToken.heroBandHeight, alignment: .center)
+        .padding(.top, CounterPageToken.headerContentOffset)
       }
     }
+  }
+
+  private var heroDisplay: some View {
+    VStack(alignment: .leading, spacing: CounterPageToken.heroSubtitleSpacing) {
+      Text(heroValue)
+        .counterTextStyle(.mainNumber)
+        .minimumScaleFactor(0.6)
+        .lineLimit(1)
+        .contentTransition(.numericText())
+        .padding(.top, CompactCardToken.heroNumberLeadingTrim)
+
+      if let heroSubtitle {
+        Text(heroSubtitle)
+          .counterTextStyle(.heroSubtitle)
+          .lineLimit(1)
+          .contentTransition(.numericText())
+      }
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .offset(y: CompactCardToken.heroTextRingOpticalOffset)
   }
 }
 
@@ -114,6 +154,7 @@ extension CompactCounterCardLayout where Toast == EmptyView {
     title: String,
     heroValue: String,
     heroSubtitle: String? = nil,
+    statRows: [CounterStatRow] = [],
     ringProgress: GoalProgress? = nil,
     ringWidthOverride: ProgressRingWidth? = nil,
     ringGlowOverride: Bool? = nil,
@@ -126,6 +167,7 @@ extension CompactCounterCardLayout where Toast == EmptyView {
       title: title,
       heroValue: heroValue,
       heroSubtitle: heroSubtitle,
+      statRows: statRows,
       ringProgress: ringProgress,
       ringWidthOverride: ringWidthOverride,
       ringGlowOverride: ringGlowOverride,

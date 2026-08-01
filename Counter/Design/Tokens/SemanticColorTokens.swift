@@ -81,7 +81,7 @@ struct SemanticColors: Equatable {
 
   static let light = SemanticColors(
     textPrimary: BaseColor.black,
-    textSecondary: BaseColor.BlackAlpha.a140,
+    textSecondary: BaseColor.BlackAlpha.a400,
     textTertiary: BaseColor.BlackAlpha.a180,
     textEmphasis: BaseColor.black,
     textDisabled: BaseColor.BlackAlpha.a100,

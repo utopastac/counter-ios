@@ -42,14 +42,7 @@ struct CounterHistoryView: View {
 
   private var windowRangeLabel: String {
     let day = HistoryAggregator.endingDate(forWindowOffset: windowOffset, period: period)
-    switch period {
-    case .daily:
-      return day.formatted(.dateTime.weekday(.wide).month(.abbreviated).day(.twoDigits))
-    case .weekly, .monthly:
-      guard let first = chartData.first?.date, let last = chartData.last?.date else { return "" }
-      let format = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
-      return "\(first.formatted(format)) – \(last.formatted(format))"
-    }
+    return day.formatted(.dateTime.month(.wide).day(.twoDigits).year())
   }
 
   private var averageActiveDaysOnly: Bool {
@@ -75,15 +68,15 @@ struct CounterHistoryView: View {
   }
 
   private var windowSummaryLabel: String {
-    let amount = CounterFormatting.amount(windowSummaryValue, unit: counter.effectiveUnit)
+    let amount = CounterFormatting.amount(windowSummaryValue)
     switch period {
     case .daily:
       return "\(amount) total"
     case .weekly, .monthly:
       if averageActiveDaysOnly {
-        return "\(amount) avg per active day"
+        return "\(amount) per active day"
       }
-      return "\(amount) avg per day"
+      return "\(amount) per day"
     }
   }
 
@@ -99,14 +92,15 @@ struct CounterHistoryView: View {
           HistoryPeriodPicker(selection: $period)
 
           if !windowRangeLabel.isEmpty {
-            VStack(spacing: SpaceToken.x1) {
+            HStack(alignment: .firstTextBaseline) {
               Text(windowRangeLabel)
                 .counterTextStyle(.sectionTitle, compact: true)
 
+              Spacer(minLength: SpaceToken.u2)
+
               Text(windowSummaryLabel)
-                .counterTextStyle(.caption, color: .secondary, compact: true)
+                .counterTextStyle(.sectionTitle, compact: true)
             }
-            .frame(maxWidth: .infinity, alignment: .center)
           }
 
           HistoryBarChart(
