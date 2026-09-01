@@ -62,6 +62,13 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         .padding(.leading, CompactCardToken.toastLeadingOffset)
     }
     .allowsHitTesting(!counterRevealIsDragging)
+    .simultaneousGesture(
+      LongPressGesture(minimumDuration: 0.45).onEnded { _ in
+        guard !counterRevealIsDragging else { return }
+        AppHaptics.impact()
+        onSelectEntryLog()
+      }
+    )
   }
 
   private var header: some View {

@@ -12,6 +12,7 @@ struct CounterSettingsSave {
   let progressRingWidthRaw: String?
   let progressRingGlowRaw: String?
   let historyAverageActiveDaysOnlyRaw: String?
+  let historyPerPeriodRaw: String?
 }
 
 struct CounterSettingsView: View {
@@ -27,6 +28,7 @@ struct CounterSettingsView: View {
   @State private var ringWidthChoice: ProgressRingWidthChoice
   @State private var ringGlowChoice: ProgressRingGlowChoice
   @State private var historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice
+  @State private var historyPerPeriodChoice: HistoryPerPeriodChoice
   let onSave: (CounterSettingsSave) -> Void
   let onPaletteChange: ((Int) -> Void)?
   let onDelete: (() -> Void)?
@@ -58,6 +60,7 @@ struct CounterSettingsView: View {
       ringWidthChoice: counter.progressRingWidthChoice,
       ringGlowChoice: counter.progressRingGlowChoice,
       historyAverageActiveDaysChoice: counter.historyAverageActiveDaysOnlyChoice,
+      historyPerPeriodChoice: counter.historyPerPeriodChoice,
       defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
       onSave: onSave,
       onDelete: onDelete,
@@ -77,6 +80,7 @@ struct CounterSettingsView: View {
     ringWidthChoice: ProgressRingWidthChoice = .default,
     ringGlowChoice: ProgressRingGlowChoice = .default,
     historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice = .default,
+    historyPerPeriodChoice: HistoryPerPeriodChoice = .default,
     defaultPresets: [Double],
     onSave: @escaping (CounterSettingsSave) -> Void,
     onDelete: (() -> Void)? = nil,
@@ -94,6 +98,7 @@ struct CounterSettingsView: View {
     self._ringWidthChoice = State(initialValue: ringWidthChoice)
     self._ringGlowChoice = State(initialValue: ringGlowChoice)
     self._historyAverageActiveDaysChoice = State(initialValue: historyAverageActiveDaysChoice)
+    self._historyPerPeriodChoice = State(initialValue: historyPerPeriodChoice)
     self.onSave = onSave
     self.onPaletteChange = onPaletteChange
     self.onDelete = onDelete
@@ -240,6 +245,13 @@ struct CounterSettingsView: View {
 
       SettingsPickerRow(
         icon: .chartBar,
+        label: "Per period",
+        selection: $historyPerPeriodChoice,
+        options: HistoryPerPeriodChoice.allCases.map { ($0, $0.label) }
+      )
+
+      SettingsPickerRow(
+        icon: .chartBar,
         label: "Active days only",
         selection: $historyAverageActiveDaysChoice,
         options: HistoryAverageActiveDaysChoice.allCases.map { ($0, $0.label) }
@@ -309,7 +321,8 @@ struct CounterSettingsView: View {
         paletteIndex: paletteIndex,
         progressRingWidthRaw: ringWidthChoice.storedRaw,
         progressRingGlowRaw: ringGlowChoice.storedRaw,
-        historyAverageActiveDaysOnlyRaw: historyAverageActiveDaysChoice.storedRaw
+        historyAverageActiveDaysOnlyRaw: historyAverageActiveDaysChoice.storedRaw,
+        historyPerPeriodRaw: historyPerPeriodChoice.storedRaw
       )
     )
     dismiss()

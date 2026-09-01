@@ -161,4 +161,10 @@ struct AppAppearancePreferenceTests {
       #expect(!AppAppearancePreference.isHistoryAverageActiveDaysOnlyEnabled)
     }
   }
+
+  @Test func historyPerPeriodDefaultsToOnWhenUnset() {
+    withClearedKey(AppAppearancePreference.historyPerPeriodEnabledKey, in: .standard) {
+      #expect(AppAppearancePreference.isHistoryPerPeriodEnabled)
+    }
+  }
 }

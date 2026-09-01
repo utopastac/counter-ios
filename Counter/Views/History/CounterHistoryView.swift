@@ -11,20 +11,33 @@ struct CounterHistoryView: View {
   @State private var selectedBucket: DailyValue?
   @AppStorage(AppAppearancePreference.historyAverageActiveDaysOnlyKey)
   private var isHistoryAverageActiveDaysOnlyEnabled = false
+  @AppStorage(AppAppearancePreference.historyPerPeriodEnabledKey)
+  private var isHistoryPerPeriodEnabled = true
 
   private var maxWindowOffset: Int {
     HistoryAggregator.maxWindowOffset(from: counter.entries, period: period)
+  }
+
+  private var windowEndingDate: Date {
+    HistoryAggregator.endingDate(forWindowOffset: windowOffset, period: period)
   }
 
   private var chartData: [DailyValue] {
     dataForOffset(windowOffset)
   }
 
+  private var listDailyData: [DailyValue] {
+    HistoryAggregator.listDailyTotals(
+      from: counter.entries,
+      period: period,
+      endingOn: windowEndingDate
+    )
+  }
+
   private var listItems: [HistoryListItem] {
-    let items = chartData.reversed().map { item in
+    let items = listDailyData.reversed().map { item in
       HistoryListItem(date: item.date, value: item.value)
     }
-    // Day view has 24 hour buckets — only list hours that have activity.
     if period == .daily {
       return items.filter { $0.value > 0 }
     }
@@ -36,47 +49,50 @@ struct CounterHistoryView: View {
     case .daily:
       return .dateTime.hour().minute()
     case .weekly, .monthly:
-      return Date.FormatStyle().month(.abbreviated).day(.twoDigits)
+      return .dateTime.weekday(.abbreviated).month(.abbreviated).day(.twoDigits)
     }
   }
 
-  private var windowRangeLabel: String {
-    let day = HistoryAggregator.endingDate(forWindowOffset: windowOffset, period: period)
-    return day.formatted(.dateTime.month(.wide).day(.twoDigits).year())
+  private var perPeriodEnabled: Bool {
+    counter.overrideHistoryPerPeriod ?? isHistoryPerPeriodEnabled
   }
 
   private var averageActiveDaysOnly: Bool {
     counter.overrideHistoryAverageActiveDaysOnly ?? isHistoryAverageActiveDaysOnlyEnabled
   }
 
-  private var windowTotal: Double {
-    chartData.reduce(0) { $0 + $1.value }
-  }
-
   private var windowSummaryValue: Double {
-    switch period {
-    case .daily:
-      return windowTotal
-    case .weekly, .monthly:
-      return HistoryAggregator.averagePerDay(
-        from: counter.entries,
-        period: period,
-        endingOn: HistoryAggregator.endingDate(forWindowOffset: windowOffset, period: period),
-        activeDaysOnly: averageActiveDaysOnly
-      )
-    }
+    HistoryAggregator.summaryValue(
+      from: counter.entries,
+      period: period,
+      endingOn: windowEndingDate,
+      perPeriod: perPeriodEnabled,
+      activeDaysOnly: averageActiveDaysOnly
+    )
   }
 
-  private var windowSummaryLabel: String {
-    let amount = CounterFormatting.amount(windowSummaryValue)
+  private var windowDatePrimaryLabel: String {
+    windowEndingDate.formatted(.dateTime.month(.wide).day(.twoDigits))
+  }
+
+  private var windowDateYearLabel: String {
+    windowEndingDate.formatted(.dateTime.year())
+  }
+
+  private var windowSummaryAmount: String {
+    CounterFormatting.amount(windowSummaryValue)
+  }
+
+  private var windowSummaryCaption: String {
     switch period {
     case .daily:
-      return "\(amount) total"
+      return "total"
     case .weekly, .monthly:
+      guard perPeriodEnabled else { return "total" }
       if averageActiveDaysOnly {
-        return "\(amount) per active day"
+        return "per active day"
       }
-      return "\(amount) per day"
+      return "per day"
     }
   }
 
@@ -91,15 +107,23 @@ struct CounterHistoryView: View {
         VStack(alignment: .leading, spacing: HistoryToken.sectionSpacing) {
           HistoryPeriodPicker(selection: $period)
 
-          if !windowRangeLabel.isEmpty {
-            HStack(alignment: .firstTextBaseline) {
-              Text(windowRangeLabel)
+          HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: SpaceToken.x1) {
+              Text(windowDatePrimaryLabel)
                 .counterTextStyle(.sectionTitle, compact: true)
 
-              Spacer(minLength: SpaceToken.u2)
+              Text(windowDateYearLabel)
+                .counterTextStyle(.caption, color: .secondary, compact: true)
+            }
 
-              Text(windowSummaryLabel)
-                .counterTextStyle(.sectionTitle, compact: true)
+            Spacer(minLength: SpaceToken.u2)
+
+            VStack(alignment: .trailing, spacing: SpaceToken.x1) {
+              Text(windowSummaryAmount)
+                .counterTextStyle(.historyListValue, compact: true)
+
+              Text(windowSummaryCaption)
+                .counterTextStyle(.caption, color: .secondary, compact: true)
             }
           }
 
@@ -148,10 +172,11 @@ struct CounterHistoryView: View {
   }
 
   private func bucketEntrySheet(for bucket: DailyValue) -> some View {
-    let range = HistoryAggregator.bucketRange(for: bucket.date, period: period)
+    let bucketPeriod: HistoryPeriod = period == .daily ? .daily : .monthly
+    let range = HistoryAggregator.bucketRange(for: bucket.date, period: bucketPeriod)
     let entries = CounterPeriodCalculator.entries(from: counter.entries, in: range)
       .sorted { $0.timestamp > $1.timestamp }
-    let title = bucketSheetTitle(for: bucket.date)
+    let title = bucketSheetTitle(for: bucket.date, bucketPeriod: bucketPeriod)
 
     return NavigationStack {
       VStack(spacing: 0) {
@@ -179,16 +204,16 @@ struct CounterHistoryView: View {
     }
   }
 
-  private func bucketSheetTitle(for date: Date) -> String {
-    switch period {
+  private func bucketSheetTitle(for date: Date, bucketPeriod: HistoryPeriod) -> String {
+    switch bucketPeriod {
     case .daily:
       return date.formatted(.dateTime.hour().minute())
-    case .weekly:
-      let range = HistoryAggregator.bucketRange(for: date, period: period)
-      let format = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
-      return "\(range.start.formatted(format)) – \(date.formatted(format))"
     case .monthly:
       return date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day(.twoDigits))
+    case .weekly:
+      let range = HistoryAggregator.bucketRange(for: date, period: .weekly)
+      let format = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
+      return "\(range.start.formatted(format)) – \(date.formatted(format))"
     }
   }
 }

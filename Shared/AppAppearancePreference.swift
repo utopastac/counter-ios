@@ -16,6 +16,7 @@ enum AppAppearancePreference {
   static let quickAddBatchWindowKey = "app.quickAdd.batchWindowSeconds"
   static let fpsCounterEnabledKey = "app.debug.fpsCounterEnabled"
   static let historyAverageActiveDaysOnlyKey = "app.history.averageActiveDaysOnly"
+  static let historyPerPeriodEnabledKey = "app.history.perPeriodEnabled"
 
   /// Shared across the app, widgets, and watch for prefs that affect other processes.
   static let sharedDefaults = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
@@ -91,6 +92,14 @@ enum AppAppearancePreference {
   /// When on, history averages divide by days with entries only. Defaults to off.
   static var isHistoryAverageActiveDaysOnlyEnabled: Bool {
     UserDefaults.standard.bool(forKey: historyAverageActiveDaysOnlyKey)
+  }
+
+  /// When on, week/month history summaries show an average per day. Defaults to on.
+  static var isHistoryPerPeriodEnabled: Bool {
+    if UserDefaults.standard.object(forKey: historyPerPeriodEnabledKey) == nil {
+      return true
+    }
+    return UserDefaults.standard.bool(forKey: historyPerPeriodEnabledKey)
   }
 
   static var monoPaletteIndex: Int {

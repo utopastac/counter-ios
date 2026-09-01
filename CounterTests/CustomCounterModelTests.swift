@@ -104,4 +104,19 @@ struct CustomCounterModelTests {
     #expect(counter.historyAverageActiveDaysOnlyRaw == nil)
     #expect(counter.overrideHistoryAverageActiveDaysOnly == nil)
   }
+
+  @Test func historyPerPeriodOverridesInheritAppDefaultsWhenUnset() {
+    let counter = CustomCounter(name: "Water")
+    #expect(counter.historyPerPeriodChoice == .default)
+    #expect(counter.historyPerPeriodRaw == nil)
+    #expect(counter.overrideHistoryPerPeriod == nil)
+
+    counter.historyPerPeriodChoice = .off
+    #expect(counter.historyPerPeriodRaw == HistoryPerPeriodChoice.off.rawValue)
+    #expect(counter.overrideHistoryPerPeriod == false)
+
+    counter.historyPerPeriodChoice = .default
+    #expect(counter.historyPerPeriodRaw == nil)
+    #expect(counter.overrideHistoryPerPeriod == nil)
+  }
 }

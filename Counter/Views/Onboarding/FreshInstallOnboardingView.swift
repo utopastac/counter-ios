@@ -303,6 +303,7 @@ struct FreshInstallOnboardingView: View {
     drafts[index].progressRingWidthRaw = save.progressRingWidthRaw
     drafts[index].progressRingGlowRaw = save.progressRingGlowRaw
     drafts[index].historyAverageActiveDaysOnlyRaw = save.historyAverageActiveDaysOnlyRaw
+    drafts[index].historyPerPeriodRaw = save.historyPerPeriodRaw
     drafts[index].isSelected = true
   }
 

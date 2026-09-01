@@ -80,6 +80,7 @@ struct FreshInstallStarterDraft: Identifiable, Hashable {
   var progressRingWidthRaw: String? = nil
   var progressRingGlowRaw: String? = nil
   var historyAverageActiveDaysOnlyRaw: String? = nil
+  var historyPerPeriodRaw: String? = nil
 
   var id: String { template.rawValue }
 

@@ -213,6 +213,7 @@ private struct CounterButtonSettingsSheetContent: View {
         counter.progressRingWidthRaw = save.progressRingWidthRaw
         counter.progressRingGlowRaw = save.progressRingGlowRaw
         counter.historyAverageActiveDaysOnlyRaw = save.historyAverageActiveDaysOnlyRaw
+        counter.historyPerPeriodRaw = save.historyPerPeriodRaw
         WidgetSnapshotSync.publish(counter: counter, in: modelContext)
         WatchSyncEngine.publishCounterUpsert(counter)
       },

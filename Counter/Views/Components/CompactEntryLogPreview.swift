@@ -11,7 +11,7 @@ struct EntryLogAllEntriesControl: View {
 
   var body: some View {
     HStack(spacing: SpaceToken.x2) {
-      Text("All entries")
+      Text("Entries")
         .counterTextStyle(.sectionTitle)
 
       CounterLucideIcon(icon: .maximize2, color: colors.textPrimary)

@@ -44,6 +44,8 @@ struct AppSettingsView: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
   @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
+  @AppStorage(AppAppearancePreference.historyPerPeriodEnabledKey)
+  private var isHistoryPerPeriodEnabled = true
   @AppStorage(AppAppearancePreference.historyAverageActiveDaysOnlyKey)
   private var isHistoryAverageActiveDaysOnlyEnabled = false
   @State private var showResetConfirmation = false
@@ -127,6 +129,11 @@ struct AppSettingsView: View {
               options: AppAppearancePreference.batchWindowOptions.map {
                 ($0, AppAppearancePreference.batchWindowLabel(for: $0))
               }
+            )
+            SettingsToggleRow(
+              icon: .chartBar,
+              label: "Per period",
+              isOn: $isHistoryPerPeriodEnabled
             )
             SettingsToggleRow(
               icon: .chartBar,

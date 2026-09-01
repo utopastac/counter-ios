@@ -128,10 +128,11 @@ struct HistoryAggregatorTests {
       CounterEntry(value: 30, timestamp: date(2026, 7, 12, 8)),
     ]
 
-    let average = HistoryAggregator.averagePerDay(
+    let average = HistoryAggregator.summaryValue(
       from: entries,
       period: .monthly,
       endingOn: endDate,
+      perPeriod: true,
       activeDaysOnly: false,
       calendar: calendar
     )
@@ -146,10 +147,11 @@ struct HistoryAggregatorTests {
       CounterEntry(value: 30, timestamp: date(2026, 7, 12, 8)),
     ]
 
-    let average = HistoryAggregator.averagePerDay(
+    let average = HistoryAggregator.summaryValue(
       from: entries,
       period: .monthly,
       endingOn: endDate,
+      perPeriod: true,
       activeDaysOnly: true,
       calendar: calendar
     )
@@ -157,17 +159,49 @@ struct HistoryAggregatorTests {
     #expect(average == 30)
   }
 
+  @Test func summaryValueMonthlyUsesTotalWhenPerPeriodIsOff() {
+    let endDate = date(2026, 7, 14, 12)
+    let entries = [
+      CounterEntry(value: 30, timestamp: date(2026, 7, 14, 8)),
+      CounterEntry(value: 30, timestamp: date(2026, 7, 12, 8)),
+    ]
+
+    let total = HistoryAggregator.summaryValue(
+      from: entries,
+      period: .monthly,
+      endingOn: endDate,
+      perPeriod: false,
+      activeDaysOnly: false,
+      calendar: calendar
+    )
+
+    #expect(total == 60)
+  }
+
+  @Test func listDailyTotalsWeeklyReturnsSevenDailyRows() {
+    let endDate = date(2026, 7, 14, 12)
+    let grouped = HistoryAggregator.listDailyTotals(
+      from: [],
+      period: .weekly,
+      endingOn: endDate,
+      calendar: calendar
+    )
+
+    #expect(grouped.count == 7)
+  }
+
   @Test func averagePerDayWeeklyUsesActiveDaysWhenEnabled() {
     let endDate = date(2026, 7, 14, 12)
     let entries = [
       CounterEntry(value: 56, timestamp: date(2026, 7, 14, 8)),
-      CounterEntry(value: 56, timestamp: date(2026, 7, 1, 8)),
+      CounterEntry(value: 56, timestamp: date(2026, 7, 8, 8)),
     ]
 
-    let average = HistoryAggregator.averagePerDay(
+    let average = HistoryAggregator.summaryValue(
       from: entries,
       period: .weekly,
       endingOn: endDate,
+      perPeriod: true,
       activeDaysOnly: true,
       calendar: calendar
     )

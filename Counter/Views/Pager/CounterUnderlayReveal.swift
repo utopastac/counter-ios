@@ -76,6 +76,19 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
     }
   }
 
+  /// Animates the counter card back over the list, matching a swipe-to-close settle.
+  static func dismissReveal(
+    _ state: RevealState,
+    isRevealed: Binding<Bool>,
+    reduceMotion: Bool
+  ) {
+    lockRevealScrollForAnimation(state, reduceMotion: reduceMotion)
+    withAnimation(MotionToken.settle(reduceMotion: reduceMotion)) {
+      state.cardOffset = 0
+      isRevealed.wrappedValue = false
+    }
+  }
+
   /// Locks pager/list scroll while a reveal animation is in flight.
   static func lockRevealScrollForAnimation(
     _ state: RevealState,
@@ -139,6 +152,13 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
 
         guard wasDragging, axis == .horizontal else {
           isDraggingReveal = false
+          if isRevealed,
+             max(abs(value.translation.width), abs(value.translation.height))
+               < RevealToken.axisDecisionDistance {
+            Self.dismissReveal(state, isRevealed: $isRevealed, reduceMotion: reduceMotion)
+            scheduleRevealDragReset()
+            return
+          }
           setRevealScrollLocked(false)
           return
         }

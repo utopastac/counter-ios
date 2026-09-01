@@ -136,8 +136,67 @@ nonisolated enum HistoryAggregator {
   static func windowCalendarDayCount(for period: HistoryPeriod) -> Int {
     switch period {
     case .daily: 1
-    case .weekly: period.dayCount * 7
+    case .weekly: 7
     case .monthly: period.dayCount
+    }
+  }
+
+  /// Daily rows for the history list — hourly for day view, otherwise one row per day
+  /// in the visible week or month window.
+  static func listDailyTotals(
+    from entries: [CounterEntry],
+    period: HistoryPeriod,
+    endingOn date: Date,
+    calendar: Calendar = .current
+  ) -> [DailyValue] {
+    switch period {
+    case .daily:
+      return groupedCounterTotals(from: entries, period: .daily, endingOn: date, calendar: calendar)
+    case .weekly, .monthly:
+      let startOfEndDay = calendar.startOfDay(for: date)
+      let dayCount = windowCalendarDayCount(for: period)
+      return (0..<dayCount).compactMap { offset in
+        guard let day = calendar.date(byAdding: .day, value: -offset, to: startOfEndDay) else {
+          return nil
+        }
+        return DailyValue(
+          date: day,
+          value: counterTotal(from: entries, on: day, calendar: calendar)
+        )
+      }
+      .reversed()
+    }
+  }
+
+  static func summaryValue(
+    from entries: [CounterEntry],
+    period: HistoryPeriod,
+    endingOn date: Date,
+    perPeriod: Bool,
+    activeDaysOnly: Bool,
+    calendar: Calendar = .current
+  ) -> Double {
+    switch period {
+    case .daily:
+      return listDailyTotals(from: entries, period: .daily, endingOn: date, calendar: calendar)
+        .reduce(0) { $0 + $1.value }
+    case .weekly, .monthly:
+      let dailyTotals = listDailyTotals(
+        from: entries,
+        period: period,
+        endingOn: date,
+        calendar: calendar
+      )
+      let total = dailyTotals.reduce(0) { $0 + $1.value }
+      guard perPeriod else { return total }
+      let denominator: Int
+      if activeDaysOnly {
+        denominator = dailyTotals.filter { $0.value > 0 }.count
+      } else {
+        denominator = dailyTotals.count
+      }
+      guard denominator > 0 else { return 0 }
+      return total / Double(denominator)
     }
   }
 
@@ -171,20 +230,13 @@ nonisolated enum HistoryAggregator {
     activeDaysOnly: Bool,
     calendar: Calendar = .current
   ) -> Double {
-    let buckets = groupedCounterTotals(
+    summaryValue(
       from: entries,
       period: period,
       endingOn: date,
+      perPeriod: true,
+      activeDaysOnly: activeDaysOnly,
       calendar: calendar
     )
-    let total = buckets.reduce(0) { $0 + $1.value }
-    let denominator: Int
-    if activeDaysOnly {
-      denominator = activeDayCount(from: entries, period: period, endingOn: date, calendar: calendar)
-    } else {
-      denominator = windowCalendarDayCount(for: period)
-    }
-    guard denominator > 0 else { return 0 }
-    return total / Double(denominator)
   }
 }

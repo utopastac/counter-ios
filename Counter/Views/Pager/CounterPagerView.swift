@@ -495,14 +495,11 @@ struct CounterPagerView: View {
   }
 
   private func collapseCounterList() {
-    CounterUnderlayReveal<EmptyView, EmptyView>.lockRevealScrollForAnimation(
+    CounterUnderlayReveal<EmptyView, EmptyView>.dismissReveal(
       revealState,
+      isRevealed: $isCounterListRevealed,
       reduceMotion: reduceMotion
     )
-    withAnimation(settleSpring) {
-      revealState.cardOffset = 0
-      isCounterListRevealed = false
-    }
   }
 
   @ViewBuilder
