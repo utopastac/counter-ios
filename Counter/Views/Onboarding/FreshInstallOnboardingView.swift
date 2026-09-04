@@ -230,6 +230,11 @@ struct FreshInstallOnboardingView: View {
         paletteIndex: draft.paletteIndex,
         ringWidthChoice: ProgressRingWidthChoice(storedRaw: draft.progressRingWidthRaw),
         ringGlowChoice: ProgressRingGlowChoice(storedRaw: draft.progressRingGlowRaw),
+        historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice(
+          storedRaw: draft.historyAverageActiveDaysOnlyRaw
+        ),
+        historyPerPeriodChoice: HistoryPerPeriodChoice(storedRaw: draft.historyPerPeriodRaw),
+        headerDisplayChoice: CounterHeaderDisplayChoice(storedRaw: draft.headerDisplayRaw),
         defaultPresets: draft.template.defaultPresets,
         onSave: { save in
           applySettings(save, to: template)
@@ -304,6 +309,7 @@ struct FreshInstallOnboardingView: View {
     drafts[index].progressRingGlowRaw = save.progressRingGlowRaw
     drafts[index].historyAverageActiveDaysOnlyRaw = save.historyAverageActiveDaysOnlyRaw
     drafts[index].historyPerPeriodRaw = save.historyPerPeriodRaw
+    drafts[index].headerDisplayRaw = save.headerDisplayRaw
     drafts[index].isSelected = true
   }
 

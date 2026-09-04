@@ -13,6 +13,7 @@ struct CounterSettingsSave {
   let progressRingGlowRaw: String?
   let historyAverageActiveDaysOnlyRaw: String?
   let historyPerPeriodRaw: String?
+  let headerDisplayRaw: String?
 }
 
 struct CounterSettingsView: View {
@@ -29,6 +30,7 @@ struct CounterSettingsView: View {
   @State private var ringGlowChoice: ProgressRingGlowChoice
   @State private var historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice
   @State private var historyPerPeriodChoice: HistoryPerPeriodChoice
+  @State private var headerDisplayChoice: CounterHeaderDisplayChoice
   let onSave: (CounterSettingsSave) -> Void
   let onPaletteChange: ((Int) -> Void)?
   let onDelete: (() -> Void)?
@@ -61,6 +63,7 @@ struct CounterSettingsView: View {
       ringGlowChoice: counter.progressRingGlowChoice,
       historyAverageActiveDaysChoice: counter.historyAverageActiveDaysOnlyChoice,
       historyPerPeriodChoice: counter.historyPerPeriodChoice,
+      headerDisplayChoice: counter.headerDisplayChoice,
       defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
       onSave: onSave,
       onDelete: onDelete,
@@ -81,6 +84,7 @@ struct CounterSettingsView: View {
     ringGlowChoice: ProgressRingGlowChoice = .default,
     historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice = .default,
     historyPerPeriodChoice: HistoryPerPeriodChoice = .default,
+    headerDisplayChoice: CounterHeaderDisplayChoice = .default,
     defaultPresets: [Double],
     onSave: @escaping (CounterSettingsSave) -> Void,
     onDelete: (() -> Void)? = nil,
@@ -99,6 +103,7 @@ struct CounterSettingsView: View {
     self._ringGlowChoice = State(initialValue: ringGlowChoice)
     self._historyAverageActiveDaysChoice = State(initialValue: historyAverageActiveDaysChoice)
     self._historyPerPeriodChoice = State(initialValue: historyPerPeriodChoice)
+    self._headerDisplayChoice = State(initialValue: headerDisplayChoice)
     self.onSave = onSave
     self.onPaletteChange = onPaletteChange
     self.onDelete = onDelete
@@ -116,6 +121,7 @@ struct CounterSettingsView: View {
         ScrollView {
           VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
             fieldsSection
+            displaySection
             resetPeriodSection
             quickAddSection
             colourSection
@@ -185,6 +191,19 @@ struct CounterSettingsView: View {
     }
   }
 
+  private var displaySection: some View {
+    VStack(alignment: .leading, spacing: 0) {
+      SettingsSectionHeader(title: "Display")
+
+      SettingsPickerRow(
+        icon: .tableProperties,
+        label: "Header",
+        selection: $headerDisplayChoice,
+        options: CounterHeaderDisplayChoice.allCases.map { ($0, $0.label) }
+      )
+    }
+  }
+
   private var resetPeriodSection: some View {
     VStack(alignment: .leading, spacing: 0) {
       SettingsSectionHeader(title: "Reset period")
@@ -244,14 +263,14 @@ struct CounterSettingsView: View {
       SettingsSectionHeader(title: "History")
 
       SettingsPickerRow(
-        icon: .chartBar,
-        label: "Per period",
+        icon: .calendarClock,
+        label: "Daily average",
         selection: $historyPerPeriodChoice,
         options: HistoryPerPeriodChoice.allCases.map { ($0, $0.label) }
       )
 
       SettingsPickerRow(
-        icon: .chartBar,
+        icon: .squareActivity,
         label: "Active days only",
         selection: $historyAverageActiveDaysChoice,
         options: HistoryAverageActiveDaysChoice.allCases.map { ($0, $0.label) }
@@ -322,7 +341,8 @@ struct CounterSettingsView: View {
         progressRingWidthRaw: ringWidthChoice.storedRaw,
         progressRingGlowRaw: ringGlowChoice.storedRaw,
         historyAverageActiveDaysOnlyRaw: historyAverageActiveDaysChoice.storedRaw,
-        historyPerPeriodRaw: historyPerPeriodChoice.storedRaw
+        historyPerPeriodRaw: historyPerPeriodChoice.storedRaw,
+        headerDisplayRaw: headerDisplayChoice.storedRaw
       )
     )
     dismiss()

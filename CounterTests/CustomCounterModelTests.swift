@@ -119,4 +119,23 @@ struct CustomCounterModelTests {
     #expect(counter.historyPerPeriodRaw == nil)
     #expect(counter.overrideHistoryPerPeriod == nil)
   }
+
+  @Test func headerDisplayOverridesInheritAppDefaultsWhenUnset() {
+    let counter = CustomCounter(name: "Water")
+    #expect(counter.headerDisplayChoice == .default)
+    #expect(counter.headerDisplayRaw == nil)
+    #expect(counter.overrideShowsStatsHeader == nil)
+
+    counter.headerDisplayChoice = .stats
+    #expect(counter.headerDisplayRaw == CounterHeaderDisplayChoice.stats.rawValue)
+    #expect(counter.overrideShowsStatsHeader == true)
+
+    counter.headerDisplayChoice = .number
+    #expect(counter.headerDisplayRaw == CounterHeaderDisplayChoice.number.rawValue)
+    #expect(counter.overrideShowsStatsHeader == false)
+
+    counter.headerDisplayChoice = .default
+    #expect(counter.headerDisplayRaw == nil)
+    #expect(counter.overrideShowsStatsHeader == nil)
+  }
 }

@@ -11,6 +11,8 @@ struct AppSettingsView: View {
   @AppStorage(AppAppearancePreference.compactModeEnabledKey) private var isCompactModeEnabled = false
   @AppStorage(AppAppearancePreference.defaultResetPeriodKey) private var defaultResetPeriodRaw =
     CounterResetPeriod.daily.rawValue
+  @AppStorage(AppAppearancePreference.defaultCounterHeaderDisplayKey)
+  private var defaultHeaderDisplayRaw = CounterHeaderDisplay.number.rawValue
   @AppStorage(
     AppAppearancePreference.monoEnabledKey,
     store: AppAppearancePreference.sharedDefaults
@@ -61,6 +63,13 @@ struct AppSettingsView: View {
     Binding(
       get: { CounterResetPeriod(rawValue: defaultResetPeriodRaw) ?? .daily },
       set: { defaultResetPeriodRaw = $0.rawValue }
+    )
+  }
+
+  private var defaultHeaderDisplay: Binding<CounterHeaderDisplay> {
+    Binding(
+      get: { CounterHeaderDisplay(rawValue: defaultHeaderDisplayRaw) ?? .number },
+      set: { defaultHeaderDisplayRaw = $0.rawValue }
     )
   }
 
@@ -123,6 +132,12 @@ struct AppSettingsView: View {
               options: CounterResetPeriod.allCases.map { ($0, $0.label) }
             )
             SettingsPickerRow(
+              icon: .tableProperties,
+              label: "Default header",
+              selection: defaultHeaderDisplay,
+              options: CounterHeaderDisplay.allCases.map { ($0, $0.label) }
+            )
+            SettingsPickerRow(
               icon: .timer,
               label: "Batch window",
               selection: $batchWindowSeconds,
@@ -130,13 +145,17 @@ struct AppSettingsView: View {
                 ($0, AppAppearancePreference.batchWindowLabel(for: $0))
               }
             )
+          }
+
+          VStack(alignment: .leading, spacing: 0) {
+            SettingsSectionHeader(title: "History")
             SettingsToggleRow(
-              icon: .chartBar,
-              label: "Per period",
+              icon: .calendarClock,
+              label: "Daily average",
               isOn: $isHistoryPerPeriodEnabled
             )
             SettingsToggleRow(
-              icon: .chartBar,
+              icon: .squareActivity,
               label: "Active days only",
               isOn: $isHistoryAverageActiveDaysOnlyEnabled
             )

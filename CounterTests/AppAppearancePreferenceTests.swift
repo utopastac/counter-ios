@@ -167,4 +167,20 @@ struct AppAppearancePreferenceTests {
       #expect(AppAppearancePreference.isHistoryPerPeriodEnabled)
     }
   }
+
+  @Test func defaultCounterHeaderDisplayDefaultsToNumber() {
+    withClearedKey(AppAppearancePreference.defaultCounterHeaderDisplayKey, in: .standard) {
+      #expect(AppAppearancePreference.defaultCounterHeaderDisplay == .number)
+    }
+  }
+
+  @Test func defaultCounterHeaderDisplayReadsStoredValue() {
+    withValue(
+      CounterHeaderDisplay.stats.rawValue,
+      forKey: AppAppearancePreference.defaultCounterHeaderDisplayKey,
+      in: .standard
+    ) {
+      #expect(AppAppearancePreference.defaultCounterHeaderDisplay == .stats)
+    }
+  }
 }

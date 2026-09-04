@@ -209,6 +209,30 @@ enum MotionToken {
       removal: .opacity
     )
   }
+
+  /// Hero ↔ stats table toggle on the counter page header.
+  static let headerToggleDuration: Double = 0.42
+  static let headerToggleBounce: Double = 0.12
+  /// Per-row delay when revealing the stats table (collapse stays simultaneous).
+  static let headerToggleRowStagger: Double = 0.045
+
+  static var headerToggle: Animation {
+    .smooth(duration: headerToggleDuration, extraBounce: headerToggleBounce)
+  }
+
+  static func headerToggle(reduceMotion: Bool) -> Animation {
+    reduceMotion ? reduceMotionSettle : headerToggle
+  }
+
+  static func headerToggleRow(
+    reduceMotion: Bool,
+    index: Int,
+    revealing: Bool
+  ) -> Animation {
+    let base = headerToggle(reduceMotion: reduceMotion)
+    guard !reduceMotion, revealing else { return base }
+    return base.delay(Double(index) * headerToggleRowStagger)
+  }
 }
 
 /// Counter pager page layout spacing.
@@ -230,7 +254,14 @@ enum CounterPageToken {
   /// Inset below the entry log preview and "Entries" control (2 grid units).
   static let entryLogBottomInset: CGFloat = SpaceToken.u2
 
-  static let headerToggleAnimation: Animation = .spring(response: 0.38, dampingFraction: 0.86)
+  /// Scale applied to the hero while it yields to the stats table.
+  static let headerHeroCollapseScale: CGFloat = 0.94
+  /// How far the hero drifts up as it exits.
+  static let headerHeroExitOffset: CGFloat = -SpaceToken.u1
+  /// How far stats rows sit below their rest position before revealing.
+  static let headerStatsRevealOffset: CGFloat = SpaceToken.u2
+
+  static let headerToggleAnimation: Animation = MotionToken.headerToggle
 }
 
 /// Compact-mode counter card — a shrunken, non-full-screen card with compressed spacing.

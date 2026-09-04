@@ -138,10 +138,14 @@ struct CounterPagerView: View {
         .onChange(of: geometry.size.width) { _, newWidth in
           containerWidth = newWidth
           if isCounterListRevealed {
-            revealState.cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
-              for: newWidth,
-              isCompact: isCompactModeEnabled
-            )
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+              revealState.cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
+                for: newWidth,
+                isCompact: isCompactModeEnabled
+              )
+            }
           } else {
             applyInitialListRevealIfNeeded(width: newWidth)
           }

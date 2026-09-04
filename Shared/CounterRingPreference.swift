@@ -150,6 +150,62 @@ nonisolated enum HistoryAverageActiveDaysChoice: String, Codable, CaseIterable, 
   }
 }
 
+/// App-wide default for the counter header: big number or stats table.
+nonisolated enum CounterHeaderDisplay: String, Codable, CaseIterable, Identifiable, Hashable {
+  case number
+  case stats
+
+  var id: String { rawValue }
+
+  var label: String {
+    switch self {
+    case .number: "Number"
+    case .stats: "Stats"
+    }
+  }
+
+  var showsStats: Bool { self == .stats }
+}
+
+/// Per-counter header display picker. `default` inherits the app-wide setting.
+nonisolated enum CounterHeaderDisplayChoice: String, Codable, CaseIterable, Identifiable, Hashable {
+  case `default`
+  case number
+  case stats
+
+  var id: String { rawValue }
+
+  var label: String {
+    switch self {
+    case .default: "Default"
+    case .number: CounterHeaderDisplay.number.label
+    case .stats: CounterHeaderDisplay.stats.label
+    }
+  }
+
+  init(storedRaw: String?) {
+    if let storedRaw, let choice = Self(rawValue: storedRaw), choice != .default {
+      self = choice
+    } else {
+      self = .default
+    }
+  }
+
+  /// `nil` means inherit the app setting.
+  var storedRaw: String? {
+    self == .default ? nil : rawValue
+  }
+
+  /// Explicit stats-vs-number, or `nil` to inherit.
+  var overrideShowsStats: Bool? {
+    switch self {
+    case .default: nil
+    case .number: false
+    case .stats: true
+    }
+  }
+}
+
 /// Shared drawing metrics for the optional soft ring glow.
 enum ProgressRingGlowMetrics {
   /// Soft bloom applied to the background (track) ring when glow is on.

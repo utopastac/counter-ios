@@ -11,6 +11,7 @@ enum CounterLucideIconName: String {
   case maximize2 = "lucide-maximize-2"
   case arrowUpToLine = "lucide-arrow-up-to-line"
   case calendar = "lucide-calendar"
+  case calendarClock = "lucide-calendar-clock"
   case listRestart = "lucide-list-restart"
   case chevronsUpDown = "lucide-chevrons-up-down"
   case cog = "lucide-cog"
@@ -28,6 +29,8 @@ enum CounterLucideIconName: String {
   case rows3 = "lucide-rows-3"
   case logs = "lucide-logs"
   case squarePen = "lucide-square-pen"
+  case squareActivity = "lucide-square-activity"
+  case tableProperties = "lucide-table-properties"
 }
 
 struct CounterLucideIcon: View {

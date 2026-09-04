@@ -61,6 +61,7 @@ enum SampleDataSeeder {
     counter.progressRingGlowRaw = draft.progressRingGlowRaw
     counter.historyAverageActiveDaysOnlyRaw = draft.historyAverageActiveDaysOnlyRaw
     counter.historyPerPeriodRaw = draft.historyPerPeriodRaw
+    counter.headerDisplayRaw = draft.headerDisplayRaw
     context.insert(counter)
   }
 

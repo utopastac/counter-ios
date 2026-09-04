@@ -23,10 +23,13 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
 
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @Environment(\.semanticColors) private var colors
+  @Environment(\.scenePhase) private var scenePhase
 
   @State private var dragStartOffset: CGFloat = 0
   @State private var isDraggingReveal = false
   @State private var dragAxis: RevealDragAxis?
+  /// Last laid-out open offset — used to settle interrupted reveals outside the gesture.
+  @State private var laidOutMaxOffset: CGFloat = 0
 
   private let listParallaxFraction: CGFloat = 0.06
 
@@ -73,6 +76,73 @@ struct CounterUnderlayReveal<List: View, Card: View>: View {
           .simultaneousGesture(revealGesture(maxOffset: maxOffset))
       }
       .frame(width: width, height: height, alignment: .topLeading)
+      .onAppear {
+        laidOutMaxOffset = maxOffset
+      }
+      .onChange(of: maxOffset) { _, newMaxOffset in
+        laidOutMaxOffset = newMaxOffset
+        // Keep a settled reveal aligned when compact mode / safe-area width changes.
+        guard !isDraggingReveal, scenePhase == .active else { return }
+        let target = isRevealed ? newMaxOffset : 0
+        guard abs(state.cardOffset - target) > 0.5 else { return }
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+          state.cardOffset = target
+        }
+      }
+      .onChange(of: scenePhase) { _, phase in
+        switch phase {
+        case .active, .inactive, .background:
+          // Backgrounding mid-drag / mid-spring leaves `cardOffset` between endpoints.
+          // Snap on leave so the suspended snapshot is clean, and again on resume.
+          snapRevealToSettledEndpoint(maxOffset: max(laidOutMaxOffset, maxOffset))
+        @unknown default:
+          break
+        }
+      }
+    }
+  }
+
+  /// Forces the reveal to a fully open or fully closed endpoint with no animation.
+  /// Call after interrupted gestures/springs (app lifecycle) so the UI never sticks mid-swipe.
+  private func snapRevealToSettledEndpoint(maxOffset: CGFloat) {
+    guard maxOffset > 0 else { return }
+
+    let shouldOpen: Bool
+    if isDraggingReveal {
+      shouldOpen = shouldSettleOpen(
+        predicted: state.cardOffset,
+        maxOffset: maxOffset,
+        startedOpen: isRevealed || dragStartOffset > maxOffset * 0.5
+      )
+    } else {
+      let progress = state.cardOffset / maxOffset
+      let settledProgress = isRevealed ? 1.0 : 0.0
+      // If the boolean and live offset disagree (interrupted spring), trust the offset side
+      // of the halfway line so we don't jump backward past where the user left it.
+      if abs(progress - settledProgress) > 0.05 {
+        shouldOpen = progress > 0.5
+      } else {
+        shouldOpen = isRevealed
+      }
+    }
+
+    isDraggingReveal = false
+    dragAxis = nil
+
+    let target = shouldOpen ? maxOffset : 0
+    guard isRevealed != shouldOpen
+      || abs(state.cardOffset - target) > 0.5
+      || state.locksScroll
+    else { return }
+
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      state.cardOffset = target
+      isRevealed = shouldOpen
+      state.locksScroll = false
     }
   }
 

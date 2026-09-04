@@ -37,6 +37,8 @@ final class CustomCounter {
   var historyAverageActiveDaysOnlyRaw: String?
   /// `nil` inherits the app-wide history per-period mode; `"on"` / `"off"` override.
   var historyPerPeriodRaw: String?
+  /// `nil` inherits the app-wide header display (number vs stats); `"number"` / `"stats"` override.
+  var headerDisplayRaw: String?
   @Relationship(deleteRule: .cascade, inverse: \CounterEntry.counter)
   var entries: [CounterEntry]
 
@@ -53,6 +55,7 @@ final class CustomCounter {
     progressRingGlowRaw: String? = nil,
     historyAverageActiveDaysOnlyRaw: String? = nil,
     historyPerPeriodRaw: String? = nil,
+    headerDisplayRaw: String? = nil,
     sortOrder: Double? = nil
   ) {
     let createdAt = Date.now
@@ -73,6 +76,7 @@ final class CustomCounter {
       storedRaw: historyAverageActiveDaysOnlyRaw
     ).storedRaw
     self.historyPerPeriodRaw = HistoryPerPeriodChoice(storedRaw: historyPerPeriodRaw).storedRaw
+    self.headerDisplayRaw = CounterHeaderDisplayChoice(storedRaw: headerDisplayRaw).storedRaw
     self.entries = []
   }
 
@@ -100,6 +104,11 @@ final class CustomCounter {
     set { historyPerPeriodRaw = newValue.storedRaw }
   }
 
+  var headerDisplayChoice: CounterHeaderDisplayChoice {
+    get { CounterHeaderDisplayChoice(storedRaw: headerDisplayRaw) }
+    set { headerDisplayRaw = newValue.storedRaw }
+  }
+
   /// Explicit width override, or `nil` to inherit the app setting at draw time.
   var overrideProgressRingWidth: ProgressRingWidth? {
     progressRingWidthRaw.flatMap(ProgressRingWidth.init(rawValue:))
@@ -118,6 +127,11 @@ final class CustomCounter {
   /// Explicit history per-period override, or `nil` to inherit the app setting.
   var overrideHistoryPerPeriod: Bool? {
     historyPerPeriodChoice.overrideEnabled
+  }
+
+  /// Explicit header display override, or `nil` to inherit the app setting.
+  var overrideShowsStatsHeader: Bool? {
+    headerDisplayChoice.overrideShowsStats
   }
 
   static let paletteSlotCount = 10

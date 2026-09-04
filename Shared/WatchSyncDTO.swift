@@ -17,6 +17,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
   let progressRingGlowRaw: String?
   let historyAverageActiveDaysOnlyRaw: String?
   let historyPerPeriodRaw: String?
+  let headerDisplayRaw: String?
 
   init(counter: CustomCounter) {
     id = counter.id
@@ -34,6 +35,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     progressRingGlowRaw = counter.progressRingGlowRaw
     historyAverageActiveDaysOnlyRaw = counter.historyAverageActiveDaysOnlyRaw
     historyPerPeriodRaw = counter.historyPerPeriodRaw
+    headerDisplayRaw = counter.headerDisplayRaw
   }
 
   @MainActor
@@ -52,6 +54,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     counter.progressRingGlowRaw = progressRingGlowRaw
     counter.historyAverageActiveDaysOnlyRaw = historyAverageActiveDaysOnlyRaw
     counter.historyPerPeriodRaw = historyPerPeriodRaw
+    counter.headerDisplayRaw = headerDisplayRaw
   }
 
   @MainActor
@@ -75,6 +78,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
       progressRingGlowRaw: snapshot.progressRingGlowRaw,
       historyAverageActiveDaysOnlyRaw: snapshot.historyAverageActiveDaysOnlyRaw,
       historyPerPeriodRaw: snapshot.historyPerPeriodRaw,
+      headerDisplayRaw: snapshot.headerDisplayRaw,
       sortOrder: snapshot.sortOrder
     )
     counter.id = snapshot.id

@@ -127,6 +127,7 @@
 		DS10000010000000000000006 /* CounterPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000006 /* CounterPalette.swift */; };
 		DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000007 /* DesignSystemEnvironment.swift */; };
 		DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000008 /* CounterTextStyleModifier.swift */; };
+		DS10000010000000000000082 /* CounterHeaderToggleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000082 /* CounterHeaderToggleModifier.swift */; };
 		DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */; };
 		FPGBFCOUNTER01 /* ForcePressGestureModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPGFILEREF01 /* ForcePressGestureModifier.swift */; };
 		DS10000010000000000000010 /* CounterPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000010 /* CounterPageBackground.swift */; };
@@ -410,6 +411,7 @@
 		DS20000010000000000000006 /* CounterPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPalette.swift; sourceTree = "<group>"; };
 		DS20000010000000000000007 /* DesignSystemEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemEnvironment.swift; sourceTree = "<group>"; };
 		DS20000010000000000000008 /* CounterTextStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextStyleModifier.swift; sourceTree = "<group>"; };
+		DS20000010000000000000082 /* CounterHeaderToggleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHeaderToggleModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetPresentationModifier.swift; sourceTree = "<group>"; };
 		FPGFILEREF01 /* ForcePressGestureModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForcePressGestureModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000010 /* CounterPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageBackground.swift; sourceTree = "<group>"; };
@@ -620,6 +622,7 @@
 			isa = PBXGroup;
 			children = (
 				DS20000010000000000000008 /* CounterTextStyleModifier.swift */,
+				DS20000010000000000000082 /* CounterHeaderToggleModifier.swift */,
 				DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */,
 				FPGFILEREF01 /* ForcePressGestureModifier.swift */,
 			);
@@ -1070,6 +1073,7 @@
 				DS10000010000000000000006 /* CounterPalette.swift in Sources */,
 				DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */,
 				DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */,
+				DS10000010000000000000082 /* CounterHeaderToggleModifier.swift in Sources */,
 				DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */,
 				FPGBFCOUNTER01 /* ForcePressGestureModifier.swift in Sources */,
 				DS10000010000000000000010 /* CounterPageBackground.swift in Sources */,

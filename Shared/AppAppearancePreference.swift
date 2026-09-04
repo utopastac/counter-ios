@@ -17,6 +17,7 @@ enum AppAppearancePreference {
   static let fpsCounterEnabledKey = "app.debug.fpsCounterEnabled"
   static let historyAverageActiveDaysOnlyKey = "app.history.averageActiveDaysOnly"
   static let historyPerPeriodEnabledKey = "app.history.perPeriodEnabled"
+  static let defaultCounterHeaderDisplayKey = "app.defaults.counterHeaderDisplay"
 
   /// Shared across the app, widgets, and watch for prefs that affect other processes.
   static let sharedDefaults = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
@@ -35,6 +36,14 @@ enum AppAppearancePreference {
     let raw = UserDefaults.standard.string(forKey: defaultResetPeriodKey)
       ?? CounterResetPeriod.daily.rawValue
     return CounterResetPeriod(rawValue: raw) ?? .daily
+  }
+
+  /// Whether the counter header opens on the stats table (`stats`) or the big number (`number`).
+  /// Defaults to number.
+  static var defaultCounterHeaderDisplay: CounterHeaderDisplay {
+    let raw = UserDefaults.standard.string(forKey: defaultCounterHeaderDisplayKey)
+      ?? CounterHeaderDisplay.number.rawValue
+    return CounterHeaderDisplay(rawValue: raw) ?? .number
   }
 
   static var isMonoEnabled: Bool {
@@ -94,7 +103,7 @@ enum AppAppearancePreference {
     UserDefaults.standard.bool(forKey: historyAverageActiveDaysOnlyKey)
   }
 
-  /// When on, week/month history summaries show an average per day. Defaults to on.
+  /// When on, week/month history summaries show a daily average. Defaults to on.
   static var isHistoryPerPeriodEnabled: Bool {
     if UserDefaults.standard.object(forKey: historyPerPeriodEnabledKey) == nil {
       return true

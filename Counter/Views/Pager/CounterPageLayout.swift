@@ -21,11 +21,13 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
   let ringProgress: GoalProgress?
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
+  /// When true, open on the stats table (if expandable) instead of the big number.
+  var startsWithStatsHeader: Bool = false
   @ViewBuilder var entryLog: () -> EntryLog
   @ViewBuilder var footer: () -> Footer
   @ViewBuilder var toast: () -> Toast
 
-  @State private var isHeaderExpanded = false
+  @State private var isHeaderExpanded: Bool
 
   private var ringPalette: CounterPaletteSlot {
     let _ = (isTintEnabled, colorPackRaw)
@@ -43,6 +45,7 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     ringProgress: GoalProgress? = nil,
     ringWidthOverride: ProgressRingWidth? = nil,
     ringGlowOverride: Bool? = nil,
+    startsWithStatsHeader: Bool = false,
     @ViewBuilder entryLog: @escaping () -> EntryLog,
     @ViewBuilder footer: @escaping () -> Footer,
     @ViewBuilder toast: @escaping () -> Toast
@@ -53,9 +56,13 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
     self.ringProgress = ringProgress
     self.ringWidthOverride = ringWidthOverride
     self.ringGlowOverride = ringGlowOverride
+    self.startsWithStatsHeader = startsWithStatsHeader
     self.entryLog = entryLog
     self.footer = footer
     self.toast = toast
+    self._isHeaderExpanded = State(
+      initialValue: startsWithStatsHeader && statRows.count > 1
+    )
   }
 
   var body: some View {
@@ -79,6 +86,16 @@ struct CounterPageLayout<Footer: View, EntryLog: View, Toast: View>: View {
             canExpand: canExpandHeader
           )
           .padding(.top, SpaceToken.u2)
+          .onChange(of: startsWithStatsHeader) { _, wantsStats in
+            isHeaderExpanded = wantsStats && canExpandHeader
+          }
+          .onChange(of: canExpandHeader) { _, canExpand in
+            if !canExpand {
+              isHeaderExpanded = false
+            } else if startsWithStatsHeader {
+              isHeaderExpanded = true
+            }
+          }
 
           footer()
             .padding(.top, CounterPageToken.statsToQuickActionsSpacing)
@@ -133,6 +150,7 @@ struct CounterPagerPageRoot<Content: View>: View {
 private struct CounterPageHeader: View {
   @Environment(\.colorScheme) private var colorScheme
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   let heroValue: String
   let heroSubtitle: String?
@@ -148,29 +166,34 @@ private struct CounterPageHeader: View {
     CounterPageToken.headerContentHeight
   }
 
+  private var toggleAnimation: Animation {
+    MotionToken.headerToggle(reduceMotion: reduceMotion)
+  }
+
   var body: some View {
     HStack(alignment: .top, spacing: SpaceToken.u4) {
       Button {
         guard !counterRevealIsDragging else { return }
         guard canExpand else { return }
-        withAnimation(CounterPageToken.headerToggleAnimation) {
+        AppHaptics.impact()
+        withAnimation(toggleAnimation) {
           isExpanded.toggle()
         }
       } label: {
         ZStack(alignment: .topLeading) {
           HeroSimpleDisplay(value: heroValue, subtitle: heroSubtitle)
             .offset(y: CounterPageToken.heroTextOpticalOffset)
-            .opacity(isExpanded ? 0 : 1)
+            .counterHeaderToggle(.hero, isExpanded: isExpanded, reduceMotion: reduceMotion)
             .allowsHitTesting(!isExpanded)
 
           if canExpand {
-            CounterStatsTable(rows: statRows)
+            CounterStatsTable(rows: statRows, isRevealed: isExpanded)
               .padding(.top, CounterPageToken.headerContentOffset)
-              .opacity(isExpanded ? 1 : 0)
+              .counterHeaderToggle(.stats, isExpanded: isExpanded, reduceMotion: reduceMotion)
               .allowsHitTesting(isExpanded)
           }
         }
-        .animation(CounterPageToken.headerToggleAnimation, value: isExpanded)
+        .animation(toggleAnimation, value: isExpanded)
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .frame(height: contentHeight, alignment: .topLeading)
         .clipped()

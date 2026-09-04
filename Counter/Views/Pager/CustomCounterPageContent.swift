@@ -25,6 +25,8 @@ struct CustomCounterPageContent: View {
     store: AppAppearancePreference.sharedDefaults
   ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
+  @AppStorage(AppAppearancePreference.defaultCounterHeaderDisplayKey)
+  private var defaultHeaderDisplayRaw = CounterHeaderDisplay.number.rawValue
 
   var isCompact = false
   var onShowHistory: () -> Void = {}
@@ -38,6 +40,12 @@ struct CustomCounterPageContent: View {
   private var pageAccent: CounterAccent {
     let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     return CounterAccent.forCounter(counter)
+  }
+
+  /// Re-reads global default so app-settings changes invalidate the page.
+  private var startsWithStatsHeader: Bool {
+    let globalDefault = CounterHeaderDisplay(rawValue: defaultHeaderDisplayRaw) ?? .number
+    return counter.overrideShowsStatsHeader ?? globalDefault.showsStats
   }
 
   private var periodEntries: [CounterEntry] {
@@ -107,6 +115,7 @@ struct CustomCounterPageContent: View {
           ringProgress: counter.currentProgress(),
           ringWidthOverride: counter.overrideProgressRingWidth,
           ringGlowOverride: counter.overrideProgressRingGlow,
+          startsWithStatsHeader: startsWithStatsHeader,
           onShowHistory: onShowHistory,
           onShowButtonSettings: onShowButtonSettings
         ) {
@@ -134,7 +143,8 @@ struct CustomCounterPageContent: View {
             statRows: statRows,
             ringProgress: counter.currentProgress(),
               ringWidthOverride: counter.overrideProgressRingWidth,
-            ringGlowOverride: counter.overrideProgressRingGlow
+            ringGlowOverride: counter.overrideProgressRingGlow,
+            startsWithStatsHeader: startsWithStatsHeader
           ) {
             VStack(alignment: .leading, spacing: 0) {
               CompactEntryLogPreview(items: previewItems) { entryID in

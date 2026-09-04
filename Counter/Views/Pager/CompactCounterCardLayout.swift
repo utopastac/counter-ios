@@ -7,6 +7,7 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   @Environment(\.counterAccent) private var counterAccent
   @Environment(\.colorScheme) private var colorScheme
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+  @Environment(\.accessibilityReduceMotion) private var reduceMotion
   @AppStorage(
     AppAppearancePreference.tintEnabledKey,
     store: AppAppearancePreference.sharedDefaults
@@ -23,20 +24,57 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   let ringProgress: GoalProgress?
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
+  /// When true, open on the stats table (if expandable) instead of the big number.
+  var startsWithStatsHeader: Bool = false
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
   @ViewBuilder var footer: () -> Footer
   @ViewBuilder var toast: () -> Toast
 
-  @State private var isHeaderExpanded = false
+  @State private var isHeaderExpanded: Bool
 
   private var canExpandHeader: Bool {
     statRows.count > 1
   }
 
+  private var headerToggleAnimation: Animation {
+    MotionToken.headerToggle(reduceMotion: reduceMotion)
+  }
+
   private var palette: CounterPaletteSlot {
     let _ = (isTintEnabled, colorPackRaw)
     return (counterAccent ?? .forCustomCounter(at: 0)).palette
+  }
+
+  init(
+    title: String,
+    heroValue: String,
+    heroSubtitle: String? = nil,
+    statRows: [CounterStatRow] = [],
+    ringProgress: GoalProgress? = nil,
+    ringWidthOverride: ProgressRingWidth? = nil,
+    ringGlowOverride: Bool? = nil,
+    startsWithStatsHeader: Bool = false,
+    onShowHistory: @escaping () -> Void,
+    onShowButtonSettings: @escaping () -> Void,
+    @ViewBuilder footer: @escaping () -> Footer,
+    @ViewBuilder toast: @escaping () -> Toast
+  ) {
+    self.title = title
+    self.heroValue = heroValue
+    self.heroSubtitle = heroSubtitle
+    self.statRows = statRows
+    self.ringProgress = ringProgress
+    self.ringWidthOverride = ringWidthOverride
+    self.ringGlowOverride = ringGlowOverride
+    self.startsWithStatsHeader = startsWithStatsHeader
+    self.onShowHistory = onShowHistory
+    self.onShowButtonSettings = onShowButtonSettings
+    self.footer = footer
+    self.toast = toast
+    self._isHeaderExpanded = State(
+      initialValue: startsWithStatsHeader && statRows.count > 1
+    )
   }
 
   var body: some View {
@@ -48,9 +86,9 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         .padding(.bottom, CompactCardToken.heroToFooterSpacing)
         .padding(.horizontal, CompactCardToken.cardPadding)
 
-      footer()
-        .padding(.horizontal, CompactCardToken.cardPadding)
-        .padding(.bottom, CompactCardToken.cardPadding)
+        footer()
+          .padding(.horizontal, CompactCardToken.cardPadding)
+          .padding(.bottom, CompactCardToken.cardPadding)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .background(palette.backgroundStyle(for: colorScheme), in: RadiusToken.continuous(RadiusToken.compactCard))
@@ -61,6 +99,16 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
         .padding(.leading, CompactCardToken.toastLeadingOffset)
     }
     .allowsHitTesting(!counterRevealIsDragging)
+    .onChange(of: startsWithStatsHeader) { _, wantsStats in
+      isHeaderExpanded = wantsStats && canExpandHeader
+    }
+    .onChange(of: canExpandHeader) { _, canExpand in
+      if !canExpand {
+        isHeaderExpanded = false
+      } else if startsWithStatsHeader {
+        isHeaderExpanded = true
+      }
+    }
     .simultaneousGesture(
       LongPressGesture(minimumDuration: 0.45).onEnded { _ in
         guard !counterRevealIsDragging else { return }
@@ -92,23 +140,32 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
       Button {
         guard !counterRevealIsDragging else { return }
         guard canExpandHeader else { return }
-        withAnimation(CounterPageToken.headerToggleAnimation) {
+        AppHaptics.impact()
+        withAnimation(headerToggleAnimation) {
           isHeaderExpanded.toggle()
         }
       } label: {
         ZStack(alignment: .topLeading) {
           heroDisplay
-            .opacity(isHeaderExpanded ? 0 : 1)
+            .counterHeaderToggle(
+              .hero,
+              isExpanded: isHeaderExpanded,
+              reduceMotion: reduceMotion
+            )
             .allowsHitTesting(!isHeaderExpanded)
 
           if canExpandHeader {
-            CounterStatsTable(rows: statRows)
+            CounterStatsTable(rows: statRows, isRevealed: isHeaderExpanded)
               .padding(.top, CounterPageToken.headerContentOffset)
-              .opacity(isHeaderExpanded ? 1 : 0)
+              .counterHeaderToggle(
+                .stats,
+                isExpanded: isHeaderExpanded,
+                reduceMotion: reduceMotion
+              )
               .allowsHitTesting(isHeaderExpanded)
           }
         }
-        .animation(CounterPageToken.headerToggleAnimation, value: isHeaderExpanded)
+        .animation(headerToggleAnimation, value: isHeaderExpanded)
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .frame(height: CounterPageToken.headerContentHeight, alignment: .topLeading)
         .clipped()
@@ -163,6 +220,7 @@ extension CompactCounterCardLayout where Toast == EmptyView {
     ringProgress: GoalProgress? = nil,
     ringWidthOverride: ProgressRingWidth? = nil,
     ringGlowOverride: Bool? = nil,
+    startsWithStatsHeader: Bool = false,
     onShowHistory: @escaping () -> Void,
     onShowButtonSettings: @escaping () -> Void,
     @ViewBuilder footer: @escaping () -> Footer
@@ -175,6 +233,7 @@ extension CompactCounterCardLayout where Toast == EmptyView {
       ringProgress: ringProgress,
       ringWidthOverride: ringWidthOverride,
       ringGlowOverride: ringGlowOverride,
+      startsWithStatsHeader: startsWithStatsHeader,
       onShowHistory: onShowHistory,
       onShowButtonSettings: onShowButtonSettings,
       footer: footer,
