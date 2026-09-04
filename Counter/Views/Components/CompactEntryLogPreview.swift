@@ -34,6 +34,14 @@ struct EntryLogRowDivider: View {
   }
 }
 
+enum EntryLogRowFormat {
+  static let timestamp = Date.FormatStyle()
+    .month(.abbreviated)
+    .day(.twoDigits)
+    .hour(.defaultDigits(amPM: .abbreviated))
+    .minute(.twoDigits)
+}
+
 struct EntryLogRow: View {
   @Environment(\.semanticColors) private var colors
 
@@ -42,89 +50,40 @@ struct EntryLogRow: View {
   var onDelete: (() -> Void)?
 
   var body: some View {
-    HStack(alignment: .center, spacing: SpaceToken.x3) {
-      Text(valueText)
-        .counterTextStyle(.entryLogValue)
-
-      Spacer(minLength: 0)
-
-      Text(timestamp, format: Self.timestampFormat)
-        .counterTextStyle(.entryLogTimestamp)
-
-      if let onDelete {
-        Button(action: onDelete) {
-          Image(systemName: "xmark")
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundStyle(colors.textPrimary)
-            .frame(width: SizeToken.iconGlyph, height: SizeToken.iconGlyph)
-            .contentShape(Rectangle())
+    CounterValueDateRow(
+      valueText: valueText,
+      date: timestamp,
+      dateFormat: EntryLogRowFormat.timestamp,
+      trailing: {
+        if let onDelete {
+          Button(action: onDelete) {
+            Image(systemName: "xmark")
+              .font(.system(size: 12, weight: .semibold))
+              .foregroundStyle(colors.textPrimary)
+              .frame(width: SizeToken.iconGlyph, height: SizeToken.iconGlyph)
+              .contentShape(Rectangle())
+          }
+          .buttonStyle(.plain)
+          .accessibilityLabel("Delete entry")
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Delete entry")
       }
-    }
+    )
   }
-
-  static let timestampFormat = Date.FormatStyle()
-    .month(.abbreviated)
-    .day(.twoDigits)
-    .hour(.defaultDigits(amPM: .abbreviated))
-    .minute(.twoDigits)
 }
 
 struct EntryLogEditableRow: View {
   let value: Double
   let timestamp: Date
-  let onCommit: (Double) -> Void
-
-  @State private var text: String
-  @FocusState private var isFocused: Bool
-
-  init(value: Double, timestamp: Date, onCommit: @escaping (Double) -> Void) {
-    self.value = value
-    self.timestamp = timestamp
-    self.onCommit = onCommit
-    _text = State(initialValue: CounterFormatting.editingText(for: value))
-  }
+  var dateFormat: Date.FormatStyle = EntryLogRowFormat.timestamp
+  let onEdit: () -> Void
 
   var body: some View {
-    HStack(alignment: .center, spacing: SpaceToken.x3) {
-      TextField("", text: $text)
-        .counterTextStyle(.entryLogValue)
-        .textFieldStyle(.plain)
-        .keyboardType(.numbersAndPunctuation)
-        .focused($isFocused)
-        .onChange(of: text) { _, newValue in
-          let sanitized = AmountInput.sanitizedSignedDecimal(newValue, maxLength: 8)
-          if sanitized != newValue {
-            text = sanitized
-          }
-        }
-        .onChange(of: value) { _, newValue in
-          guard !isFocused else { return }
-          text = CounterFormatting.editingText(for: newValue)
-        }
-        .onChange(of: isFocused) { _, focused in
-          if !focused {
-            commit()
-          }
-        }
-
-      Spacer(minLength: 0)
-
-      Text(timestamp, format: EntryLogRow.timestampFormat)
-        .counterTextStyle(.entryLogTimestamp)
-    }
-  }
-
-  private func commit() {
-    guard let parsed = AmountInput.parseSignedAmount(text) else {
-      text = CounterFormatting.editingText(for: value)
-      return
-    }
-
-    guard parsed != value else { return }
-    onCommit(parsed)
+    CounterValueDateRow(
+      valueText: CounterFormatting.amount(value),
+      date: timestamp,
+      dateFormat: dateFormat,
+      onTap: onEdit
+    )
   }
 }
 
@@ -163,11 +122,8 @@ struct CompactEntryLogPreview: View {
               timestamp: item.timestamp,
               onDelete: onDelete.map { delete in { delete(item.id) } }
             )
-              .frame(height: EntryLogToken.rowHeight)
-              .frame(maxWidth: .infinity, alignment: .leading)
-              .contentShape(Rectangle())
+              .transition(rowTransition)
           }
-          .transition(rowTransition)
         }
 
         Rectangle()

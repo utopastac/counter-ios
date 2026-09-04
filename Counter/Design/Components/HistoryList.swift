@@ -7,6 +7,7 @@ struct HistoryListItem: Identifiable, Equatable {
   var id: Date { date }
 }
 
+/// Aggregated history rows (week / month) — tap opens the bucket detail sheet.
 struct HistoryList: View {
   let items: [HistoryListItem]
   var dateFormat: Date.FormatStyle = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
@@ -19,36 +20,15 @@ struct HistoryList: View {
           SettingsDivider()
         }
 
-        HistoryListRow(item: item, dateFormat: dateFormat, onSelect: onSelect)
+        CounterValueDateRow(
+          valueText: CounterFormatting.amount(item.value),
+          date: item.date,
+          dateFormat: dateFormat,
+          onTap: onSelect.map { handler in { handler(item) } }
+        )
+        .disabled(onSelect == nil)
       }
     }
-  }
-}
-
-private struct HistoryListRow: View {
-  let item: HistoryListItem
-  let dateFormat: Date.FormatStyle
-  let onSelect: ((HistoryListItem) -> Void)?
-
-  var body: some View {
-    Button {
-      onSelect?(item)
-    } label: {
-      HStack(alignment: .center, spacing: SpaceToken.x3) {
-        Text(CounterFormatting.amount(item.value))
-          .counterTextStyle(.historyListValue)
-
-        Spacer(minLength: 0)
-
-        Text(item.date, format: dateFormat)
-          .counterTextStyle(.historyListDate, color: .secondary)
-      }
-      .frame(height: HistoryToken.listRowHeight)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .contentShape(Rectangle())
-    }
-    .buttonStyle(.plain)
-    .disabled(onSelect == nil)
   }
 }
 

@@ -36,6 +36,19 @@ struct CounterPagerView: View {
   /// underlay list is open the main scroll view is disabled, and `scrollPosition` would otherwise
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
+  @State private var historyCounterID: UUID?
+  @Namespace private var historyZoomNamespace
+
+  private var isShowingHistory: Binding<Bool> {
+    Binding(
+      get: { historyCounterID != nil },
+      set: { isPresented in
+        if !isPresented {
+          historyCounterID = nil
+        }
+      }
+    )
+  }
 
   /// Compact stack still uses `scrollPosition`; the paging pager does not — two-way
   /// `scrollPosition` re-asserts the selected ID on any view update and jumps on the last page.
@@ -103,42 +116,48 @@ struct CounterPagerView: View {
   }
 
   var body: some View {
-    GeometryReader { geometry in
-      CounterUnderlayReveal(
-        state: revealState,
-        isRevealed: $isCounterListRevealed,
-        isCompact: isCompactModeEnabled
-      ) {
-        AllCountersListView(
-          scrollDisabled: revealState.locksScroll || !isRevealSettledOpen,
-          onSelectPage: selectPageFromList,
-          onAddCounter: { sheets.present(.addCounter) }
-        )
-      } card: {
-        counterScreen()
-      }
-      .onAppear {
-        containerWidth = geometry.size.width
-        applyInitialListRevealIfNeeded(width: geometry.size.width)
-      }
-      .onChange(of: geometry.size.width) { _, newWidth in
-        containerWidth = newWidth
-        if isCounterListRevealed {
-          revealState.cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
-            for: newWidth,
-            isCompact: isCompactModeEnabled
+    NavigationStack {
+      GeometryReader { geometry in
+        CounterUnderlayReveal(
+          state: revealState,
+          isRevealed: $isCounterListRevealed,
+          isCompact: isCompactModeEnabled
+        ) {
+          AllCountersListView(
+            scrollDisabled: revealState.locksScroll || !isRevealSettledOpen,
+            onSelectPage: selectPageFromList,
+            onAddCounter: { sheets.present(.addCounter) }
           )
-        } else {
-          applyInitialListRevealIfNeeded(width: newWidth)
+        } card: {
+          counterScreen()
+        }
+        .onAppear {
+          containerWidth = geometry.size.width
+          applyInitialListRevealIfNeeded(width: geometry.size.width)
+        }
+        .onChange(of: geometry.size.width) { _, newWidth in
+          containerWidth = newWidth
+          if isCounterListRevealed {
+            revealState.cardOffset = CounterUnderlayReveal<EmptyView, EmptyView>.openOffset(
+              for: newWidth,
+              isCompact: isCompactModeEnabled
+            )
+          } else {
+            applyInitialListRevealIfNeeded(width: newWidth)
+          }
+        }
+        .onChange(of: isCompactModeEnabled) { _, _ in
+          guard isCounterListRevealed else { return }
+          withAnimation(settleSpring) {
+            revealState.cardOffset = maxRevealOffset
+          }
         }
       }
-      .onChange(of: isCompactModeEnabled) { _, _ in
-        guard isCounterListRevealed else { return }
-        withAnimation(settleSpring) {
-          revealState.cardOffset = maxRevealOffset
-        }
+      .navigationDestination(isPresented: isShowingHistory) {
+        historyDestination
       }
     }
+    .toolbar(.hidden, for: .navigationBar)
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background {
       colors.surfacePrimary
@@ -150,8 +169,12 @@ struct CounterPagerView: View {
       if idStrings.isEmpty {
         selectedPageID = nil
         pendingScrollPageID = nil
+        historyCounterID = nil
         pagerScrollState.value = 0
         return
+      }
+      if let historyCounterID, !ids.contains(historyCounterID) {
+        self.historyCounterID = nil
       }
       if let selectedPageID, !idStrings.contains(selectedPageID) {
         scrollToPage(idStrings.first, animated: false)
@@ -183,6 +206,15 @@ struct CounterPagerView: View {
     }
     .onChange(of: focusRouter.pendingCounterID) { _, _ in
       applyPendingDeepLinkIfNeeded()
+    }
+  }
+
+  @ViewBuilder
+  private var historyDestination: some View {
+    if let historyCounterID,
+       let counter = counters.first(where: { $0.id == historyCounterID }) {
+      CounterHistoryView(counter: counter)
+        .navigationTransition(.zoom(sourceID: historyCounterID, in: historyZoomNamespace))
     }
   }
 
@@ -247,15 +279,7 @@ struct CounterPagerView: View {
       }
       Spacer(minLength: 0)
     }
-    .glassEffect(
-      .clear.interactive(),
-      in: .rect(
-        topLeadingRadius: RadiusToken.scrollContainer,
-        bottomLeadingRadius: 0,
-        bottomTrailingRadius: 0,
-        topTrailingRadius: RadiusToken.scrollContainer
-      )
-    )
+    .counterToolbarGlass()
   }
 
   @ViewBuilder
@@ -270,6 +294,11 @@ struct CounterPagerView: View {
               onShowHistory: { presentHistory(for: counter) },
               onShowButtonSettings: { presentButtonSettings(for: counter) }
             )
+            .matchedTransitionSource(id: counter.id, in: historyZoomNamespace) { source in
+              source.clipShape(
+                RoundedRectangle(cornerRadius: RadiusToken.compactCard, style: .continuous)
+              )
+            }
             .id(counter.id.uuidString)
           }
         }
@@ -303,7 +332,16 @@ struct CounterPagerView: View {
       ScrollView(.vertical) {
         VStack(spacing: 0) {
           ForEach(counters) { counter in
-            CustomCounterPageContent(counter: counter)
+            CustomCounterPageContent(
+              counter: counter,
+              onShowHistory: { presentHistory(for: counter) },
+              onShowButtonSettings: { presentButtonSettings(for: counter) }
+            )
+              .matchedTransitionSource(id: counter.id, in: historyZoomNamespace) { source in
+                source.clipShape(
+                  RoundedRectangle(cornerRadius: RadiusToken.scrollContainer, style: .continuous)
+                )
+              }
               .frame(height: height)
               .background(Color.clear)
               .id(counter.id.uuidString)
@@ -395,7 +433,7 @@ struct CounterPagerView: View {
 
   private func presentHistory(for counter: CustomCounter) {
     selectedPageID = counter.id.uuidString
-    sheets.present(.history(counterID: counter.id))
+    historyCounterID = counter.id
   }
 
   private func presentButtonSettings(for counter: CustomCounter) {
@@ -509,7 +547,7 @@ struct CounterPagerView: View {
       onOpenCounterList: { openCounterList() },
       onShowHistory: {
         guard let counter = activeCounter else { return }
-        sheets.present(.history(counterID: counter.id))
+        presentHistory(for: counter)
       },
       onShowButtonSettings: {
         guard let counter = activeCounter else { return }
@@ -549,15 +587,7 @@ private struct PagerToolbarBar: View {
         CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
       }
     }
-    .glassEffect(
-      .clear.tint(accentTint).interactive(),
-      in: .rect(
-        topLeadingRadius: RadiusToken.scrollContainer,
-        bottomLeadingRadius: 0,
-        bottomTrailingRadius: 0,
-        topTrailingRadius: RadiusToken.scrollContainer
-      )
-    )
+    .counterToolbarGlass(tint: accentTint)
     .allowsHitTesting(!(pagerScrollState?.isDragging ?? false) && !counterRevealIsDragging)
   }
 }

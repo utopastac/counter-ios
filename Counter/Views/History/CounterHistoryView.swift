@@ -6,42 +6,80 @@ struct CounterHistoryView: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
   @Environment(\.semanticColors) private var colors
+  @Environment(\.colorScheme) private var colorScheme
   @State private var period: HistoryPeriod = .daily
   @State private var windowOffset = 0
-  @State private var selectedBucket: DailyValue?
+  @State private var presentedSheet: HistoryPresentedSheet?
+  @State private var entryIndex: HistoryEntryIndex
+  @AppStorage(
+    AppAppearancePreference.monoEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isMonoEnabled = false
+  @AppStorage(
+    AppAppearancePreference.monoPaletteIndexKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var monoPaletteIndex = 0
+  @AppStorage(
+    AppAppearancePreference.tintEnabledKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var isTintEnabled = true
+  @AppStorage(
+    AppAppearancePreference.colorPackKey,
+    store: AppAppearancePreference.sharedDefaults
+  ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(AppAppearancePreference.historyAverageActiveDaysOnlyKey)
   private var isHistoryAverageActiveDaysOnlyEnabled = false
   @AppStorage(AppAppearancePreference.historyPerPeriodEnabledKey)
   private var isHistoryPerPeriodEnabled = true
 
+  init(counter: CustomCounter) {
+    self.counter = counter
+    _entryIndex = State(initialValue: HistoryEntryIndex(entries: counter.entries))
+  }
+
+  private var pageAccent: CounterAccent {
+    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
+    return .forCounter(counter)
+  }
+
+  private var palette: CounterPaletteSlot {
+    pageAccent.palette
+  }
+
   private var maxWindowOffset: Int {
-    HistoryAggregator.maxWindowOffset(from: counter.entries, period: period)
+    HistoryAggregator.maxWindowOffset(
+      earliestTimestamp: entryIndex.earliestTimestamp,
+      period: period
+    )
   }
 
   private var windowEndingDate: Date {
     HistoryAggregator.endingDate(forWindowOffset: windowOffset, period: period)
   }
 
-  private var chartData: [DailyValue] {
-    dataForOffset(windowOffset)
-  }
-
   private var listDailyData: [DailyValue] {
     HistoryAggregator.listDailyTotals(
-      from: counter.entries,
+      index: entryIndex,
       period: period,
       endingOn: windowEndingDate
     )
   }
 
   private var listItems: [HistoryListItem] {
-    let items = listDailyData.reversed().map { item in
+    listDailyData.reversed().map { item in
       HistoryListItem(date: item.date, value: item.value)
     }
-    if period == .daily {
-      return items.filter { $0.value > 0 }
-    }
-    return items
+  }
+
+  private var dayEntries: [CounterEntry] {
+    let calendar = Calendar.current
+    let start = calendar.startOfDay(for: windowEndingDate)
+    let end = calendar.date(byAdding: .day, value: 1, to: start) ?? start
+    return CounterPeriodCalculator.entries(
+      from: counter.entries,
+      in: CounterPeriodRange(start: start, end: end)
+    )
+    .sorted { $0.timestamp > $1.timestamp }
   }
 
   private var listDateFormat: Date.FormatStyle {
@@ -63,7 +101,7 @@ struct CounterHistoryView: View {
 
   private var windowSummaryValue: Double {
     HistoryAggregator.summaryValue(
-      from: counter.entries,
+      index: entryIndex,
       period: period,
       endingOn: windowEndingDate,
       perPeriod: perPeriodEnabled,
@@ -71,12 +109,39 @@ struct CounterHistoryView: View {
     )
   }
 
+  private var windowDateRange: (start: Date, end: Date) {
+    let calendar = Calendar.current
+    let end = calendar.startOfDay(for: windowEndingDate)
+    let dayCount = HistoryAggregator.windowCalendarDayCount(for: period)
+    let start = calendar.date(byAdding: .day, value: -(dayCount - 1), to: end) ?? end
+    return (start, end)
+  }
+
   private var windowDatePrimaryLabel: String {
-    windowEndingDate.formatted(.dateTime.month(.wide).day(.twoDigits))
+    switch period {
+    case .daily:
+      return windowEndingDate.formatted(.dateTime.month(.wide).day(.twoDigits))
+    case .weekly, .monthly:
+      let range = windowDateRange
+      let format = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
+      return "\(range.start.formatted(format)) – \(range.end.formatted(format))"
+    }
   }
 
   private var windowDateYearLabel: String {
-    windowEndingDate.formatted(.dateTime.year())
+    switch period {
+    case .daily:
+      return windowEndingDate.formatted(.dateTime.year())
+    case .weekly, .monthly:
+      let range = windowDateRange
+      let calendar = Calendar.current
+      let startYear = calendar.component(.year, from: range.start)
+      let endYear = calendar.component(.year, from: range.end)
+      if startYear == endYear {
+        return range.end.formatted(.dateTime.year())
+      }
+      return "\(startYear) – \(endYear)"
+    }
   }
 
   private var windowSummaryAmount: String {
@@ -97,59 +162,41 @@ struct CounterHistoryView: View {
   }
 
   var body: some View {
-    VStack(spacing: 0) {
-      CounterSheetHeader(
-        title: "\(counter.name) history",
-        onDone: { dismiss() }
-      )
+    ZStack(alignment: .top) {
+      Rectangle()
+        .fill(palette.backgroundStyle(for: colorScheme))
+        .ignoresSafeArea()
 
-      ScrollView {
-        VStack(alignment: .leading, spacing: HistoryToken.sectionSpacing) {
-          HistoryPeriodPicker(selection: $period)
-
-          HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: SpaceToken.x1) {
-              Text(windowDatePrimaryLabel)
-                .counterTextStyle(.sectionTitle, compact: true)
-
-              Text(windowDateYearLabel)
-                .counterTextStyle(.caption, color: .secondary, compact: true)
-            }
-
-            Spacer(minLength: SpaceToken.u2)
-
-            VStack(alignment: .trailing, spacing: SpaceToken.x1) {
-              Text(windowSummaryAmount)
-                .counterTextStyle(.historyListValue, compact: true)
-
-              Text(windowSummaryCaption)
-                .counterTextStyle(.caption, color: .secondary, compact: true)
-            }
-          }
-
-          HistoryBarChart(
-            period: period,
-            windowOffset: $windowOffset,
-            maxWindowOffset: maxWindowOffset,
-            dataForOffset: dataForOffset,
-            onSelectBar: { selectedBucket = $0 }
-          )
-          .counterAccent(.forCounter(counter))
-
-          if !listItems.isEmpty {
-            HistoryList(items: listItems, dateFormat: listDateFormat) { item in
-              selectedBucket = DailyValue(date: item.date, value: item.value)
-            }
-          }
+      List {
+        Section {
+          historyChrome
+            .listRowInsets(EdgeInsets(
+              top: SpaceToken.u1,
+              leading: SheetToken.horizontal,
+              bottom: HistoryToken.sectionSpacing,
+              trailing: SheetToken.horizontal
+            ))
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
         }
-        .padding(.horizontal, SheetToken.horizontal)
-        .padding(.top, SpaceToken.u1)
-        .padding(.bottom, SpaceToken.u4)
+
+        if period == .daily {
+          dayEntryRows
+        } else if !listItems.isEmpty {
+          aggregateRows
+        }
       }
+      .listStyle(.plain)
+      .scrollContentBackground(.hidden)
+      .scrollEdgeEffectHidden(true, for: .top)
+      .safeAreaPadding(.top, SpaceToken.pageTopInset)
+
+      historyToolbar
     }
-    .background(colors.surfaceSheet)
+    .counterAccent(pageAccent)
     .counterDesignSystemFromColorScheme()
-    .counterSheetPresentation()
+    .toolbar(.hidden, for: .navigationBar)
+    .navigationBarBackButtonHidden()
     .onChange(of: period) { _, _ in
       windowOffset = 0
     }
@@ -158,17 +205,160 @@ struct CounterHistoryView: View {
         windowOffset = newMax
       }
     }
-    .sheet(item: $selectedBucket) { bucket in
-      bucketEntrySheet(for: bucket)
+    .sheet(item: $presentedSheet) { sheet in
+      switch sheet {
+      case .bucket(let bucket):
+        bucketEntrySheet(for: bucket)
+      case .editEntry(let entryID, let value):
+        EditAmountSheet(initialValue: value) { newValue in
+          updateEntry(id: entryID, value: newValue)
+        }
+      }
     }
   }
 
-  private func dataForOffset(_ offset: Int) -> [DailyValue] {
-    HistoryAggregator.groupedCounterTotals(
-      from: counter.entries,
-      period: period,
-      endingOn: HistoryAggregator.endingDate(forWindowOffset: offset, period: period)
-    )
+  /// One clear glass layer, full-bleed under the status bar. Rounded/`safeAreaBar`
+  /// chrome made this a floating frosted pill — the pager avoids that by clipping
+  /// its glass to the counter card.
+  private var historyToolbar: some View {
+    HStack(spacing: SpaceToken.toolbarIconSpacing) {
+      Text("\(counter.name) history")
+        .counterTextStyle(.pageTitle)
+        .lineLimit(1)
+
+      Spacer(minLength: 0)
+
+      Button("Done") {
+        CounterKeyboard.resign()
+        dismiss()
+      }
+      .counterTextStyle(.settingsRowLabel)
+      .buttonStyle(.plain)
+      .padding(.horizontal, SpaceToken.u2)
+      .frame(height: SizeToken.iconButtonHitArea)
+      .contentShape(Rectangle())
+    }
+    .padding(.horizontal, SheetToken.horizontal)
+    .frame(maxWidth: .infinity)
+    .frame(minHeight: SizeToken.iconButtonHitArea)
+    .background {
+      Rectangle()
+        .fill(.clear)
+        .glassEffect(
+          .clear.tint(palette.background(for: colorScheme)).interactive(),
+          in: .rect(cornerRadius: 0)
+        )
+        .ignoresSafeArea(edges: .top)
+    }
+  }
+
+  private var historyChrome: some View {
+    VStack(alignment: .leading, spacing: HistoryToken.sectionSpacing) {
+      HistoryPeriodPicker(selection: $period)
+
+      HStack(alignment: .top) {
+        VStack(alignment: .leading, spacing: SpaceToken.x1) {
+          Text(windowDatePrimaryLabel)
+            .counterTextStyle(.historyListValue, compact: true)
+
+          Text(windowDateYearLabel)
+            .counterTextStyle(.caption, color: .secondary, compact: true)
+        }
+
+        Spacer(minLength: SpaceToken.u2)
+
+        VStack(alignment: .trailing, spacing: SpaceToken.x1) {
+          Text(windowSummaryAmount)
+            .counterTextStyle(.historyListValue, compact: true)
+
+          Text(windowSummaryCaption)
+            .counterTextStyle(.caption, color: .secondary, compact: true)
+        }
+      }
+
+      HistoryBarChart(
+        entryIndex: entryIndex,
+        period: period,
+        windowOffset: $windowOffset,
+        maxWindowOffset: maxWindowOffset,
+        onSelectBar: { presentedSheet = .bucket($0) }
+      )
+    }
+  }
+
+  @ViewBuilder
+  private var dayEntryRows: some View {
+    ForEach(Array(dayEntries.enumerated()), id: \.element.id) { index, entry in
+      VStack(spacing: 0) {
+        if index > 0 {
+          SettingsDivider()
+        }
+
+        EntryLogEditableRow(
+          value: entry.amount,
+          timestamp: entry.timestamp,
+          dateFormat: listDateFormat,
+          onEdit: {
+            presentedSheet = .editEntry(id: entry.id, value: entry.amount)
+          }
+        )
+      }
+      .listRowInsets(EdgeInsets(
+        top: 0,
+        leading: SheetToken.horizontal,
+        bottom: 0,
+        trailing: SheetToken.horizontal
+      ))
+      .listRowSeparator(.hidden)
+      .listRowBackground(Color.clear)
+      .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+        Button(role: .destructive) {
+          deleteEntry(id: entry.id)
+        } label: {
+          Label("Delete", systemImage: "trash")
+        }
+      }
+    }
+  }
+
+  @ViewBuilder
+  private var aggregateRows: some View {
+    ForEach(Array(listItems.enumerated()), id: \.element.id) { index, item in
+      VStack(spacing: 0) {
+        if index > 0 {
+          SettingsDivider()
+        }
+
+        CounterValueDateRow(
+          valueText: CounterFormatting.amount(item.value),
+          date: item.date,
+          dateFormat: listDateFormat,
+          onTap: {
+            presentedSheet = .bucket(DailyValue(date: item.date, value: item.value))
+          }
+        )
+      }
+      .listRowInsets(EdgeInsets(
+        top: 0,
+        leading: SheetToken.horizontal,
+        bottom: 0,
+        trailing: SheetToken.horizontal
+      ))
+      .listRowSeparator(.hidden)
+      .listRowBackground(Color.clear)
+    }
+  }
+
+  private func deleteEntry(id: UUID) {
+    EntryActions.deleteCounterEntry(id: id, in: modelContext)
+    WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+    entryIndex = HistoryEntryIndex(entries: counter.entries)
+  }
+
+  private func updateEntry(id: UUID, value: Double) {
+    EntryActions.updateCounterEntry(id: id, value: value, in: modelContext)
+    WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+    entryIndex = HistoryEntryIndex(entries: counter.entries)
   }
 
   private func bucketEntrySheet(for bucket: DailyValue) -> some View {
@@ -182,7 +372,7 @@ struct CounterHistoryView: View {
       VStack(spacing: 0) {
         CounterSheetHeader(
           title: title,
-          onDone: { selectedBucket = nil }
+          onDone: { presentedSheet = nil }
         )
 
         CounterPeriodEntryLogContent(
@@ -214,6 +404,20 @@ struct CounterHistoryView: View {
       let range = HistoryAggregator.bucketRange(for: date, period: .weekly)
       let format = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
       return "\(range.start.formatted(format)) – \(date.formatted(format))"
+    }
+  }
+}
+
+private enum HistoryPresentedSheet: Identifiable, Equatable {
+  case bucket(DailyValue)
+  case editEntry(id: UUID, value: Double)
+
+  var id: String {
+    switch self {
+    case .bucket(let bucket):
+      "bucket-\(bucket.date.timeIntervalSinceReferenceDate)"
+    case .editEntry(let id, _):
+      "edit-\(id.uuidString)"
     }
   }
 }

@@ -107,7 +107,6 @@ struct CustomCounterPageContent: View {
           ringProgress: counter.currentProgress(),
           ringWidthOverride: counter.overrideProgressRingWidth,
           ringGlowOverride: counter.overrideProgressRingGlow,
-          onSelectEntryLog: { sheets.present(.entryLog(counterID: counter.id)) },
           onShowHistory: onShowHistory,
           onShowButtonSettings: onShowButtonSettings
         ) {
@@ -144,7 +143,7 @@ struct CustomCounterPageContent: View {
 
               Button {
                 guard !counterRevealIsDragging else { return }
-                sheets.present(.entryLog(counterID: counter.id))
+                onShowHistory()
               } label: {
                 EntryLogAllEntriesControl()
                   .frame(maxWidth: .infinity, alignment: .center)

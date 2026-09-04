@@ -37,6 +37,7 @@
 		DS10000010000000000000026 /* CounterSheetHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000026 /* CounterSheetHeader.swift */; };
 		DS10000010000000000000027 /* CounterToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000027 /* CounterToggle.swift */; };
 		DS10000010000000000000025 /* HistoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000025 /* HistoryList.swift */; };
+		CVDROWBF01 /* CounterValueDateRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CVDROWFR01 /* CounterValueDateRow.swift */; };
 		A10000010000000000000014 /* CounterHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* CounterHistoryView.swift */; };
 		A10000010000000000000018 /* CreateCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* CreateCounterView.swift */; };
 		A10000010000000000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* Assets.xcassets */; };
@@ -337,6 +338,7 @@
 		DS20000010000000000000026 /* CounterSheetHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetHeader.swift; sourceTree = "<group>"; };
 		DS20000010000000000000027 /* CounterToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterToggle.swift; sourceTree = "<group>"; };
 		DS20000010000000000000025 /* HistoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryList.swift; sourceTree = "<group>"; };
+		CVDROWFR01 /* CounterValueDateRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterValueDateRow.swift; sourceTree = "<group>"; };
 		A20000010000000000000014 /* CounterHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHistoryView.swift; sourceTree = "<group>"; };
 		A20000010000000000000018 /* CreateCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCounterView.swift; sourceTree = "<group>"; };
 		CSVFILEREF01 /* CounterSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSettingsView.swift; sourceTree = "<group>"; };
@@ -642,6 +644,7 @@
 				DS20000010000000000000026 /* CounterSheetHeader.swift */,
 				DS20000010000000000000027 /* CounterToggle.swift */,
 				DS20000010000000000000025 /* HistoryList.swift */,
+				CVDROWFR01 /* CounterValueDateRow.swift */,
 				T20000010000000000000003 /* NoHighlightButtonStyle.swift */,
 				CPPGRIDREF01 /* ColorPackPickerGrid.swift */,
 				FPPGRIDREF01 /* FontPackPickerGrid.swift */,
@@ -1094,6 +1097,7 @@
 				DS10000010000000000000026 /* CounterSheetHeader.swift in Sources */,
 				DS10000010000000000000027 /* CounterToggle.swift in Sources */,
 				DS10000010000000000000025 /* HistoryList.swift in Sources */,
+				CVDROWBF01 /* CounterValueDateRow.swift in Sources */,
 				A10000010000000000000014 /* CounterHistoryView.swift in Sources */,
 				CSVBFCOUNTER01 /* CounterSettingsView.swift in Sources */,
 				A10000010000000000000018 /* CreateCounterView.swift in Sources */,

@@ -3,15 +3,16 @@ import SwiftUI
 
 /// Horizontally paged history chart (Apple Health–style).
 /// Pages are ordered oldest → newest left to right, so swiping right goes further back.
+///
+/// Only the current page and its immediate neighbors build Swift Charts — farther scroll
+/// slots stay empty placeholders so paging stays smooth across dozens of windows.
 struct HistoryBarChart: View {
   @Environment(\.semanticColors) private var colors
-  @Environment(\.counterAccent) private var accent
-  @Environment(\.colorScheme) private var colorScheme
 
+  let entryIndex: HistoryEntryIndex
   let period: HistoryPeriod
   @Binding var windowOffset: Int
   let maxWindowOffset: Int
-  let dataForOffset: (Int) -> [DailyValue]
   var onSelectBar: ((DailyValue) -> Void)?
 
   private var scrollPosition: Binding<Int?> {
@@ -25,25 +26,19 @@ struct HistoryBarChart: View {
     )
   }
 
-  /// Counter's chosen colour when themed; otherwise the default muted surface.
   private var chartBackground: AnyShapeStyle {
-    if let accent {
-      return accent.palette.backgroundStyle(for: colorScheme)
-    }
-    return AnyShapeStyle(ComponentColor.historyChartBackground(colors))
+    AnyShapeStyle(ComponentColor.historyChartBackground(colors))
   }
 
-  /// Opposite-scheme palette colour for contrast on the chosen background.
   private var barFill: Color {
-    accent?.palette.inverseBackground(for: colorScheme)
-      ?? ComponentColor.historyChartBarFill(colors)
+    ComponentColor.historyChartBarFill(colors)
   }
 
   var body: some View {
     ScrollView(.horizontal) {
       LazyHStack(spacing: 0) {
         ForEach(Array((0...maxWindowOffset).reversed()), id: \.self) { offset in
-          chartPage(data: dataForOffset(offset))
+          chartSlot(for: offset)
             .containerRelativeFrame(.horizontal)
             .id(offset)
         }
@@ -63,6 +58,16 @@ struct HistoryBarChart: View {
   }
 
   @ViewBuilder
+  private func chartSlot(for offset: Int) -> some View {
+    // Keep scroll geometry for every page, but only pay for Swift Charts near the viewport.
+    if abs(offset - windowOffset) <= 1 {
+      chartPage(data: dataForOffset(offset))
+    } else {
+      Color.clear
+    }
+  }
+
+  @ViewBuilder
   private func chartPage(data: [DailyValue]) -> some View {
     if data.isEmpty {
       emptyState
@@ -78,6 +83,14 @@ struct HistoryBarChart: View {
         .counterTextStyle(.historyChartAxis, color: .historyChartAxis, compact: true)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
+  }
+
+  private func dataForOffset(_ offset: Int) -> [DailyValue] {
+    HistoryAggregator.groupedCounterTotals(
+      index: entryIndex,
+      period: period,
+      endingOn: HistoryAggregator.endingDate(forWindowOffset: offset, period: period)
+    )
   }
 
   private func chart(data: [DailyValue]) -> some View {
@@ -188,20 +201,13 @@ struct HistoryBarChart: View {
 
     var body: some View {
       HistoryBarChart(
+        entryIndex: HistoryEntryIndex(entries: [
+          CounterEntry(value: 100, timestamp: .now),
+          CounterEntry(value: 40, timestamp: Calendar.current.date(byAdding: .hour, value: -3, to: .now)!)
+        ]),
         period: .daily,
         windowOffset: $offset,
-        maxWindowOffset: 2,
-        dataForOffset: { page in
-          let calendar = Calendar.current
-          let day = calendar.date(byAdding: .day, value: -page, to: .now) ?? .now
-          let start = calendar.startOfDay(for: day)
-          return (0..<24).compactMap { hour in
-            guard let date = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: start) else {
-              return nil
-            }
-            return DailyValue(date: date, value: Double((hour + page) % 5 * 100))
-          }
-        }
+        maxWindowOffset: 2
       )
       .padding()
       .counterAccent(.calories)

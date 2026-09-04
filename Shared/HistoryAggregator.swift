@@ -1,19 +1,106 @@
 import Foundation
 import SwiftData
 
+/// Pre-buckets entry totals by calendar day and hour so history windows are O(buckets), not O(entries × buckets).
+nonisolated struct HistoryEntryIndex: Sendable {
+  private let dayTotals: [Date: Double]
+  private let hourTotals: [Date: Double]
+  let earliestTimestamp: Date?
+
+  static let empty = HistoryEntryIndex(dayTotals: [:], hourTotals: [:], earliestTimestamp: nil)
+
+  init(entries: [CounterEntry], calendar: Calendar = .current) {
+    var days: [Date: Double] = [:]
+    var hours: [Date: Double] = [:]
+    var earliest: Date?
+
+    days.reserveCapacity(min(entries.count, 512))
+    hours.reserveCapacity(min(entries.count, 512))
+
+    for entry in entries {
+      let timestamp = entry.timestamp
+      let amount = entry.value
+      if earliest == nil || timestamp < earliest! {
+        earliest = timestamp
+      }
+
+      let day = calendar.startOfDay(for: timestamp)
+      days[day, default: 0] += amount
+
+      let hour = calendar.date(
+        bySettingHour: calendar.component(.hour, from: timestamp),
+        minute: 0,
+        second: 0,
+        of: timestamp
+      ) ?? timestamp
+      hours[hour, default: 0] += amount
+    }
+
+    dayTotals = days
+    hourTotals = hours
+    earliestTimestamp = earliest
+  }
+
+  private init(dayTotals: [Date: Double], hourTotals: [Date: Double], earliestTimestamp: Date?) {
+    self.dayTotals = dayTotals
+    self.hourTotals = hourTotals
+    self.earliestTimestamp = earliestTimestamp
+  }
+
+  func total(onDay date: Date, calendar: Calendar = .current) -> Double {
+    dayTotals[calendar.startOfDay(for: date)] ?? 0
+  }
+
+  func total(inHourStarting hourStart: Date) -> Double {
+    hourTotals[hourStart] ?? 0
+  }
+
+  func total(fromDay start: Date, beforeDay end: Date, calendar: Calendar = .current) -> Double {
+    var total = 0.0
+    var day = calendar.startOfDay(for: start)
+    let endDay = calendar.startOfDay(for: end)
+    while day < endDay {
+      total += dayTotals[day] ?? 0
+      guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
+      day = next
+    }
+    return total
+  }
+}
+
 nonisolated enum HistoryAggregator {
   static func counterTotal(
     from entries: [CounterEntry],
     on date: Date,
     calendar: Calendar = .current
   ) -> Double {
-    entries
-      .filter { calendar.isDate($0.timestamp, inSameDayAs: date) }
-      .reduce(0) { $0 + $1.value }
+    HistoryEntryIndex(entries: entries, calendar: calendar).total(onDay: date, calendar: calendar)
+  }
+
+  static func counterTotal(
+    index: HistoryEntryIndex,
+    on date: Date,
+    calendar: Calendar = .current
+  ) -> Double {
+    index.total(onDay: date, calendar: calendar)
   }
 
   static func groupedCounterTotals(
     from entries: [CounterEntry],
+    period: HistoryPeriod,
+    endingOn date: Date = .now,
+    calendar: Calendar = .current
+  ) -> [DailyValue] {
+    groupedCounterTotals(
+      index: HistoryEntryIndex(entries: entries, calendar: calendar),
+      period: period,
+      endingOn: date,
+      calendar: calendar
+    )
+  }
+
+  static func groupedCounterTotals(
+    index: HistoryEntryIndex,
     period: HistoryPeriod,
     endingOn date: Date = .now,
     calendar: Calendar = .current
@@ -23,15 +110,9 @@ nonisolated enum HistoryAggregator {
     switch period {
     case .daily:
       return (0..<period.dayCount).compactMap { hour in
-        guard let hourStart = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: startOfEndDay),
-              let hourEnd = calendar.date(byAdding: .hour, value: 1, to: hourStart)
+        guard let hourStart = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: startOfEndDay)
         else { return nil }
-
-        let total = entries
-          .filter { $0.timestamp >= hourStart && $0.timestamp < hourEnd }
-          .reduce(0) { $0 + $1.value }
-
-        return DailyValue(date: hourStart, value: total)
+        return DailyValue(date: hourStart, value: index.total(inHourStarting: hourStart))
       }
 
     case .weekly:
@@ -42,13 +123,11 @@ nonisolated enum HistoryAggregator {
           let weekEndExclusive = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: weekEnd))
         else { return nil }
 
-        let total = entries
-          .filter {
-            $0.timestamp >= calendar.startOfDay(for: weekStart) &&
-            $0.timestamp < weekEndExclusive
-          }
-          .reduce(0) { $0 + $1.value }
-
+        let total = index.total(
+          fromDay: calendar.startOfDay(for: weekStart),
+          beforeDay: weekEndExclusive,
+          calendar: calendar
+        )
         return DailyValue(date: calendar.startOfDay(for: weekEnd), value: total)
       }
       .reversed()
@@ -56,8 +135,7 @@ nonisolated enum HistoryAggregator {
     case .monthly:
       return (0..<period.dayCount).compactMap { offset in
         guard let day = calendar.date(byAdding: .day, value: -offset, to: startOfEndDay) else { return nil }
-        let total = counterTotal(from: entries, on: day, calendar: calendar)
-        return DailyValue(date: day, value: total)
+        return DailyValue(date: day, value: index.total(onDay: day, calendar: calendar))
       }
       .reversed()
     }
@@ -121,8 +199,22 @@ nonisolated enum HistoryAggregator {
     relativeTo date: Date = .now,
     calendar: Calendar = .current
   ) -> Int {
+    maxWindowOffset(
+      earliestTimestamp: entries.map(\.timestamp).min(),
+      period: period,
+      relativeTo: date,
+      calendar: calendar
+    )
+  }
+
+  static func maxWindowOffset(
+    earliestTimestamp: Date?,
+    period: HistoryPeriod,
+    relativeTo date: Date = .now,
+    calendar: Calendar = .current
+  ) -> Int {
     let minimumBrowseable = 51 // 52 pages including the current window
-    guard let earliest = entries.map(\.timestamp).min() else { return minimumBrowseable }
+    guard let earliest = earliestTimestamp else { return minimumBrowseable }
     let start = calendar.startOfDay(for: earliest)
     let end = calendar.startOfDay(for: date)
     let step = windowStepDays(for: period)
@@ -149,9 +241,23 @@ nonisolated enum HistoryAggregator {
     endingOn date: Date,
     calendar: Calendar = .current
   ) -> [DailyValue] {
+    listDailyTotals(
+      index: HistoryEntryIndex(entries: entries, calendar: calendar),
+      period: period,
+      endingOn: date,
+      calendar: calendar
+    )
+  }
+
+  static func listDailyTotals(
+    index: HistoryEntryIndex,
+    period: HistoryPeriod,
+    endingOn date: Date,
+    calendar: Calendar = .current
+  ) -> [DailyValue] {
     switch period {
     case .daily:
-      return groupedCounterTotals(from: entries, period: .daily, endingOn: date, calendar: calendar)
+      return groupedCounterTotals(index: index, period: .daily, endingOn: date, calendar: calendar)
     case .weekly, .monthly:
       let startOfEndDay = calendar.startOfDay(for: date)
       let dayCount = windowCalendarDayCount(for: period)
@@ -161,7 +267,7 @@ nonisolated enum HistoryAggregator {
         }
         return DailyValue(
           date: day,
-          value: counterTotal(from: entries, on: day, calendar: calendar)
+          value: index.total(onDay: day, calendar: calendar)
         )
       }
       .reversed()
@@ -176,13 +282,31 @@ nonisolated enum HistoryAggregator {
     activeDaysOnly: Bool,
     calendar: Calendar = .current
   ) -> Double {
+    summaryValue(
+      index: HistoryEntryIndex(entries: entries, calendar: calendar),
+      period: period,
+      endingOn: date,
+      perPeriod: perPeriod,
+      activeDaysOnly: activeDaysOnly,
+      calendar: calendar
+    )
+  }
+
+  static func summaryValue(
+    index: HistoryEntryIndex,
+    period: HistoryPeriod,
+    endingOn date: Date,
+    perPeriod: Bool,
+    activeDaysOnly: Bool,
+    calendar: Calendar = .current
+  ) -> Double {
     switch period {
     case .daily:
-      return listDailyTotals(from: entries, period: .daily, endingOn: date, calendar: calendar)
+      return listDailyTotals(index: index, period: .daily, endingOn: date, calendar: calendar)
         .reduce(0) { $0 + $1.value }
     case .weekly, .monthly:
       let dailyTotals = listDailyTotals(
-        from: entries,
+        index: index,
         period: period,
         endingOn: date,
         calendar: calendar
@@ -206,6 +330,7 @@ nonisolated enum HistoryAggregator {
     endingOn date: Date,
     calendar: Calendar = .current
   ) -> Int {
+    let index = HistoryEntryIndex(entries: entries, calendar: calendar)
     let totalDays = windowCalendarDayCount(for: period)
     guard totalDays > 0 else { return 0 }
 
@@ -216,7 +341,7 @@ nonisolated enum HistoryAggregator {
     var count = 0
     for offset in 0..<totalDays {
       guard let day = calendar.date(byAdding: .day, value: offset, to: windowStart) else { continue }
-      if counterTotal(from: entries, on: day, calendar: calendar) > 0 {
+      if index.total(onDay: day, calendar: calendar) > 0 {
         count += 1
       }
     }

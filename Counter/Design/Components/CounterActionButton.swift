@@ -66,6 +66,34 @@ struct CounterIconButton: View {
   }
 }
 
+extension View {
+  /// Liquid glass used by the full-size counter toolbar — keep history / pager on this path.
+  @ViewBuilder
+  func counterToolbarGlass(tint: Color? = nil) -> some View {
+    if let tint {
+      glassEffect(
+        .clear.tint(tint).interactive(),
+        in: .rect(
+          topLeadingRadius: RadiusToken.scrollContainer,
+          bottomLeadingRadius: 0,
+          bottomTrailingRadius: 0,
+          topTrailingRadius: RadiusToken.scrollContainer
+        )
+      )
+    } else {
+      glassEffect(
+        .clear.interactive(),
+        in: .rect(
+          topLeadingRadius: RadiusToken.scrollContainer,
+          bottomLeadingRadius: 0,
+          bottomTrailingRadius: 0,
+          topTrailingRadius: RadiusToken.scrollContainer
+        )
+      )
+    }
+  }
+}
+
 struct NewCounterButton: View {
   @Environment(\.semanticColors) private var colors
 

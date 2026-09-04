@@ -1,56 +1,7 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Custom counter log
-
-struct CounterTodayLogView: View {
-  @Bindable var counter: CustomCounter
-
-  var body: some View {
-    CounterPeriodEntryLogScreen(counter: counter)
-      .counterSheetPresentation()
-  }
-}
-
-struct CounterPeriodEntryLogScreen: View {
-  @Bindable var counter: CustomCounter
-
-  @Environment(\.dismiss) private var dismiss
-  @Environment(\.modelContext) private var modelContext
-  @Environment(\.semanticColors) private var colors
-
-  private var periodEntries: [CounterEntry] {
-    CounterPeriodCalculator.currentEntries(for: counter)
-  }
-
-  var body: some View {
-    VStack(spacing: 0) {
-      CounterSheetHeader(
-        title: "\(counter.name) entries",
-        onDone: { dismiss() }
-      )
-
-      CounterPeriodEntryLogContent(
-        entries: periodEntries,
-        onDelete: deleteEntry,
-        onValueCommit: updateEntry
-      )
-    }
-    .background(colors.surfaceSheet)
-    .counterDesignSystemFromColorScheme()
-  }
-
-  private func deleteEntry(id: UUID) {
-    EntryActions.deleteCounterEntry(id: id, in: modelContext)
-    WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-  }
-
-  private func updateEntry(id: UUID, value: Double) {
-    EntryActions.updateCounterEntry(id: id, value: value, in: modelContext)
-    WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-  }
-}
-
+/// Editable entry list used by history bucket sheets (hour / day / week taps).
 struct CounterPeriodEntryLogContent: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -59,9 +10,11 @@ struct CounterPeriodEntryLogContent: View {
   let onDelete: (UUID) -> Void
   let onValueCommit: (UUID, Double) -> Void
 
+  @State private var editingEntry: EditingEntry?
+
   init(
     entries: [CounterEntry],
-    emptyDescription: String = "Entries for the current period will appear here.",
+    emptyDescription: String = "No entries in this period.",
     onDelete: @escaping (UUID) -> Void,
     onValueCommit: @escaping (UUID, Double) -> Void
   ) {
@@ -96,11 +49,13 @@ struct CounterPeriodEntryLogContent: View {
                   .padding(.horizontal, SheetToken.horizontal)
               }
 
-              EntryLogEditableRow(value: entry.amount, timestamp: entry.timestamp) { newValue in
-                onValueCommit(entry.id, newValue)
-              }
-              .frame(height: SheetToken.tableRowHeight)
-              .frame(maxWidth: .infinity, alignment: .leading)
+              EntryLogEditableRow(
+                value: entry.amount,
+                timestamp: entry.timestamp,
+                onEdit: {
+                  editingEntry = EditingEntry(id: entry.id, value: entry.amount)
+                }
+              )
               .padding(.horizontal, SheetToken.horizontal)
             }
             .listRowInsets(EdgeInsets())
@@ -119,10 +74,15 @@ struct CounterPeriodEntryLogContent: View {
         .animation(insertAnimation, value: entries.map(\.id))
       }
     }
+    .sheet(item: $editingEntry) { entry in
+      EditAmountSheet(initialValue: entry.value) { newValue in
+        onValueCommit(entry.id, newValue)
+      }
+    }
   }
 }
 
-#Preview {
-  CounterTodayLogView(counter: CustomCounter(name: "Calories"))
-    .modelContainer(for: [CustomCounter.self, CounterEntry.self], inMemory: true)
+private struct EditingEntry: Identifiable, Equatable {
+  let id: UUID
+  let value: Double
 }

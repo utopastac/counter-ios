@@ -87,24 +87,18 @@ private struct CounterOffsetLargeDetent: CustomPresentationDetent {
 
 enum CounterSheetRoute: Identifiable, Equatable {
   case buttonSettings(counterID: UUID)
-  case history(counterID: UUID)
   case addCounter
   case customAmount(counterID: UUID)
-  case entryLog(counterID: UUID)
   case appSettings
 
   var id: String {
     switch self {
     case .buttonSettings(let counterID):
       "buttonSettings-\(counterID.uuidString)"
-    case .history(let counterID):
-      "history-\(counterID.uuidString)"
     case .addCounter:
       "addCounter"
     case .customAmount(let counterID):
       "customAmount-\(counterID.uuidString)"
-    case .entryLog(let counterID):
-      "entryLog-\(counterID.uuidString)"
     case .appSettings:
       "appSettings"
     }
@@ -113,7 +107,7 @@ enum CounterSheetRoute: Identifiable, Equatable {
   /// Routes that dim the counter card behind the sheet.
   var dimsPagerCard: Bool {
     switch self {
-    case .buttonSettings, .history, .addCounter, .customAmount, .entryLog:
+    case .buttonSettings, .addCounter, .customAmount:
       true
     case .appSettings:
       false
@@ -163,10 +157,6 @@ struct CounterSheetHost: View {
       if let counter = counter(for: counterID) {
         CounterButtonSettingsSheetContent(counter: counter)
       }
-    case .history(let counterID):
-      if let counter = counter(for: counterID) {
-        CounterHistoryView(counter: counter)
-      }
     case .addCounter:
       CreateCounterView { counter in
         coordinator.onCounterCreated?(counter)
@@ -174,10 +164,6 @@ struct CounterSheetHost: View {
     case .customAmount(let counterID):
       if let counter = counter(for: counterID) {
         CounterCustomAmountSheetContent(counter: counter)
-      }
-    case .entryLog(let counterID):
-      if let counter = counter(for: counterID) {
-        CounterTodayLogView(counter: counter)
       }
     case .appSettings:
       AppSettingsView()

@@ -23,7 +23,6 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
   let ringProgress: GoalProgress?
   var ringWidthOverride: ProgressRingWidth? = nil
   var ringGlowOverride: Bool? = nil
-  let onSelectEntryLog: () -> Void
   let onShowHistory: () -> Void
   let onShowButtonSettings: () -> Void
   @ViewBuilder var footer: () -> Footer
@@ -66,7 +65,7 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
       LongPressGesture(minimumDuration: 0.45).onEnded { _ in
         guard !counterRevealIsDragging else { return }
         AppHaptics.impact()
-        onSelectEntryLog()
+        onShowHistory()
       }
     )
   }
@@ -82,7 +81,6 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
       Spacer(minLength: SpaceToken.u1)
 
       HStack(spacing: SpaceToken.toolbarIconSpacing) {
-        CounterIconButton(icon: .logs, action: onSelectEntryLog)
         CounterIconButton(icon: .chartBar, action: onShowHistory)
         CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
       }
@@ -165,7 +163,6 @@ extension CompactCounterCardLayout where Toast == EmptyView {
     ringProgress: GoalProgress? = nil,
     ringWidthOverride: ProgressRingWidth? = nil,
     ringGlowOverride: Bool? = nil,
-    onSelectEntryLog: @escaping () -> Void,
     onShowHistory: @escaping () -> Void,
     onShowButtonSettings: @escaping () -> Void,
     @ViewBuilder footer: @escaping () -> Footer
@@ -178,7 +175,6 @@ extension CompactCounterCardLayout where Toast == EmptyView {
       ringProgress: ringProgress,
       ringWidthOverride: ringWidthOverride,
       ringGlowOverride: ringGlowOverride,
-      onSelectEntryLog: onSelectEntryLog,
       onShowHistory: onShowHistory,
       onShowButtonSettings: onShowButtonSettings,
       footer: footer,
