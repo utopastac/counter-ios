@@ -113,6 +113,20 @@ enum SizeToken {
   static let iconButtonHitArea: CGFloat = 44
 
   static let iconGlyph: CGFloat = 20
+  /// Visual icon frame for the counter-list bottom tab bar (slightly larger than toolbar).
+  static let tabBarIcon: CGFloat = 28
+  /// Lucide glyph size inside `tabBarIcon`.
+  static let tabBarIconGlyph: CGFloat = 24
+  /// Horizontal padding inside each tab-bar item.
+  static let tabBarItemHorizontalPadding: CGFloat = SpaceToken.u2
+  /// Vertical padding inside each tab-bar item.
+  static let tabBarItemVerticalPadding: CGFloat = SpaceToken.u1
+  /// Gap between icon and label in a tab-bar item.
+  static let tabBarIconToLabel: CGFloat = 2
+  /// Gap between adjacent tab-bar items.
+  static let tabBarItemSpacing: CGFloat = SpaceToken.u1
+  /// Shared width for each bottom tab-bar glass pill (fits “Add new” / “Settings”).
+  static let tabBarPillWidth: CGFloat = 96
   static let quickAddHeight: CGFloat = 44
   static let tableRowHeight: CGFloat = GridToken.units(4)
   static let primaryButtonHeight: CGFloat = 40
@@ -251,7 +265,7 @@ enum CounterPageToken {
   static let statsToQuickActionsSpacing: CGFloat = SpaceToken.u3
   /// Gap between quick-add actions and the entry-added toast (10 grid units).
   static let toastTopOffset: CGFloat = GridToken.units(10)
-  /// Inset below the entry log preview and "Entries" control (2 grid units).
+  /// Inset below the entry log preview and "History" control (2 grid units).
   static let entryLogBottomInset: CGFloat = SpaceToken.u2
 
   /// Scale applied to the hero while it yields to the stats table.

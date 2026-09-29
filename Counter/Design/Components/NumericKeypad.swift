@@ -91,13 +91,16 @@ private struct KeypadKeyButton: View {
       }
       .frame(maxWidth: .infinity)
       .frame(height: SheetToken.keypadKeyHeight)
-      .background(
-        colors.surfaceKeypadKey,
-        in: RadiusToken.continuous(SheetToken.keypadKeyCornerRadius)
+      .contentShape(
+        RadiusToken.continuous(SheetToken.keypadKeyCornerRadius)
       )
       .foregroundStyle(colors.textPrimary)
     }
     .buttonStyle(.plain)
+    .glassEffect(
+      .regular.tint(colors.surfaceKeypadKey).interactive(),
+      in: RadiusToken.continuous(SheetToken.keypadKeyCornerRadius)
+    )
   }
 }
 

@@ -162,16 +162,17 @@ struct CounterHistoryView: View {
   }
 
   var body: some View {
+    // No solid outer fill — gutters stay clear so the zoom dismiss doesn't drag a
+    // hard-edged colour slab; the pager's `surfacePrimary` shows through when settled.
     ZStack(alignment: .top) {
       Rectangle()
         .fill(palette.backgroundStyle(for: colorScheme))
-        .ignoresSafeArea()
 
       List {
         Section {
           historyChrome
             .listRowInsets(EdgeInsets(
-              top: SpaceToken.u1,
+              top: SpaceToken.u2,
               leading: SheetToken.horizontal,
               bottom: HistoryToken.sectionSpacing,
               trailing: SheetToken.horizontal
@@ -193,6 +194,12 @@ struct CounterHistoryView: View {
 
       historyToolbar
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .clipShape(
+      RoundedRectangle(cornerRadius: RadiusToken.scrollContainer, style: .continuous)
+    )
+    .padding(.horizontal, SpaceToken.scrollContainerInset)
+    .containerBackground(.clear, for: .navigation)
     .counterAccent(pageAccent)
     .counterDesignSystemFromColorScheme()
     .toolbar(.hidden, for: .navigationBar)
@@ -217,11 +224,13 @@ struct CounterHistoryView: View {
     }
   }
 
-  /// One clear glass layer, full-bleed under the status bar. Rounded/`safeAreaBar`
-  /// chrome made this a floating frosted pill — the pager avoids that by clipping
-  /// its glass to the counter card.
+  /// Glass clipped to the history card — same top radii as the pager toolbar.
   private var historyToolbar: some View {
     HStack(spacing: SpaceToken.toolbarIconSpacing) {
+      CounterLucideIcon(icon: .chartBar, color: colors.textPrimary)
+        .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
+        .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
+
       Text("\(counter.name) history")
         .counterTextStyle(.pageTitle)
         .lineLimit(1)
@@ -234,22 +243,13 @@ struct CounterHistoryView: View {
       }
       .counterTextStyle(.settingsRowLabel)
       .buttonStyle(.plain)
-      .padding(.horizontal, SpaceToken.u2)
       .frame(height: SizeToken.iconButtonHitArea)
       .contentShape(Rectangle())
     }
     .padding(.horizontal, SheetToken.horizontal)
     .frame(maxWidth: .infinity)
     .frame(minHeight: SizeToken.iconButtonHitArea)
-    .background {
-      Rectangle()
-        .fill(.clear)
-        .glassEffect(
-          .clear.tint(palette.background(for: colorScheme)).interactive(),
-          in: .rect(cornerRadius: 0)
-        )
-        .ignoresSafeArea(edges: .top)
-    }
+    .counterToolbarGlass(tint: palette.background(for: colorScheme))
   }
 
   private var historyChrome: some View {

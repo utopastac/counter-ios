@@ -75,7 +75,14 @@ struct AllCountersListView: View {
     .environment(\.editMode, $editMode)
     .safeAreaPadding(.bottom, SpaceToken.componentPadding)
     .safeAreaBar(edge: .top, spacing: 0) {
-      listHeader
+      if isEditing {
+        listEditHeader
+      }
+    }
+    // Use inset (not bar) so scroll-edge chrome doesn't add/remove a shadow on the
+    // floating glass pills as list content crosses the bottom edge.
+    .safeAreaInset(edge: .bottom, spacing: 0) {
+      listTabBar
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(colors.surfacePrimary)
@@ -83,30 +90,41 @@ struct AllCountersListView: View {
     .counterDesignSystemFromColorScheme()
   }
 
-  private var listHeader: some View {
+  private var listEditHeader: some View {
     HStack {
-      if isEditing {
-        Button("Done") {
-          withAnimation {
-            editMode = .inactive
-          }
+      Button("Done") {
+        withAnimation {
+          editMode = .inactive
         }
-        .counterTextStyle(.settingsRowLabel)
+      }
+      .counterTextStyle(.settingsRowLabel)
+      .padding(.leading, SpaceToken.u1)
+
+      Spacer(minLength: 0)
+    }
+    .frame(maxWidth: .infinity)
+  }
+
+  private var listTabBar: some View {
+    HStack {
+      Spacer(minLength: 0)
+
+      HStack(spacing: SizeToken.tabBarItemSpacing) {
+        if let onAddCounter, !isEditing {
+          CounterTabBarButton(icon: .plus, label: "Add new", action: onAddCounter)
+            .frame(width: SizeToken.tabBarPillWidth)
+            .glassEffect(.regular.interactive())
+        }
+        CounterTabBarButton(icon: .cog, label: "Settings") {
+          sheets.present(.appSettings)
+        }
+        .frame(width: SizeToken.tabBarPillWidth)
+        .glassEffect(.regular.interactive())
       }
 
       Spacer(minLength: 0)
-
-      HStack(spacing: SpaceToken.toolbarIconSpacing) {
-        if let onAddCounter, !isEditing {
-          CounterIconButton(icon: .plus, action: onAddCounter)
-        }
-        CounterIconButton(icon: .cog) {
-          sheets.present(.appSettings)
-        }
-      }
-      .glassEffect(.regular.interactive())
-      .padding(.trailing, SpaceToken.u1)
     }
+    .padding(.bottom, SpaceToken.u1)
     .frame(maxWidth: .infinity)
   }
 

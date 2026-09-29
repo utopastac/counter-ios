@@ -65,7 +65,6 @@ struct AmountEntrySheet: View {
 
       NumericKeypad(text: $amountText, maxDigits: maxDigits)
     }
-    .background(colors.surfaceSheet)
     .background {
       GeometryReader { geometry in
         Color.clear.preference(key: SheetHeightKey.self, value: geometry.size.height)
@@ -80,7 +79,7 @@ struct AmountEntrySheet: View {
     .presentationDragIndicator(.hidden)
     // Prefer scrolling/content pans over dismiss so a light touch doesn't swipe it away.
     .presentationContentInteraction(.scrolls)
-    .counterSheetPresentation(.cornerRadiusOnly)
+    .counterSheetPresentation(.cornerRadiusGlass)
   }
 
   private var amountDisplay: some View {

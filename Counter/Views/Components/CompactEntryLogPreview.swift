@@ -11,7 +11,7 @@ struct EntryLogAllEntriesControl: View {
 
   var body: some View {
     HStack(spacing: SpaceToken.x2) {
-      Text("Entries")
+      Text("History")
         .counterTextStyle(.sectionTitle)
 
       CounterLucideIcon(icon: .maximize2, color: colors.textPrimary)
@@ -54,6 +54,8 @@ struct EntryLogRow: View {
       valueText: valueText,
       date: timestamp,
       dateFormat: EntryLogRowFormat.timestamp,
+      valueStyle: .entryLogValue,
+      dateStyle: .entryLogTimestamp,
       trailing: {
         if let onDelete {
           Button(action: onDelete) {

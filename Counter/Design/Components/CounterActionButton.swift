@@ -66,6 +66,41 @@ struct CounterIconButton: View {
   }
 }
 
+/// Bottom tab-bar item: slightly larger icon with a tiny label underneath.
+struct CounterTabBarButton: View {
+  @Environment(\.semanticColors) private var colors
+  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
+
+  let icon: CounterLucideIconName
+  let label: String
+  let action: () -> Void
+
+  var body: some View {
+    Button {
+      guard !counterRevealIsDragging else { return }
+      action()
+    } label: {
+      VStack(spacing: SizeToken.tabBarIconToLabel) {
+        CounterLucideIcon(
+          icon: icon,
+          color: colors.textPrimary,
+          size: SizeToken.tabBarIconGlyph
+        )
+        .frame(width: SizeToken.tabBarIcon, height: SizeToken.tabBarIcon)
+
+        Text(label)
+          .counterTextStyle(.tabBarLabel, compact: true)
+      }
+      .frame(maxWidth: .infinity)
+      .padding(.horizontal, SizeToken.tabBarItemHorizontalPadding)
+      .padding(.vertical, SizeToken.tabBarItemVerticalPadding)
+      .contentShape(Rectangle())
+    }
+    .buttonStyle(.icon)
+    .accessibilityLabel(label)
+  }
+}
+
 extension View {
   /// Liquid glass used by the full-size counter toolbar — keep history / pager on this path.
   @ViewBuilder
@@ -112,8 +147,9 @@ struct NewCounterButton: View {
       .padding(.horizontal, SpaceToken.u2)
       .frame(maxWidth: .infinity)
       .frame(height: SizeToken.quickAddHeight)
-      .background(ComponentColor.listActionButtonFill(colors), in: RadiusToken.continuousButton)
+      .contentShape(.capsule)
     }
     .buttonStyle(.plain)
+    .glassEffect(.regular.interactive(), in: .capsule)
   }
 }

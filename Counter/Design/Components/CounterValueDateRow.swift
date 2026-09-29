@@ -5,6 +5,7 @@ struct CounterValueDateRow<Trailing: View>: View {
   private let leading: AnyView
   let date: Date
   let dateFormat: Date.FormatStyle
+  let dateStyle: CounterTextStyle
   @ViewBuilder var trailing: () -> Trailing
   var onTap: (() -> Void)?
 
@@ -12,15 +13,18 @@ struct CounterValueDateRow<Trailing: View>: View {
     valueText: String,
     date: Date,
     dateFormat: Date.FormatStyle,
+    valueStyle: CounterTextStyle = .historyListValue,
+    dateStyle: CounterTextStyle = .historyListDate,
     @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() },
     onTap: (() -> Void)? = nil
   ) {
     leading = AnyView(
       Text(valueText)
-        .counterTextStyle(.historyListValue)
+        .counterTextStyle(valueStyle)
     )
     self.date = date
     self.dateFormat = dateFormat
+    self.dateStyle = dateStyle
     self.trailing = trailing
     self.onTap = onTap
   }
@@ -29,12 +33,14 @@ struct CounterValueDateRow<Trailing: View>: View {
     @ViewBuilder leading: @escaping () -> Leading,
     date: Date,
     dateFormat: Date.FormatStyle,
+    dateStyle: CounterTextStyle = .historyListDate,
     @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() },
     onTap: (() -> Void)? = nil
   ) {
     self.leading = AnyView(leading())
     self.date = date
     self.dateFormat = dateFormat
+    self.dateStyle = dateStyle
     self.trailing = trailing
     self.onTap = onTap
   }
@@ -46,7 +52,7 @@ struct CounterValueDateRow<Trailing: View>: View {
       Spacer(minLength: 0)
 
       Text(date, format: dateFormat)
-        .counterTextStyle(.historyListDate, color: .secondary)
+        .counterTextStyle(dateStyle, color: .secondary)
 
       trailing()
     }

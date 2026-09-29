@@ -7,10 +7,15 @@ import SwiftUI
 /// - `offsetPeek` uses a custom detent so the presenting content remains visible above
 ///   the sheet.
 /// - `cornerRadiusOnly` only applies the shared corner radius, leaving detents/sizing to
-///   the caller (used by sheets that size themselves, e.g. `AmountEntrySheet`).
+///   the caller, and keeps an opaque sheet fill.
+/// - `cornerRadiusGlass` is the same as `cornerRadiusOnly` but lets the system Liquid Glass
+///   sheet background show through (used by `AmountEntrySheet`).
 enum CounterSheetPresentationStyle {
   case offsetPeek
+  /// Shared corner radius only; keeps the opaque sheet fill.
   case cornerRadiusOnly
+  /// Shared corner radius with the system Liquid Glass sheet background.
+  case cornerRadiusGlass
 }
 
 extension View {
@@ -45,6 +50,11 @@ private struct CounterSheetPresentationModifier: ViewModifier {
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationContentInteraction(.scrolls)
         .presentationBackground(colors.surfaceSheet)
+    case .cornerRadiusGlass:
+      // Omit presentationBackground so the system inset Liquid Glass sheet shows through.
+      content
+        .presentationCornerRadius(SheetToken.cornerRadius)
+        .presentationContentInteraction(.scrolls)
     }
   }
 }

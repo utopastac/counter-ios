@@ -215,6 +215,8 @@ enum CounterTextStyle: CaseIterable {
   case settingsFieldValue
   case settingsRowLabel
   case settingsRowValue
+  /// Tiny label under bottom tab-bar icons on the counter list.
+  case tabBarLabel
 
   var definition: TypeStyleDefinition {
     switch self {
@@ -264,6 +266,8 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.mdSemibold
     case .settingsRowValue:
       return TypeStyle.mdRegular
+    case .tabBarLabel:
+      return TypeStyle.xsRegular
     }
   }
 
