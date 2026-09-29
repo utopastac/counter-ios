@@ -163,6 +163,14 @@ struct AppSettingsView: View {
 
           VStack(alignment: .leading, spacing: 0) {
             SettingsSectionHeader(title: "Theme")
+            SettingsDisclosureRow(
+              icon: .palette,
+              label: "Colour pack",
+              action: { showColorPackPicker = true }
+            ) {
+              SettingsColorPackPreview(pack: colorPack.wrappedValue)
+            }
+            .accessibilityValue(colorPack.wrappedValue.label)
             SettingsToggleRow(icon: .rows3, label: "Compact", isOn: $isCompactModeEnabled)
             SettingsToggleRow(icon: .moon, label: "Dark mode", isOn: $isDarkModeEnabled)
             SettingsDisclosureRow(
@@ -179,13 +187,6 @@ struct AppSettingsView: View {
               options: ProgressRingWidth.allCases.map { ($0, $0.label) }
             )
             SettingsToggleRow(icon: .sparkle, label: "Ring glow", isOn: $isProgressRingGlowEnabled)
-            SettingsDisclosureRow(
-              icon: .palette,
-              label: "Colour pack",
-              value: colorPack.wrappedValue.label
-            ) {
-              showColorPackPicker = true
-            }
             SettingsToggleRow(icon: .blend, label: "Tint", isOn: $isTintEnabled)
             SettingsToggleRow(icon: .paintBucket, label: "Mono", isOn: $isMonoEnabled)
           }

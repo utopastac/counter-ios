@@ -15,6 +15,10 @@ enum SettingsToken {
   static let labelToField: CGFloat = SpaceToken.x1
   /// Vertical gap between stacked labeled fields (Title / Unit, etc.).
   static let fieldSpacing: CGFloat = SpaceToken.u3
+  /// Edge length of each mini swatch in the colour-pack settings row preview.
+  static let colorPackSwatchSize: CGFloat = 14
+  /// Gap between mini swatches in the colour-pack settings row preview.
+  static let colorPackSwatchGap: CGFloat = 1
 }
 
 extension View {
@@ -127,13 +131,37 @@ struct SettingsActionRow: View {
 }
 
 /// Tappable settings row that shows the current value and opens a detail picker.
-struct SettingsDisclosureRow: View {
+struct SettingsDisclosureRow<Trailing: View>: View {
   @Environment(\.semanticColors) private var colors
 
   let icon: CounterLucideIconName
   let label: String
-  let value: String
+  let trailing: Trailing
   let action: () -> Void
+
+  init(
+    icon: CounterLucideIconName,
+    label: String,
+    value: String,
+    action: @escaping () -> Void
+  ) where Trailing == SettingsDisclosureValueLabel {
+    self.icon = icon
+    self.label = label
+    self.trailing = SettingsDisclosureValueLabel(value: value)
+    self.action = action
+  }
+
+  init(
+    icon: CounterLucideIconName,
+    label: String,
+    action: @escaping () -> Void,
+    @ViewBuilder trailing: () -> Trailing
+  ) {
+    self.icon = icon
+    self.label = label
+    self.trailing = trailing()
+    self.action = action
+  }
 
   var body: some View {
     Button(action: action) {
@@ -145,14 +173,52 @@ struct SettingsDisclosureRow: View {
 
         Spacer(minLength: SpaceToken.u1)
 
-        Text(value)
-          .counterTextStyle(.settingsRowValue, compact: true)
+        trailing
       }
       .frame(minHeight: SizeToken.quickAddHeight)
       .frame(maxWidth: .infinity, alignment: .leading)
       .contentShape(Rectangle())
     }
     .buttonStyle(.scrollSafe)
+  }
+}
+
+struct SettingsDisclosureValueLabel: View {
+  let value: String
+
+  var body: some View {
+    Text(value)
+      .counterTextStyle(.settingsRowValue, compact: true)
+  }
+}
+
+/// Compact 5×2 swatch grid for the active colour pack on the Theme settings row.
+struct SettingsColorPackPreview: View {
+  @Environment(\.colorScheme) private var colorScheme
+
+  let pack: CounterColorPack
+
+  var body: some View {
+    let scheme = pack.resolvedScheme(for: colorScheme)
+    VStack(spacing: SettingsToken.colorPackSwatchGap) {
+      ForEach(0..<2, id: \.self) { row in
+        HStack(spacing: SettingsToken.colorPackSwatchGap) {
+          ForEach(0..<5, id: \.self) { column in
+            let entry = pack.entries[row * 5 + column]
+            RoundedRectangle(
+              cornerRadius: SizeToken.onboardingSwatchCorner,
+              style: .continuous
+            )
+            .fill(entry.backgroundStyle(for: scheme))
+            .frame(
+              width: SettingsToken.colorPackSwatchSize,
+              height: SettingsToken.colorPackSwatchSize
+            )
+          }
+        }
+      }
+    }
+    .accessibilityHidden(true)
   }
 }
 
