@@ -7,82 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CDLBFCOUNTER01 /* CounterDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLFILEREF01 /* CounterDeepLink.swift */; };
-		CDLBFWIDGETS01 /* CounterDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLFILEREF01 /* CounterDeepLink.swift */; };
-		CDLBFTESTS01 /* CounterDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLFILEREF01 /* CounterDeepLink.swift */; };
-		CDLTBFTEST01 /* CounterDeepLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLTFILEREF01 /* CounterDeepLinkTests.swift */; };
-		AP10000010000000000000001 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000001 /* AppSettingsView.swift */; };
+		A10000010000000000000001 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* CounterApp.swift */; };
+		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* ContentView.swift */; };
+		A10000010000000000000014 /* CounterHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* CounterHistoryView.swift */; };
+		A10000010000000000000018 /* CreateCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* CreateCounterView.swift */; };
+		A10000010000000000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* Assets.xcassets */; };
+		AAPTFBFTEST01 /* AppAppearancePreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */; };
 		ADR10000010000000000000001 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
 		ADR10000010000000000000002 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
-		FIOBFCOUNTER01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
-		FIOBFWATCH01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
-		FIOBFTESTS01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
-		FIOVIEWBF01 /* FreshInstallOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOVIEWREF01 /* FreshInstallOnboardingView.swift */; };
-		CPPGRIDBF01 /* ColorPackPickerGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPPGRIDREF01 /* ColorPackPickerGrid.swift */; };
-		CPPVIEWBF01 /* ColorPackPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPPVIEWREF01 /* ColorPackPickerView.swift */; };
-		FPPGRIDBF01 /* FontPackPickerGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPPGRIDREF01 /* FontPackPickerGrid.swift */; };
-		FPPVIEWBF01 /* FontPackPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPPVIEWREF01 /* FontPackPickerView.swift */; };
+		ADRBFTEST01 /* AppDataResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADRFILEREF01 /* AppDataResetTests.swift */; };
+		AH10000010000000000000001 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
+		AH10000010000000000000002 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
+		AH10000010000000000000003 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
+		AI10000010000000000000001 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
+		AITBFTEST01 /* AmountInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AITFILEREF01 /* AmountInputTests.swift */; };
+		AP10000010000000000000001 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000001 /* AppSettingsView.swift */; };
 		AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
 		AP10000010000000000000003 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
 		AP10000010000000000000004 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
 		AP10000010000000000000005 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
-		AH10000010000000000000001 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
-		AH10000010000000000000002 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
-		AH10000010000000000000003 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
-		A10000010000000000000001 /* CounterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* CounterApp.swift */; };
-		BS10000010000000000000001 /* BootSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BS20000010000000000000001 /* BootSplashView.swift */; };
-		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* ContentView.swift */; };
-		DS10000010000000000000023 /* HistoryPeriodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000023 /* HistoryPeriodPicker.swift */; };
-		DS10000010000000000000024 /* HistoryBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000024 /* HistoryBarChart.swift */; };
-		DS10000010000000000000026 /* CounterSheetHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000026 /* CounterSheetHeader.swift */; };
-		DS10000010000000000000027 /* CounterToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000027 /* CounterToggle.swift */; };
-		DS10000010000000000000025 /* HistoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000025 /* HistoryList.swift */; };
-		CVDROWBF01 /* CounterValueDateRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CVDROWFR01 /* CounterValueDateRow.swift */; };
-		A10000010000000000000014 /* CounterHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014 /* CounterHistoryView.swift */; };
-		A10000010000000000000018 /* CreateCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* CreateCounterView.swift */; };
-		A10000010000000000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* Assets.xcassets */; };
+		ASDBFCOUNTER01 /* AppSounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASDFILEREF01 /* AppSounds.swift */; };
+		ASDBFTESTS01 /* AppSounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASDFILEREF01 /* AppSounds.swift */; };
+		ASDBFWATCH01 /* AppSounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASDFILEREF01 /* AppSounds.swift */; };
+		ASSBFCOUNTER01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
+		ASSBFTESTS01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
+		ASSBFWATCH01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
+		ASSBFWIDGET01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
+		ASSTBFTEST01 /* AppSoundStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSTFILEREF01 /* AppSoundStyleTests.swift */; };
 		B10000010000000000000001 /* CounterWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000001 /* CounterWatchApp.swift */; };
 		B10000010000000000000002 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000002 /* WatchContentView.swift */; };
 		B10000010000000000000004 /* WatchQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000004 /* WatchQuickAddGrid.swift */; };
 		B10000010000000000000005 /* WatchCounterPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000005 /* WatchCounterPagerView.swift */; };
 		B10000010000000000000006 /* WatchCounterPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000006 /* WatchCounterPageView.swift */; };
-		B10000010000000000000010 /* WatchQuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000011 /* WatchQuickAddView.swift */; };
-		B10000010000000000000011 /* WatchGoalProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000010 /* WatchGoalProgressRing.swift */; };
-		CPDBFWATCH01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
-		B10000010000000000000012 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000012 /* WatchTheme.swift */; };
-		PRABFWATCH01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
-		PRWBFCOUNTER01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
-		PRWBFWATCH01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
-		PRWBFWIDGET01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
-		PRWBFTESTS01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
-		PRWTBFTEST01 /* ProgressRingWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWTFILEREF01 /* ProgressRingWidthTests.swift */; };
-		FPKBFCOUNTER01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
-		FPKBFWATCH01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
-		FPKBFWIDGET01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
-		FPKBFTESTS01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
-		PRABFTESTS01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
-		CRPBFCOUNTER01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
-		CRPBFWATCH01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
-		CRPBFWIDGET01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
-		CRPBFTESTS01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
-		ASSBFCOUNTER01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
-		ASSBFWATCH01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
-		ASSBFWIDGET01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
-		ASSBFTESTS01 /* AppSoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSFILEREF01 /* AppSoundStyle.swift */; };
-		ASDBFCOUNTER01 /* AppSounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASDFILEREF01 /* AppSounds.swift */; };
-		ASDBFWATCH01 /* AppSounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASDFILEREF01 /* AppSounds.swift */; };
-		ASDBFTESTS01 /* AppSounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASDFILEREF01 /* AppSounds.swift */; };
-		FPKTBFTEST01 /* FontPackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKTFILEREF01 /* FontPackTests.swift */; };
-		PRSTBFTEST01 /* ProgressRingStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRSTFILEREF01 /* ProgressRingStyleTests.swift */; };
-		ASSTBFTEST01 /* AppSoundStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ASSTFILEREF01 /* AppSoundStyleTests.swift */; };
-
-		CETBFTEST01 /* CounterExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CETFILEREF01 /* CounterExportTests.swift */; };
-		WSTBFTEST01 /* WatchSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WSTFILEREF01 /* WatchSyncTests.swift */; };
-		AAPTFBFTEST01 /* AppAppearancePreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */; };
-		CCPTBFTEST01 /* CounterColorPackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPTFILEREF01 /* CounterColorPackTests.swift */; };
-		CTGBFCounterExport01 /* CounterExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20000010000000000000001 /* CounterExport.swift */; };
 		B10000010000000000000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000007 /* Assets.xcassets */; };
 		B10000010000000000000008 /* CounterWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B30000010000000000000001 /* CounterWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B10000010000000000000010 /* WatchQuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000011 /* WatchQuickAddView.swift */; };
+		B10000010000000000000011 /* WatchGoalProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000010 /* WatchGoalProgressRing.swift */; };
+		B10000010000000000000012 /* WatchTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000012 /* WatchTheme.swift */; };
+		BS10000010000000000000001 /* BootSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BS20000010000000000000001 /* BootSplashView.swift */; };
 		C10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
 		C10000010000000000000002 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
 		C10000010000000000000003 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
@@ -91,11 +53,66 @@
 		C10000010000000000000007 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
 		C10000010000000000000009 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		C10000010000000000000011 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
-		WS10000010000000000000001 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
-		WS10000010000000000000002 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
-		WS10000010000000000000003 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
-		QAS10000010000000000000001 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
 		C10000010000000000000012 /* PreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000012 /* PreviewModel.swift */; };
+		C10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000008 /* WidgetSnapshotSync.swift */; };
+		CA10000010000000000000001 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
+		CATBFTEST01 /* CounterAmountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CATFILEREF01 /* CounterAmountTests.swift */; };
+		CAWATCHBFCounterAmount01 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
+		CAWBFCounterAmount01 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
+		CCPBFCOUNTER01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
+		CCPBFWATCH01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
+		CCPBFWIDGET01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
+		CCPTBFTEST01 /* CounterColorPackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPTFILEREF01 /* CounterColorPackTests.swift */; };
+		CDLBFCOUNTER01 /* CounterDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLFILEREF01 /* CounterDeepLink.swift */; };
+		CDLBFTESTS01 /* CounterDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLFILEREF01 /* CounterDeepLink.swift */; };
+		CDLBFWIDGETS01 /* CounterDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLFILEREF01 /* CounterDeepLink.swift */; };
+		CDLTBFTEST01 /* CounterDeepLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDLTFILEREF01 /* CounterDeepLinkTests.swift */; };
+		CE10000010000000000000001 /* CounterExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20000010000000000000001 /* CounterExport.swift */; };
+		CETBFTEST01 /* CounterExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CETFILEREF01 /* CounterExportTests.swift */; };
+		CF10000010000000000000001 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
+		CFTBFTEST01 /* CounterFormattingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFTFILEREF01 /* CounterFormattingTests.swift */; };
+		CFV10000010000000000000001 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
+		CFVTBFTEST01 /* CounterFormValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFVTFILEREF01 /* CounterFormValidationTests.swift */; };
+		CFWATCHBFCounterFormatting01 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
+		CFWBFCounterFormatting01 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
+		CMTBFTEST01 /* CustomCounterModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CMTFILEREF01 /* CustomCounterModelTests.swift */; };
+		CPDBFCOUNTER01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
+		CPDBFTESTS01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
+		CPDBFWATCH01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
+		CPDBFWIDGET01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
+		CPPGRIDBF01 /* ColorPackPickerGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPPGRIDREF01 /* ColorPackPickerGrid.swift */; };
+		CPPVIEWBF01 /* ColorPackPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPPVIEWREF01 /* ColorPackPickerView.swift */; };
+		CPTBFTEST01 /* CounterPeriodCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPTFILEREF01 /* CounterPeriodCalculatorTests.swift */; };
+		CRPBFCOUNTER01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
+		CRPBFTESTS01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
+		CRPBFWATCH01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
+		CRPBFWIDGET01 /* CounterRingPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CRPFILEREF01 /* CounterRingPreference.swift */; };
+		CSVBFCOUNTER01 /* CounterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSVFILEREF01 /* CounterSettingsView.swift */; };
+		CT10000010000000000000001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
+		CTGBFAmountInput01 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
+		CTGBFAppDataReset01 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
+		CTGBFAppGroup01 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
+		CTGBFCounterAmount01 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
+		CTGBFCounterEntry01 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
+		CTGBFCounterExport01 /* CounterExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20000010000000000000001 /* CounterExport.swift */; };
+		CTGBFCounterFormValidation01 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
+		CTGBFCounterFormatting01 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
+		CTGBFCounterPeriod01 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
+		CTGBFCounterTemplate01 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
+		CTGBFCustomCounter01 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
+		CTGBFCustomCounterProgress01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
+		CTGBFEntryActions01 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
+		CTGBFGoalDirection01 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
+		CTGBFHistoryAggregator01 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
+		CTGBFHistoryChartScale01 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
+		CTGBFHistoryTypes01 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
+		CTGBFQuickAddConfiguration01 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
+		CTGBFSampleDataSeeder01 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
+		CTGBFSharedModelContainer01 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
+		CTGBFWidgetSnapshot01 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
+		CTWATCHBF001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
+		CTWIDGETBF001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
+		CVDROWBF01 /* CounterValueDateRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CVDROWFR01 /* CounterValueDateRow.swift */; };
 		D10000010000000000000001 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
 		D10000010000000000000002 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
 		D10000010000000000000003 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
@@ -104,21 +121,7 @@
 		D10000010000000000000007 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
 		D10000010000000000000010 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		D10000010000000000000012 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
-		WS10000010000000000000004 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
-		WS10000010000000000000005 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
-		WS10000010000000000000006 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
-		WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
-		WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
-		WS10000010000000000000009 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
-		WS10000010000000000000010 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
-		WS10000010000000000000011 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
-		QAS10000010000000000000002 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
-		F10000010000000000000001 /* CounterWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000001 /* CounterWidgetsBundle.swift */; };
-		F10000010000000000000002 /* CounterComplicationWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000002 /* CounterComplicationWidget.swift */; };
-		F10000010000000000000003 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
-		F10000010000000000000004 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
-		F10000010000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000005 /* Assets.xcassets */; };
-		F10000010000000000000006 /* CounterWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F30000010000000000000001 /* CounterWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000008 /* WidgetSnapshotSync.swift */; };
 		DS10000010000000000000001 /* BaseColorTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000001 /* BaseColorTokens.swift */; };
 		DS10000010000000000000002 /* SemanticColorTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000002 /* SemanticColorTokens.swift */; };
 		DS10000010000000000000003 /* TypographyTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000003 /* TypographyTokens.swift */; };
@@ -127,12 +130,8 @@
 		DS10000010000000000000006 /* CounterPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000006 /* CounterPalette.swift */; };
 		DS10000010000000000000007 /* DesignSystemEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000007 /* DesignSystemEnvironment.swift */; };
 		DS10000010000000000000008 /* CounterTextStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000008 /* CounterTextStyleModifier.swift */; };
-		DS10000010000000000000082 /* CounterHeaderToggleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000082 /* CounterHeaderToggleModifier.swift */; };
-		DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */; };
-		FPGBFCOUNTER01 /* ForcePressGestureModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPGFILEREF01 /* ForcePressGestureModifier.swift */; };
 		DS10000010000000000000010 /* CounterPageBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000010 /* CounterPageBackground.swift */; };
 		DS10000010000000000000014 /* PrimaryCapsuleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000014 /* PrimaryCapsuleButton.swift */; };
-		SCRBFCOUNTER01 /* SelectionControlRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCRFILEREF01 /* SelectionControlRow.swift */; };
 		DS10000010000000000000016 /* LargeAmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000016 /* LargeAmountInput.swift */; };
 		DS10000010000000000000017 /* NumericKeypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000017 /* NumericKeypad.swift */; };
 		DS10000010000000000000018 /* CounterPaletteTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000018 /* CounterPaletteTokens.swift */; };
@@ -140,108 +139,46 @@
 		DS10000010000000000000020 /* CounterActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000020 /* CounterActionButton.swift */; };
 		DS10000010000000000000021 /* CounterListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000021 /* CounterListCard.swift */; };
 		DS10000010000000000000022 /* CounterLucideIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000022 /* CounterLucideIcon.swift */; };
+		DS10000010000000000000023 /* HistoryPeriodPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000023 /* HistoryPeriodPicker.swift */; };
+		DS10000010000000000000024 /* HistoryBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000024 /* HistoryBarChart.swift */; };
+		DS10000010000000000000025 /* HistoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000025 /* HistoryList.swift */; };
+		DS10000010000000000000026 /* CounterSheetHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000026 /* CounterSheetHeader.swift */; };
+		DS10000010000000000000027 /* CounterToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000027 /* CounterToggle.swift */; };
 		DS10000010000000000000028 /* EntryAddedToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000028 /* EntryAddedToast.swift */; };
-		SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
-		SD10000010000000000000002 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
-		S10000010000000000000001 /* AmountEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = S20000010000000000000001 /* AmountEntrySheet.swift */; };
-		T10000010000000000000001 /* CompactEntryLogPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000001 /* CompactEntryLogPreview.swift */; };
-		T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000003 /* NoHighlightButtonStyle.swift */; };
+		DS10000010000000000000081 /* CounterSheetPresentationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */; };
+		DS10000010000000000000082 /* CounterHeaderToggleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS20000010000000000000082 /* CounterHeaderToggleModifier.swift */; };
+		EATBFTEST01 /* EntryActionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EATFILEREF01 /* EntryActionsTests.swift */; };
+		F10000010000000000000001 /* CounterWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000001 /* CounterWidgetsBundle.swift */; };
+		F10000010000000000000002 /* CounterComplicationWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000002 /* CounterComplicationWidget.swift */; };
+		F10000010000000000000003 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
+		F10000010000000000000004 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
+		F10000010000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F20000010000000000000005 /* Assets.xcassets */; };
+		F10000010000000000000006 /* CounterWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F30000010000000000000001 /* CounterWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FIOBFCOUNTER01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
+		FIOBFTESTS01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
+		FIOBFWATCH01 /* FreshInstallOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOFILEREF01 /* FreshInstallOnboarding.swift */; };
+		FIOVIEWBF01 /* FreshInstallOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FIOVIEWREF01 /* FreshInstallOnboardingView.swift */; };
+		FPGBFCOUNTER01 /* ForcePressGestureModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPGFILEREF01 /* ForcePressGestureModifier.swift */; };
+		FPKBFCOUNTER01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
+		FPKBFTESTS01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
+		FPKBFWATCH01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
+		FPKBFWIDGET01 /* FontPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKFILEREF01 /* FontPack.swift */; };
+		FPKTBFTEST01 /* FontPackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPKTFILEREF01 /* FontPackTests.swift */; };
+		FPPGRIDBF01 /* FontPackPickerGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPPGRIDREF01 /* FontPackPickerGrid.swift */; };
+		FPPVIEWBF01 /* FontPackPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPPVIEWREF01 /* FontPackPickerView.swift */; };
+		FPS0000010000000000000001 /* FPSCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPS0000010000000000000002 /* FPSCounterView.swift */; };
 		G10000010000000000000002 /* CounterPageLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000002 /* CounterPageLayout.swift */; };
 		G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000004 /* CustomCounterPageContent.swift */; };
 		G10000010000000000000006 /* CounterPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000006 /* CounterPagerView.swift */; };
 		G10000010000000000000007 /* CompactCounterCardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000007 /* CompactCounterCardLayout.swift */; };
-		M10000010000000000000001 /* AllCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = M20000010000000000000001 /* AllCountersListView.swift */; };
-		J10000010000000000000001 /* TodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = J20000010000000000000001 /* TodayLogView.swift */; };
-		K10000010000000000000001 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
-		K10000010000000000000002 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
-		L10000010000000000000001 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
-		L10000010000000000000002 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
-		Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
-		Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
-		L10000010000000000000003 /* GoalProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000002 /* GoalProgressRing.swift */; };
-		FPS0000010000000000000001 /* FPSCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FPS0000010000000000000002 /* FPSCounterView.swift */; };
-		N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000001 /* CompactQuickAddGrid.swift */; };
-		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
-		P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* CounterUnderlayReveal.swift */; };
-		P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000002 /* ScrollPanDisabler.swift */; };
-
-		AI10000010000000000000001 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
-		CTGBFAmountInput01 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
-		CF10000010000000000000001 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
-		CA10000010000000000000001 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
-		CTGBFCounterFormatting01 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
-		CTGBFCounterAmount01 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
-		CFWBFCounterFormatting01 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
-		CAWBFCounterAmount01 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
-		CFWATCHBFCounterFormatting01 /* CounterFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF20000010000000000000001 /* CounterFormatting.swift */; };
-		CAWATCHBFCounterAmount01 /* CounterAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA20000010000000000000001 /* CounterAmount.swift */; };
-		CT10000010000000000000001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
-		CTWATCHBF001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
-		CTWIDGETBF001 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
-		CTGBFCounterTemplate01 /* CounterTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CT20000010000000000000001 /* CounterTemplate.swift */; };
-		CTGBFAppDataReset01 /* AppDataReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADR20000010000000000000001 /* AppDataReset.swift */; };
-		CPDBFTESTS01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
-		CTGBFSampleDataSeeder01 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
-		CE10000010000000000000001 /* CounterExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE20000010000000000000001 /* CounterExport.swift */; };
-		CFV10000010000000000000001 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
-		CTGBFCounterFormValidation01 /* CounterFormValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFV20000010000000000000001 /* CounterFormValidation.swift */; };
-		HCS10000010000000000000001 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
-		CTGBFHistoryChartScale01 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
-		AITBFTEST01 /* AmountInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AITFILEREF01 /* AmountInputTests.swift */; };
-		CFTBFTEST01 /* CounterFormattingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFTFILEREF01 /* CounterFormattingTests.swift */; };
-		CATBFTEST01 /* CounterAmountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CATFILEREF01 /* CounterAmountTests.swift */; };
-		ADRBFTEST01 /* AppDataResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADRFILEREF01 /* AppDataResetTests.swift */; };
-		CFVTBFTEST01 /* CounterFormValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFVTFILEREF01 /* CounterFormValidationTests.swift */; };
-		HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCTFILEREF01 /* HistoryChartScaleTests.swift */; };
-
-		SCTBFCOUNTER01 /* SettingsControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCTFILEREF01 /* SettingsControls.swift */; };
-		CSVBFCOUNTER01 /* CounterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSVFILEREF01 /* CounterSettingsView.swift */; };
-		CPDBFCOUNTER01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
-		CPDBFWIDGET01 /* CounterPaletteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPDFILEREF01 /* CounterPaletteData.swift */; };
-		PRABFCOUNTER01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
-		PRABFWIDGET01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
-		CCPBFCOUNTER01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
-		CCPBFWATCH01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
-		CCPBFWIDGET01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
-		LOGBFCOUNTER01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
-		LOGBFWATCH01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
-		LOGBFWIDGET01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
-		LOGBFTEST01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
-
-		CTGBFCustomCounter01 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
-		CTGBFCounterEntry01 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
-		CTGBFHistoryTypes01 /* HistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000002 /* HistoryTypes.swift */; };
-		CTGBFCounterPeriod01 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
-		CTGBFGoalDirection01 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
-		CTGBFHistoryAggregator01 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
-		CTGBFQuickAddConfiguration01 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
-		CTGBFEntryActions01 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
-		CTGBFAppGroup01 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
-		CTGBFSharedModelContainer01 /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000003 /* SharedModelContainer.swift */; };
-		CTGBFWidgetSnapshot01 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
-		CTGBFCustomCounterProgress01 /* CustomCounter+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCPFILEREF01 /* CustomCounter+Progress.swift */; };
-		QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
-		QASTBFTEST01 /* QuickAddSessionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = QASTFILEREF01 /* QuickAddSessionStoreTests.swift */; };
-
-		TMCBFTEST01 /* TestModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMCFILEREF01 /* TestModelContainer.swift */; };
-		CPTBFTEST01 /* CounterPeriodCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CPTFILEREF01 /* CounterPeriodCalculatorTests.swift */; };
 		GPTBFTEST01 /* GoalProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = GPTFILEREF01 /* GoalProgressTests.swift */; };
 		HATBFTEST01 /* HistoryAggregatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HATFILEREF01 /* HistoryAggregatorTests.swift */; };
-		QCTBFTEST01 /* QuickAddConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = QCTFILEREF01 /* QuickAddConfigurationTests.swift */; };
-		CMTBFTEST01 /* CustomCounterModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CMTFILEREF01 /* CustomCounterModelTests.swift */; };
-		EATBFTEST01 /* EntryActionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EATFILEREF01 /* EntryActionsTests.swift */; };
-
+		HCS10000010000000000000001 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
+		HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCTFILEREF01 /* HistoryChartScaleTests.swift */; };
 		IW10000010000000000000001 /* CounterHomeWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */; };
 		IW10000010000000000000002 /* CounterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000002 /* CounterWidget.swift */; };
 		IW10000010000000000000003 /* AddCounterEntryIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000003 /* AddCounterEntryIntent.swift */; };
-		IW10000010000000000000019 /* CounterWidgetEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000009 /* CounterWidgetEntity.swift */; };
-		IW10000010000000000000020 /* CounterWidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000010 /* CounterWidgetConfigurationIntent.swift */; };
-		IW10000010000000000000022 /* CounterWidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000012 /* CounterWidgetSnapshot.swift */; };
-		IW10000010000000000000023 /* WidgetPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000013 /* WidgetPalette.swift */; };
-		IW10000010000000000000024 /* WidgetCounterLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000014 /* WidgetCounterLoader.swift */; };
 		IW10000010000000000000004 /* WidgetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000004 /* WidgetTheme.swift */; };
-		IW10000010000000000000025 /* WidgetHeroHeading.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000025 /* WidgetHeroHeading.swift */; };
-		IW10000010000000000000026 /* WidgetSmallHeroStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000026 /* WidgetSmallHeroStack.swift */; };
 		IW10000010000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000007 /* Assets.xcassets */; };
 		IW10000010000000000000006 /* CounterWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = IW30000010000000000000001 /* CounterWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		IW10000010000000000000007 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000001 /* AppGroup.swift */; };
@@ -250,12 +187,68 @@
 		IW10000010000000000000012 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
 		IW10000010000000000000013 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
 		IW10000010000000000000015 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
-		QAS10000010000000000000003 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
 		IW10000010000000000000016 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
 		IW10000010000000000000017 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
 		IW10000010000000000000018 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
-		C10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000008 /* WidgetSnapshotSync.swift */; };
-		D10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000008 /* WidgetSnapshotSync.swift */; };
+		IW10000010000000000000019 /* CounterWidgetEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000009 /* CounterWidgetEntity.swift */; };
+		IW10000010000000000000020 /* CounterWidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000010 /* CounterWidgetConfigurationIntent.swift */; };
+		IW10000010000000000000022 /* CounterWidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000012 /* CounterWidgetSnapshot.swift */; };
+		IW10000010000000000000023 /* WidgetPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000013 /* WidgetPalette.swift */; };
+		IW10000010000000000000024 /* WidgetCounterLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000014 /* WidgetCounterLoader.swift */; };
+		IW10000010000000000000025 /* WidgetHeroHeading.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000025 /* WidgetHeroHeading.swift */; };
+		IW10000010000000000000026 /* WidgetSmallHeroStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000026 /* WidgetSmallHeroStack.swift */; };
+		J10000010000000000000001 /* TodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = J20000010000000000000001 /* TodayLogView.swift */; };
+		K10000010000000000000001 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
+		K10000010000000000000002 /* CounterPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = K20000010000000000000001 /* CounterPeriod.swift */; };
+		L10000010000000000000001 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
+		L10000010000000000000002 /* GoalDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000001 /* GoalDirection.swift */; };
+		L10000010000000000000003 /* GoalProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = L20000010000000000000002 /* GoalProgressRing.swift */; };
+		LOGBFCOUNTER01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
+		LOGBFTEST01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
+		LOGBFWATCH01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
+		LOGBFWIDGET01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
+		M10000010000000000000001 /* AllCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = M20000010000000000000001 /* AllCountersListView.swift */; };
+		N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000001 /* CompactQuickAddGrid.swift */; };
+		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
+		P10000010000000000000001 /* CounterUnderlayReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000001 /* CounterUnderlayReveal.swift */; };
+		P10000010000000000000002 /* ScrollPanDisabler.swift in Sources */ = {isa = PBXBuildFile; fileRef = P20000010000000000000002 /* ScrollPanDisabler.swift */; };
+		PRABFCOUNTER01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
+		PRABFTESTS01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
+		PRABFWATCH01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
+		PRABFWIDGET01 /* ProgressRingArc.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRAFILEREF01 /* ProgressRingArc.swift */; };
+		PRSTBFTEST01 /* ProgressRingStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRSTFILEREF01 /* ProgressRingStyleTests.swift */; };
+		PRWBFCOUNTER01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWBFTESTS01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWBFWATCH01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWBFWIDGET01 /* ProgressRingWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWFILEREF01 /* ProgressRingWidth.swift */; };
+		PRWTBFTEST01 /* ProgressRingWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRWTFILEREF01 /* ProgressRingWidthTests.swift */; };
+		Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
+		Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = Q20000010000000000000001 /* QuickAddConfiguration.swift */; };
+		QAS10000010000000000000001 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
+		QAS10000010000000000000002 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
+		QAS10000010000000000000003 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
+		QAS10000010000000000000004 /* QuickAddSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = QAS20000010000000000000001 /* QuickAddSessionStore.swift */; };
+		QASTBFTEST01 /* QuickAddSessionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = QASTFILEREF01 /* QuickAddSessionStoreTests.swift */; };
+		QCTBFTEST01 /* QuickAddConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = QCTFILEREF01 /* QuickAddConfigurationTests.swift */; };
+		S10000010000000000000001 /* AmountEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = S20000010000000000000001 /* AmountEntrySheet.swift */; };
+		SCRBFCOUNTER01 /* SelectionControlRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCRFILEREF01 /* SelectionControlRow.swift */; };
+		SCTBFCOUNTER01 /* SettingsControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCTFILEREF01 /* SettingsControls.swift */; };
+		SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
+		SD10000010000000000000002 /* SampleDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = SD20000010000000000000001 /* SampleDataSeeder.swift */; };
+		T10000010000000000000001 /* CompactEntryLogPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000001 /* CompactEntryLogPreview.swift */; };
+		T10000010000000000000003 /* NoHighlightButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = T20000010000000000000003 /* NoHighlightButtonStyle.swift */; };
+		TMCBFTEST01 /* TestModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMCFILEREF01 /* TestModelContainer.swift */; };
+		WS10000010000000000000001 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000002 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
+		WS10000010000000000000003 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
+		WS10000010000000000000004 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000005 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
+		WS10000010000000000000006 /* WatchSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000003 /* WatchSyncCoordinator.swift */; };
+		WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
+		WS10000010000000000000010 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
+		WS10000010000000000000011 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
+		WSTBFTEST01 /* WatchSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WSTFILEREF01 /* WatchSyncTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -273,7 +266,6 @@
 			remoteGlobalIDString = F60000010000000000000001;
 			remoteInfo = CounterWatchWidgets;
 		};
-
 		E10000010000000000000003 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A90000010000000000000001 /* Project object */;
@@ -306,7 +298,6 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-
 		IW70000010000000000000003 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -321,44 +312,38 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AP20000010000000000000001 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
-		ADR20000010000000000000001 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
-		FIOFILEREF01 /* FreshInstallOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshInstallOnboarding.swift; sourceTree = "<group>"; };
-		FIOVIEWREF01 /* FreshInstallOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshInstallOnboardingView.swift; sourceTree = "<group>"; };
-		CPPGRIDREF01 /* ColorPackPickerGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPackPickerGrid.swift; sourceTree = "<group>"; };
-		CPPVIEWREF01 /* ColorPackPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPackPickerView.swift; sourceTree = "<group>"; };
-		FPPGRIDREF01 /* FontPackPickerGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPackPickerGrid.swift; sourceTree = "<group>"; };
-		FPPVIEWREF01 /* FontPackPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPackPickerView.swift; sourceTree = "<group>"; };
-		AP20000010000000000000002 /* AppAppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreference.swift; sourceTree = "<group>"; };
-		AH20000010000000000000001 /* AppHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHaptics.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* CounterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterApp.swift; sourceTree = "<group>"; };
-		BS20000010000000000000001 /* BootSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootSplashView.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		DS20000010000000000000023 /* HistoryPeriodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPeriodPicker.swift; sourceTree = "<group>"; };
-		DS20000010000000000000024 /* HistoryBarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryBarChart.swift; sourceTree = "<group>"; };
-		DS20000010000000000000026 /* CounterSheetHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetHeader.swift; sourceTree = "<group>"; };
-		DS20000010000000000000027 /* CounterToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterToggle.swift; sourceTree = "<group>"; };
-		DS20000010000000000000025 /* HistoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryList.swift; sourceTree = "<group>"; };
-		CVDROWFR01 /* CounterValueDateRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterValueDateRow.swift; sourceTree = "<group>"; };
 		A20000010000000000000014 /* CounterHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHistoryView.swift; sourceTree = "<group>"; };
 		A20000010000000000000018 /* CreateCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCounterView.swift; sourceTree = "<group>"; };
-		CSVFILEREF01 /* CounterSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSettingsView.swift; sourceTree = "<group>"; };
 		A20000010000000000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000010000000000000021 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000010000000000000022 /* Counter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Counter.entitlements; sourceTree = "<group>"; };
 		A30000010000000000000001 /* Counter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Counter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreferenceTests.swift; sourceTree = "<group>"; };
+		ADR20000010000000000000001 /* AppDataReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataReset.swift; sourceTree = "<group>"; };
+		ADRFILEREF01 /* AppDataResetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataResetTests.swift; sourceTree = "<group>"; };
+		AH20000010000000000000001 /* AppHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHaptics.swift; sourceTree = "<group>"; };
+		AI20000010000000000000001 /* AmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInput.swift; sourceTree = "<group>"; };
+		AITFILEREF01 /* AmountInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputTests.swift; sourceTree = "<group>"; };
+		AP20000010000000000000001 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
+		AP20000010000000000000002 /* AppAppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreference.swift; sourceTree = "<group>"; };
+		ASDFILEREF01 /* AppSounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSounds.swift; sourceTree = "<group>"; };
+		ASSFILEREF01 /* AppSoundStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSoundStyle.swift; sourceTree = "<group>"; };
+		ASSTFILEREF01 /* AppSoundStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSoundStyleTests.swift; sourceTree = "<group>"; };
 		B20000010000000000000001 /* CounterWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWatchApp.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
 		B20000010000000000000004 /* WatchQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddGrid.swift; sourceTree = "<group>"; };
 		B20000010000000000000005 /* WatchCounterPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterPagerView.swift; sourceTree = "<group>"; };
 		B20000010000000000000006 /* WatchCounterPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCounterPageView.swift; sourceTree = "<group>"; };
-		B20000010000000000000011 /* WatchQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddView.swift; sourceTree = "<group>"; };
-		B20000010000000000000012 /* WatchTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTheme.swift; sourceTree = "<group>"; };
-		B20000010000000000000010 /* WatchGoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchGoalProgressRing.swift; sourceTree = "<group>"; };
 		B20000010000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B20000010000000000000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B20000010000000000000009 /* CounterWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWatch.entitlements; sourceTree = "<group>"; };
+		B20000010000000000000010 /* WatchGoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchGoalProgressRing.swift; sourceTree = "<group>"; };
+		B20000010000000000000011 /* WatchQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddView.swift; sourceTree = "<group>"; };
+		B20000010000000000000012 /* WatchTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTheme.swift; sourceTree = "<group>"; };
 		B30000010000000000000001 /* CounterWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CounterWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BS20000010000000000000001 /* BootSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootSplashView.swift; sourceTree = "<group>"; };
 		C20000010000000000000001 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		C20000010000000000000002 /* HistoryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTypes.swift; sourceTree = "<group>"; };
 		C20000010000000000000003 /* SharedModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModelContainer.swift; sourceTree = "<group>"; };
@@ -367,42 +352,29 @@
 		C20000010000000000000007 /* CounterEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterEntry.swift; sourceTree = "<group>"; };
 		C20000010000000000000009 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
 		C20000010000000000000011 /* EntryActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActions.swift; sourceTree = "<group>"; };
-		WS20000010000000000000001 /* WatchSyncDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncDTO.swift; sourceTree = "<group>"; };
-		WS20000010000000000000002 /* WatchSyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncEngine.swift; sourceTree = "<group>"; };
-		WS20000010000000000000003 /* WatchSyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncCoordinator.swift; sourceTree = "<group>"; };
 		C20000010000000000000012 /* PreviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModel.swift; sourceTree = "<group>"; };
-		F20000010000000000000001 /* CounterWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetsBundle.swift; sourceTree = "<group>"; };
-		F20000010000000000000002 /* CounterComplicationWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterComplicationWidget.swift; sourceTree = "<group>"; };
-		F20000010000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F20000010000000000000004 /* CounterWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWatchWidgets.entitlements; sourceTree = "<group>"; };
-		F20000010000000000000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-
-		IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHomeWidgetsBundle.swift; sourceTree = "<group>"; };
-		IW20000010000000000000002 /* CounterWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidget.swift; sourceTree = "<group>"; };
-		IW20000010000000000000003 /* AddCounterEntryIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCounterEntryIntent.swift; sourceTree = "<group>"; };
-		IW20000010000000000000009 /* CounterWidgetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetEntity.swift; sourceTree = "<group>"; };
-		IW20000010000000000000010 /* CounterWidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetConfigurationIntent.swift; sourceTree = "<group>"; };
-		IW20000010000000000000012 /* CounterWidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetSnapshot.swift; sourceTree = "<group>"; };
-		IW20000010000000000000008 /* WidgetSnapshotSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotSync.swift; sourceTree = "<group>"; };
-		IW20000010000000000000013 /* WidgetPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPalette.swift; sourceTree = "<group>"; };
-		IW20000010000000000000014 /* WidgetCounterLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCounterLoader.swift; sourceTree = "<group>"; };
-		IW20000010000000000000004 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
-		IW20000010000000000000025 /* WidgetHeroHeading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetHeroHeading.swift; sourceTree = "<group>"; };
-		IW20000010000000000000026 /* WidgetSmallHeroStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSmallHeroStack.swift; sourceTree = "<group>"; };
-		IW20000010000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		IW20000010000000000000006 /* CounterWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWidgets.entitlements; sourceTree = "<group>"; };
-		IW20000010000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		IW30000010000000000000001 /* CounterWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CounterWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		F30000010000000000000001 /* CounterWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CounterWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		CTGPRODUCT001 /* CounterTests.xctest */ = {isa = PBXFileReference; explicitFileType = "wrapper.cfbundle"; includeInIndex = 0; path = CounterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		TMCFILEREF01 /* TestModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModelContainer.swift; sourceTree = "<group>"; };
-		CPTFILEREF01 /* CounterPeriodCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPeriodCalculatorTests.swift; sourceTree = "<group>"; };
-		GPTFILEREF01 /* GoalProgressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressTests.swift; sourceTree = "<group>"; };
-		HATFILEREF01 /* HistoryAggregatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAggregatorTests.swift; sourceTree = "<group>"; };
-		QCTFILEREF01 /* QuickAddConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddConfigurationTests.swift; sourceTree = "<group>"; };
+		CA20000010000000000000001 /* CounterAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterAmount.swift; sourceTree = "<group>"; };
+		CATFILEREF01 /* CounterAmountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterAmountTests.swift; sourceTree = "<group>"; };
+		CCPFILEREF01 /* CustomCounter+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomCounter+Progress.swift"; sourceTree = "<group>"; };
+		CCPTFILEREF01 /* CounterColorPackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterColorPackTests.swift; sourceTree = "<group>"; };
+		CDLFILEREF01 /* CounterDeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterDeepLink.swift; sourceTree = "<group>"; };
+		CDLTFILEREF01 /* CounterDeepLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterDeepLinkTests.swift; sourceTree = "<group>"; };
+		CE20000010000000000000001 /* CounterExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterExport.swift; sourceTree = "<group>"; };
+		CETFILEREF01 /* CounterExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterExportTests.swift; sourceTree = "<group>"; };
+		CF20000010000000000000001 /* CounterFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormatting.swift; sourceTree = "<group>"; };
+		CFTFILEREF01 /* CounterFormattingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormattingTests.swift; sourceTree = "<group>"; };
+		CFV20000010000000000000001 /* CounterFormValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidation.swift; sourceTree = "<group>"; };
+		CFVTFILEREF01 /* CounterFormValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidationTests.swift; sourceTree = "<group>"; };
 		CMTFILEREF01 /* CustomCounterModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterModelTests.swift; sourceTree = "<group>"; };
-		EATFILEREF01 /* EntryActionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActionsTests.swift; sourceTree = "<group>"; };
-		QASTFILEREF01 /* QuickAddSessionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStoreTests.swift; sourceTree = "<group>"; };
+		CPDFILEREF01 /* CounterPaletteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPaletteData.swift; sourceTree = "<group>"; };
+		CPPGRIDREF01 /* ColorPackPickerGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPackPickerGrid.swift; sourceTree = "<group>"; };
+		CPPVIEWREF01 /* ColorPackPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPackPickerView.swift; sourceTree = "<group>"; };
+		CPTFILEREF01 /* CounterPeriodCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPeriodCalculatorTests.swift; sourceTree = "<group>"; };
+		CRPFILEREF01 /* CounterRingPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterRingPreference.swift; sourceTree = "<group>"; };
+		CSVFILEREF01 /* CounterSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSettingsView.swift; sourceTree = "<group>"; };
+		CT20000010000000000000001 /* CounterTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTemplate.swift; sourceTree = "<group>"; };
+		CTGPRODUCT001 /* CounterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CounterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CVDROWFR01 /* CounterValueDateRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterValueDateRow.swift; sourceTree = "<group>"; };
 		DS20000010000000000000001 /* BaseColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseColorTokens.swift; sourceTree = "<group>"; };
 		DS20000010000000000000002 /* SemanticColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticColorTokens.swift; sourceTree = "<group>"; };
 		DS20000010000000000000003 /* TypographyTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypographyTokens.swift; sourceTree = "<group>"; };
@@ -411,12 +383,8 @@
 		DS20000010000000000000006 /* CounterPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPalette.swift; sourceTree = "<group>"; };
 		DS20000010000000000000007 /* DesignSystemEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemEnvironment.swift; sourceTree = "<group>"; };
 		DS20000010000000000000008 /* CounterTextStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextStyleModifier.swift; sourceTree = "<group>"; };
-		DS20000010000000000000082 /* CounterHeaderToggleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHeaderToggleModifier.swift; sourceTree = "<group>"; };
-		DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetPresentationModifier.swift; sourceTree = "<group>"; };
-		FPGFILEREF01 /* ForcePressGestureModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForcePressGestureModifier.swift; sourceTree = "<group>"; };
 		DS20000010000000000000010 /* CounterPageBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageBackground.swift; sourceTree = "<group>"; };
 		DS20000010000000000000014 /* PrimaryCapsuleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryCapsuleButton.swift; sourceTree = "<group>"; };
-		SCRFILEREF01 /* SelectionControlRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionControlRow.swift; sourceTree = "<group>"; };
 		DS20000010000000000000016 /* LargeAmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeAmountInput.swift; sourceTree = "<group>"; };
 		DS20000010000000000000017 /* NumericKeypad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericKeypad.swift; sourceTree = "<group>"; };
 		DS20000010000000000000018 /* CounterPaletteTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPaletteTokens.swift; sourceTree = "<group>"; };
@@ -424,60 +392,82 @@
 		DS20000010000000000000020 /* CounterActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterActionButton.swift; sourceTree = "<group>"; };
 		DS20000010000000000000021 /* CounterListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterListCard.swift; sourceTree = "<group>"; };
 		DS20000010000000000000022 /* CounterLucideIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterLucideIcon.swift; sourceTree = "<group>"; };
+		DS20000010000000000000023 /* HistoryPeriodPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPeriodPicker.swift; sourceTree = "<group>"; };
+		DS20000010000000000000024 /* HistoryBarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryBarChart.swift; sourceTree = "<group>"; };
+		DS20000010000000000000025 /* HistoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryList.swift; sourceTree = "<group>"; };
+		DS20000010000000000000026 /* CounterSheetHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetHeader.swift; sourceTree = "<group>"; };
+		DS20000010000000000000027 /* CounterToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterToggle.swift; sourceTree = "<group>"; };
 		DS20000010000000000000028 /* EntryAddedToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryAddedToast.swift; sourceTree = "<group>"; };
-		SCTFILEREF01 /* SettingsControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsControls.swift; sourceTree = "<group>"; };
-		AI20000010000000000000001 /* AmountInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInput.swift; sourceTree = "<group>"; };
-		CF20000010000000000000001 /* CounterFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormatting.swift; sourceTree = "<group>"; };
-		CA20000010000000000000001 /* CounterAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterAmount.swift; sourceTree = "<group>"; };
-		CT20000010000000000000001 /* CounterTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTemplate.swift; sourceTree = "<group>"; };
-		CE20000010000000000000001 /* CounterExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterExport.swift; sourceTree = "<group>"; };
-		CFV20000010000000000000001 /* CounterFormValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidation.swift; sourceTree = "<group>"; };
-		HCS20000010000000000000001 /* HistoryChartScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScale.swift; sourceTree = "<group>"; };
-		AITFILEREF01 /* AmountInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountInputTests.swift; sourceTree = "<group>"; };
-		CFTFILEREF01 /* CounterFormattingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormattingTests.swift; sourceTree = "<group>"; };
-		CATFILEREF01 /* CounterAmountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterAmountTests.swift; sourceTree = "<group>"; };
-		ADRFILEREF01 /* AppDataResetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataResetTests.swift; sourceTree = "<group>"; };
-		CFVTFILEREF01 /* CounterFormValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterFormValidationTests.swift; sourceTree = "<group>"; };
-		CDLFILEREF01 /* CounterDeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterDeepLink.swift; sourceTree = "<group>"; };
-		CDLTFILEREF01 /* CounterDeepLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterDeepLinkTests.swift; sourceTree = "<group>"; };
-		HCTFILEREF01 /* HistoryChartScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScaleTests.swift; sourceTree = "<group>"; };
-		QAS20000010000000000000001 /* QuickAddSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStore.swift; sourceTree = "<group>"; };
-		SD20000010000000000000001 /* SampleDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataSeeder.swift; sourceTree = "<group>"; };
-		S20000010000000000000001 /* AmountEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountEntrySheet.swift; sourceTree = "<group>"; };
-		T20000010000000000000001 /* CompactEntryLogPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactEntryLogPreview.swift; sourceTree = "<group>"; };
-		T20000010000000000000003 /* NoHighlightButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHighlightButtonStyle.swift; sourceTree = "<group>"; };
+		DS20000010000000000000081 /* CounterSheetPresentationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSheetPresentationModifier.swift; sourceTree = "<group>"; };
+		DS20000010000000000000082 /* CounterHeaderToggleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHeaderToggleModifier.swift; sourceTree = "<group>"; };
+		EATFILEREF01 /* EntryActionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActionsTests.swift; sourceTree = "<group>"; };
+		F20000010000000000000001 /* CounterWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetsBundle.swift; sourceTree = "<group>"; };
+		F20000010000000000000002 /* CounterComplicationWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterComplicationWidget.swift; sourceTree = "<group>"; };
+		F20000010000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F20000010000000000000004 /* CounterWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWatchWidgets.entitlements; sourceTree = "<group>"; };
+		F20000010000000000000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F30000010000000000000001 /* CounterWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CounterWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FIOFILEREF01 /* FreshInstallOnboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshInstallOnboarding.swift; sourceTree = "<group>"; };
+		FIOVIEWREF01 /* FreshInstallOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshInstallOnboardingView.swift; sourceTree = "<group>"; };
+		FPGFILEREF01 /* ForcePressGestureModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForcePressGestureModifier.swift; sourceTree = "<group>"; };
+		FPKFILEREF01 /* FontPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPack.swift; sourceTree = "<group>"; };
+		FPKTFILEREF01 /* FontPackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPackTests.swift; sourceTree = "<group>"; };
+		FPPGRIDREF01 /* FontPackPickerGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPackPickerGrid.swift; sourceTree = "<group>"; };
+		FPPVIEWREF01 /* FontPackPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPackPickerView.swift; sourceTree = "<group>"; };
+		FPS0000010000000000000002 /* FPSCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FPSCounterView.swift; sourceTree = "<group>"; };
 		G20000010000000000000002 /* CounterPageLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPageLayout.swift; sourceTree = "<group>"; };
 		G20000010000000000000004 /* CustomCounterPageContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounterPageContent.swift; sourceTree = "<group>"; };
 		G20000010000000000000006 /* CounterPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPagerView.swift; sourceTree = "<group>"; };
 		G20000010000000000000007 /* CompactCounterCardLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactCounterCardLayout.swift; sourceTree = "<group>"; };
-		M20000010000000000000001 /* AllCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCountersListView.swift; sourceTree = "<group>"; };
+		GPTFILEREF01 /* GoalProgressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressTests.swift; sourceTree = "<group>"; };
+		HATFILEREF01 /* HistoryAggregatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAggregatorTests.swift; sourceTree = "<group>"; };
+		HCS20000010000000000000001 /* HistoryChartScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScale.swift; sourceTree = "<group>"; };
+		HCTFILEREF01 /* HistoryChartScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScaleTests.swift; sourceTree = "<group>"; };
+		IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHomeWidgetsBundle.swift; sourceTree = "<group>"; };
+		IW20000010000000000000002 /* CounterWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidget.swift; sourceTree = "<group>"; };
+		IW20000010000000000000003 /* AddCounterEntryIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCounterEntryIntent.swift; sourceTree = "<group>"; };
+		IW20000010000000000000004 /* WidgetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetTheme.swift; sourceTree = "<group>"; };
+		IW20000010000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		IW20000010000000000000006 /* CounterWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CounterWidgets.entitlements; sourceTree = "<group>"; };
+		IW20000010000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		IW20000010000000000000008 /* WidgetSnapshotSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotSync.swift; sourceTree = "<group>"; };
+		IW20000010000000000000009 /* CounterWidgetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetEntity.swift; sourceTree = "<group>"; };
+		IW20000010000000000000010 /* CounterWidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetConfigurationIntent.swift; sourceTree = "<group>"; };
+		IW20000010000000000000012 /* CounterWidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidgetSnapshot.swift; sourceTree = "<group>"; };
+		IW20000010000000000000013 /* WidgetPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPalette.swift; sourceTree = "<group>"; };
+		IW20000010000000000000014 /* WidgetCounterLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCounterLoader.swift; sourceTree = "<group>"; };
+		IW20000010000000000000025 /* WidgetHeroHeading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetHeroHeading.swift; sourceTree = "<group>"; };
+		IW20000010000000000000026 /* WidgetSmallHeroStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSmallHeroStack.swift; sourceTree = "<group>"; };
+		IW30000010000000000000001 /* CounterWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CounterWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		J20000010000000000000001 /* TodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayLogView.swift; sourceTree = "<group>"; };
 		K20000010000000000000001 /* CounterPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPeriod.swift; sourceTree = "<group>"; };
 		L20000010000000000000001 /* GoalDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDirection.swift; sourceTree = "<group>"; };
-		Q20000010000000000000001 /* QuickAddConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddConfiguration.swift; sourceTree = "<group>"; };
-		CPDFILEREF01 /* CounterPaletteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPaletteData.swift; sourceTree = "<group>"; };
-		PRAFILEREF01 /* ProgressRingArc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingArc.swift; sourceTree = "<group>"; };
-		PRWFILEREF01 /* ProgressRingWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidth.swift; sourceTree = "<group>"; };
-		PRWTFILEREF01 /* ProgressRingWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidthTests.swift; sourceTree = "<group>"; };
-		FPKFILEREF01 /* FontPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPack.swift; sourceTree = "<group>"; };
-		CRPFILEREF01 /* CounterRingPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterRingPreference.swift; sourceTree = "<group>"; };
-		ASSFILEREF01 /* AppSoundStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSoundStyle.swift; sourceTree = "<group>"; };
-		ASDFILEREF01 /* AppSounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSounds.swift; sourceTree = "<group>"; };
-		FPKTFILEREF01 /* FontPackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPackTests.swift; sourceTree = "<group>"; };
-		PRSTFILEREF01 /* ProgressRingStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingStyleTests.swift; sourceTree = "<group>"; };
-		ASSTFILEREF01 /* AppSoundStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSoundStyleTests.swift; sourceTree = "<group>"; };
-		CETFILEREF01 /* CounterExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterExportTests.swift; sourceTree = "<group>"; };
-		WSTFILEREF01 /* WatchSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncTests.swift; sourceTree = "<group>"; };
-		AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearancePreferenceTests.swift; sourceTree = "<group>"; };
-		CCPTFILEREF01 /* CounterColorPackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterColorPackTests.swift; sourceTree = "<group>"; };
-		CCPFILEREF01 /* CustomCounter+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomCounter+Progress.swift"; sourceTree = "<group>"; };
-		LOGFILEREF01 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		L20000010000000000000002 /* GoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressRing.swift; sourceTree = "<group>"; };
-		FPS0000010000000000000002 /* FPSCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FPSCounterView.swift; sourceTree = "<group>"; };
+		LOGFILEREF01 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		M20000010000000000000001 /* AllCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCountersListView.swift; sourceTree = "<group>"; };
 		N20000010000000000000001 /* CompactQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactQuickAddGrid.swift; sourceTree = "<group>"; };
 		N20000010000000000000002 /* CustomAmountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountSheet.swift; sourceTree = "<group>"; };
 		P20000010000000000000001 /* CounterUnderlayReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterUnderlayReveal.swift; sourceTree = "<group>"; };
 		P20000010000000000000002 /* ScrollPanDisabler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollPanDisabler.swift; sourceTree = "<group>"; };
+		PRAFILEREF01 /* ProgressRingArc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingArc.swift; sourceTree = "<group>"; };
+		PRSTFILEREF01 /* ProgressRingStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingStyleTests.swift; sourceTree = "<group>"; };
+		PRWFILEREF01 /* ProgressRingWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidth.swift; sourceTree = "<group>"; };
+		PRWTFILEREF01 /* ProgressRingWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRingWidthTests.swift; sourceTree = "<group>"; };
+		Q20000010000000000000001 /* QuickAddConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddConfiguration.swift; sourceTree = "<group>"; };
+		QAS20000010000000000000001 /* QuickAddSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStore.swift; sourceTree = "<group>"; };
+		QASTFILEREF01 /* QuickAddSessionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSessionStoreTests.swift; sourceTree = "<group>"; };
+		QCTFILEREF01 /* QuickAddConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddConfigurationTests.swift; sourceTree = "<group>"; };
+		S20000010000000000000001 /* AmountEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountEntrySheet.swift; sourceTree = "<group>"; };
+		SCRFILEREF01 /* SelectionControlRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionControlRow.swift; sourceTree = "<group>"; };
+		SCTFILEREF01 /* SettingsControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsControls.swift; sourceTree = "<group>"; };
+		SD20000010000000000000001 /* SampleDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDataSeeder.swift; sourceTree = "<group>"; };
+		T20000010000000000000001 /* CompactEntryLogPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactEntryLogPreview.swift; sourceTree = "<group>"; };
+		T20000010000000000000003 /* NoHighlightButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoHighlightButtonStyle.swift; sourceTree = "<group>"; };
+		TMCFILEREF01 /* TestModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModelContainer.swift; sourceTree = "<group>"; };
+		WS20000010000000000000001 /* WatchSyncDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncDTO.swift; sourceTree = "<group>"; };
+		WS20000010000000000000002 /* WatchSyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncEngine.swift; sourceTree = "<group>"; };
+		WS20000010000000000000003 /* WatchSyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncCoordinator.swift; sourceTree = "<group>"; };
+		WSTFILEREF01 /* WatchSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSyncTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -495,6 +485,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CTGFRAMEWORKS01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F40000010000000000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -502,15 +499,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-
 		IW40000010000000000000001 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CTGFRAMEWORKS01 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -531,6 +520,162 @@
 				CTGGROUP001 /* CounterTests */,
 				A50000010000000000000003 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		A50000010000000000000002 /* Counter */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000001 /* CounterApp.swift */,
+				A20000010000000000000002 /* ContentView.swift */,
+				DS50000010000000000000001 /* Design */,
+				A50000010000000000000006 /* Views */,
+				A20000010000000000000020 /* Assets.xcassets */,
+				A20000010000000000000021 /* Info.plist */,
+				A20000010000000000000022 /* Counter.entitlements */,
+			);
+			path = Counter;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000010000000000000001 /* Counter.app */,
+				B30000010000000000000001 /* CounterWatch.app */,
+				F30000010000000000000001 /* CounterWatchWidgets.appex */,
+				IW30000010000000000000001 /* CounterWidgets.appex */,
+				CTGPRODUCT001 /* CounterTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				G50000010000000000000001 /* Pager */,
+				AP50000010000000000000001 /* Settings */,
+				FIOGROUP01 /* Onboarding */,
+				A50000010000000000000008 /* CustomCounters */,
+				A50000010000000000000009 /* History */,
+				A50000010000000000000010 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000008 /* CustomCounters */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000018 /* CreateCounterView.swift */,
+				CSVFILEREF01 /* CounterSettingsView.swift */,
+			);
+			path = CustomCounters;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000009 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000014 /* CounterHistoryView.swift */,
+				J20000010000000000000001 /* TodayLogView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		A50000010000000000000010 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				BS20000010000000000000001 /* BootSplashView.swift */,
+				FPS0000010000000000000002 /* FPSCounterView.swift */,
+				L20000010000000000000002 /* GoalProgressRing.swift */,
+				N20000010000000000000001 /* CompactQuickAddGrid.swift */,
+				N20000010000000000000002 /* CustomAmountSheet.swift */,
+				S20000010000000000000001 /* AmountEntrySheet.swift */,
+				T20000010000000000000001 /* CompactEntryLogPreview.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		AP50000010000000000000001 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				AP20000010000000000000001 /* AppSettingsView.swift */,
+				CPPVIEWREF01 /* ColorPackPickerView.swift */,
+				FPPVIEWREF01 /* FontPackPickerView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		B50000010000000000000001 /* CounterWatch */ = {
+			isa = PBXGroup;
+			children = (
+				B20000010000000000000001 /* CounterWatchApp.swift */,
+				B20000010000000000000002 /* WatchContentView.swift */,
+				B20000010000000000000004 /* WatchQuickAddGrid.swift */,
+				B20000010000000000000005 /* WatchCounterPagerView.swift */,
+				B20000010000000000000006 /* WatchCounterPageView.swift */,
+				B20000010000000000000011 /* WatchQuickAddView.swift */,
+				B20000010000000000000010 /* WatchGoalProgressRing.swift */,
+				B20000010000000000000012 /* WatchTheme.swift */,
+				B20000010000000000000007 /* Assets.xcassets */,
+				B20000010000000000000008 /* Info.plist */,
+				B20000010000000000000009 /* CounterWatch.entitlements */,
+			);
+			path = CounterWatch;
+			sourceTree = "<group>";
+		};
+		C50000010000000000000001 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C20000010000000000000001 /* AppGroup.swift */,
+				C20000010000000000000002 /* HistoryTypes.swift */,
+				C20000010000000000000003 /* SharedModelContainer.swift */,
+				C20000010000000000000004 /* HistoryAggregator.swift */,
+				K20000010000000000000001 /* CounterPeriod.swift */,
+				L20000010000000000000001 /* GoalDirection.swift */,
+				Q20000010000000000000001 /* QuickAddConfiguration.swift */,
+				C20000010000000000000009 /* WidgetSnapshot.swift */,
+				IW20000010000000000000008 /* WidgetSnapshotSync.swift */,
+				IW20000010000000000000012 /* CounterWidgetSnapshot.swift */,
+				IW20000010000000000000013 /* WidgetPalette.swift */,
+				IW20000010000000000000014 /* WidgetCounterLoader.swift */,
+				C20000010000000000000011 /* EntryActions.swift */,
+				WS20000010000000000000001 /* WatchSyncDTO.swift */,
+				WS20000010000000000000002 /* WatchSyncEngine.swift */,
+				WS20000010000000000000003 /* WatchSyncCoordinator.swift */,
+				QAS20000010000000000000001 /* QuickAddSessionStore.swift */,
+				C20000010000000000000012 /* PreviewModel.swift */,
+				SD20000010000000000000001 /* SampleDataSeeder.swift */,
+				AP20000010000000000000002 /* AppAppearancePreference.swift */,
+				AH20000010000000000000001 /* AppHaptics.swift */,
+				ADR20000010000000000000001 /* AppDataReset.swift */,
+				FIOFILEREF01 /* FreshInstallOnboarding.swift */,
+				CPDFILEREF01 /* CounterPaletteData.swift */,
+				PRAFILEREF01 /* ProgressRingArc.swift */,
+				PRWFILEREF01 /* ProgressRingWidth.swift */,
+				FPKFILEREF01 /* FontPack.swift */,
+				CRPFILEREF01 /* CounterRingPreference.swift */,
+				ASSFILEREF01 /* AppSoundStyle.swift */,
+				ASDFILEREF01 /* AppSounds.swift */,
+				CCPFILEREF01 /* CustomCounter+Progress.swift */,
+				LOGFILEREF01 /* Logging.swift */,
+				AI20000010000000000000001 /* AmountInput.swift */,
+				CF20000010000000000000001 /* CounterFormatting.swift */,
+				CA20000010000000000000001 /* CounterAmount.swift */,
+				CT20000010000000000000001 /* CounterTemplate.swift */,
+				CE20000010000000000000001 /* CounterExport.swift */,
+				CFV20000010000000000000001 /* CounterFormValidation.swift */,
+				CDLFILEREF01 /* CounterDeepLink.swift */,
+				HCS20000010000000000000001 /* HistoryChartScale.swift */,
+				C50000010000000000000002 /* Models */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		C50000010000000000000002 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C20000010000000000000006 /* CustomCounter.swift */,
+				C20000010000000000000007 /* CounterEntry.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		CTGGROUP001 /* CounterTests */ = {
@@ -561,20 +706,6 @@
 				HCTFILEREF01 /* HistoryChartScaleTests.swift */,
 			);
 			path = CounterTests;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000002 /* Counter */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000001 /* CounterApp.swift */,
-				A20000010000000000000002 /* ContentView.swift */,
-				DS50000010000000000000001 /* Design */,
-				A50000010000000000000006 /* Views */,
-				A20000010000000000000020 /* Assets.xcassets */,
-				A20000010000000000000021 /* Info.plist */,
-				A20000010000000000000022 /* Counter.entitlements */,
-			);
-			path = Counter;
 			sourceTree = "<group>";
 		};
 		DS50000010000000000000001 /* Design */ = {
@@ -656,156 +787,6 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
-		A50000010000000000000003 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A30000010000000000000001 /* Counter.app */,
-				B30000010000000000000001 /* CounterWatch.app */,
-				F30000010000000000000001 /* CounterWatchWidgets.appex */,
-				IW30000010000000000000001 /* CounterWidgets.appex */,
-				CTGPRODUCT001 /* CounterTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000006 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				G50000010000000000000001 /* Pager */,
-				AP50000010000000000000001 /* Settings */,
-				FIOGROUP01 /* Onboarding */,
-				A50000010000000000000008 /* CustomCounters */,
-				A50000010000000000000009 /* History */,
-				A50000010000000000000010 /* Components */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		FIOGROUP01 /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				FIOVIEWREF01 /* FreshInstallOnboardingView.swift */,
-			);
-			path = Onboarding;
-			sourceTree = "<group>";
-		};
-		AP50000010000000000000001 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				AP20000010000000000000001 /* AppSettingsView.swift */,
-				CPPVIEWREF01 /* ColorPackPickerView.swift */,
-				FPPVIEWREF01 /* FontPackPickerView.swift */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000008 /* CustomCounters */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000018 /* CreateCounterView.swift */,
-				CSVFILEREF01 /* CounterSettingsView.swift */,
-			);
-			path = CustomCounters;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000009 /* History */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000014 /* CounterHistoryView.swift */,
-				J20000010000000000000001 /* TodayLogView.swift */,
-			);
-			path = History;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000010 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				BS20000010000000000000001 /* BootSplashView.swift */,
-				FPS0000010000000000000002 /* FPSCounterView.swift */,
-				L20000010000000000000002 /* GoalProgressRing.swift */,
-				N20000010000000000000001 /* CompactQuickAddGrid.swift */,
-				N20000010000000000000002 /* CustomAmountSheet.swift */,
-				S20000010000000000000001 /* AmountEntrySheet.swift */,
-				T20000010000000000000001 /* CompactEntryLogPreview.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		B50000010000000000000001 /* CounterWatch */ = {
-			isa = PBXGroup;
-			children = (
-				B20000010000000000000001 /* CounterWatchApp.swift */,
-				B20000010000000000000002 /* WatchContentView.swift */,
-				B20000010000000000000004 /* WatchQuickAddGrid.swift */,
-				B20000010000000000000005 /* WatchCounterPagerView.swift */,
-				B20000010000000000000006 /* WatchCounterPageView.swift */,
-				B20000010000000000000011 /* WatchQuickAddView.swift */,
-				B20000010000000000000010 /* WatchGoalProgressRing.swift */,
-				B20000010000000000000012 /* WatchTheme.swift */,
-				B20000010000000000000007 /* Assets.xcassets */,
-				B20000010000000000000008 /* Info.plist */,
-				B20000010000000000000009 /* CounterWatch.entitlements */,
-			);
-			path = CounterWatch;
-			sourceTree = "<group>";
-		};
-		C50000010000000000000001 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				C20000010000000000000001 /* AppGroup.swift */,
-				C20000010000000000000002 /* HistoryTypes.swift */,
-				C20000010000000000000003 /* SharedModelContainer.swift */,
-				C20000010000000000000004 /* HistoryAggregator.swift */,
-				K20000010000000000000001 /* CounterPeriod.swift */,
-				L20000010000000000000001 /* GoalDirection.swift */,
-				Q20000010000000000000001 /* QuickAddConfiguration.swift */,
-				C20000010000000000000009 /* WidgetSnapshot.swift */,
-				IW20000010000000000000008 /* WidgetSnapshotSync.swift */,
-				IW20000010000000000000012 /* CounterWidgetSnapshot.swift */,
-				IW20000010000000000000013 /* WidgetPalette.swift */,
-				IW20000010000000000000014 /* WidgetCounterLoader.swift */,
-				C20000010000000000000011 /* EntryActions.swift */,
-				WS20000010000000000000001 /* WatchSyncDTO.swift */,
-				WS20000010000000000000002 /* WatchSyncEngine.swift */,
-				WS20000010000000000000003 /* WatchSyncCoordinator.swift */,
-				QAS20000010000000000000001 /* QuickAddSessionStore.swift */,
-				C20000010000000000000012 /* PreviewModel.swift */,
-				SD20000010000000000000001 /* SampleDataSeeder.swift */,
-				AP20000010000000000000002 /* AppAppearancePreference.swift */,
-				AH20000010000000000000001 /* AppHaptics.swift */,
-				ADR20000010000000000000001 /* AppDataReset.swift */,
-				FIOFILEREF01 /* FreshInstallOnboarding.swift */,
-				CPDFILEREF01 /* CounterPaletteData.swift */,
-				PRAFILEREF01 /* ProgressRingArc.swift */,
-				PRWFILEREF01 /* ProgressRingWidth.swift */,
-				FPKFILEREF01 /* FontPack.swift */,
-				CRPFILEREF01 /* CounterRingPreference.swift */,
-				ASSFILEREF01 /* AppSoundStyle.swift */,
-				ASDFILEREF01 /* AppSounds.swift */,
-				CCPFILEREF01 /* CustomCounter+Progress.swift */,
-				LOGFILEREF01 /* Logging.swift */,
-				AI20000010000000000000001 /* AmountInput.swift */,
-				CF20000010000000000000001 /* CounterFormatting.swift */,
-				CA20000010000000000000001 /* CounterAmount.swift */,
-				CT20000010000000000000001 /* CounterTemplate.swift */,
-				CE20000010000000000000001 /* CounterExport.swift */,
-				CFV20000010000000000000001 /* CounterFormValidation.swift */,
-				CDLFILEREF01 /* CounterDeepLink.swift */,
-				HCS20000010000000000000001 /* HistoryChartScale.swift */,
-				C50000010000000000000002 /* Models */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		C50000010000000000000002 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				C20000010000000000000006 /* CustomCounter.swift */,
-				C20000010000000000000007 /* CounterEntry.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		F50000010000000000000001 /* CounterWatchWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -816,6 +797,14 @@
 				F20000010000000000000004 /* CounterWatchWidgets.entitlements */,
 			);
 			path = CounterWatchWidgets;
+			sourceTree = "<group>";
+		};
+		FIOGROUP01 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				FIOVIEWREF01 /* FreshInstallOnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		G50000010000000000000001 /* Pager */ = {
@@ -832,7 +821,6 @@
 			path = Pager;
 			sourceTree = "<group>";
 		};
-
 		IW50000010000000000000001 /* CounterWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -857,7 +845,6 @@
 		A60000010000000000000001 /* Counter */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A80000010000000000000003 /* Build configuration list for PBXNativeTarget "Counter" */;
-
 			buildPhases = (
 				A70000010000000000000001 /* Sources */,
 				A40000010000000000000001 /* Frameworks */,
@@ -871,7 +858,6 @@
 				E20000010000000000000001 /* PBXTargetDependency */,
 				E20000010000000000000003 /* PBXTargetDependency */,
 			);
-
 			name = Counter;
 			productName = Counter;
 			productReference = A30000010000000000000001 /* Counter.app */;
@@ -896,42 +882,6 @@
 			productReference = B30000010000000000000001 /* CounterWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F60000010000000000000001 /* CounterWatchWidgets */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWatchWidgets" */;
-			buildPhases = (
-				F70000010000000000000001 /* Sources */,
-				F40000010000000000000001 /* Frameworks */,
-				F70000010000000000000002 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = CounterWatchWidgets;
-			productName = CounterWatchWidgets;
-			productReference = F30000010000000000000001 /* CounterWatchWidgets.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-
-		IW60000010000000000000001 /* CounterWidgets */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = IW80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWidgets" */;
-			buildPhases = (
-				IW70000010000000000000001 /* Sources */,
-				IW40000010000000000000001 /* Frameworks */,
-				IW70000010000000000000002 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = CounterWidgets;
-			productName = CounterWidgets;
-			productReference = IW30000010000000000000001 /* CounterWidgets.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-
 		CTGTARGET001 /* CounterTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CTGCFGLIST001 /* Build configuration list for PBXNativeTarget "CounterTests" */;
@@ -949,6 +899,40 @@
 			productReference = CTGPRODUCT001 /* CounterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		F60000010000000000000001 /* CounterWatchWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWatchWidgets" */;
+			buildPhases = (
+				F70000010000000000000001 /* Sources */,
+				F40000010000000000000001 /* Frameworks */,
+				F70000010000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CounterWatchWidgets;
+			productName = CounterWatchWidgets;
+			productReference = F30000010000000000000001 /* CounterWatchWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		IW60000010000000000000001 /* CounterWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = IW80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWidgets" */;
+			buildPhases = (
+				IW70000010000000000000001 /* Sources */,
+				IW40000010000000000000001 /* Frameworks */,
+				IW70000010000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CounterWidgets;
+			productName = CounterWidgets;
+			productReference = IW30000010000000000000001 /* CounterWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -965,13 +949,13 @@
 					B60000010000000000000001 = {
 						CreatedOnToolsVersion = 16.0;
 					};
+					CTGTARGET001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					F60000010000000000000001 = {
 						CreatedOnToolsVersion = 16.0;
 					};
 					IW60000010000000000000001 = {
-						CreatedOnToolsVersion = 16.0;
-					};
-					CTGTARGET001 = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
@@ -1015,6 +999,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CTGRESOURCES01 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F70000010000000000000002 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1023,19 +1014,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-
 		IW70000010000000000000002 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				IW10000010000000000000005 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CTGRESOURCES01 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1192,61 +1175,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F70000010000000000000001 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F10000010000000000000001 /* CounterWidgetsBundle.swift in Sources */,
-				F10000010000000000000002 /* CounterComplicationWidget.swift in Sources */,
-				F10000010000000000000003 /* AppGroup.swift in Sources */,
-				F10000010000000000000004 /* WidgetSnapshot.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-
-		IW70000010000000000000001 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				IW10000010000000000000001 /* CounterHomeWidgetsBundle.swift in Sources */,
-				IW10000010000000000000002 /* CounterWidget.swift in Sources */,
-				IW10000010000000000000003 /* AddCounterEntryIntent.swift in Sources */,
-				IW10000010000000000000019 /* CounterWidgetEntity.swift in Sources */,
-				IW10000010000000000000020 /* CounterWidgetConfigurationIntent.swift in Sources */,
-				IW10000010000000000000022 /* CounterWidgetSnapshot.swift in Sources */,
-				IW10000010000000000000023 /* WidgetPalette.swift in Sources */,
-				IW10000010000000000000024 /* WidgetCounterLoader.swift in Sources */,
-				IW10000010000000000000004 /* WidgetTheme.swift in Sources */,
-				IW10000010000000000000025 /* WidgetHeroHeading.swift in Sources */,
-				IW10000010000000000000026 /* WidgetSmallHeroStack.swift in Sources */,
-				IW10000010000000000000007 /* AppGroup.swift in Sources */,
-				AP10000010000000000000004 /* AppAppearancePreference.swift in Sources */,
-				IW10000010000000000000008 /* WidgetSnapshot.swift in Sources */,
-				IW10000010000000000000010 /* SharedModelContainer.swift in Sources */,
-				CTWIDGETBF001 /* CounterTemplate.swift in Sources */,
-				IW10000010000000000000012 /* CustomCounter.swift in Sources */,
-				IW10000010000000000000013 /* CounterEntry.swift in Sources */,
-				IW10000010000000000000015 /* EntryActions.swift in Sources */,
-				WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */,
-				WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */,
-				QAS10000010000000000000003 /* QuickAddSessionStore.swift in Sources */,
-				IW10000010000000000000016 /* CounterPeriod.swift in Sources */,
-				IW10000010000000000000017 /* GoalDirection.swift in Sources */,
-				IW10000010000000000000018 /* QuickAddConfiguration.swift in Sources */,
-				CPDBFWIDGET01 /* CounterPaletteData.swift in Sources */,
-				PRABFWIDGET01 /* ProgressRingArc.swift in Sources */,
-				PRWBFWIDGET01 /* ProgressRingWidth.swift in Sources */,
-				FPKBFWIDGET01 /* FontPack.swift in Sources */,
-				CRPBFWIDGET01 /* CounterRingPreference.swift in Sources */,
-				ASSBFWIDGET01 /* AppSoundStyle.swift in Sources */,
-				CCPBFWIDGET01 /* CustomCounter+Progress.swift in Sources */,
-				CFWBFCounterFormatting01 /* CounterFormatting.swift in Sources */,
-				CAWBFCounterAmount01 /* CounterAmount.swift in Sources */,
-				CDLBFWIDGETS01 /* CounterDeepLink.swift in Sources */,
-				LOGBFWIDGET01 /* Logging.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CTGSOURCES001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1313,6 +1241,60 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F70000010000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F10000010000000000000001 /* CounterWidgetsBundle.swift in Sources */,
+				F10000010000000000000002 /* CounterComplicationWidget.swift in Sources */,
+				F10000010000000000000003 /* AppGroup.swift in Sources */,
+				F10000010000000000000004 /* WidgetSnapshot.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		IW70000010000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				IW10000010000000000000001 /* CounterHomeWidgetsBundle.swift in Sources */,
+				IW10000010000000000000002 /* CounterWidget.swift in Sources */,
+				IW10000010000000000000003 /* AddCounterEntryIntent.swift in Sources */,
+				IW10000010000000000000019 /* CounterWidgetEntity.swift in Sources */,
+				IW10000010000000000000020 /* CounterWidgetConfigurationIntent.swift in Sources */,
+				IW10000010000000000000022 /* CounterWidgetSnapshot.swift in Sources */,
+				IW10000010000000000000023 /* WidgetPalette.swift in Sources */,
+				IW10000010000000000000024 /* WidgetCounterLoader.swift in Sources */,
+				IW10000010000000000000004 /* WidgetTheme.swift in Sources */,
+				IW10000010000000000000025 /* WidgetHeroHeading.swift in Sources */,
+				IW10000010000000000000026 /* WidgetSmallHeroStack.swift in Sources */,
+				IW10000010000000000000007 /* AppGroup.swift in Sources */,
+				AP10000010000000000000004 /* AppAppearancePreference.swift in Sources */,
+				IW10000010000000000000008 /* WidgetSnapshot.swift in Sources */,
+				IW10000010000000000000010 /* SharedModelContainer.swift in Sources */,
+				CTWIDGETBF001 /* CounterTemplate.swift in Sources */,
+				IW10000010000000000000012 /* CustomCounter.swift in Sources */,
+				IW10000010000000000000013 /* CounterEntry.swift in Sources */,
+				IW10000010000000000000015 /* EntryActions.swift in Sources */,
+				WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */,
+				WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */,
+				QAS10000010000000000000003 /* QuickAddSessionStore.swift in Sources */,
+				IW10000010000000000000016 /* CounterPeriod.swift in Sources */,
+				IW10000010000000000000017 /* GoalDirection.swift in Sources */,
+				IW10000010000000000000018 /* QuickAddConfiguration.swift in Sources */,
+				CPDBFWIDGET01 /* CounterPaletteData.swift in Sources */,
+				PRABFWIDGET01 /* ProgressRingArc.swift in Sources */,
+				PRWBFWIDGET01 /* ProgressRingWidth.swift in Sources */,
+				FPKBFWIDGET01 /* FontPack.swift in Sources */,
+				CRPBFWIDGET01 /* CounterRingPreference.swift in Sources */,
+				ASSBFWIDGET01 /* AppSoundStyle.swift in Sources */,
+				CCPBFWIDGET01 /* CustomCounter+Progress.swift in Sources */,
+				CFWBFCounterFormatting01 /* CounterFormatting.swift in Sources */,
+				CAWBFCounterAmount01 /* CounterAmount.swift in Sources */,
+				CDLBFWIDGETS01 /* CounterDeepLink.swift in Sources */,
+				LOGBFWIDGET01 /* Logging.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1326,7 +1308,6 @@
 			target = F60000010000000000000001 /* CounterWatchWidgets */;
 			targetProxy = E10000010000000000000002 /* PBXContainerItemProxy */;
 		};
-
 		E20000010000000000000003 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = IW60000010000000000000001 /* CounterWidgets */;
@@ -1449,7 +1430,7 @@
 				CODE_SIGN_ENTITLEMENTS = Counter/Counter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Counter/Info.plist;
@@ -1461,7 +1442,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
@@ -1477,7 +1458,7 @@
 				CODE_SIGN_ENTITLEMENTS = Counter/Counter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Counter/Info.plist;
@@ -1489,7 +1470,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
@@ -1505,19 +1486,19 @@
 				CODE_SIGN_ENTITLEMENTS = CounterWatch/CounterWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatch/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Numo;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.becter.counter;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.archgrovehouse.numo;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1536,19 +1517,19 @@
 				CODE_SIGN_ENTITLEMENTS = CounterWatch/CounterWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatch/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Numo;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.becter.counter;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.archgrovehouse.numo;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1556,6 +1537,42 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		CTGCFGDEBUG01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CTGCFGRELEASE01 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1567,7 +1584,7 @@
 				CODE_SIGN_ENTITLEMENTS = CounterWatchWidgets/CounterWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatchWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1577,7 +1594,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.watchkitapp.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1596,7 +1613,7 @@
 				CODE_SIGN_ENTITLEMENTS = CounterWatchWidgets/CounterWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatchWidgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1606,7 +1623,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.watchkitapp.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.watchkitapp.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1617,7 +1634,6 @@
 			};
 			name = Release;
 		};
-
 		IWB000010000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1626,7 +1642,7 @@
 				CODE_SIGN_ENTITLEMENTS = CounterWidgets/CounterWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -1636,7 +1652,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1654,7 +1670,7 @@
 				CODE_SIGN_ENTITLEMENTS = CounterWidgets/CounterWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -1664,47 +1680,10 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-
-		CTGCFGDEBUG01 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		CTGCFGRELEASE01 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F472GKBUAR;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.becter.counter.tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1741,6 +1720,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CTGCFGLIST001 /* Build configuration list for PBXNativeTarget "CounterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CTGCFGDEBUG01 /* Debug */,
+				CTGCFGRELEASE01 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWatchWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1750,21 +1738,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-
 		IW80000010000000000000001 /* Build configuration list for PBXNativeTarget "CounterWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				IWB000010000000000000001 /* Debug */,
 				IWB000010000000000000002 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CTGCFGLIST001 /* Build configuration list for PBXNativeTarget "CounterTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CTGCFGDEBUG01 /* Debug */,
-				CTGCFGRELEASE01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

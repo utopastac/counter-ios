@@ -6,7 +6,7 @@ import os
 /// non-fatal — data loss here is rare and not worth crashing over — but a swallowed error
 /// should be *visible*, not invisible.
 nonisolated enum AppLog {
-  private static let subsystem = Bundle.main.bundleIdentifier ?? "com.becter.counter"
+  private static let subsystem = Bundle.main.bundleIdentifier ?? "com.archgrovehouse.numo"
 
   static let data = Logger(subsystem: subsystem, category: "data")
 

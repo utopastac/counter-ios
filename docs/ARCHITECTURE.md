@@ -32,7 +32,7 @@ snapshot data rather than querying SwiftData directly — see "Two widget data p
 
 ```mermaid
 flowchart TB
-  subgraph store ["App Group container (group.com.becter.counter)"]
+  subgraph store ["App Group container (group.com.archgrovehouse.numo)"]
     db["Counter-v7.store (SwiftData)"]
     defaults["UserDefaults (widget snapshot)"]
   end

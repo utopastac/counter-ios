@@ -4,7 +4,7 @@
 <dict>
   <key>com.apple.security.application-groups</key>
   <array>
-    <string>group.com.becter.counter</string>
+    <string>group.com.archgrovehouse.numo</string>
   </array>
 </dict>
 </plist>

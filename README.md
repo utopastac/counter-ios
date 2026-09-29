@@ -22,7 +22,7 @@ A simple iOS counter app (calories, custom metrics, and more).
 1. Open `Counter.xcodeproj` in Xcode
 2. Select the **Counter** and **CounterWatch** targets → **Signing & Capabilities**
 3. Set your **Team** on **Counter**, **CounterWatch**, and **CounterWatchWidgets** targets
-4. Enable **App Groups** (`group.com.becter.counter`) on iPhone and Watch targets (entitlements are included)
+4. Enable **App Groups** (`group.com.archgrovehouse.numo`) on iPhone and Watch targets (entitlements are included)
 5. Build and run the **Counter** scheme (Numo) on your iPhone — the Watch app installs automatically when paired
 
 ### Apple Watch
