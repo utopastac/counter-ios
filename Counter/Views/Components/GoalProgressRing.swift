@@ -147,7 +147,7 @@ struct GoalProgressRing: View {
 
 /// A filled disc (or leading half) centered on the tip of a `ProgressRingArc`. Used for the
 /// progress tip's outline rim and matching fill cap — always drawn only at the growing end.
-private struct RingTipHalo: Shape {
+nonisolated private struct RingTipHalo: Shape {
   var fraction: Double
   var lineWidth: CGFloat
   var haloRadius: CGFloat

@@ -195,7 +195,7 @@ struct WidgetGoalProgressRing: View {
 
 /// Mirrors `GoalProgressRing`'s private `RingTipHalo` — see that type for the rationale on why
 /// it's a small, self-contained shape duplicated per-target rather than shared.
-private struct WidgetRingTipHalo: Shape {
+nonisolated private struct WidgetRingTipHalo: Shape {
   var fraction: Double
   var lineWidth: CGFloat
   var haloRadius: CGFloat
