@@ -207,6 +207,10 @@
 		LOGBFTEST01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
 		LOGBFWATCH01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
 		LOGBFWIDGET01 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = LOGFILEREF01 /* Logging.swift */; };
+		PRIVBFCOUNTER01 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = PRIVFILEREF01 /* PrivacyInfo.xcprivacy */; };
+		PRIVBFWATCH01 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = PRIVFILEREF01 /* PrivacyInfo.xcprivacy */; };
+		PRIVBFWIDGET01 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = PRIVFILEREF01 /* PrivacyInfo.xcprivacy */; };
+		PRIVBFWWATCH01 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = PRIVFILEREF01 /* PrivacyInfo.xcprivacy */; };
 		M10000010000000000000001 /* AllCountersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = M20000010000000000000001 /* AllCountersListView.swift */; };
 		N10000010000000000000001 /* CompactQuickAddGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000001 /* CompactQuickAddGrid.swift */; };
 		N10000010000000000000002 /* CustomAmountSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = N20000010000000000000002 /* CustomAmountSheet.swift */; };
@@ -444,6 +448,7 @@
 		L20000010000000000000001 /* GoalDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalDirection.swift; sourceTree = "<group>"; };
 		L20000010000000000000002 /* GoalProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressRing.swift; sourceTree = "<group>"; };
 		LOGFILEREF01 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		PRIVFILEREF01 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		M20000010000000000000001 /* AllCountersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCountersListView.swift; sourceTree = "<group>"; };
 		N20000010000000000000001 /* CompactQuickAddGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactQuickAddGrid.swift; sourceTree = "<group>"; };
 		N20000010000000000000002 /* CustomAmountSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAmountSheet.swift; sourceTree = "<group>"; };
@@ -656,6 +661,7 @@
 				ASDFILEREF01 /* AppSounds.swift */,
 				CCPFILEREF01 /* CustomCounter+Progress.swift */,
 				LOGFILEREF01 /* Logging.swift */,
+				PRIVFILEREF01 /* PrivacyInfo.xcprivacy */,
 				AI20000010000000000000001 /* AmountInput.swift */,
 				CF20000010000000000000001 /* CounterFormatting.swift */,
 				CA20000010000000000000001 /* CounterAmount.swift */,
@@ -988,6 +994,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000010000000000000020 /* Assets.xcassets in Resources */,
+				PRIVBFCOUNTER01 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -996,6 +1003,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B10000010000000000000007 /* Assets.xcassets in Resources */,
+				PRIVBFWATCH01 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1011,6 +1019,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F10000010000000000000005 /* Assets.xcassets in Resources */,
+				PRIVBFWWATCH01 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1019,6 +1028,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				IW10000010000000000000005 /* Assets.xcassets in Resources */,
+				PRIVBFWIDGET01 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1446,7 +1456,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1474,7 +1484,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1554,7 +1564,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1572,7 +1582,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1658,7 +1668,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1686,7 +1696,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
