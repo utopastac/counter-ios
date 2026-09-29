@@ -4,7 +4,16 @@ nonisolated enum QuickAddConfiguration {
   static let buttonCount = 10
   static let presetCount = buttonCount - 1
 
-  static let defaultCaloriePresets: [Double] = [5, 10, 25, 50, 100, 200, 500, 1000, 50]
+  static let defaultCaloriePresets: [Double] = [5, 10, 25, 50, 100, 200, 500, 1000, 80]
+
+  /// The original calorie default listed 50 twice. Counters created from it store that list,
+  /// so swapping the constant alone would leave the duplicate in place.
+  private static let legacyCaloriePresets: [Double] = [5, 10, 25, 50, 50, 100, 200, 500, 1000]
+
+  static func presetsReplacingLegacyCalorieDuplicate(_ values: [Double]) -> [Double] {
+    guard normalizedPresets(values) == legacyCaloriePresets else { return values }
+    return defaultCaloriePresets
+  }
   static let defaultCounterPresets: [Double] = [1, 2, 5, 10, 20, 50, 100, 25, 75]
 
   static func normalizedPresets(_ values: [Double]) -> [Double] {

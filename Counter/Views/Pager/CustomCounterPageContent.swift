@@ -220,8 +220,9 @@ struct CustomCounterPageContent: View {
   }
 
   private func migratePresetButtons(for counter: CustomCounter) {
+    let stored = QuickAddConfiguration.presetsReplacingLegacyCalorieDuplicate(counter.presetAmounts)
     let filled = QuickAddConfiguration.filledPresets(
-      from: counter.presetAmounts,
+      from: stored,
       defaults: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
     )
     if filled != counter.presetAmounts {

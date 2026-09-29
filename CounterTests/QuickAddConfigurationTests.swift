@@ -39,6 +39,20 @@ struct QuickAddConfigurationTests {
     #expect(QuickAddConfiguration.defaultPresets(forCounterNamed: "CALORIES") == QuickAddConfiguration.defaultCaloriePresets)
   }
 
+  @Test func presetsReplacingLegacyCalorieDuplicateSwapsTheSecondFiftyForEighty() {
+    let legacy: [Double] = [5, 10, 25, 50, 50, 100, 200, 500, 1000]
+    let updated = QuickAddConfiguration.presetsReplacingLegacyCalorieDuplicate(legacy)
+
+    #expect(updated == QuickAddConfiguration.defaultCaloriePresets)
+    #expect(updated.contains(80))
+    #expect(updated.filter { $0 == 50 }.count == 1)
+  }
+
+  @Test func presetsReplacingLegacyCalorieDuplicateLeavesCustomizedListsAlone() {
+    let custom: [Double] = [5, 10, 25, 50, 50, 100, 200, 500, 250]
+    #expect(QuickAddConfiguration.presetsReplacingLegacyCalorieDuplicate(custom) == custom)
+  }
+
   @Test func defaultPresetsForCounterNamedFallsBackToGenericPresetsForOtherNames() {
     #expect(QuickAddConfiguration.defaultPresets(forCounterNamed: "Protein") == QuickAddConfiguration.defaultCounterPresets)
   }
