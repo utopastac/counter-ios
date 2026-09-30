@@ -7,24 +7,9 @@ struct CounterHistoryView: View {
   @Environment(\.modelContext) private var modelContext
   @State private var period: HistoryPeriod = .daily
   @State private var windowOffset = 0
-  @State private var presentedSheet: HistoryPresentedSheet?
+  @State private var selectedBucket: DailyValue?
+  @State private var editingEntry: HistoryEditingEntry?
   @State private var entryIndex: HistoryEntryIndex
-  @AppStorage(
-    AppAppearancePreference.monoEnabledKey,
-    store: AppAppearancePreference.sharedDefaults
-  ) private var isMonoEnabled = false
-  @AppStorage(
-    AppAppearancePreference.monoPaletteIndexKey,
-    store: AppAppearancePreference.sharedDefaults
-  ) private var monoPaletteIndex = 0
-  @AppStorage(
-    AppAppearancePreference.tintEnabledKey,
-    store: AppAppearancePreference.sharedDefaults
-  ) private var isTintEnabled = true
-  @AppStorage(
-    AppAppearancePreference.colorPackKey,
-    store: AppAppearancePreference.sharedDefaults
-  ) private var colorPackRaw = CounterColorPack.muted.rawValue
   @AppStorage(AppAppearancePreference.historyAverageActiveDaysOnlyKey)
   private var isHistoryAverageActiveDaysOnlyEnabled = false
   @AppStorage(AppAppearancePreference.historyPerPeriodEnabledKey)
@@ -33,11 +18,6 @@ struct CounterHistoryView: View {
   init(counter: CustomCounter) {
     self.counter = counter
     _entryIndex = State(initialValue: HistoryEntryIndex(entries: counter.entries))
-  }
-
-  private var pageAccent: CounterAccent {
-    let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
-    return .forCounter(counter)
   }
 
   private var maxWindowOffset: Int {
@@ -156,55 +136,63 @@ struct CounterHistoryView: View {
   }
 
   var body: some View {
-    VStack(spacing: 0) {
-      CounterSheetHeader(
-        title: "\(counter.name) history",
-        onDone: { dismiss() }
-      )
+    NavigationStack {
+      VStack(spacing: 0) {
+        CounterSheetHeader(
+          title: "\(counter.name) history",
+          onDone: { dismiss() }
+        )
 
-      List {
-        Section {
-          historyChrome
-            .listRowInsets(EdgeInsets(
-              top: SpaceToken.u2,
-              leading: SheetToken.horizontal,
-              bottom: HistoryToken.sectionSpacing,
-              trailing: SheetToken.horizontal
-            ))
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
-        }
+        List {
+          Section {
+            historyChrome
+              .listRowInsets(EdgeInsets(
+                top: SpaceToken.u2,
+                leading: SheetToken.horizontal,
+                bottom: HistoryToken.sectionSpacing,
+                trailing: SheetToken.horizontal
+              ))
+              .listRowSeparator(.hidden)
+              .listRowBackground(Color.clear)
+          }
 
-        if period == .daily {
-          dayEntryRows
-        } else if !listItems.isEmpty {
-          aggregateRows
+          if period == .daily {
+            dayEntryRows
+          } else if !listItems.isEmpty {
+            aggregateRows
+          }
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .scrollEdgeEffectHidden(true, for: .top)
       }
-      .listStyle(.plain)
-      .scrollContentBackground(.hidden)
-      .scrollEdgeEffectHidden(true, for: .top)
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+      .toolbar(.hidden, for: .navigationBar)
+      .navigationDestination(item: $selectedBucket) { bucket in
+        HistoryBucketDetailView(
+          counter: counter,
+          bucket: bucket,
+          period: period,
+          onBack: { selectedBucket = nil },
+          onEntriesChanged: refreshEntryIndex
+        )
+      }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-    .counterAccent(pageAccent)
-    .counterDesignSystemFromColorScheme()
+    .counterDesignSystemFromAppearancePreference()
     .counterSheetPresentation()
     .onChange(of: period) { _, _ in
       windowOffset = 0
+      selectedBucket = nil
     }
     .onChange(of: maxWindowOffset) { _, newMax in
       if windowOffset > newMax {
         windowOffset = newMax
       }
     }
-    .sheet(item: $presentedSheet) { sheet in
-      switch sheet {
-      case .bucket(let bucket):
-        bucketEntrySheet(for: bucket)
-      case .editEntry(let entryID, let value):
-        EditAmountSheet(initialValue: value) { newValue in
-          updateEntry(id: entryID, value: newValue)
-        }
+    .sheet(item: $editingEntry) { entry in
+      EditAmountSheet(initialValue: entry.value) { newValue in
+        updateEntry(id: entry.id, value: newValue)
       }
     }
   }
@@ -238,7 +226,7 @@ struct CounterHistoryView: View {
         period: period,
         windowOffset: $windowOffset,
         maxWindowOffset: maxWindowOffset,
-        onSelectBar: { presentedSheet = .bucket($0) }
+        onSelectBar: { selectedBucket = $0 }
       )
     }
   }
@@ -256,7 +244,7 @@ struct CounterHistoryView: View {
           timestamp: entry.timestamp,
           dateFormat: listDateFormat,
           onEdit: {
-            presentedSheet = .editEntry(id: entry.id, value: entry.amount)
+            editingEntry = HistoryEditingEntry(id: entry.id, value: entry.amount)
           }
         )
       }
@@ -291,7 +279,7 @@ struct CounterHistoryView: View {
           date: item.date,
           dateFormat: listDateFormat,
           onTap: {
-            presentedSheet = .bucket(DailyValue(date: item.date, value: item.value))
+            selectedBucket = DailyValue(date: item.date, value: item.value)
           }
         )
       }
@@ -309,75 +297,107 @@ struct CounterHistoryView: View {
   private func deleteEntry(id: UUID) {
     EntryActions.deleteCounterEntry(id: id, in: modelContext)
     WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-    entryIndex = HistoryEntryIndex(entries: counter.entries)
+    refreshEntryIndex()
   }
 
   private func updateEntry(id: UUID, value: Double) {
     EntryActions.updateCounterEntry(id: id, value: value, in: modelContext)
     WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+    refreshEntryIndex()
+  }
+
+  private func refreshEntryIndex() {
     entryIndex = HistoryEntryIndex(entries: counter.entries)
   }
+}
 
-  private func bucketEntrySheet(for bucket: DailyValue) -> some View {
-    let bucketPeriod: HistoryPeriod = period == .daily ? .daily : .monthly
-    let range = HistoryAggregator.bucketRange(for: bucket.date, period: bucketPeriod)
-    let entries = CounterPeriodCalculator.entries(from: counter.entries, in: range)
-      .sorted { $0.timestamp > $1.timestamp }
-    let title = bucketSheetTitle(for: bucket.date, bucketPeriod: bucketPeriod)
+/// Pushed bucket drill-in inside the history sheet (not a nested modal).
+private struct HistoryBucketDetailView: View {
+  @Environment(\.modelContext) private var modelContext
+  @Environment(\.semanticColors) private var colors
 
-    return NavigationStack {
-      VStack(spacing: 0) {
-        CounterSheetHeader(
-          title: title,
-          onDone: { presentedSheet = nil }
-        )
+  let counter: CustomCounter
+  let bucket: DailyValue
+  let period: HistoryPeriod
+  let onBack: () -> Void
+  let onEntriesChanged: () -> Void
 
-        CounterPeriodEntryLogContent(
-          entries: entries,
-          emptyDescription: "No entries in this period.",
-          onDelete: { id in
-            EntryActions.deleteCounterEntry(id: id, in: modelContext)
-            WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-          },
-          onValueCommit: { id, value in
-            EntryActions.updateCounterEntry(id: id, value: value, in: modelContext)
-            WidgetSnapshotSync.publish(counter: counter, in: modelContext)
-          }
-        )
-      }
-      .counterDesignSystemFromColorScheme()
-      .counterSheetPresentation()
-    }
+  private var bucketPeriod: HistoryPeriod {
+    period == .daily ? .daily : .monthly
   }
 
-  private func bucketSheetTitle(for date: Date, bucketPeriod: HistoryPeriod) -> String {
+  private var entries: [CounterEntry] {
+    let range = HistoryAggregator.bucketRange(for: bucket.date, period: bucketPeriod)
+    return CounterPeriodCalculator.entries(from: counter.entries, in: range)
+      .sorted { $0.timestamp > $1.timestamp }
+  }
+
+  private var title: String {
     switch bucketPeriod {
     case .daily:
-      return date.formatted(.dateTime.hour().minute())
+      return bucket.date.formatted(.dateTime.hour().minute())
     case .monthly:
-      return date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day(.twoDigits))
+      return bucket.date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day(.twoDigits))
     case .weekly:
-      let range = HistoryAggregator.bucketRange(for: date, period: .weekly)
+      let range = HistoryAggregator.bucketRange(for: bucket.date, period: .weekly)
       let format = Date.FormatStyle().month(.abbreviated).day(.twoDigits)
-      return "\(range.start.formatted(format)) – \(date.formatted(format))"
+      return "\(range.start.formatted(format)) – \(bucket.date.formatted(format))"
     }
+  }
+
+  var body: some View {
+    VStack(spacing: 0) {
+      bucketHeader
+
+      CounterPeriodEntryLogContent(
+        entries: entries,
+        emptyDescription: "No entries in this period.",
+        onDelete: { id in
+          EntryActions.deleteCounterEntry(id: id, in: modelContext)
+          WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+          onEntriesChanged()
+        },
+        onValueCommit: { id, value in
+          EntryActions.updateCounterEntry(id: id, value: value, in: modelContext)
+          WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+          onEntriesChanged()
+        }
+      )
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    .toolbar(.hidden, for: .navigationBar)
+  }
+
+  private var bucketHeader: some View {
+    HStack(alignment: .center, spacing: SpaceToken.x1) {
+      Button {
+        CounterKeyboard.resign()
+        onBack()
+      } label: {
+        CounterLucideIcon(icon: .chevronLeft, color: colors.textPrimary)
+          .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
+          .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
+          .contentShape(Rectangle())
+      }
+      .buttonStyle(.plain)
+      .accessibilityLabel("Back")
+
+      Text(title)
+        .counterTextStyle(.sheetTitle)
+        .lineLimit(1)
+
+      Spacer(minLength: 0)
+    }
+    .padding(.horizontal, SheetToken.horizontal)
+    .padding(.top, SpaceToken.u2)
+    .padding(.bottom, SpaceToken.u1)
   }
 }
 
-private enum HistoryPresentedSheet: Identifiable, Equatable {
-  case bucket(DailyValue)
-  case editEntry(id: UUID, value: Double)
-
-  var id: String {
-    switch self {
-    case .bucket(let bucket):
-      "bucket-\(bucket.date.timeIntervalSinceReferenceDate)"
-    case .editEntry(let id, _):
-      "edit-\(id.uuidString)"
-    }
-  }
+private struct HistoryEditingEntry: Identifiable, Equatable {
+  let id: UUID
+  let value: Double
 }
-
 
 #Preview {
   CounterHistoryView(counter: CustomCounter(name: "Calories"))

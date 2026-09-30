@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// Editable entry list used by history bucket sheets (hour / day / week taps).
+/// Editable entry list used by history bucket drill-ins (hour / day / week taps).
 struct CounterPeriodEntryLogContent: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
 

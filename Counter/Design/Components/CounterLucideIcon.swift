@@ -13,6 +13,7 @@ enum CounterLucideIconName: String {
   case calendar = "lucide-calendar"
   case calendarClock = "lucide-calendar-clock"
   case listRestart = "lucide-list-restart"
+  case chevronLeft = "lucide-chevron-left"
   case chevronsUpDown = "lucide-chevrons-up-down"
   case cog = "lucide-cog"
   case undo2 = "lucide-undo-2"
