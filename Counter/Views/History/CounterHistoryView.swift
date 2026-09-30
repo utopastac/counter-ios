@@ -374,9 +374,13 @@ private struct HistoryBucketDetailView: View {
         CounterKeyboard.resign()
         onBack()
       } label: {
-        CounterLucideIcon(icon: .chevronLeft, color: colors.textPrimary)
+        CounterLucideIcon(icon: .arrowLeft, color: colors.textPrimary)
           .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
-          .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
+          .frame(
+            width: SizeToken.iconButtonHitArea,
+            height: SizeToken.iconButtonHitArea,
+            alignment: .leading
+          )
           .contentShape(Rectangle())
       }
       .buttonStyle(.plain)
@@ -388,7 +392,8 @@ private struct HistoryBucketDetailView: View {
 
       Spacer(minLength: 0)
     }
-    .padding(.horizontal, SheetToken.horizontal)
+    .padding(.leading, SpaceToken.u1)
+    .padding(.trailing, SheetToken.horizontal)
     .padding(.top, SpaceToken.u2)
     .padding(.bottom, SpaceToken.u1)
   }
