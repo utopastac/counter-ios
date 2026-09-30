@@ -6,6 +6,7 @@ struct CounterValueDateRow<Trailing: View>: View {
   let date: Date
   let dateFormat: Date.FormatStyle
   let dateStyle: CounterTextStyle
+  let rowHeight: CGFloat
   @ViewBuilder var trailing: () -> Trailing
   var onTap: (() -> Void)?
 
@@ -15,6 +16,7 @@ struct CounterValueDateRow<Trailing: View>: View {
     dateFormat: Date.FormatStyle,
     valueStyle: CounterTextStyle = .historyListValue,
     dateStyle: CounterTextStyle = .historyListDate,
+    rowHeight: CGFloat = HistoryToken.listRowHeight,
     @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() },
     onTap: (() -> Void)? = nil
   ) {
@@ -25,6 +27,7 @@ struct CounterValueDateRow<Trailing: View>: View {
     self.date = date
     self.dateFormat = dateFormat
     self.dateStyle = dateStyle
+    self.rowHeight = rowHeight
     self.trailing = trailing
     self.onTap = onTap
   }
@@ -34,6 +37,7 @@ struct CounterValueDateRow<Trailing: View>: View {
     date: Date,
     dateFormat: Date.FormatStyle,
     dateStyle: CounterTextStyle = .historyListDate,
+    rowHeight: CGFloat = HistoryToken.listRowHeight,
     @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() },
     onTap: (() -> Void)? = nil
   ) {
@@ -41,6 +45,7 @@ struct CounterValueDateRow<Trailing: View>: View {
     self.date = date
     self.dateFormat = dateFormat
     self.dateStyle = dateStyle
+    self.rowHeight = rowHeight
     self.trailing = trailing
     self.onTap = onTap
   }
@@ -56,7 +61,7 @@ struct CounterValueDateRow<Trailing: View>: View {
 
       trailing()
     }
-    .frame(height: HistoryToken.listRowHeight)
+    .frame(height: rowHeight)
     .frame(maxWidth: .infinity, alignment: .leading)
     .contentShape(Rectangle())
 

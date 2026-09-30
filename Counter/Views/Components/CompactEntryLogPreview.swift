@@ -56,6 +56,7 @@ struct EntryLogRow: View {
       dateFormat: EntryLogRowFormat.timestamp,
       valueStyle: .entryLogValue,
       dateStyle: .entryLogTimestamp,
+      rowHeight: EntryLogToken.rowHeight,
       trailing: {
         if let onDelete {
           Button(action: onDelete) {

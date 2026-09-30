@@ -102,8 +102,8 @@ enum EntryLogPreviewLimit {
 }
 
 enum EntryLogToken {
-  /// Entry row height on the counter card and in the full entry log. Matches `HistoryToken.listRowHeight`.
-  static let rowHeight: CGFloat = 49
+  /// Entry row height on the counter card (and mirrored by the large widget).
+  static let rowHeight: CGFloat = GridToken.units(5)
 }
 
 enum SizeToken {
