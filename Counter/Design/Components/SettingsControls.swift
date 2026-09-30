@@ -244,10 +244,12 @@ struct SettingsPickerRow<Option: Hashable>: View {
 
         Spacer(minLength: SpaceToken.u1)
 
-        Text(selectedTitle)
-          .counterTextStyle(.settingsRowValue, compact: true)
+        HStack(spacing: SpaceToken.x1) {
+          Text(selectedTitle)
+            .counterTextStyle(.settingsRowValue, compact: true)
 
-        CounterLucideIcon(icon: .chevronsUpDown, color: colors.textPrimary)
+          CounterLucideIcon(icon: .chevronsUpDown, color: colors.textPrimary)
+        }
       }
       .frame(minHeight: SizeToken.quickAddHeight)
       .frame(maxWidth: .infinity, alignment: .leading)

@@ -7,18 +7,12 @@ struct EntryLogPreviewItem: Identifiable, Equatable {
 }
 
 struct EntryLogAllEntriesControl: View {
-  @Environment(\.semanticColors) private var colors
-
   var body: some View {
-    HStack(spacing: SpaceToken.x2) {
-      Text("History")
-        .counterTextStyle(.sectionTitle)
-
-      CounterLucideIcon(icon: .maximize2, color: colors.textPrimary)
-    }
-    .padding(.top, SpaceToken.u2)
-    .frame(maxWidth: .infinity, alignment: .center)
-    .contentShape(Rectangle())
+    Text("Full history")
+      .counterTextStyle(.sectionTitle)
+      .padding(.top, SpaceToken.u2)
+      .frame(maxWidth: .infinity, alignment: .center)
+      .contentShape(Rectangle())
   }
 }
 
