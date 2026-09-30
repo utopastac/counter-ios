@@ -51,28 +51,36 @@ struct CounterValueDateRow<Trailing: View>: View {
   }
 
   var body: some View {
-    let content = HStack(alignment: .center, spacing: SpaceToken.x3) {
+    HStack(alignment: .center, spacing: SpaceToken.x3) {
+      Group {
+        if let onTap {
+          Button(action: onTap) {
+            mainContent
+          }
+          .buttonStyle(.plain)
+        } else {
+          mainContent
+        }
+      }
+
+      // Keep trailing chrome (e.g. delete) outside the row tap target.
+      trailing()
+    }
+    .frame(height: rowHeight)
+    .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  private var mainContent: some View {
+    HStack(alignment: .center, spacing: SpaceToken.x3) {
       leading
 
       Spacer(minLength: 0)
 
       Text(date, format: dateFormat)
         .counterTextStyle(dateStyle, color: .secondary)
-
-      trailing()
     }
-    .frame(height: rowHeight)
     .frame(maxWidth: .infinity, alignment: .leading)
     .contentShape(Rectangle())
-
-    if let onTap {
-      Button(action: onTap) {
-        content
-      }
-      .buttonStyle(.plain)
-    } else {
-      content
-    }
   }
 }
 

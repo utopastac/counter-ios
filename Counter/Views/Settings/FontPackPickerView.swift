@@ -3,7 +3,6 @@ import SwiftUI
 /// Settings sheet for choosing a font pack — same card-grid pattern as colour packs.
 struct FontPackPickerView: View {
   @Environment(\.dismiss) private var dismiss
-  @Environment(\.semanticColors) private var colors
 
   @Binding var selection: FontPack
 
@@ -20,7 +19,6 @@ struct FontPackPickerView: View {
           .padding(.bottom, SpaceToken.u4)
       }
     }
-    .background(colors.surfacePrimary)
     .counterDesignSystemFromAppearancePreference()
     .counterSheetPresentation()
   }

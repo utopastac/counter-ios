@@ -372,6 +372,8 @@ enum SheetToken {
   static let horizontal: CGFloat = SpaceToken.u2
   /// Top corner radius for modal sheet presentations (16pt).
   static let cornerRadius: CGFloat = RadiusToken.lg
+  /// Surface tint over thick material — densifies Liquid Glass without going fully opaque.
+  static let glassFillOpacity: Double = 0.72
   static let handleWidth: CGFloat = 36
   static let handleHeight: CGFloat = 5
   static let contentTop: CGFloat = SpaceToken.componentPadding

@@ -55,10 +55,6 @@ struct AppSettingsView: View {
   @State private var showFontPackPicker = false
   @State private var exportURL: URL?
 
-  private var colors: SemanticColors {
-    SemanticColors.forColorScheme(isDarkModeEnabled ? .dark : .light)
-  }
-
   private var defaultResetPeriod: Binding<CounterResetPeriod> {
     Binding(
       get: { CounterResetPeriod(rawValue: defaultResetPeriodRaw) ?? .daily },
@@ -232,7 +228,6 @@ struct AppSettingsView: View {
         .padding(.bottom, SpaceToken.u4)
       }
     }
-    .background(colors.surfaceSheet)
     .counterDesignSystemFromAppearancePreference()
     .counterSheetPresentation()
     .onAppear {

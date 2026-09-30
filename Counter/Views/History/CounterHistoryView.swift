@@ -5,8 +5,6 @@ struct CounterHistoryView: View {
 
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
-  @Environment(\.semanticColors) private var colors
-  @Environment(\.colorScheme) private var colorScheme
   @State private var period: HistoryPeriod = .daily
   @State private var windowOffset = 0
   @State private var presentedSheet: HistoryPresentedSheet?
@@ -40,10 +38,6 @@ struct CounterHistoryView: View {
   private var pageAccent: CounterAccent {
     let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     return .forCounter(counter)
-  }
-
-  private var palette: CounterPaletteSlot {
-    pageAccent.palette
   }
 
   private var maxWindowOffset: Int {
@@ -162,11 +156,11 @@ struct CounterHistoryView: View {
   }
 
   var body: some View {
-    // No solid outer fill — gutters stay clear so the zoom dismiss doesn't drag a
-    // hard-edged colour slab; the pager's `surfacePrimary` shows through when settled.
-    ZStack(alignment: .top) {
-      Rectangle()
-        .fill(palette.backgroundStyle(for: colorScheme))
+    VStack(spacing: 0) {
+      CounterSheetHeader(
+        title: "\(counter.name) history",
+        onDone: { dismiss() }
+      )
 
       List {
         Section {
@@ -190,20 +184,11 @@ struct CounterHistoryView: View {
       .listStyle(.plain)
       .scrollContentBackground(.hidden)
       .scrollEdgeEffectHidden(true, for: .top)
-      .safeAreaPadding(.top, SpaceToken.pageTopInset)
-
-      historyToolbar
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .clipShape(
-      RoundedRectangle(cornerRadius: RadiusToken.scrollContainer, style: .continuous)
-    )
-    .padding(.horizontal, SpaceToken.scrollContainerInset)
-    .containerBackground(.clear, for: .navigation)
+    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     .counterAccent(pageAccent)
     .counterDesignSystemFromColorScheme()
-    .toolbar(.hidden, for: .navigationBar)
-    .navigationBarBackButtonHidden()
+    .counterSheetPresentation()
     .onChange(of: period) { _, _ in
       windowOffset = 0
     }
@@ -222,34 +207,6 @@ struct CounterHistoryView: View {
         }
       }
     }
-  }
-
-  /// Glass clipped to the history card — same top radii as the pager toolbar.
-  private var historyToolbar: some View {
-    HStack(spacing: SpaceToken.toolbarIconSpacing) {
-      CounterLucideIcon(icon: .chartBar, color: colors.textPrimary)
-        .frame(width: SizeToken.iconButton, height: SizeToken.iconButton)
-        .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
-
-      Text("\(counter.name) history")
-        .counterTextStyle(.pageTitle)
-        .lineLimit(1)
-
-      Spacer(minLength: 0)
-
-      Button("Done") {
-        CounterKeyboard.resign()
-        dismiss()
-      }
-      .counterTextStyle(.settingsRowLabel)
-      .buttonStyle(.plain)
-      .frame(height: SizeToken.iconButtonHitArea)
-      .contentShape(Rectangle())
-    }
-    .padding(.horizontal, SheetToken.horizontal)
-    .frame(maxWidth: .infinity)
-    .frame(minHeight: SizeToken.iconButtonHitArea)
-    .counterToolbarGlass(tint: palette.background(for: colorScheme))
   }
 
   private var historyChrome: some View {
@@ -388,7 +345,6 @@ struct CounterHistoryView: View {
           }
         )
       }
-      .background(colors.surfaceSheet)
       .counterDesignSystemFromColorScheme()
       .counterSheetPresentation()
     }

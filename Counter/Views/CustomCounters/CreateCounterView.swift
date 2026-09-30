@@ -5,7 +5,6 @@ struct CreateCounterView: View {
   @Environment(\.modelContext) private var modelContext
   @Environment(\.dismiss) private var dismiss
   @Query(sort: \CustomCounter.sortOrder) private var counters: [CustomCounter]
-  @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
 
   var onCreated: ((CustomCounter) -> Void)?
 
@@ -18,10 +17,6 @@ struct CreateCounterView: View {
   @State private var resetAnchorDay = AppAppearancePreference.defaultResetPeriod.defaultAnchorDay()
   @State private var paletteIndex = 0
   @State private var buttonValues: [Double] = QuickAddConfiguration.defaultCounterPresets
-
-  private var colors: SemanticColors {
-    SemanticColors.forColorScheme(isDarkModeEnabled ? .dark : .light)
-  }
 
   var body: some View {
     NavigationStack {
@@ -53,7 +48,6 @@ struct CreateCounterView: View {
         .padding(.top, SpaceToken.u2)
         .padding(.bottom, SpaceToken.u2)
       }
-      .background(colors.surfaceSheet)
       .toolbar(.hidden, for: .navigationBar)
       .onChange(of: resetPeriod) { _, newPeriod in
         resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)

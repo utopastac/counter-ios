@@ -5,16 +5,16 @@ import SwiftUI
 /// Controls how a modal sheet sizes itself.
 ///
 /// - `offsetPeek` uses a custom detent so the presenting content remains visible above
-///   the sheet.
+///   the sheet, with a densified frosted glass background.
 /// - `cornerRadiusOnly` only applies the shared corner radius, leaving detents/sizing to
 ///   the caller, and keeps an opaque sheet fill.
-/// - `cornerRadiusGlass` is the same as `cornerRadiusOnly` but lets the system Liquid Glass
-///   sheet background show through (used by `AmountEntrySheet`).
+/// - `cornerRadiusGlass` is the same as `cornerRadiusOnly` but uses the densified frosted
+///   glass background (used by `AmountEntrySheet`).
 enum CounterSheetPresentationStyle {
   case offsetPeek
   /// Shared corner radius only; keeps the opaque sheet fill.
   case cornerRadiusOnly
-  /// Shared corner radius with the system Liquid Glass sheet background.
+  /// Shared corner radius with densified frosted glass.
   case cornerRadiusGlass
 }
 
@@ -44,17 +44,25 @@ private struct CounterSheetPresentationModifier: ViewModifier {
         .presentationDetents([.counterOffsetLarge])
         .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
-        .presentationBackground(colors.surfaceSheet)
+        .presentationBackground { denserGlassBackground }
     case .cornerRadiusOnly:
       content
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationContentInteraction(.scrolls)
         .presentationBackground(colors.surfaceSheet)
     case .cornerRadiusGlass:
-      // Omit presentationBackground so the system inset Liquid Glass sheet shows through.
       content
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationContentInteraction(.scrolls)
+        .presentationBackground { denserGlassBackground }
+    }
+  }
+
+  /// Thick material plus a surface tint — keeps frost, cuts see-through.
+  private var denserGlassBackground: some View {
+    ZStack {
+      Rectangle().fill(.thickMaterial)
+      colors.surfaceSheet.opacity(SheetToken.glassFillOpacity)
     }
   }
 }
@@ -99,6 +107,8 @@ enum CounterSheetRoute: Identifiable, Equatable {
   case buttonSettings(counterID: UUID)
   case addCounter
   case customAmount(counterID: UUID)
+  case editEntry(entryID: UUID, value: Double)
+  case history(counterID: UUID)
   case appSettings
 
   var id: String {
@@ -109,6 +119,10 @@ enum CounterSheetRoute: Identifiable, Equatable {
       "addCounter"
     case .customAmount(let counterID):
       "customAmount-\(counterID.uuidString)"
+    case .editEntry(let entryID, _):
+      "editEntry-\(entryID.uuidString)"
+    case .history(let counterID):
+      "history-\(counterID.uuidString)"
     case .appSettings:
       "appSettings"
     }
@@ -117,7 +131,7 @@ enum CounterSheetRoute: Identifiable, Equatable {
   /// Routes that dim the counter card behind the sheet.
   var dimsPagerCard: Bool {
     switch self {
-    case .buttonSettings, .addCounter, .customAmount:
+    case .buttonSettings, .addCounter, .customAmount, .editEntry, .history:
       true
     case .appSettings:
       false
@@ -174,6 +188,12 @@ struct CounterSheetHost: View {
     case .customAmount(let counterID):
       if let counter = counter(for: counterID) {
         CounterCustomAmountSheetContent(counter: counter)
+      }
+    case .editEntry(let entryID, let value):
+      CounterEditEntrySheetContent(entryID: entryID, initialValue: value)
+    case .history(let counterID):
+      if let counter = counter(for: counterID) {
+        CounterHistoryView(counter: counter)
       }
     case .appSettings:
       AppSettingsView()
@@ -242,6 +262,31 @@ private struct CounterCustomAmountSheetContent: View {
       impactHapticTrigger &+= 1
       AppSounds.log()
       WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+    }
+    .sensoryFeedback(.impact(weight: .light), trigger: impactHapticTrigger) { _, _ in
+      isHapticsEnabled
+    }
+  }
+}
+
+private struct CounterEditEntrySheetContent: View {
+  @Environment(\.modelContext) private var modelContext
+  @AppStorage(AppAppearancePreference.hapticsEnabledKey) private var isHapticsEnabled = true
+  @State private var impactHapticTrigger = 0
+
+  let entryID: UUID
+  let initialValue: Double
+
+  var body: some View {
+    EditAmountSheet(initialValue: initialValue) { newValue in
+      EntryActions.updateCounterEntry(id: entryID, value: newValue, in: modelContext)
+      impactHapticTrigger &+= 1
+      AppSounds.log()
+      if let entry = EntryActions.fetchCounterEntry(id: entryID, in: modelContext),
+         let counter = entry.counter
+      {
+        WidgetSnapshotSync.publish(counter: counter, in: modelContext)
+      }
     }
     .sensoryFeedback(.impact(weight: .light), trigger: impactHapticTrigger) { _, _ in
       isHapticsEnabled

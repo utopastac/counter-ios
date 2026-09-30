@@ -147,9 +147,15 @@ struct CustomCounterPageContent: View {
             startsWithStatsHeader: startsWithStatsHeader
           ) {
             VStack(alignment: .leading, spacing: 0) {
-              CompactEntryLogPreview(items: previewItems) { entryID in
-                deletePreviewEntry(id: entryID)
-              }
+              CompactEntryLogPreview(
+                items: previewItems,
+                onEdit: { entryID in
+                  editPreviewEntry(id: entryID)
+                },
+                onDelete: { entryID in
+                  deletePreviewEntry(id: entryID)
+                }
+              )
 
               Button {
                 guard !counterRevealIsDragging else { return }
@@ -250,6 +256,11 @@ struct CustomCounterPageContent: View {
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
       entryToast = EntryToastState(entryID: added.entryID, value: added.value, kind: .added)
     }
+  }
+
+  private func editPreviewEntry(id: UUID) {
+    guard let entry = periodEntries.first(where: { $0.id == id }) else { return }
+    sheets.present(.editEntry(entryID: entry.id, value: entry.amount))
   }
 
   private func deletePreviewEntry(id: UUID) {

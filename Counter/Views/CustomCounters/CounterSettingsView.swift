@@ -36,12 +36,7 @@ struct CounterSettingsView: View {
   let onDelete: (() -> Void)?
 
   @Environment(\.dismiss) private var dismiss
-  @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
   @State private var showDeleteConfirmation = false
-
-  private var colors: SemanticColors {
-    SemanticColors.forColorScheme(isDarkModeEnabled ? .dark : .light)
-  }
 
   init(
     values: [Double],
@@ -138,7 +133,6 @@ struct CounterSettingsView: View {
         }
         .settingsKeyboardDismissible()
       }
-      .background(colors.surfaceSheet)
       .toolbar(.hidden, for: .navigationBar)
       .onChange(of: resetPeriod) { _, newPeriod in
         resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)

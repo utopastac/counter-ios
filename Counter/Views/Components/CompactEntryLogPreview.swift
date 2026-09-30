@@ -47,6 +47,7 @@ struct EntryLogRow: View {
 
   let valueText: String
   let timestamp: Date
+  var onEdit: (() -> Void)?
   var onDelete: (() -> Void)?
 
   var body: some View {
@@ -69,7 +70,8 @@ struct EntryLogRow: View {
           .buttonStyle(.plain)
           .accessibilityLabel("Delete entry")
         }
-      }
+      },
+      onTap: onEdit
     )
   }
 }
@@ -95,6 +97,7 @@ struct CompactEntryLogPreview: View {
   @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   let items: [EntryLogPreviewItem]
+  var onEdit: ((UUID) -> Void)?
   var onDelete: ((UUID) -> Void)?
 
   private var displayItems: [EntryLogPreviewItem] {
@@ -123,6 +126,7 @@ struct CompactEntryLogPreview: View {
             EntryLogRow(
               valueText: item.valueText,
               timestamp: item.timestamp,
+              onEdit: onEdit.map { edit in { edit(item.id) } },
               onDelete: onDelete.map { delete in { delete(item.id) } }
             )
               .transition(rowTransition)
