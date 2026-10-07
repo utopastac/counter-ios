@@ -169,7 +169,7 @@ platform :ios do
       configuration: "Release",
       clean: true,
       export_method: "app-store",
-      export_options: "./ExportOptionsAppStoreUpload.plist",
+      export_options: "./ExportOptionsAppStoreExport.plist",
       output_directory: "./build",
       output_name: "Numo",
       include_bitcode: false,
