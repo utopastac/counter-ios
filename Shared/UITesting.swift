@@ -8,6 +8,7 @@ import Foundation
 /// - `02-list` — all-counters list revealed
 /// - `03-history` — Calories history sheet
 /// - `04-compact` — compact card stack
+/// - `05-widgets` — Home Screen widget gallery
 enum UITesting {
   static let argument = "-UITesting"
   static let sceneArgument = "-UITScene"
@@ -35,6 +36,7 @@ enum UITesting {
     case list = "02-list"
     case history = "03-history"
     case compact = "04-compact"
+    case widgets = "05-widgets"
   }
 
   /// Quiet prefs + scene-specific appearance before the first frame.
@@ -78,8 +80,13 @@ enum UITesting {
     switch parsedScene {
     case .pager, .history, .compact:
       true
-    case .list, .none:
+    case .list, .widgets, .none:
       false
     }
+  }
+
+  /// Full-screen marketing frame that replaces the pager.
+  static var showsWidgetGallery: Bool {
+    parsedScene == .widgets
   }
 }

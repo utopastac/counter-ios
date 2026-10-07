@@ -5,9 +5,10 @@ DerivedData/
 build/
 .cursor/
 
-# App Store screenshots (regenerate with `fastlane screenshots`)
-screenshots/
-!screenshots/Framefile.json
+# App Store screenshot captures (regenerate with `fastlane screenshots`)
+# Anchored to repo root so Counter/Views/Screenshots/ source is not ignored.
+/screenshots/
+!/screenshots/Framefile.json
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/

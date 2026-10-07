@@ -176,9 +176,15 @@ enum MotionToken {
   static let revealSettleDuration: Double = 0.48
   static let revealSettleBounce: Double = 0.08
   static let reduceMotionDuration: Double = 0.22
+  /// Matches the system sheet present timing so backdrop blur eases in with the sheet.
+  static let sheetScrimPresentDuration: Double = 0.38
 
   static var revealSettle: Animation {
     .smooth(duration: revealSettleDuration, extraBounce: revealSettleBounce)
+  }
+
+  static var sheetScrimPresent: Animation {
+    .easeOut(duration: sheetScrimPresentDuration)
   }
 
   static var reduceMotionSettle: Animation {
@@ -372,8 +378,8 @@ enum SheetToken {
   static let horizontal: CGFloat = SpaceToken.u2
   /// Top corner radius for modal sheet presentations (16pt).
   static let cornerRadius: CGFloat = RadiusToken.lg
-  /// Surface tint over thick material — densifies Liquid Glass without going fully opaque.
-  static let glassFillOpacity: Double = 0.72
+  /// Max backdrop blur when a sheet is fully risen (6pt).
+  static let backdropBlurRadius: CGFloat = 6
   static let handleWidth: CGFloat = 36
   static let handleHeight: CGFloat = 5
   static let contentTop: CGFloat = SpaceToken.componentPadding

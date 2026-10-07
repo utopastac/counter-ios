@@ -51,21 +51,27 @@ struct ContentView: View {
 
   var body: some View {
     ZStack {
-      CounterPagerView()
-        .environment(sheetCoordinator)
-        .environment(focusRouter)
-        .counterDesignSystemFromColorScheme()
-        .opacity(showsPager ? 1 : 0)
+      if UITesting.showsWidgetGallery {
+        ScreenshotWidgetsGalleryView()
+          .counterDesignSystemFromColorScheme()
+          .opacity(isBootstrapped ? 1 : 0)
+      } else {
+        CounterPagerView()
+          .environment(sheetCoordinator)
+          .environment(focusRouter)
+          .counterDesignSystemFromColorScheme()
+          .opacity(showsPager ? 1 : 0)
+
+        if showsFreshInstall {
+          FreshInstallOnboardingView()
+            .transition(.opacity)
+        }
+
+        CounterSheetHost(coordinator: sheetCoordinator)
+      }
 
       BootSplashView()
         .opacity(isBootstrapped ? 0 : 1)
-
-      if showsFreshInstall {
-        FreshInstallOnboardingView()
-          .transition(.opacity)
-      }
-
-      CounterSheetHost(coordinator: sheetCoordinator)
     }
 #if DEBUG
     .overlay(alignment: .bottomTrailing) {

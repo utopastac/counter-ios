@@ -258,6 +258,8 @@
 		UITBFUITEST02 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF02 /* SnapshotHelper.swift */; };
 		UITBFCOUNTER01 /* UITesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF03 /* UITesting.swift */; };
 		UITBFCOUNTER02 /* ScreenshotDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF04 /* ScreenshotDataSeeder.swift */; };
+		SWGBFCOUNTER01 /* ScreenshotWidgetsGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SWGFILEREF01 /* ScreenshotWidgetsGalleryView.swift */; };
+		WPLBFCOUNTER01 /* WidgetPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000013 /* WidgetPalette.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -396,6 +398,7 @@
 		UITFILEREF02 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		UITFILEREF03 /* UITesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITesting.swift; sourceTree = "<group>"; };
 		UITFILEREF04 /* ScreenshotDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotDataSeeder.swift; sourceTree = "<group>"; };
+		SWGFILEREF01 /* ScreenshotWidgetsGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotWidgetsGalleryView.swift; sourceTree = "<group>"; };
 		CVDROWFR01 /* CounterValueDateRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterValueDateRow.swift; sourceTree = "<group>"; };
 		DS20000010000000000000001 /* BaseColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseColorTokens.swift; sourceTree = "<group>"; };
 		DS20000010000000000000002 /* SemanticColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticColorTokens.swift; sourceTree = "<group>"; };
@@ -590,8 +593,17 @@
 				A50000010000000000000008 /* CustomCounters */,
 				A50000010000000000000009 /* History */,
 				A50000010000000000000010 /* Components */,
+				SWGGROUP01 /* Screenshots */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		SWGGROUP01 /* Screenshots */ = {
+			isa = PBXGroup;
+			children = (
+				SWGFILEREF01 /* ScreenshotWidgetsGalleryView.swift */,
+			);
+			path = Screenshots;
 			sourceTree = "<group>";
 		};
 		A50000010000000000000008 /* CustomCounters */ = {
@@ -1188,6 +1200,8 @@
 				SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */,
 				UITBFCOUNTER01 /* UITesting.swift in Sources */,
 				UITBFCOUNTER02 /* ScreenshotDataSeeder.swift in Sources */,
+				SWGBFCOUNTER01 /* ScreenshotWidgetsGalleryView.swift in Sources */,
+				WPLBFCOUNTER01 /* WidgetPalette.swift in Sources */,
 				ADR10000010000000000000001 /* AppDataReset.swift in Sources */,
 				C10000010000000000000012 /* PreviewModel.swift in Sources */,
 				CPDBFCOUNTER01 /* CounterPaletteData.swift in Sources */,

@@ -26,6 +26,11 @@ final class ScreenshotTests: XCTestCase {
   }
 
   @MainActor
+  func test05Widgets() {
+    capture(scene: .widgets, name: "05-Widgets")
+  }
+
+  @MainActor
   private func capture(scene: Scene, name: String) {
     let app = XCUIApplication()
     setupSnapshot(app)
@@ -51,5 +56,6 @@ final class ScreenshotTests: XCTestCase {
     case list = "02-list"
     case history = "03-history"
     case compact = "04-compact"
+    case widgets = "05-widgets"
   }
 }

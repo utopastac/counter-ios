@@ -1,20 +1,21 @@
 import Observation
 import SwiftData
 import SwiftUI
+import UIKit
 
 /// Controls how a modal sheet sizes itself.
 ///
 /// - `offsetPeek` uses a custom detent so the presenting content remains visible above
-///   the sheet, with a densified frosted glass background.
+///   the sheet, and keeps the system Liquid Glass sheet background.
 /// - `cornerRadiusOnly` only applies the shared corner radius, leaving detents/sizing to
 ///   the caller, and keeps an opaque sheet fill.
-/// - `cornerRadiusGlass` is the same as `cornerRadiusOnly` but uses the densified frosted
-///   glass background (used by `AmountEntrySheet`).
+/// - `cornerRadiusGlass` is the same as `cornerRadiusOnly` but keeps the system Liquid
+///   Glass sheet background (used by `AmountEntrySheet`).
 enum CounterSheetPresentationStyle {
   case offsetPeek
   /// Shared corner radius only; keeps the opaque sheet fill.
   case cornerRadiusOnly
-  /// Shared corner radius with densified frosted glass.
+  /// Shared corner radius with system Liquid Glass.
   case cornerRadiusGlass
 }
 
@@ -24,9 +25,9 @@ extension View {
     modifier(CounterSheetPresentationModifier(style: style))
   }
 
-  /// Dims the presenting content with app-defined modal semantics while a sheet is active.
-  func counterModalScrim(isPresented: Bool) -> some View {
-    modifier(CounterModalScrimModifier(isPresented: isPresented))
+  /// Blurs and dims the presenting content in proportion to sheet presentation progress.
+  func counterModalScrim(progress: CGFloat) -> some View {
+    modifier(CounterModalScrimModifier(progress: progress))
   }
 }
 
@@ -38,13 +39,14 @@ private struct CounterSheetPresentationModifier: ViewModifier {
   func body(content: Content) -> some View {
     switch style {
     case .offsetPeek:
+      // No `presentationBackground` — partial-height sheets get system Liquid Glass on iOS 26+.
       content
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .containerBackground(.clear, for: .navigation)
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationDetents([.counterOffsetLarge])
         .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
-        .presentationBackground { denserGlassBackground }
     case .cornerRadiusOnly:
       content
         .presentationCornerRadius(SheetToken.cornerRadius)
@@ -52,17 +54,9 @@ private struct CounterSheetPresentationModifier: ViewModifier {
         .presentationBackground(colors.surfaceSheet)
     case .cornerRadiusGlass:
       content
+        .containerBackground(.clear, for: .navigation)
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationContentInteraction(.scrolls)
-        .presentationBackground { denserGlassBackground }
-    }
-  }
-
-  /// Thick material plus a surface tint — keeps frost, cuts see-through.
-  private var denserGlassBackground: some View {
-    ZStack {
-      Rectangle().fill(.thickMaterial)
-      colors.surfaceSheet.opacity(SheetToken.glassFillOpacity)
     }
   }
 }
@@ -70,19 +64,35 @@ private struct CounterSheetPresentationModifier: ViewModifier {
 private struct CounterModalScrimModifier: ViewModifier {
   @Environment(\.semanticColors) private var colors
 
-  let isPresented: Bool
+  let progress: CGFloat
+
+  private var clampedProgress: CGFloat {
+    min(max(progress, 0), 1)
+  }
 
   func body(content: Content) -> some View {
     content
+      .blur(radius: SheetToken.backdropBlurRadius * clampedProgress)
       .overlay {
-        if isPresented {
-          ComponentColor.modalScrim(colors)
-            .ignoresSafeArea()
-            .allowsHitTesting(false)
-            .transition(.opacity)
-        }
+        ComponentColor.modalScrim(colors)
+          .opacity(clampedProgress)
+          .ignoresSafeArea()
+          .allowsHitTesting(false)
       }
-      .animation(.easeInOut(duration: 0.18), value: isPresented)
+  }
+}
+
+/// Publishes sheet frame progress into the coordinator so the presenter can blur progressively.
+private struct CounterSheetScrimTrackingModifier: ViewModifier {
+  let coordinator: CounterSheetCoordinator
+
+  func body(content: Content) -> some View {
+    content
+      .onGeometryChange(for: CGRect.self) { proxy in
+        proxy.frame(in: .global)
+      } action: { _, frame in
+        coordinator.updateScrimProgress(sheetFrame: frame)
+      }
   }
 }
 
@@ -127,34 +137,80 @@ enum CounterSheetRoute: Identifiable, Equatable {
       "appSettings"
     }
   }
-
-  /// Routes that dim the counter card behind the sheet.
-  var dimsPagerCard: Bool {
-    switch self {
-    case .buttonSettings, .addCounter, .customAmount, .editEntry, .history:
-      true
-    case .appSettings:
-      false
-    }
-  }
 }
 
 @Observable
 @MainActor
 final class CounterSheetCoordinator {
-  var route: CounterSheetRoute?
+  var route: CounterSheetRoute? {
+    didSet {
+      if route == nil {
+        tracksSheetGeometry = false
+        scrimProgress = 0
+      }
+    }
+  }
+
+  /// 0…1 how far the active sheet has risen on screen.
+  /// Animates in on present; follows sheet geometry during interactive dismiss.
+  var scrimProgress: CGFloat = 0
   var onCounterCreated: ((CustomCounter) -> Void)?
 
-  var isPagerScrimActive: Bool {
-    route?.dimsPagerCard ?? false
+  /// Sheet content lays out at its final frame immediately, so geometry alone snaps
+  /// blur to 1 on present. Ignore those reports until the sheet starts moving down.
+  @ObservationIgnored private var tracksSheetGeometry = false
+
+  /// Scrim over the whole pager (list + counters) while any sheet is up.
+  var pagerScrimProgress: CGFloat {
+    route == nil ? 0 : scrimProgress
   }
 
   func present(_ route: CounterSheetRoute) {
+    tracksSheetGeometry = false
     self.route = route
+    scrimProgress = 0
+    withAnimation(MotionToken.sheetScrimPresent) {
+      scrimProgress = 1
+    }
   }
 
   func dismiss() {
     route = nil
+  }
+
+  func updateScrimProgress(sheetFrame frame: CGRect) {
+    guard route != nil, frame.height > 1 else {
+      if scrimProgress != 0 { scrimProgress = 0 }
+      return
+    }
+    let screenHeight = Self.screenHeight
+    guard screenHeight > 1 else { return }
+    let next = min(max((screenHeight - frame.minY) / frame.height, 0), 1)
+
+    // Present: content geometry jumps to ~1 immediately — keep the animated ramp.
+    // Dismiss: progress drops as the sheet moves; switch to live tracking.
+    if !tracksSheetGeometry {
+      if next < 0.97 {
+        tracksSheetGeometry = true
+      } else {
+        return
+      }
+    }
+
+    guard abs(next - scrimProgress) > 0.002 else { return }
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      scrimProgress = next
+    }
+  }
+
+  private static var screenHeight: CGFloat {
+    let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+    if let height = scenes.first(where: { $0.activationState == .foregroundActive })?.screen.bounds.height {
+      return height
+    }
+    return scenes.first?.screen.bounds.height ?? 0
   }
 }
 
@@ -171,6 +227,7 @@ struct CounterSheetHost: View {
       .sheet(item: $coordinator.route) { route in
         sheetContent(for: route)
           .counterDesignSystemFromColorScheme()
+          .modifier(CounterSheetScrimTrackingModifier(coordinator: coordinator))
       }
   }
 

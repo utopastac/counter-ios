@@ -86,7 +86,6 @@ struct AllCountersListView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     .background(colors.surfacePrimary)
-    .counterModalScrim(isPresented: sheets.route == .appSettings)
     .counterDesignSystemFromColorScheme()
   }
 

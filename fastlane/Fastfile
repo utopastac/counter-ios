@@ -41,6 +41,8 @@ platform :ios do
   desc "Apply standard Fastlane Frameit device frames + marketing titles"
   lane :frame do
     require "fileutils"
+    # Optional `tracking` on keyword/title (ImageMagick kerning) — Frameit has no built-in.
+    require_relative "frameit_text_style"
 
     shots = File.expand_path("../screenshots", __dir__)
     frameit_dir = File.expand_path("frameit", __dir__)

@@ -150,7 +150,7 @@ struct CounterPagerView: View {
       colors.surfacePrimary
         .ignoresSafeArea(edges: [.top, .horizontal])
     }
-    .counterModalScrim(isPresented: sheets.isPagerScrimActive)
+    .counterModalScrim(progress: sheets.pagerScrimProgress)
     .onChange(of: counters.map(\.id)) { _, ids in
       let idStrings = ids.map(\.uuidString)
       if idStrings.isEmpty {
@@ -224,7 +224,7 @@ struct CounterPagerView: View {
     }
 
     switch scene {
-    case .pager, .list, .compact:
+    case .pager, .list, .compact, .widgets:
       break
     case .history:
       let counterID = counters.first(where: { $0.id == ScreenshotDataSeeder.caloriesID })?.id
