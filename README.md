@@ -79,7 +79,7 @@ fastlane frame                # re-frame existing captures
 SKIP_FRAME=1 fastlane screenshots
 ```
 
-Raw + `*_framed.png` land in `./screenshots/en-US/` (gitignored). Deliver prefers
+Raw + `*_framed.png` land in `./screenshots/en-GB/` (gitignored). Deliver prefers
 framed files when uploading. Sync **raw** iPhone shots into the sibling
 `numo-website` gallery with `fastlane sync_marketing`.
 

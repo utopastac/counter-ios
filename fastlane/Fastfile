@@ -25,7 +25,7 @@ platform :ios do
       devices: [
         "iPhone 18 Pro Max",
       ],
-      languages: ["en-US"],
+      languages: ["en-GB"],
       output_directory: "./screenshots",
       clear_previous_screenshots: true,
       override_status_bar: true,
@@ -71,8 +71,22 @@ platform :ios do
     sh("bash", "#{File.expand_path('../scripts/sync_marketing_screenshots.sh', __dir__)}")
   end
 
+  desc "Copy committed Watch App Store screenshots into the capture locale folder"
+  lane :restore_watch_screenshots do
+    require "fileutils"
+    locale = ENV.fetch("SCREENSHOT_LOCALE", "en-GB")
+    src = File.expand_path("watch_screenshots", __dir__)
+    dst = File.expand_path("../screenshots/#{locale}", __dir__)
+    FileUtils.mkdir_p(dst)
+    Dir.glob(File.join(src, "*.png")).each do |path|
+      FileUtils.cp(path, dst)
+      UI.message("Restored Watch screenshot: #{File.basename(path)}")
+    end
+  end
+
   desc "Upload local screenshots to App Store Connect (screenshots only)"
   lane :upload_screenshots do
+    restore_watch_screenshots
     upload_to_app_store(**asc_upload_params(
       skip_binary_upload: true,
       skip_metadata: true,
@@ -159,6 +173,7 @@ platform :ios do
     # 3) Screenshots (framed) + marketing gallery
     unless env_flag("SKIP_SCREENSHOTS")
       screenshots
+      restore_watch_screenshots
       sync_marketing unless env_flag("SKIP_MARKETING")
     end
 

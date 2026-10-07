@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Sync App Store iPhone screenshots into the Numo marketing gallery.
 #
-# Expects captures from `fastlane screenshots` under ./screenshots/en-US/.
+# Expects captures from `fastlane screenshots` under ./screenshots/en-GB/.
 # Writes PNGs into the sibling numo-website repo (override with NUMO_WEB_ROOT).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SRC_DIR="${SCREENSHOTS_DIR:-$ROOT/screenshots/en-US}"
+SRC_DIR="${SCREENSHOTS_DIR:-$ROOT/screenshots/en-GB}"
 WEB_ROOT="${NUMO_WEB_ROOT:-$ROOT/../numo-website}"
 DEST_DIR="$WEB_ROOT/public/images"
 
