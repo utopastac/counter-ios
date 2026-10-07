@@ -253,6 +253,11 @@
 		WS10000010000000000000010 /* WatchSyncDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000001 /* WatchSyncDTO.swift */; };
 		WS10000010000000000000011 /* WatchSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS20000010000000000000002 /* WatchSyncEngine.swift */; };
 		WSTBFTEST01 /* WatchSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WSTFILEREF01 /* WatchSyncTests.swift */; };
+
+		UITBFUITEST01 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF01 /* ScreenshotTests.swift */; };
+		UITBFUITEST02 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF02 /* SnapshotHelper.swift */; };
+		UITBFCOUNTER01 /* UITesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF03 /* UITesting.swift */; };
+		UITBFCOUNTER02 /* ScreenshotDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF04 /* ScreenshotDataSeeder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -276,6 +281,14 @@
 			proxyType = 1;
 			remoteGlobalIDString = IW60000010000000000000001;
 			remoteInfo = CounterWidgets;
+		};
+
+		E10000010000000000000004 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90000010000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A60000010000000000000001;
+			remoteInfo = Counter;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -378,6 +391,11 @@
 		CSVFILEREF01 /* CounterSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterSettingsView.swift; sourceTree = "<group>"; };
 		CT20000010000000000000001 /* CounterTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTemplate.swift; sourceTree = "<group>"; };
 		CTGPRODUCT001 /* CounterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CounterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		UITPRODUCT001 /* CounterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CounterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		UITFILEREF01 /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
+		UITFILEREF02 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		UITFILEREF03 /* UITesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITesting.swift; sourceTree = "<group>"; };
+		UITFILEREF04 /* ScreenshotDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotDataSeeder.swift; sourceTree = "<group>"; };
 		CVDROWFR01 /* CounterValueDateRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterValueDateRow.swift; sourceTree = "<group>"; };
 		DS20000010000000000000001 /* BaseColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseColorTokens.swift; sourceTree = "<group>"; };
 		DS20000010000000000000002 /* SemanticColorTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemanticColorTokens.swift; sourceTree = "<group>"; };
@@ -511,6 +529,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+
+		UITFRAMEWORKS01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -523,6 +549,7 @@
 				IW50000010000000000000001 /* CounterWidgets */,
 				C50000010000000000000001 /* Shared */,
 				CTGGROUP001 /* CounterTests */,
+				UITGROUP001 /* CounterUITests */,
 				A50000010000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -549,6 +576,7 @@
 				F30000010000000000000001 /* CounterWatchWidgets.appex */,
 				IW30000010000000000000001 /* CounterWidgets.appex */,
 				CTGPRODUCT001 /* CounterTests.xctest */,
+				UITPRODUCT001 /* CounterUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -648,6 +676,8 @@
 				QAS20000010000000000000001 /* QuickAddSessionStore.swift */,
 				C20000010000000000000012 /* PreviewModel.swift */,
 				SD20000010000000000000001 /* SampleDataSeeder.swift */,
+				UITFILEREF03 /* UITesting.swift */,
+				UITFILEREF04 /* ScreenshotDataSeeder.swift */,
 				AP20000010000000000000002 /* AppAppearancePreference.swift */,
 				AH20000010000000000000001 /* AppHaptics.swift */,
 				ADR20000010000000000000001 /* AppDataReset.swift */,
@@ -682,6 +712,16 @@
 				C20000010000000000000007 /* CounterEntry.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+
+		UITGROUP001 /* CounterUITests */ = {
+			isa = PBXGroup;
+			children = (
+				UITFILEREF01 /* ScreenshotTests.swift */,
+				UITFILEREF02 /* SnapshotHelper.swift */,
+			);
+			path = CounterUITests;
 			sourceTree = "<group>";
 		};
 		CTGGROUP001 /* CounterTests */ = {
@@ -939,6 +979,25 @@
 			productReference = IW30000010000000000000001 /* CounterWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+
+		UITTARGET001 /* CounterUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = UITCFGLIST001 /* Build configuration list for PBXNativeTarget "CounterUITests" */;
+			buildPhases = (
+				UITSOURCES001 /* Sources */,
+				UITFRAMEWORKS01 /* Frameworks */,
+				UITRESOURCES01 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E20000010000000000000004 /* PBXTargetDependency */,
+			);
+			name = CounterUITests;
+			productName = CounterUITests;
+			productReference = UITPRODUCT001 /* CounterUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -957,6 +1016,10 @@
 					};
 					CTGTARGET001 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					UITTARGET001 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = A60000010000000000000001;
 					};
 					F60000010000000000000001 = {
 						CreatedOnToolsVersion = 16.0;
@@ -984,6 +1047,7 @@
 				F60000010000000000000001 /* CounterWatchWidgets */,
 				IW60000010000000000000001 /* CounterWidgets */,
 				CTGTARGET001 /* CounterTests */,
+				UITTARGET001 /* CounterUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1008,6 +1072,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CTGRESOURCES01 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		UITRESOURCES01 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1115,6 +1186,8 @@
 				L10000010000000000000001 /* GoalDirection.swift in Sources */,
 				Q10000010000000000000001 /* QuickAddConfiguration.swift in Sources */,
 				SD10000010000000000000001 /* SampleDataSeeder.swift in Sources */,
+				UITBFCOUNTER01 /* UITesting.swift in Sources */,
+				UITBFCOUNTER02 /* ScreenshotDataSeeder.swift in Sources */,
 				ADR10000010000000000000001 /* AppDataReset.swift in Sources */,
 				C10000010000000000000012 /* PreviewModel.swift in Sources */,
 				CPDBFCOUNTER01 /* CounterPaletteData.swift in Sources */,
@@ -1305,6 +1378,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		UITSOURCES001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				UITBFUITEST01 /* ScreenshotTests.swift in Sources */,
+				UITBFUITEST02 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1322,6 +1404,11 @@
 			isa = PBXTargetDependency;
 			target = IW60000010000000000000001 /* CounterWidgets */;
 			targetProxy = E10000010000000000000003 /* PBXContainerItemProxy */;
+		};
+		E20000010000000000000004 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A60000010000000000000001 /* Counter */;
+			targetProxy = E10000010000000000000004 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1700,6 +1787,55 @@
 			};
 			name = Release;
 		};
+
+		UITCFGDEBUG01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Counter;
+			};
+			name = Debug;
+		};
+		UITCFGRELEASE01 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2S5P26L7UP;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.archgrovehouse.numo.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Counter;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1753,6 +1889,15 @@
 			buildConfigurations = (
 				IWB000010000000000000001 /* Debug */,
 				IWB000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		UITCFGLIST001 /* Build configuration list for PBXNativeTarget "CounterUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				UITCFGDEBUG01 /* Debug */,
+				UITCFGRELEASE01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,0 +1,37 @@
+{
+  "device_frame_version": "latest",
+  "default": {
+    "keyword": {
+      "font": "../fastlane/frameit/fonts/Helvetica.ttc",
+      "color": "#111111"
+    },
+    "title": {
+      "font": "../fastlane/frameit/fonts/Helvetica.ttc",
+      "color": "#111111"
+    },
+    "background": "../fastlane/frameit/backgrounds/01-Pager.png",
+    "padding": 50,
+    "title_below_image": false,
+    "show_complete_frame": false,
+    "stack_title": true,
+    "frame": "SILVER"
+  },
+  "data": [
+    {
+      "filter": "01-Pager",
+      "background": "../fastlane/frameit/backgrounds/01-Pager.png"
+    },
+    {
+      "filter": "02-List",
+      "background": "../fastlane/frameit/backgrounds/02-List.png"
+    },
+    {
+      "filter": "03-History",
+      "background": "../fastlane/frameit/backgrounds/03-History.png"
+    },
+    {
+      "filter": "04-Compact",
+      "background": "../fastlane/frameit/backgrounds/04-Compact.png"
+    }
+  ]
+}

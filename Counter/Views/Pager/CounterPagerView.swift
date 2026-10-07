@@ -36,6 +36,8 @@ struct CounterPagerView: View {
   /// underlay list is open the main scroll view is disabled, and `scrollPosition` would otherwise
   /// write the still-visible page back over a programmatic selection (create / list tap).
   @State private var pendingScrollPageID: String?
+  /// Flips to `screenshot-ready` for Fastlane Snapshot once the UIT scene chrome is settled.
+  @State private var screenshotSceneReady = false
 
   /// Compact stack still uses `scrollPosition`; the paging pager does not — two-way
   /// `scrollPosition` re-asserts the selected ID on any view update and jumps on the last page.
@@ -194,6 +196,46 @@ struct CounterPagerView: View {
     .onChange(of: focusRouter.pendingCounterID) { _, _ in
       applyPendingDeepLinkIfNeeded()
     }
+    .task {
+      await applyUITestingSceneIfNeeded()
+    }
+    .accessibilityIdentifier(
+      UITesting.isEnabled
+        ? (screenshotSceneReady ? "screenshot-ready" : "screenshot-pending")
+        : ""
+    )
+  }
+
+  /// Applies `-UITScene` chrome after the store is ready (screenshot capture).
+  @MainActor
+  private func applyUITestingSceneIfNeeded() async {
+    guard UITesting.isEnabled else {
+      screenshotSceneReady = true
+      return
+    }
+
+    // Let seed + deep-link / list-reveal settle before opening sheets.
+    try? await Task.sleep(for: .milliseconds(450))
+    applyPendingDeepLinkIfNeeded()
+
+    guard let scene = UITesting.parsedScene else {
+      screenshotSceneReady = true
+      return
+    }
+
+    switch scene {
+    case .pager, .list, .compact:
+      break
+    case .history:
+      let counterID = counters.first(where: { $0.id == ScreenshotDataSeeder.caloriesID })?.id
+        ?? counters.first?.id
+      if let counterID {
+        sheets.present(.history(counterID: counterID))
+      }
+    }
+
+    try? await Task.sleep(for: .milliseconds(350))
+    screenshotSceneReady = true
   }
 
   @ViewBuilder

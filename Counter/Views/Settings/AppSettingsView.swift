@@ -45,7 +45,9 @@ struct AppSettingsView: View {
     AppAppearancePreference.quickAddBatchWindowKey,
     store: AppAppearancePreference.sharedDefaults
   ) private var batchWindowSeconds = AppAppearancePreference.defaultBatchWindowSeconds
+#if DEBUG
   @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
+#endif
   @AppStorage(AppAppearancePreference.historyPerPeriodEnabledKey)
   private var isHistoryPerPeriodEnabled = true
   @AppStorage(AppAppearancePreference.historyAverageActiveDaysOnlyKey)
@@ -203,6 +205,7 @@ struct AppSettingsView: View {
             }
           }
 
+#if DEBUG
           VStack(alignment: .leading, spacing: 0) {
             SettingsSectionHeader(title: "Development")
             SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
@@ -213,6 +216,11 @@ struct AppSettingsView: View {
                 FreshInstallOnboarding.requestPreview()
               }
             }
+          }
+#endif
+
+          VStack(alignment: .leading, spacing: 0) {
+            SettingsSectionHeader(title: "About")
             SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
           }
 

@@ -44,6 +44,9 @@ CounterWidgets/      Home screen widgets (WidgetKit + App Intents)
 CounterWatchWidgets/ Watch complication (WidgetKit)
 Shared/              Models + SwiftData container (App Group) + domain logic
 CounterTests/        Unit tests (Swift Testing) for Shared/ domain logic
+CounterUITests/      App Store screenshot UI tests (Fastlane Snapshot)
+fastlane/            Screenshot + App Store release lanes
+scripts/             Release notes + marketing screenshot sync
 ```
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the module map, data flow, and the
@@ -61,6 +64,47 @@ xcodebuild -project Counter.xcodeproj -scheme Counter \
 
 Or open the project in Xcode and run the `CounterTests` target from the Test navigator
 (⌘U). See [docs/TESTING.md](docs/TESTING.md) for what is and isn't covered, and why.
+
+### App Store screenshots
+
+Deterministic marketing frames via Fastlane Snapshot + `CounterUITests/ScreenshotTests`.
+Launch args `-UITesting` / `-UITScene` seed Calories / Protein / Money with ~3 weeks of
+history, then open pager, list, history, or compact mode. After capture, `fastlane frame`
+runs standard [Frameit](https://docs.fastlane.tools/actions/frameit/) (real device
+frames + titles on coloured backgrounds).
+
+```sh
+fastlane screenshots          # capture + frameit
+fastlane frame                # re-frame existing captures
+SKIP_FRAME=1 fastlane screenshots
+```
+
+Raw + `*_framed.png` land in `./screenshots/en-US/` (gitignored). Deliver prefers
+framed files when uploading. Sync **raw** iPhone shots into the sibling
+`numo-website` gallery with `fastlane sync_marketing`.
+
+Copy / backgrounds live in `fastlane/frameit/`. Frameit needs ImageMagick:
+`brew install imagemagick`.
+
+### App Store release
+
+Copy `.env.example` → `.env` and fill in your App Store Connect API key, then:
+
+```sh
+# Patch bump, capture+frame screenshots, archive, upload (does not submit for review)
+VERSION_BUMP=patch fastlane release
+
+# Exact version + submit
+VERSION=1.1.0 SUBMIT_FOR_REVIEW=1 AUTOMATIC_RELEASE=1 fastlane release
+
+# Skip screenshot capture this time
+SKIP_SCREENSHOTS=1 VERSION_BUMP=patch fastlane release
+```
+
+`release` uploads framed screenshots with the binary automatically (unless
+`SKIP_SCREENSHOTS=1`). What’s New is drafted from `CHANGELOG.md` `[Unreleased]`
+via `fastlane prepare_release_notes`. After a successful upload, that section is
+cut into a dated version heading.
 
 ## Notes
 

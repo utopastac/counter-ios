@@ -16,19 +16,37 @@ final class CounterFocusRouter {
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @AppStorage(AppAppearancePreference.darkModeEnabledKey) private var isDarkModeEnabled = false
-  @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
   @AppStorage(FreshInstallOnboarding.hasCompletedKey) private var hasCompletedFreshInstall = true
+#if DEBUG
+  @AppStorage(AppAppearancePreference.fpsCounterEnabledKey) private var isFPSCounterEnabled = false
   @AppStorage(FreshInstallOnboarding.previewActiveKey) private var isFreshInstallPreview = false
+#endif
   @State private var isBootstrapped = false
   @State private var sheetCoordinator = CounterSheetCoordinator()
   @State private var focusRouter = CounterFocusRouter()
 
   private var showsFreshInstall: Bool {
+#if DEBUG
     isBootstrapped && (!hasCompletedFreshInstall || isFreshInstallPreview)
+#else
+    isBootstrapped && !hasCompletedFreshInstall
+#endif
   }
 
   private var showsPager: Bool {
+#if DEBUG
     isBootstrapped && hasCompletedFreshInstall && !isFreshInstallPreview
+#else
+    isBootstrapped && hasCompletedFreshInstall
+#endif
+  }
+
+  /// Seeds fake counters + history and focuses Calories when the scene needs it.
+  private func prepareUITestingLaunch() {
+    ScreenshotDataSeeder.replaceAll(in: modelContext)
+    if UITesting.shouldFocusPrimaryCounter {
+      focusRouter.pendingCounterID = ScreenshotDataSeeder.caloriesID
+    }
   }
 
   var body: some View {
@@ -49,6 +67,7 @@ struct ContentView: View {
 
       CounterSheetHost(coordinator: sheetCoordinator)
     }
+#if DEBUG
     .overlay(alignment: .bottomTrailing) {
       if isFPSCounterEnabled && showsPager {
         FPSCounterView()
@@ -57,14 +76,23 @@ struct ContentView: View {
           .padding(.bottom, SpaceToken.pageFooterBottom)
       }
     }
+#endif
     .animation(.easeOut(duration: 0.25), value: isBootstrapped)
     .animation(.easeOut(duration: 0.25), value: hasCompletedFreshInstall)
+#if DEBUG
     .animation(.easeOut(duration: 0.25), value: isFreshInstallPreview)
+#endif
     .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
     .onOpenURL { url in
       focusRouter.handle(url)
     }
     .task {
+      if UITesting.isEnabled {
+        prepareUITestingLaunch()
+        isBootstrapped = true
+        return
+      }
+
       WatchSyncCoordinator.shared.activate()
       FreshInstallOnboarding.migrateIfNeeded(
         hasCounters: SampleDataSeeder.hasAnyCounters(in: modelContext)

@@ -4,3 +4,22 @@ xcuserdata/
 DerivedData/
 build/
 .cursor/
+
+# App Store screenshots (regenerate with `fastlane screenshots`)
+screenshots/
+!screenshots/Framefile.json
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+fastlane/README.md
+
+# App Store Connect API keys — never commit
+AuthKey_*.p8
+**/AuthKey*.json
+fastlane/api_key.json
+*.p8
+.env
+.env.local
+fastlane/.env
+fastlane/.env.default
