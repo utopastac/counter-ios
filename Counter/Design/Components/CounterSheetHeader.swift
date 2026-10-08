@@ -46,6 +46,8 @@ struct CounterSheetHeader: View {
       .counterTextStyle(.settingsRowLabel, color: isDoneEnabled ? .primary : .disabled)
       .buttonStyle(.plain)
       .disabled(!isDoneEnabled)
+      .accessibilityIdentifier("sheet-dismiss")
+      .accessibilityLabel(trailingTitle)
     }
     .padding(.horizontal, SheetToken.horizontal)
     .padding(.top, SpaceToken.u2)

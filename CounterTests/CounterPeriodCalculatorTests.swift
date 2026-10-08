@@ -141,7 +141,19 @@ struct CounterPeriodCalculatorTests {
     #expect(range.end == date(2027, 1, 1, 0))
   }
 
-  // MARK: - resetSummary
+  // MARK: - captions / resetSummary
+
+  @Test func periodCaptionMatchesEachResetPeriod() {
+    #expect(CounterResetPeriod.daily.periodCaption == "today")
+    #expect(CounterResetPeriod.weekly.periodCaption == "this week")
+    #expect(CounterResetPeriod.monthly.periodCaption == "this month")
+    #expect(CounterResetPeriod.yearly.periodCaption == "this year")
+  }
+
+  @Test func displayPeriodCaptionTitleCasesPeriodCaption() {
+    #expect(CounterResetPeriod.daily.displayPeriodCaption == "Today")
+    #expect(CounterResetPeriod.weekly.displayPeriodCaption == "This Week")
+  }
 
   @Test func resetSummaryDescribesEachPeriod() {
     #expect(

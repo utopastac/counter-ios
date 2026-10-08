@@ -233,6 +233,12 @@ nonisolated enum HistoryAggregator {
     }
   }
 
+  /// Period used when drilling into a history list row: hourly entries for day view,
+  /// otherwise calendar-day entries (via `.monthly` bucket range) for week/month rows.
+  static func listRowBucketPeriod(for period: HistoryPeriod) -> HistoryPeriod {
+    period == .daily ? .daily : .monthly
+  }
+
   /// Daily rows for the history list — hourly for day view, otherwise one row per day
   /// in the visible week or month window.
   static func listDailyTotals(

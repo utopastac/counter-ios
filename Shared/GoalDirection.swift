@@ -81,6 +81,15 @@ nonisolated struct GoalProgress {
     isUnderZero || (direction == .countDown && isOverGoal)
   }
 
+  /// Primary (non-overflow) ring fill shared by iPhone, Watch, and widget rings.
+  /// Empty out-of-range states → 0; count-up over target → full base ring (overflow draws
+  /// separately); otherwise the clamped `ringFraction`.
+  var primaryRingFraction: Double {
+    if rendersEmptyRing { return 0 }
+    if isOverGoal { return 1 }
+    return ringFraction
+  }
+
   var percentComplete: Int {
     Int((fractionComplete * 100).rounded())
   }
@@ -127,6 +136,12 @@ nonisolated struct GoalProgress {
     case .countDown:
       return "\(formatted(delta)) remaining"
     }
+  }
+
+  /// Title-cased subtitle for list cards and widgets. The pager keeps sentence-case
+  /// `heroSubtitle` under the large hero number.
+  var displayHeroSubtitle: String {
+    heroSubtitle.capitalized
   }
 
   var statsSummaryValue: String {

@@ -139,4 +139,49 @@ struct GoalProgressTests {
     #expect(progress.statsSummaryLabel == "Over target")
     #expect(progress.detailLabel == "500 over target")
   }
+
+  // MARK: - primaryRingFraction / display copy
+
+  @Test func primaryRingFractionIsZeroWhenRingShouldRenderEmpty() {
+    let underZero = GoalProgress(current: -10, goal: 100, direction: .countUp)
+    #expect(underZero.primaryRingFraction == 0)
+
+    let overBudget = GoalProgress(current: 120, goal: 100, direction: .countDown)
+    #expect(overBudget.rendersEmptyRing)
+    #expect(overBudget.primaryRingFraction == 0)
+  }
+
+  @Test func primaryRingFractionIsFullBaseRingWhenCountUpExceedsGoal() {
+    let progress = GoalProgress(current: 180, goal: 150, direction: .countUp)
+    #expect(progress.primaryRingFraction == 1)
+    #expect(progress.overflowLoopProgress > 0)
+  }
+
+  @Test func primaryRingFractionTracksRingFractionWithinRange() {
+    let progress = GoalProgress(current: 480, goal: 3000, direction: .countDown)
+    #expect(progress.primaryRingFraction == progress.ringFraction)
+  }
+
+  @Test func heroCaptionMatchesDirection() {
+    let up = GoalProgress(current: 70, goal: 150, direction: .countUp)
+    #expect(up.heroCaption == "of 150")
+
+    let down = GoalProgress(current: 480, goal: 3000, direction: .countDown)
+    #expect(down.heroCaption == "remaining")
+  }
+
+  @Test func displayHeroSubtitleTitleCasesHeroSubtitle() {
+    let progress = GoalProgress(current: 480, goal: 3000, direction: .countDown)
+    #expect(progress.heroSubtitle == "2520 remaining")
+    #expect(progress.displayHeroSubtitle == "2520 Remaining")
+  }
+
+  @Test func countUpInProgressCopy() {
+    let progress = GoalProgress(current: 70, goal: 150, direction: .countUp)
+    #expect(progress.heroSubtitle == "80 to go")
+    #expect(progress.statsSummaryLabel == "To go")
+    #expect(progress.detailLabel == "70 / 150")
+    #expect(progress.progressLabel == "Progress")
+  }
 }
+

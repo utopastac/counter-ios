@@ -68,6 +68,15 @@ nonisolated enum CounterTemplate: String, CaseIterable, Identifiable {
     }
   }
 
+  /// Reset period applied when creating from this template (create form + onboarding).
+  var defaultResetPeriod: CounterResetPeriod {
+    switch self {
+    case .money: .monthly
+    case .workouts: .weekly
+    case .blank, .calories, .protein, .water, .coffee: .daily
+    }
+  }
+
   var defaultPresets: [Double] {
     switch self {
     case .blank:

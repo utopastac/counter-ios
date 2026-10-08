@@ -323,7 +323,7 @@ private struct HistoryBucketDetailView: View {
   let onEntriesChanged: () -> Void
 
   private var bucketPeriod: HistoryPeriod {
-    period == .daily ? .daily : .monthly
+    HistoryAggregator.listRowBucketPeriod(for: period)
   }
 
   private var entries: [CounterEntry] {

@@ -42,6 +42,8 @@ struct CounterActionButton: View {
     }
     .buttonStyle(.plain)
     .tint(colors.interactivePrimaryForeground)
+    .accessibilityLabel(label ?? "Custom amount")
+    .accessibilityIdentifier(label.map { "quick-add-\($0)" } ?? "quick-add-custom")
   }
 }
 
@@ -50,7 +52,18 @@ struct CounterIconButton: View {
   @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
 
   let icon: CounterLucideIconName
+  let accessibilityLabelText: String
   let action: () -> Void
+
+  init(
+    icon: CounterLucideIconName,
+    accessibilityLabel: String,
+    action: @escaping () -> Void
+  ) {
+    self.icon = icon
+    self.accessibilityLabelText = accessibilityLabel
+    self.action = action
+  }
 
   var body: some View {
     Button {
@@ -63,6 +76,7 @@ struct CounterIconButton: View {
         .contentShape(Rectangle())
     }
     .buttonStyle(.icon)
+    .accessibilityLabel(accessibilityLabelText)
   }
 }
 
@@ -98,6 +112,7 @@ struct CounterTabBarButton: View {
     }
     .buttonStyle(.icon)
     .accessibilityLabel(label)
+    .accessibilityIdentifier("tab-\(label.lowercased().replacingOccurrences(of: " ", with: "-"))")
   }
 }
 

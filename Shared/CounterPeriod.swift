@@ -26,6 +26,11 @@ nonisolated enum CounterResetPeriod: String, Codable, CaseIterable, Identifiable
     }
   }
 
+  /// Title-cased period caption for list/widget fallbacks when there's no goal subtitle.
+  var displayPeriodCaption: String {
+    periodCaption.capitalized
+  }
+
   /// Formats a day-of-month as an ordinal string (e.g. `1` → `"1st"`, `22` → `"22nd"`).
   ///
   /// Shared by the monthly "resets on" picker and any other UI that needs to

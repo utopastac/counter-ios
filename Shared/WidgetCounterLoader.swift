@@ -78,26 +78,13 @@ enum WidgetCounterLoader {
       progressRingGlowEnabled: counter.overrideProgressRingGlow
         ?? AppAppearancePreference.isProgressRingGlowEnabled,
       heroValue: progress?.heroValue ?? CounterFormatting.amount(total),
-      heroSubtitle: progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption.capitalized,
+      heroSubtitle: progress?.displayHeroSubtitle ?? counter.resetPeriod.displayPeriodCaption,
       ringProgress: progress,
-      buttonValues: widgetButtonValues(from: buttons),
+      buttonValues: QuickAddConfiguration.widgetButtonValues(from: buttons),
       recentEntries: Array(recentEntries),
       lastUpdated: .now,
       isUnavailable: false
     )
-  }
-
-  private static func widgetButtonValues(from presets: [Double]) -> [Double] {
-    var seen = Set<Double>()
-    var values: [Double] = []
-
-    for value in presets {
-      guard values.count < 8 else { break }
-      guard seen.insert(value).inserted else { continue }
-      values.append(value)
-    }
-
-    return values
   }
 
   private static func fetchCounters(in context: ModelContext) -> [CustomCounter] {

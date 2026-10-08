@@ -85,8 +85,10 @@ struct FreshInstallStarterDraft: Identifiable, Hashable {
 
   var id: String { template.rawValue }
 
+  /// Parsed goal for seeding. Uses the same positive-amount rules as create/settings forms.
   var goal: Double {
-    Double(goalText.replacingOccurrences(of: ",", with: "")) ?? 0
+    let cleaned = goalText.replacingOccurrences(of: ",", with: "")
+    return AmountInput.parsePositiveAmount(cleaned) ?? 0
   }
 
   var subtitle: String {
@@ -94,99 +96,35 @@ struct FreshInstallStarterDraft: Identifiable, Hashable {
     return "\(amount) \(unit) \(resetPeriod.rawValue)"
   }
 
+  /// Builds a draft from `CounterTemplate` so create-form and onboarding starters can't drift.
+  /// Only selection state and onboarding palette slots are draft-specific.
   static func `default`(for template: CounterTemplate) -> FreshInstallStarterDraft {
+    let period = template.defaultResetPeriod
+    let goalText = template.defaultGoal.map(CounterFormatting.editingText(for:)) ?? ""
+    return FreshInstallStarterDraft(
+      template: template,
+      isSelected: FreshInstallOnboarding.defaultSelectedTemplates.contains(template),
+      name: template.defaultName,
+      unit: template.defaultUnit,
+      goalText: goalText,
+      resetPeriod: period,
+      resetAnchorDay: period.defaultAnchorDay(),
+      goalDirection: template.defaultGoalDirection,
+      buttonValues: template.defaultPresets,
+      paletteIndex: defaultPaletteIndex(for: template)
+    )
+  }
+
+  /// Stable onboarding card colours — not part of `CounterTemplate` because create-form
+  /// assigns palette via `CustomCounter.nextPaletteIndex` instead.
+  private static func defaultPaletteIndex(for template: CounterTemplate) -> Int {
     switch template {
-    case .blank:
-      FreshInstallStarterDraft(
-        template: .blank,
-        isSelected: false,
-        name: "",
-        unit: "",
-        goalText: "",
-        resetPeriod: .daily,
-        resetAnchorDay: CounterResetPeriod.daily.defaultAnchorDay(),
-        goalDirection: .countUp,
-        buttonValues: QuickAddConfiguration.defaultCounterPresets,
-        paletteIndex: 0
-      )
-    case .calories:
-      FreshInstallStarterDraft(
-        template: .calories,
-        isSelected: true,
-        name: "Calories",
-        unit: "kCal",
-        goalText: "2000",
-        resetPeriod: .daily,
-        resetAnchorDay: CounterResetPeriod.daily.defaultAnchorDay(),
-        goalDirection: .countDown,
-        buttonValues: SampleDataSeeder.mockQuickAddPresets,
-        paletteIndex: 0
-      )
-    case .protein:
-      FreshInstallStarterDraft(
-        template: .protein,
-        isSelected: true,
-        name: "Protein",
-        unit: "g",
-        goalText: "150",
-        resetPeriod: .daily,
-        resetAnchorDay: CounterResetPeriod.daily.defaultAnchorDay(),
-        goalDirection: .countUp,
-        buttonValues: CounterTemplate.protein.defaultPresets,
-        paletteIndex: 4
-      )
-    case .money:
-      FreshInstallStarterDraft(
-        template: .money,
-        isSelected: true,
-        name: "Money",
-        unit: "$",
-        goalText: "2000",
-        resetPeriod: .monthly,
-        resetAnchorDay: CounterResetPeriod.monthly.defaultAnchorDay(),
-        goalDirection: .countDown,
-        buttonValues: CounterTemplate.money.defaultPresets,
-        paletteIndex: 1
-      )
-    case .water:
-      FreshInstallStarterDraft(
-        template: .water,
-        isSelected: false,
-        name: "Water",
-        unit: "glasses",
-        goalText: "8",
-        resetPeriod: .daily,
-        resetAnchorDay: CounterResetPeriod.daily.defaultAnchorDay(),
-        goalDirection: .countUp,
-        buttonValues: CounterTemplate.water.defaultPresets,
-        paletteIndex: 6
-      )
-    case .coffee:
-      FreshInstallStarterDraft(
-        template: .coffee,
-        isSelected: false,
-        name: "Coffee",
-        unit: "cups",
-        goalText: "3",
-        resetPeriod: .daily,
-        resetAnchorDay: CounterResetPeriod.daily.defaultAnchorDay(),
-        goalDirection: .countUp,
-        buttonValues: CounterTemplate.coffee.defaultPresets,
-        paletteIndex: 7
-      )
-    case .workouts:
-      FreshInstallStarterDraft(
-        template: .workouts,
-        isSelected: false,
-        name: "Workouts",
-        unit: "sessions",
-        goalText: "4",
-        resetPeriod: .weekly,
-        resetAnchorDay: CounterResetPeriod.weekly.defaultAnchorDay(),
-        goalDirection: .countUp,
-        buttonValues: CounterTemplate.workouts.defaultPresets,
-        paletteIndex: 5
-      )
+    case .blank, .calories: 0
+    case .money: 1
+    case .protein: 4
+    case .workouts: 5
+    case .water: 6
+    case .coffee: 7
     }
   }
 }

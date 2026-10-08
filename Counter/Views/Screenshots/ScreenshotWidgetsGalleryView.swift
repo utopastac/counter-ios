@@ -37,7 +37,13 @@ struct ScreenshotWidgetsGalleryView: View {
       }
       .padding(.horizontal, 28)
     }
-    .accessibilityIdentifier(isReady ? "screenshot-ready" : "screenshot-pending")
+    // Probe only — do not label the whole gallery tree (that steals child identifiers).
+    .background(alignment: .topLeading) {
+      Color.clear
+        .frame(width: 1, height: 1)
+        .accessibilityIdentifier(isReady ? "screenshot-ready" : "screenshot-pending")
+        .allowsHitTesting(false)
+    }
     .task {
       // Let seed settle, then mark ready for Snapshot.
       try? await Task.sleep(for: .milliseconds(500))
@@ -262,8 +268,8 @@ private struct CardModel {
     let progress = counter.currentProgress()
     self.progress = progress
     heroValue = progress?.heroValue ?? CounterFormatting.amount(total)
-    subtitle = progress?.heroSubtitle.capitalized
-      ?? counter.resetPeriod.periodCaption.capitalized
+    subtitle = progress?.displayHeroSubtitle
+      ?? counter.resetPeriod.displayPeriodCaption
 
     let presets = QuickAddConfiguration.filledPresets(
       from: counter.presetAmounts,

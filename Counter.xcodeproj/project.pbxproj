@@ -20,6 +20,7 @@
 		AH10000010000000000000002 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
 		AH10000010000000000000003 /* AppHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AH20000010000000000000001 /* AppHaptics.swift */; };
 		AI10000010000000000000001 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
+		AIWATCHBF001 /* AmountInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI20000010000000000000001 /* AmountInput.swift */; };
 		AITBFTEST01 /* AmountInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AITFILEREF01 /* AmountInputTests.swift */; };
 		AP10000010000000000000001 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000001 /* AppSettingsView.swift */; };
 		AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP20000010000000000000002 /* AppAppearancePreference.swift */; };
@@ -172,6 +173,7 @@
 		G10000010000000000000006 /* CounterPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000006 /* CounterPagerView.swift */; };
 		G10000010000000000000007 /* CompactCounterCardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = G20000010000000000000007 /* CompactCounterCardLayout.swift */; };
 		GPTBFTEST01 /* GoalProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = GPTFILEREF01 /* GoalProgressTests.swift */; };
+		CTTBFTEST01 /* CounterTemplateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CTTFILEREF01 /* CounterTemplateTests.swift */; };
 		HATBFTEST01 /* HistoryAggregatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HATFILEREF01 /* HistoryAggregatorTests.swift */; };
 		HCS10000010000000000000001 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
 		HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCTFILEREF01 /* HistoryChartScaleTests.swift */; };
@@ -255,6 +257,7 @@
 		WSTBFTEST01 /* WatchSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WSTFILEREF01 /* WatchSyncTests.swift */; };
 
 		UITBFUITEST01 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF01 /* ScreenshotTests.swift */; };
+		UITBFUITEST03 /* CrashSmokeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF05 /* CrashSmokeUITests.swift */; };
 		UITBFUITEST02 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF02 /* SnapshotHelper.swift */; };
 		UITBFCOUNTER01 /* UITesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF03 /* UITesting.swift */; };
 		UITBFCOUNTER02 /* ScreenshotDataSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = UITFILEREF04 /* ScreenshotDataSeeder.swift */; };
@@ -395,6 +398,7 @@
 		CTGPRODUCT001 /* CounterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CounterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UITPRODUCT001 /* CounterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CounterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UITFILEREF01 /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
+		UITFILEREF05 /* CrashSmokeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashSmokeUITests.swift; sourceTree = "<group>"; };
 		UITFILEREF02 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		UITFILEREF03 /* UITesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITesting.swift; sourceTree = "<group>"; };
 		UITFILEREF04 /* ScreenshotDataSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotDataSeeder.swift; sourceTree = "<group>"; };
@@ -445,6 +449,7 @@
 		G20000010000000000000006 /* CounterPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterPagerView.swift; sourceTree = "<group>"; };
 		G20000010000000000000007 /* CompactCounterCardLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactCounterCardLayout.swift; sourceTree = "<group>"; };
 		GPTFILEREF01 /* GoalProgressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalProgressTests.swift; sourceTree = "<group>"; };
+		CTTFILEREF01 /* CounterTemplateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTemplateTests.swift; sourceTree = "<group>"; };
 		HATFILEREF01 /* HistoryAggregatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAggregatorTests.swift; sourceTree = "<group>"; };
 		HCS20000010000000000000001 /* HistoryChartScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScale.swift; sourceTree = "<group>"; };
 		HCTFILEREF01 /* HistoryChartScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScaleTests.swift; sourceTree = "<group>"; };
@@ -731,6 +736,7 @@
 			isa = PBXGroup;
 			children = (
 				UITFILEREF01 /* ScreenshotTests.swift */,
+				UITFILEREF05 /* CrashSmokeUITests.swift */,
 				UITFILEREF02 /* SnapshotHelper.swift */,
 			);
 			path = CounterUITests;
@@ -750,6 +756,7 @@
 				AAPTFILEREF01 /* AppAppearancePreferenceTests.swift */,
 				CCPTFILEREF01 /* CounterColorPackTests.swift */,
 				GPTFILEREF01 /* GoalProgressTests.swift */,
+				CTTFILEREF01 /* CounterTemplateTests.swift */,
 				HATFILEREF01 /* HistoryAggregatorTests.swift */,
 				QCTFILEREF01 /* QuickAddConfigurationTests.swift */,
 				CMTFILEREF01 /* CustomCounterModelTests.swift */,
@@ -1263,6 +1270,7 @@
 				Q10000010000000000000002 /* QuickAddConfiguration.swift in Sources */,
 				SD10000010000000000000002 /* SampleDataSeeder.swift in Sources */,
 				ADR10000010000000000000002 /* AppDataReset.swift in Sources */,
+				AIWATCHBF001 /* AmountInput.swift in Sources */,
 				FIOBFWATCH01 /* FreshInstallOnboarding.swift in Sources */,
 				CTWATCHBF001 /* CounterTemplate.swift in Sources */,
 				CCPBFWATCH01 /* CustomCounter+Progress.swift in Sources */,
@@ -1279,6 +1287,7 @@
 				TMCBFTEST01 /* TestModelContainer.swift in Sources */,
 				CPTBFTEST01 /* CounterPeriodCalculatorTests.swift in Sources */,
 				GPTBFTEST01 /* GoalProgressTests.swift in Sources */,
+				CTTBFTEST01 /* CounterTemplateTests.swift in Sources */,
 				HATBFTEST01 /* HistoryAggregatorTests.swift in Sources */,
 				QCTBFTEST01 /* QuickAddConfigurationTests.swift in Sources */,
 				CMTBFTEST01 /* CustomCounterModelTests.swift in Sources */,
@@ -1397,6 +1406,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				UITBFUITEST01 /* ScreenshotTests.swift in Sources */,
+				UITBFUITEST03 /* CrashSmokeUITests.swift in Sources */,
 				UITBFUITEST02 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

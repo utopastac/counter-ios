@@ -11,8 +11,23 @@ Or in Xcode: select the `Counter` scheme, open the Test navigator (⌘6), and ru
 `CounterTests` target (⌘U). `CounterTests` is a hostless unit-test bundle — it doesn't
 launch the app, a simulator boot is only needed to satisfy the platform/SDK requirement.
 
-CI runs the same suite on every push and pull request to `main` via
-[`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+CI runs unit tests plus `CrashSmokeUITests` on every push and pull request to `main`
+via [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+
+## Crash smoke (UI)
+
+`CounterUITests/CrashSmokeUITests.swift` launches the seeded `-UITesting` scenes and
+taps the main crash surfaces (quick-add/undo, history, settings, list → create). It
+asserts the process stays in the foreground — not pixel-perfect UI.
+
+```sh
+xcodebuild -project Counter.xcodeproj -scheme Counter \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -only-testing:CounterUITests/CrashSmokeUITests test
+```
+
+Screenshot capture (`ScreenshotTests` / `fastlane screenshots`) stays separate and is
+not part of CI.
 
 ## What's covered
 
@@ -46,12 +61,10 @@ they can't corrupt device data and don't interfere with each other.
 
 ## What's intentionally not covered, and why
 
-- **SwiftUI view rendering** (pager, settings sheet, history chart, list cards). These are
-  almost entirely presentation of values already computed by the tested domain logic; the
-  highest-value bugs here are visual/layout regressions, which snapshot or UI tests would
-  catch better than unit tests — and neither was in scope for this pass. If added later,
-  snapshot tests of the `Design/Components/` library would likely have the best
-  cost/benefit ratio (small, style-focused, don't need a running app).
+- **SwiftUI visual/layout fidelity** (exact spacing, glass, dark-mode polish). Crash smoke
+  covers process survival on the main surfaces; App Store screenshots cover marketing
+  frames. Pixel-diff snapshot tests of `Design/Components/` remain optional if visual
+  regressions become costly.
 - **Widget timeline/entity rendering and App Intents** (`CounterWidgets`, `CounterWatchWidgets`).
   The data these render (`CounterWidgetSnapshot`, ring fractions, hero strings, recent entries)
   comes from the same tested `Shared/` calculators; the WidgetKit-specific glue

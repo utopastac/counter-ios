@@ -74,9 +74,21 @@ jobs:
             -only-testing:CounterTests \
             -resultBundlePath TestResults.xcresult
 
+      - name: Run CrashSmokeUITests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Counter.xcodeproj \
+            -scheme Counter \
+            -destination "${{ steps.destination.outputs.destination }}" \
+            -only-testing:CounterUITests/CrashSmokeUITests \
+            -resultBundlePath CrashSmokeResults.xcresult
+
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: TestResults
-          path: TestResults.xcresult
+          path: |
+            TestResults.xcresult
+            CrashSmokeResults.xcresult

@@ -40,9 +40,7 @@ struct GoalProgressRing: View {
   /// overflow arc then wraps on top of it) and drops to empty for anything else out of
   /// range — negative progress in either direction, or a count-down budget gone over.
   private var fillFraction: Double {
-    if progress.rendersEmptyRing { return 0 }
-    if progress.isOverGoal { return 1 }
-    return progress.ringFraction
+    progress.primaryRingFraction
   }
 
   var body: some View {

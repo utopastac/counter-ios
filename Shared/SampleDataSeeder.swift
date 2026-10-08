@@ -3,9 +3,6 @@ import SwiftData
 
 /// Seeds the default counters when none exist.
 enum SampleDataSeeder {
-  /// Quick-add presets shown in the design mockups.
-  static let mockQuickAddPresets: [Double] = QuickAddConfiguration.defaultCaloriePresets
-
   @MainActor
   static func seedIfNeeded(in context: ModelContext) {
     guard !UserDefaults.standard.bool(forKey: AppDataReset.suppressSampleSeedingKey) else { return }

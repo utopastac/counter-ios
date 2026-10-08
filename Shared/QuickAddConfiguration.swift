@@ -3,6 +3,8 @@ import Foundation
 nonisolated enum QuickAddConfiguration {
   static let buttonCount = 10
   static let presetCount = buttonCount - 1
+  /// Home-screen widget quick-add slots (large/medium families).
+  static let widgetButtonCount = 8
 
   static let defaultCaloriePresets: [Double] = [5, 10, 25, 50, 100, 200, 500, 1000, 80]
 
@@ -57,5 +59,21 @@ nonisolated enum QuickAddConfiguration {
     }
 
     return normalizedPresets(updated)
+  }
+
+  /// Dedupes while preserving order, then caps at `widgetButtonCount` for home-screen widgets.
+  /// Call after `filledPresets` so the widget shows the same filled set as phone/Watch, just
+  /// fewer buttons.
+  static func widgetButtonValues(from presets: [Double]) -> [Double] {
+    var seen = Set<Double>()
+    var values: [Double] = []
+
+    for value in presets {
+      guard values.count < widgetButtonCount else { break }
+      guard seen.insert(value).inserted else { continue }
+      values.append(value)
+    }
+
+    return values
   }
 }

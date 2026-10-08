@@ -199,11 +199,17 @@ struct CounterPagerView: View {
     .task {
       await applyUITestingSceneIfNeeded()
     }
-    .accessibilityIdentifier(
-      UITesting.isEnabled
-        ? (screenshotSceneReady ? "screenshot-ready" : "screenshot-pending")
-        : ""
-    )
+    // Probe only — do not label the whole pager tree (that steals child identifiers).
+    .background(alignment: .topLeading) {
+      if UITesting.isEnabled {
+        Color.clear
+          .frame(width: 1, height: 1)
+          .accessibilityIdentifier(
+            screenshotSceneReady ? "screenshot-ready" : "screenshot-pending"
+          )
+          .allowsHitTesting(false)
+      }
+    }
   }
 
   /// Applies `-UITScene` chrome after the store is ready (screenshot capture).
@@ -294,7 +300,7 @@ struct CounterPagerView: View {
 
   private var emptyPagerToolbar: some View {
     HStack(spacing: SpaceToken.toolbarIconSpacing) {
-      CounterIconButton(icon: .listSortDescending) {
+      CounterIconButton(icon: .listSortDescending, accessibilityLabel: "Counters") {
         openCounterList()
       }
       Spacer(minLength: 0)
@@ -584,7 +590,11 @@ private struct PagerToolbarBar: View {
 
   var body: some View {
     HStack(spacing: SpaceToken.toolbarIconSpacing) {
-      CounterIconButton(icon: .listSortDescending, action: onOpenCounterList)
+      CounterIconButton(
+        icon: .listSortDescending,
+        accessibilityLabel: "Counters",
+        action: onOpenCounterList
+      )
 
       Text(activePageTitle)
         .counterTextStyle(.pageTitle)
@@ -593,8 +603,12 @@ private struct PagerToolbarBar: View {
       Spacer(minLength: 0)
 
       HStack(spacing: SpaceToken.toolbarIconSpacing) {
-        CounterIconButton(icon: .chartBar, action: onShowHistory)
-        CounterIconButton(icon: .slidersHorizontal, action: onShowButtonSettings)
+        CounterIconButton(icon: .chartBar, accessibilityLabel: "History", action: onShowHistory)
+        CounterIconButton(
+          icon: .slidersHorizontal,
+          accessibilityLabel: "Counter settings",
+          action: onShowButtonSettings
+        )
       }
     }
     .counterToolbarGlass(tint: accentTint)

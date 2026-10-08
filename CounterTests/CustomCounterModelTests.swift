@@ -68,6 +68,18 @@ struct CustomCounterModelTests {
     #expect(CustomCounter.normalizedName(from: "Protein") == "Protein")
   }
 
+  @Test func normalizedUnitTrimsAndCapsLength() {
+    #expect(CustomCounter.normalizedUnit(from: "  kcal  ") == "kcal")
+    #expect(CustomCounter.normalizedUnit(from: String(repeating: "u", count: 20)).count == 12)
+  }
+
+  @Test func nextSortOrderIncrementsPastExistingMaximum() {
+    let first = CustomCounter(name: "A", sortOrder: 2)
+    let second = CustomCounter(name: "B", sortOrder: 5)
+    #expect(CustomCounter.nextSortOrder(forExisting: [first, second]) == 6)
+    #expect(CustomCounter.nextSortOrder(forExisting: []) == 1)
+  }
+
   @Test func ringOverridesInheritAppDefaultsWhenUnset() {
     let counter = CustomCounter(name: "Water")
     #expect(counter.progressRingWidthChoice == .default)

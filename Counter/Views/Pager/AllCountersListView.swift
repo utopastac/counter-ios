@@ -163,7 +163,7 @@ struct AllCountersListView: View {
   }
 
   private func cardCaption(for progress: GoalProgress?, counter: CustomCounter) -> String {
-    progress?.heroSubtitle.capitalized ?? counter.resetPeriod.periodCaption
+    progress?.displayHeroSubtitle ?? counter.resetPeriod.displayPeriodCaption
   }
 
   private func deleteCounters(at offsets: IndexSet) {

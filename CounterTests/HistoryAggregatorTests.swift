@@ -208,4 +208,10 @@ struct HistoryAggregatorTests {
 
     #expect(average == 56)
   }
+
+  @Test func listRowBucketPeriodUsesDailyHoursOrCalendarDay() {
+    #expect(HistoryAggregator.listRowBucketPeriod(for: .daily) == .daily)
+    #expect(HistoryAggregator.listRowBucketPeriod(for: .weekly) == .monthly)
+    #expect(HistoryAggregator.listRowBucketPeriod(for: .monthly) == .monthly)
+  }
 }

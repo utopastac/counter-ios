@@ -115,9 +115,7 @@ struct WidgetGoalProgressRing: View {
   }
 
   private var fillFraction: Double {
-    if progress.rendersEmptyRing { return 0 }
-    if progress.isOverGoal { return 1 }
-    return progress.ringFraction
+    progress.primaryRingFraction
   }
 
   var body: some View {

@@ -133,12 +133,7 @@ struct WatchCounterPageView: View {
 
   private var heroValue: String {
     if let progress {
-      switch progress.direction {
-      case .countUp:
-        return progress.compactHeroValue
-      case .countDown:
-        return progress.heroValue
-      }
+      return progress.compactHeroValue
     }
     return CounterFormatting.amount(counter.currentTotal())
   }

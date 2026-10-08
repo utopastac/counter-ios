@@ -178,8 +178,10 @@ struct CreateCounterView: View {
   private func applyTemplate(_ template: CounterTemplate) {
     name = template.defaultName
     unit = template.defaultUnit
-    goalText = template.defaultGoal.map(CounterFormatting.editingText) ?? ""
+    goalText = template.defaultGoal.map(CounterFormatting.editingText(for:)) ?? ""
     goalDirection = template.defaultGoalDirection
+    resetPeriod = template.defaultResetPeriod
+    resetAnchorDay = template.defaultResetPeriod.defaultAnchorDay()
     buttonValues = QuickAddConfiguration.normalizedPresets(template.defaultPresets)
   }
 

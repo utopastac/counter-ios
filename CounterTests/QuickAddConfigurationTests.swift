@@ -83,4 +83,21 @@ struct QuickAddConfigurationTests {
     #expect(updated.count == QuickAddConfiguration.presetCount)
     #expect(!updated.contains(1000))
   }
+
+  // MARK: - widgetButtonValues
+
+  @Test func widgetButtonValuesDedupesPreservingOrderAndCapsAtWidgetCount() {
+    let presets: [Double] = [5, 10, 5, 25, 50, 100, 200, 500, 1000, 80, 15]
+    let values = QuickAddConfiguration.widgetButtonValues(from: presets)
+
+    #expect(values.count == QuickAddConfiguration.widgetButtonCount)
+    #expect(values == [5, 10, 25, 50, 100, 200, 500, 1000])
+    #expect(values.count == Set(values).count)
+  }
+
+  @Test func widgetButtonValuesLeavesShortListsUntouched() {
+    let presets: [Double] = [1, 2, 5]
+    #expect(QuickAddConfiguration.widgetButtonValues(from: presets) == presets)
+  }
 }
+
