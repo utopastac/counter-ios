@@ -12,6 +12,7 @@ struct FreshInstallOnboardingView: View {
   @State private var selectedPack: CounterColorPack = AppAppearancePreference.colorPack
   @State private var drafts = FreshInstallOnboarding.defaultDrafts()
   @State private var editingTemplate: CounterTemplate?
+  @State private var uiTestingReady = false
 
   private enum Step: Hashable {
     case colorPack
@@ -78,6 +79,19 @@ struct FreshInstallOnboardingView: View {
     .sheet(item: $editingTemplate) { template in
       starterSettingsSheet(for: template)
     }
+    .background(alignment: .topLeading) {
+      if UITesting.isEnabled {
+        Color.clear
+          .frame(width: 1, height: 1)
+          .accessibilityIdentifier(uiTestingReady ? "screenshot-ready" : "screenshot-pending")
+          .allowsHitTesting(false)
+      }
+    }
+    .task {
+      guard UITesting.isEnabled else { return }
+      try? await Task.sleep(for: .milliseconds(350))
+      uiTestingReady = true
+    }
   }
 
   private var header: some View {
@@ -122,6 +136,8 @@ struct FreshInstallOnboardingView: View {
         )
     }
     .buttonStyle(.plain)
+    .accessibilityIdentifier("onboarding-skip")
+    .accessibilityLabel("Skip")
   }
 
   @ViewBuilder

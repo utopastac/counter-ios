@@ -36,6 +36,10 @@ struct SettingsToggleRow: View {
   let label: String
   @Binding var isOn: Bool
 
+  private var accessibilityID: String {
+    "toggle-\(label.lowercased().replacingOccurrences(of: " ", with: "-"))"
+  }
+
   var body: some View {
     HStack(spacing: SpaceToken.u2) {
       CounterLucideIcon(icon: icon, color: colors.textPrimary)
@@ -46,6 +50,8 @@ struct SettingsToggleRow: View {
       Spacer(minLength: SpaceToken.u1)
 
       CounterToggle(isOn: $isOn)
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(accessibilityID)
     }
     .frame(minHeight: SizeToken.quickAddHeight)
   }

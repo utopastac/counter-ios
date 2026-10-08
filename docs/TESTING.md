@@ -17,8 +17,9 @@ via [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 ## Crash smoke (UI)
 
 `CounterUITests/CrashSmokeUITests.swift` launches the seeded `-UITesting` scenes and
-taps the main crash surfaces (quick-add/undo, history, settings, list → create). It
-asserts the process stays in the foreground — not pixel-perfect UI.
+taps the main crash surfaces (quick-add/undo, history, settings, list → create,
+onboarding finish, delete counter, reset-all, compact toggle). It asserts the process
+stays running — not pixel-perfect UI.
 
 ```sh
 xcodebuild -project Counter.xcodeproj -scheme Counter \

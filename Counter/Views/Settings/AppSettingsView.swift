@@ -278,11 +278,17 @@ struct AppSettingsView: View {
     }
     .alert("Reset all data?", isPresented: $showResetConfirmation) {
       Button("Reset", role: .destructive) {
-        // Dismiss first so @Query teardown isn't racing the wipe on the same turn.
+        // Dismiss, then ask ContentView to wipe only after onboarding unmounts the pager.
         dismiss()
         Task { @MainActor in
           await Task.yield()
-          AppDataReset.resetAll(in: modelContext)
+          // Avoid animating the pager out — an in-flight removal still evaluates
+          // counter pages against models we're about to invalidate.
+          var transaction = Transaction()
+          transaction.disablesAnimations = true
+          withTransaction(transaction) {
+            AppDataReset.requestResetFromUI()
+          }
         }
       }
       Button("Cancel", role: .cancel) {}

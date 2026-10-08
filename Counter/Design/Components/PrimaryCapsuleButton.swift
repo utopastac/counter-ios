@@ -27,6 +27,10 @@ struct CapsuleButton: View {
     .tint(foreground)
     .opacity(isEnabled ? 1 : OpacityToken.disabledButton)
     .disabled(!isEnabled)
+    .accessibilityLabel(title)
+    .accessibilityIdentifier(
+      "capsule-\(title.lowercased().replacingOccurrences(of: " ", with: "-"))"
+    )
   }
 
   private var fill: Color {

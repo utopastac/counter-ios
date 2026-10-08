@@ -76,6 +76,10 @@ struct SettingsDestructiveRow: View {
   let label: String
   let action: () -> Void
 
+  private var accessibilityID: String {
+    "destructive-\(label.lowercased().replacingOccurrences(of: " ", with: "-"))"
+  }
+
   var body: some View {
     Button(action: action) {
       HStack(spacing: SpaceToken.u2) {
@@ -89,5 +93,7 @@ struct SettingsDestructiveRow: View {
     }
     .buttonStyle(.scrollSafe)
     .tint(colors.statusDanger)
+    .accessibilityLabel(label)
+    .accessibilityIdentifier(accessibilityID)
   }
 }

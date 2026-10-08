@@ -42,11 +42,24 @@ struct ContentView: View {
   }
 
   /// Seeds fake counters + history and focuses Calories when the scene needs it.
+  /// Onboarding scene clears the store instead so the fresh-install flow can run.
   private func prepareUITestingLaunch() {
+    if UITesting.showsOnboarding {
+      clearAllCountersForUITesting()
+      return
+    }
+
     ScreenshotDataSeeder.replaceAll(in: modelContext)
     if UITesting.shouldFocusPrimaryCounter {
       focusRouter.pendingCounterID = ScreenshotDataSeeder.caloriesID
     }
+  }
+
+  private func clearAllCountersForUITesting() {
+    for counter in (try? modelContext.fetch(FetchDescriptor<CustomCounter>())) ?? [] {
+      modelContext.delete(counter)
+    }
+    AppLog.attempt("Clear store for onboarding UI test") { try modelContext.save() }
   }
 
   var body: some View {
@@ -56,11 +69,14 @@ struct ContentView: View {
           .counterDesignSystemFromColorScheme()
           .opacity(isBootstrapped ? 1 : 0)
       } else {
-        CounterPagerView()
-          .environment(sheetCoordinator)
-          .environment(focusRouter)
-          .counterDesignSystemFromColorScheme()
-          .opacity(showsPager ? 1 : 0)
+        // Unmount the pager when onboarding is up so reset-all / wipe can't leave
+        // SwiftUI reading invalidated `@Model` instances behind an opacity-0 tree.
+        if showsPager {
+          CounterPagerView()
+            .environment(sheetCoordinator)
+            .environment(focusRouter)
+            .counterDesignSystemFromColorScheme()
+        }
 
         if showsFreshInstall {
           FreshInstallOnboardingView()
@@ -91,6 +107,17 @@ struct ContentView: View {
     .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
     .onOpenURL { url in
       focusRouter.handle(url)
+    }
+    .onChange(of: showsFreshInstall) { _, isShowing in
+      guard isShowing else { return }
+      // Wipe only after the pager has left the tree. Even with animations disabled,
+      // wait a turn so AttributeGraph finishes tearing down counter pages.
+      Task { @MainActor in
+        await Task.yield()
+        await Task.yield()
+        try? await Task.sleep(for: .milliseconds(50))
+        AppDataReset.performPendingWipeIfNeeded(in: modelContext)
+      }
     }
     .task {
       if UITesting.isEnabled {

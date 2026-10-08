@@ -9,6 +9,7 @@ import Foundation
 /// - `03-history` — Calories history sheet
 /// - `04-compact` — compact card stack
 /// - `05-widgets` — Home Screen widget gallery
+/// - `06-onboarding` — fresh-install flow (empty store)
 enum UITesting {
   static let argument = "-UITesting"
   static let sceneArgument = "-UITScene"
@@ -37,13 +38,18 @@ enum UITesting {
     case history = "03-history"
     case compact = "04-compact"
     case widgets = "05-widgets"
+    case onboarding = "06-onboarding"
   }
 
   /// Quiet prefs + scene-specific appearance before the first frame.
   static func preparePreferences() {
     guard isEnabled else { return }
 
-    FreshInstallOnboarding.markCompleted()
+    if parsedScene == .onboarding {
+      FreshInstallOnboarding.requestPresentation()
+    } else {
+      FreshInstallOnboarding.markCompleted()
+    }
     FreshInstallOnboarding.endPreview()
     UserDefaults.standard.set(false, forKey: AppDataReset.suppressSampleSeedingKey)
     UserDefaults.standard.set(false, forKey: AppAppearancePreference.darkModeEnabledKey)
@@ -80,7 +86,7 @@ enum UITesting {
     switch parsedScene {
     case .pager, .history, .compact:
       true
-    case .list, .widgets, .none:
+    case .list, .widgets, .onboarding, .none:
       false
     }
   }
@@ -88,5 +94,10 @@ enum UITesting {
   /// Full-screen marketing frame that replaces the pager.
   static var showsWidgetGallery: Bool {
     parsedScene == .widgets
+  }
+
+  /// Empty-store fresh-install flow (crash-smoke / onboarding coverage).
+  static var showsOnboarding: Bool {
+    parsedScene == .onboarding
   }
 }

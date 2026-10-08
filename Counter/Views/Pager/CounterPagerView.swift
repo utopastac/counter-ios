@@ -230,7 +230,7 @@ struct CounterPagerView: View {
     }
 
     switch scene {
-    case .pager, .list, .compact, .widgets:
+    case .pager, .list, .compact, .widgets, .onboarding:
       break
     case .history:
       let counterID = counters.first(where: { $0.id == ScreenshotDataSeeder.caloriesID })?.id
