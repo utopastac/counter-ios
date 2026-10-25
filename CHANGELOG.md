@@ -8,6 +8,8 @@ App Store “What’s New” text is generated from the `[Unreleased]` section w
 
 ## [Unreleased]
 
+## [1.0] – 2026-10-25
+
 ### Added
 - Dayring keeps a private journal on the device: sketches, written notes, voice notes, photos, places, books, movies, and numbers
 - Draw a sketch on the page and keep it in that journal
@@ -21,3 +23,4 @@ App Store “What’s New” text is generated from the `[Unreleased]` section w
 - History charts the day, week, or month, scaled to that journal’s target
 - Log from Apple Watch or a Home Screen widget
 - No account and no ads. Notes, sketches, photos, voice, and places stay on your devices
+
