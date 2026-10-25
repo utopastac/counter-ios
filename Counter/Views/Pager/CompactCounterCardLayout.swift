@@ -128,14 +128,11 @@ struct CompactCounterCardLayout<Footer: View, Toast: View>: View {
 
       Spacer(minLength: SpaceToken.u1)
 
-      HStack(spacing: SpaceToken.toolbarIconSpacing) {
-        CounterIconButton(icon: .chartBar, accessibilityLabel: "History", action: onShowHistory)
-        CounterIconButton(
-          icon: .slidersHorizontal,
-          accessibilityLabel: "Counter settings",
-          action: onShowButtonSettings
-        )
-      }
+      CounterIconButton(
+        icon: .slidersHorizontal,
+        accessibilityLabel: "Counter settings",
+        action: onShowButtonSettings
+      )
     }
   }
 

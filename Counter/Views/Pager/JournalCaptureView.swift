@@ -132,6 +132,8 @@ struct JournalMediaCapture: View {
   @Environment(\.modelContext) private var modelContext
 
   @Bindable var counter: CustomCounter
+  var showsEntries = true
+  var buttonHeight: CGFloat = SizeToken.quickAddHeight
   let onAdded: (EntryActions.AddedEntry) -> Void
   let onDelete: (UUID) -> Void
 
@@ -144,14 +146,25 @@ struct JournalMediaCapture: View {
   }
 
   var body: some View {
-    JournalMediaStrip(
-      entries: entries,
-      showsAdd: true,
-      addLabel: counter.kind == .sketch ? "Add a sketch" : "Add a photo",
-      entryLabel: counter.kind.entryNoun,
-      onAdd: openCapture,
-      onDelete: onDelete
-    )
+    Group {
+      if showsEntries {
+        JournalMediaStrip(
+          entries: entries,
+          showsAdd: true,
+          addLabel: counter.kind == .sketch ? "Add a sketch" : "Add a photo",
+          entryLabel: counter.kind.entryNoun,
+          onAdd: openCapture,
+          onDelete: onDelete
+        )
+      } else {
+        CounterActionButton(
+          counter.kind == .sketch ? "Add sketch" : "Add photo",
+          height: buttonHeight
+        ) {
+          openCapture()
+        }
+      }
+    }
     .photosPicker(isPresented: $showPicker, selection: $selection, matching: .images)
     .onChange(of: selection) { _, item in
       guard let item else { return }

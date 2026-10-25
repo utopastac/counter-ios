@@ -338,6 +338,24 @@ struct CustomCounterPageContent: View {
   }
 
   @ViewBuilder
+  private func compactAddControl(buttonHeight: CGFloat) -> some View {
+    switch counter.kind {
+    case .photo, .sketch:
+      JournalMediaCapture(
+        counter: counter,
+        showsEntries: false,
+        buttonHeight: buttonHeight,
+        onAdded: handleJournalAdd,
+        onDelete: { _ in }
+      )
+    case .note, .voice, .place, .book, .movie:
+      JournalCaptureFooter(counter: counter, buttonHeight: buttonHeight, onAdded: handleJournalAdd)
+    case .number:
+      EmptyView()
+    }
+  }
+
+  @ViewBuilder
   private func captureFooter(buttonHeight: CGFloat = SizeToken.quickAddHeight) -> some View {
     if counter.kind == .number {
       CompactQuickAddGrid(
@@ -350,12 +368,7 @@ struct CustomCounterPageContent: View {
         sheets.present(.customAmount(counterID: counter.id))
       }
     } else if isCompact {
-      VStack(alignment: .leading, spacing: SpaceToken.u2) {
-        if showsJournalComposer {
-          JournalCaptureFooter(counter: counter, buttonHeight: buttonHeight, onAdded: handleJournalAdd)
-        }
-        journalEntries(maxTextRows: 2)
-      }
+      compactAddControl(buttonHeight: buttonHeight)
     } else if showsJournalComposer {
       JournalCaptureFooter(counter: counter, buttonHeight: buttonHeight, onAdded: handleJournalAdd)
     }
