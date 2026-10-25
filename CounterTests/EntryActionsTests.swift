@@ -88,6 +88,26 @@ struct EntryActionsTests {
     #expect(counter.entries.first?.previewText == "Morning\nagain")
   }
 
+  @Test func notePreviewStripsHeadingPrefixes() {
+    let source = "# Title\n## Heading\n### Subheading\nBody"
+    #expect(NoteMarkup.plain(source) == "Title\nHeading\nSubheading\nBody")
+  }
+
+  @Test func emptyBulletReturnExitsTheList() {
+    #expect(NoteListEditing.returnAction(lineContent: "- ", style: .body) == .exitList)
+    #expect(NoteListEditing.returnAction(lineContent: "-   ", style: .body) == .exitList)
+  }
+
+  @Test func bulletReturnContinuesTheList() {
+    #expect(NoteListEditing.returnAction(lineContent: "- Milk", style: .body) == .continueList)
+  }
+
+  @Test func headingReturnStartsBodyText() {
+    #expect(NoteListEditing.returnAction(lineContent: "Title", style: .title) == .breakHeading)
+    #expect(NoteListEditing.returnAction(lineContent: "", style: .heading) == .breakHeading)
+    #expect(NoteListEditing.returnAction(lineContent: "Hello", style: .body) == .passthrough)
+  }
+
   @Test func placeEntryStoresCoordinates() {
     let container = TestModelContainer.make()
     let context = ModelContext(container)

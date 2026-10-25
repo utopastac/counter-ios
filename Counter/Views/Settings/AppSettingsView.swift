@@ -211,8 +211,9 @@ struct AppSettingsView: View {
             SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
             SettingsActionRow(icon: .listRestart, label: "Preview fresh install") {
               dismiss()
-              Task { @MainActor in
-                await Task.yield()
+              // A Task started here is cancelled when the sheet goes away, so the
+              // preview flag never lands. Hop on the next main turn instead.
+              DispatchQueue.main.async {
                 FreshInstallOnboarding.requestPreview()
               }
             }
@@ -222,6 +223,7 @@ struct AppSettingsView: View {
           VStack(alignment: .leading, spacing: 0) {
             SettingsSectionHeader(title: "About")
             SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
+            TMDBAttribution()
           }
 
           VStack(alignment: .leading, spacing: 0) {
@@ -303,6 +305,26 @@ struct AppSettingsView: View {
     let data = CounterExport.csvData(counters: counters)
     try? data.write(to: url, options: .atomic)
     exportURL = url
+  }
+}
+
+private struct TMDBAttribution: View {
+  var body: some View {
+    VStack(alignment: .leading, spacing: SpaceToken.u1) {
+      Link(destination: URL(string: "https://www.themoviedb.org")!) {
+        Image("TMDBLogo")
+          .resizable()
+          .scaledToFit()
+          .frame(width: GridToken.units(14), height: GridToken.units(2), alignment: .leading)
+      }
+      .buttonStyle(.plain)
+      .accessibilityLabel("The Movie Database")
+      Text("This product uses the TMDB API but is not endorsed or certified by TMDB.")
+        .counterTextStyle(.listCardCaption)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+    .padding(.top, SpaceToken.u1)
+    .padding(.bottom, SpaceToken.u2)
   }
 }
 

@@ -210,7 +210,7 @@ private struct NoteWriterSheet: View {
     .presentationDetents([.large])
     .onAppear {
       let pack = FontPack(rawValue: designSystem.fontPackRaw) ?? .default
-      session.configure(font: NoteEditorFont.base(pack: pack), color: UIColor(colors.textPrimary))
+      session.configure(pack: pack, color: UIColor(colors.textPrimary))
       session.textView.becomeFirstResponder()
     }
     .onDisappear { keep() }
@@ -227,11 +227,17 @@ private struct NoteWriterSheet: View {
 
 private struct NoteFormatBar: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.designSystem) private var designSystem
 
   let session: NoteEditorSession
 
+  private var pack: FontPack {
+    FontPack(rawValue: designSystem.fontPackRaw) ?? .default
+  }
+
   var body: some View {
     HStack(spacing: SpaceToken.u1) {
+      styleMenu
       formatButton("bold", label: "Bold", isOn: session.boldOn) { session.toggleBold() }
       formatButton("italic", label: "Italic", isOn: session.italicOn) { session.toggleItalic() }
       formatButton("strikethrough", label: "Strikethrough", isOn: session.strikeOn) { session.toggleStrikethrough() }
@@ -239,6 +245,38 @@ private struct NoteFormatBar: View {
       Spacer(minLength: 0)
     }
     .padding(.bottom, SpaceToken.u1)
+  }
+
+  private var styleMenu: some View {
+    Menu {
+      Picker("Text style", selection: Binding(
+        get: { session.paragraphStyle },
+        set: { session.applyParagraphStyle($0) }
+      )) {
+        ForEach(NoteParagraphStyle.allCases) { style in
+          Text(style.label)
+            .font(style.definition.font(pack: pack))
+            .tag(style)
+        }
+      }
+      .pickerStyle(.inline)
+      .labelsHidden()
+    } label: {
+      HStack(spacing: SpaceToken.x1) {
+        Text(session.paragraphStyle.label)
+          .font(TypeStyle.mdSemibold.font(pack: pack))
+          .lineLimit(1)
+          .minimumScaleFactor(0.7)
+        Image(systemName: "chevron.down")
+          .font(.system(size: 11, weight: .semibold))
+      }
+      .foregroundStyle(colors.textPrimary)
+      .padding(.horizontal, SpaceToken.u1)
+      .frame(height: SizeToken.iconButtonHitArea)
+      .contentShape(Rectangle())
+    }
+    .accessibilityLabel("Text style")
+    .accessibilityValue(session.paragraphStyle.label)
   }
 
   private func formatButton(
@@ -276,6 +314,7 @@ private struct NoteTextEditor: UIViewRepresentable {
 
 private final class NoteEditorDelegate: NSObject, UITextViewDelegate {
   var onChange: () -> Void = {}
+  var onReturn: () -> Bool = { true }
 
   func textViewDidChange(_ textView: UITextView) {
     onChange()
@@ -284,6 +323,15 @@ private final class NoteEditorDelegate: NSObject, UITextViewDelegate {
   func textViewDidChangeSelection(_ textView: UITextView) {
     onChange()
   }
+
+  func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    guard text == "\n", range.length == 0 else { return true }
+    return onReturn()
+  }
+}
+
+private extension NSAttributedString.Key {
+  static let noteParagraph = NSAttributedString.Key("counter.noteParagraph")
 }
 
 @MainActor
@@ -296,8 +344,10 @@ private final class NoteEditorSession {
   private(set) var italicOn = false
   private(set) var strikeOn = false
   private(set) var listOn = false
+  private(set) var paragraphStyle: NoteParagraphStyle = .body
 
-  private var baseFont = UIFont.preferredFont(forTextStyle: .body)
+  private var pack: FontPack = .default
+  private var bodyFont = UIFont.preferredFont(forTextStyle: .body)
   private var textColor = UIColor.label
 
   init() {
@@ -305,16 +355,21 @@ private final class NoteEditorSession {
     editorDelegate.onChange = { [weak self] in
       self?.refresh()
     }
+    editorDelegate.onReturn = { [weak self] in
+      self?.handleReturn() ?? true
+    }
   }
 
-  func configure(font: UIFont, color: UIColor) {
-    baseFont = font
+  func configure(pack: FontPack, color: UIColor) {
+    self.pack = pack
     textColor = color
+    let body = attributes(style: .body, bold: false, italic: false, strike: false)
+    bodyFont = body[.font] as? UIFont ?? bodyFont
     textView.backgroundColor = .clear
-    textView.font = font
+    textView.font = bodyFont
     textView.textColor = color
     textView.tintColor = color
-    textView.typingAttributes = typingAttributes(font: font, strike: false)
+    textView.typingAttributes = body
     textView.textContainerInset = UIEdgeInsets(top: SpaceToken.u2, left: 0, bottom: SpaceToken.u2, right: 0)
     textView.textContainer.lineFragmentPadding = 0
     textView.allowsEditingTextAttributes = true
@@ -360,43 +415,136 @@ private final class NoteEditorSession {
     let lineRange = storage.lineRange(for: NSRange(location: location, length: 0))
     let line = storage.substring(with: lineRange)
     let mutable = NSMutableAttributedString(attributedString: textView.attributedText ?? NSAttributedString())
-    if line.hasPrefix("- ") {
-      mutable.replaceCharacters(in: NSRange(location: lineRange.location, length: 2), with: "")
-      textView.attributedText = mutable
-      textView.selectedRange = NSRange(location: max(lineRange.location, range.location - 2), length: 0)
+    let markerLength = (NoteListEditing.listMarker as NSString).length
+    if line.hasPrefix(NoteListEditing.listMarker) {
+      mutable.replaceCharacters(in: NSRange(location: lineRange.location, length: markerLength), with: "")
+      commit(
+        mutable,
+        caret: NSRange(location: max(lineRange.location, range.location - markerLength), length: 0),
+        typing: textView.typingAttributes
+      )
     } else {
-      let marker = NSAttributedString(string: "- ", attributes: typingAttributes(font: baseFont, strike: false))
-      mutable.insert(marker, at: lineRange.location)
-      textView.attributedText = mutable
-      textView.selectedRange = NSRange(location: range.location + 2, length: range.length)
+      let source = insertionAttributes(at: lineRange.location)
+      let markerAttributes = listAttributes(from: source)
+      mutable.insert(NSAttributedString(string: NoteListEditing.listMarker, attributes: markerAttributes), at: lineRange.location)
+      applyBodyListStyle(toLineAt: lineRange.location, in: mutable)
+      commit(
+        mutable,
+        caret: NSRange(location: range.location + markerLength, length: range.length),
+        typing: markerAttributes
+      )
     }
-    textView.becomeFirstResponder()
-    refresh()
+  }
+
+  func applyParagraphStyle(_ style: NoteParagraphStyle) {
+    let selected = textView.selectedRange
+    let mutable = NSMutableAttributedString(attributedString: textView.attributedText ?? NSAttributedString())
+    let caret = style == .body ? selected : removeListMarkers(in: mutable, selection: selected)
+    let span = paragraphSpan(for: caret, in: mutable.string as NSString)
+    if span.length > 0 {
+      mutable.enumerateAttributes(in: span) { existing, subrange, _ in
+        let font = existing[.font] as? UIFont
+        let italic = font?.fontDescriptor.symbolicTraits.contains(.traitItalic) ?? false
+        let strike = (existing[.strikethroughStyle] as? Int ?? 0) != 0
+        let updated = attributes(style: style, bold: style != .body, italic: italic, strike: strike)
+        paint(updated, range: subrange, in: mutable)
+      }
+    }
+    let current = attributesAtSelection()
+    let italic = (current[.font] as? UIFont)?.fontDescriptor.symbolicTraits.contains(.traitItalic) ?? false
+    let strike = (current[.strikethroughStyle] as? Int ?? 0) != 0
+    let typing = attributes(style: style, bold: style != .body, italic: italic, strike: strike)
+    if span.length > 0 {
+      commit(mutable, caret: caret, typing: typing)
+    } else {
+      textView.typingAttributes = typing
+      textView.becomeFirstResponder()
+      refresh()
+      keepTyping(typing, while: selected)
+    }
   }
 
   func markdown() -> String {
     let attributed = textView.attributedText ?? NSAttributedString()
     let source = attributed.string as NSString
+    guard source.length > 0 else { return "" }
     var output = ""
-    attributed.enumerateAttributes(in: NSRange(location: 0, length: attributed.length)) { attributes, range, _ in
-      var chunk = source.substring(with: range)
-      let traits = (attributes[.font] as? UIFont)?.fontDescriptor.symbolicTraits ?? []
-      let strike = (attributes[.strikethroughStyle] as? Int ?? 0) != 0
-      let token: String? = switch (traits.contains(.traitBold), traits.contains(.traitItalic)) {
-      case (true, true): "***"
-      case (true, false): "**"
-      case (false, true): "*"
-      case (false, false): nil
+    var location = 0
+    while location < source.length {
+      let lineRange = source.lineRange(for: NSRange(location: location, length: 0))
+      if lineRange.length == 0 { break }
+      let hasNewline = source.substring(with: lineRange).hasSuffix("\n")
+      let contentLength = lineRange.length - (hasNewline ? 1 : 0)
+      let contentRange = NSRange(location: lineRange.location, length: contentLength)
+      let content = contentLength > 0 ? source.substring(with: contentRange) : ""
+      let style = contentLength > 0 ? style(at: lineRange.location, in: attributed) : .body
+      if !content.hasPrefix(NoteListEditing.listMarker) {
+        output += style.markdownPrefix
       }
-      if let token {
-        chunk = marked(chunk, token: token)
-      }
-      if strike {
-        chunk = marked(chunk, token: "~~")
-      }
-      output += chunk
+      output += inlineMarkup(in: attributed, range: contentRange)
+      if hasNewline { output += "\n" }
+      let next = lineRange.location + lineRange.length
+      if next <= location { break }
+      location = next
     }
     return output.trimmingCharacters(in: .whitespacesAndNewlines)
+  }
+
+  private func handleReturn() -> Bool {
+    let selected = textView.selectedRange
+    guard selected.length == 0 else { return true }
+    let storage = (textView.text ?? "") as NSString
+    let location = min(selected.location, storage.length)
+    let lineRange = storage.lineRange(for: NSRange(location: location, length: 0))
+    let line = storage.substring(with: lineRange)
+    let trailingNewline = line.hasSuffix("\n") ? 1 : 0
+    let contentLength = lineRange.length - trailingNewline
+    let content = contentLength > 0
+      ? storage.substring(with: NSRange(location: lineRange.location, length: contentLength))
+      : ""
+    switch NoteListEditing.returnAction(lineContent: content, style: style(from: attributesAtSelection())) {
+    case .continueList:
+      return insertListBreak(at: location)
+    case .exitList:
+      return exitList(lineLocation: lineRange.location, contentLength: contentLength)
+    case .breakHeading:
+      return breakHeading(at: location, contentEnd: lineRange.location + contentLength)
+    case .passthrough:
+      return true
+    }
+  }
+
+  private func insertListBreak(at location: Int) -> Bool {
+    let mutable = NSMutableAttributedString(attributedString: textView.attributedText ?? NSAttributedString())
+    let typing = insertionAttributes(at: location)
+    let insert = "\n" + NoteListEditing.listMarker
+    mutable.insert(NSAttributedString(string: insert, attributes: typing), at: location)
+    let caret = location + (insert as NSString).length
+    commit(mutable, caret: NSRange(location: caret, length: 0), typing: typing)
+    return false
+  }
+
+  private func exitList(lineLocation: Int, contentLength: Int) -> Bool {
+    guard contentLength > 0 else { return true }
+    let mutable = NSMutableAttributedString(attributedString: textView.attributedText ?? NSAttributedString())
+    let range = NSRange(location: lineLocation, length: contentLength)
+    guard NSMaxRange(range) <= mutable.length else { return true }
+    mutable.deleteCharacters(in: range)
+    let body = attributes(style: .body, bold: false, italic: false, strike: false)
+    commit(mutable, caret: NSRange(location: lineLocation, length: 0), typing: body)
+    return false
+  }
+
+  private func breakHeading(at location: Int, contentEnd: Int) -> Bool {
+    let mutable = NSMutableAttributedString(attributedString: textView.attributedText ?? NSAttributedString())
+    let body = attributes(style: .body, bold: false, italic: false, strike: false)
+    let remainder = max(0, contentEnd - location)
+    mutable.insert(NSAttributedString(string: "\n", attributes: body), at: location)
+    if remainder > 0 {
+      paint(body, range: NSRange(location: location + 1, length: remainder), in: mutable)
+    }
+    commit(mutable, caret: NSRange(location: location + 1, length: 0), typing: body)
+    return false
   }
 
   private func toggleTrait(_ trait: UIFontDescriptor.SymbolicTraits) {
@@ -460,7 +608,7 @@ private final class NoteEditorSession {
   }
 
   private func font(_ current: UIFont?, toggling trait: UIFontDescriptor.SymbolicTraits) -> UIFont {
-    let font = current ?? baseFont
+    let font = current ?? bodyFont
     var traits = font.fontDescriptor.symbolicTraits
     if traits.contains(trait) {
       traits.remove(trait)
@@ -475,11 +623,194 @@ private final class NoteEditorSession {
     var attributes: [NSAttributedString.Key: Any] = [
       .font: font,
       .foregroundColor: textColor,
+      .noteParagraph: style(from: textView.typingAttributes).rawValue,
     ]
     if strike {
       attributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
     }
     return attributes
+  }
+
+  private func attributes(style: NoteParagraphStyle, bold: Bool, italic: Bool, strike: Bool) -> [NSAttributedString.Key: Any] {
+    var result: [NSAttributedString.Key: Any] = [
+      .font: NoteEditorFont.font(pack: pack, size: style.definition.size, bold: bold, italic: italic),
+      .foregroundColor: textColor,
+      .noteParagraph: style.rawValue,
+    ]
+    if strike {
+      result[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
+    }
+    return result
+  }
+
+  private func style(from attributes: [NSAttributedString.Key: Any]) -> NoteParagraphStyle {
+    let raw = attributes[.noteParagraph] as? String
+    return NoteParagraphStyle(rawValue: raw ?? "") ?? .body
+  }
+
+  private func style(at location: Int, in text: NSAttributedString) -> NoteParagraphStyle {
+    guard text.length > 0, location < text.length else { return .body }
+    let raw = text.attribute(.noteParagraph, at: location, effectiveRange: nil) as? String
+    return NoteParagraphStyle(rawValue: raw ?? "") ?? .body
+  }
+
+  private func inlineMarkup(in attributed: NSAttributedString, range: NSRange) -> String {
+    guard range.length > 0 else { return "" }
+    let source = attributed.string as NSString
+    var output = ""
+    attributed.enumerateAttributes(in: range) { attributes, subrange, _ in
+      var chunk = source.substring(with: subrange)
+      let traits = (attributes[.font] as? UIFont)?.fontDescriptor.symbolicTraits ?? []
+      let strike = (attributes[.strikethroughStyle] as? Int ?? 0) != 0
+      let token: String? = switch (traits.contains(.traitBold), traits.contains(.traitItalic)) {
+      case (true, true): "***"
+      case (true, false): "**"
+      case (false, true): "*"
+      case (false, false): nil
+      }
+      if let token {
+        chunk = marked(chunk, token: token)
+      }
+      if strike {
+        chunk = marked(chunk, token: "~~")
+      }
+      output += chunk
+    }
+    return output
+  }
+
+  private func paragraphSpan(for range: NSRange, in storage: NSString) -> NSRange {
+    guard storage.length > 0 else { return NSRange(location: 0, length: 0) }
+    let location = min(range.location, storage.length)
+    let start = storage.lineRange(for: NSRange(location: location, length: 0)).location
+    let endLocation = range.length == 0 ? location : min(range.location + range.length - 1, storage.length)
+    let endLine = storage.lineRange(for: NSRange(location: max(0, min(endLocation, storage.length)), length: 0))
+    let end = endLine.location + endLine.length
+    return NSRange(location: start, length: max(0, end - start))
+  }
+
+  private func insertionAttributes(at location: Int) -> [NSAttributedString.Key: Any] {
+    let text = textView.attributedText ?? NSAttributedString()
+    let storage = text.string as NSString
+    if location > 0, location <= storage.length {
+      let previous = location - 1
+      let character = storage.substring(with: NSRange(location: previous, length: 1))
+      if character != "\n", previous < text.length {
+        return text.attributes(at: previous, effectiveRange: nil)
+      }
+    }
+    if location < text.length {
+      let character = storage.substring(with: NSRange(location: location, length: 1))
+      if character != "\n" {
+        return text.attributes(at: location, effectiveRange: nil)
+      }
+    }
+    return textView.typingAttributes
+  }
+
+  private func listAttributes(from source: [NSAttributedString.Key: Any]) -> [NSAttributedString.Key: Any] {
+    let font = source[.font] as? UIFont
+    let italic = font?.fontDescriptor.symbolicTraits.contains(.traitItalic) ?? false
+    let strike = (source[.strikethroughStyle] as? Int ?? 0) != 0
+    let bold = style(from: source) == .body && (font?.fontDescriptor.symbolicTraits.contains(.traitBold) ?? false)
+    return attributes(style: .body, bold: bold, italic: italic, strike: strike)
+  }
+
+  private func applyBodyListStyle(toLineAt location: Int, in mutable: NSMutableAttributedString) {
+    let storage = mutable.string as NSString
+    guard storage.length > 0, location <= storage.length else { return }
+    let lineRange = storage.lineRange(for: NSRange(location: min(location, storage.length), length: 0))
+    let hasNewline = storage.substring(with: lineRange).hasSuffix("\n")
+    let contentLength = lineRange.length - (hasNewline ? 1 : 0)
+    let content = NSRange(location: lineRange.location, length: contentLength)
+    guard content.length > 0 else { return }
+    mutable.enumerateAttributes(in: content) { existing, subrange, _ in
+      paint(listAttributes(from: existing), range: subrange, in: mutable)
+    }
+  }
+
+  private func removeListMarkers(in mutable: NSMutableAttributedString, selection: NSRange) -> NSRange {
+    let markerLength = (NoteListEditing.listMarker as NSString).length
+    var selection = selection
+    var cursor = 0
+    while cursor < mutable.length {
+      let storage = mutable.string as NSString
+      let lineRange = storage.lineRange(for: NSRange(location: cursor, length: 0))
+      if lineRange.length == 0 { break }
+      let hasNewline = storage.substring(with: lineRange).hasSuffix("\n")
+      let contentLength = lineRange.length - (hasNewline ? 1 : 0)
+      let content = contentLength > 0
+        ? storage.substring(with: NSRange(location: lineRange.location, length: contentLength))
+        : ""
+      let lineEnd = lineRange.location + lineRange.length
+      let selectionEnd = selection.location + selection.length
+      let caretOnLine = selection.length == 0
+        && selection.location >= lineRange.location
+        && (selection.location < lineEnd || (!hasNewline && selection.location == lineEnd))
+      let rangeOverlaps = selection.length > 0 && selection.location < lineEnd && selectionEnd > lineRange.location
+      if (caretOnLine || rangeOverlaps), content.hasPrefix(NoteListEditing.listMarker), contentLength >= markerLength {
+        let marker = NSRange(location: lineRange.location, length: markerLength)
+        mutable.deleteCharacters(in: marker)
+        selection = shifted(selection, removing: marker)
+        cursor = lineRange.location
+        continue
+      }
+      let next = lineEnd
+      if next <= cursor { break }
+      cursor = next
+    }
+    return selection
+  }
+
+  private func shifted(_ selection: NSRange, removing marker: NSRange) -> NSRange {
+    var location = selection.location
+    var length = selection.length
+    let markerEnd = marker.location + marker.length
+    if location >= markerEnd {
+      location -= marker.length
+    } else if location > marker.location {
+      length = max(0, length - (markerEnd - location))
+      location = marker.location
+    } else if location + length > marker.location {
+      length = max(0, length - min(marker.length, location + length - marker.location))
+    }
+    return NSRange(location: max(0, location), length: max(0, length))
+  }
+
+  private func paint(
+    _ attributes: [NSAttributedString.Key: Any],
+    range: NSRange,
+    in mutable: NSMutableAttributedString
+  ) {
+    guard range.length > 0, NSMaxRange(range) <= mutable.length else { return }
+    mutable.addAttributes(attributes, range: range)
+    if attributes[.strikethroughStyle] == nil {
+      mutable.removeAttribute(.strikethroughStyle, range: range)
+    }
+  }
+
+  private func commit(
+    _ mutable: NSMutableAttributedString,
+    caret: NSRange,
+    typing: [NSAttributedString.Key: Any]
+  ) {
+    textView.attributedText = mutable
+    let length = textView.attributedText?.length ?? 0
+    let location = min(caret.location, length)
+    let span = min(caret.length, max(0, length - location))
+    let clamped = NSRange(location: location, length: span)
+    textView.selectedRange = clamped
+    textView.typingAttributes = typing
+    textView.becomeFirstResponder()
+    refresh()
+    keepTyping(typing, while: clamped)
+  }
+
+  private func keepTyping(_ typing: [NSAttributedString.Key: Any], while caret: NSRange) {
+    DispatchQueue.main.async { [weak self] in
+      guard let self, self.textView.selectedRange == caret else { return }
+      self.textView.typingAttributes = typing
+    }
   }
 
   private func refresh() {
@@ -489,45 +820,71 @@ private final class NoteEditorSession {
     boldOn = traits.contains(.traitBold)
     italicOn = traits.contains(.traitItalic)
     strikeOn = (attributes[.strikethroughStyle] as? Int ?? 0) != 0
+    paragraphStyle = style(from: attributes)
     let storage = textView.text as NSString
     let location = min(textView.selectedRange.location, storage.length)
     let line = storage.substring(with: storage.lineRange(for: NSRange(location: location, length: 0)))
-    listOn = line.hasPrefix("- ")
+    listOn = line.hasPrefix(NoteListEditing.listMarker)
   }
 
   private func attributesAtSelection() -> [NSAttributedString.Key: Any] {
     let range = textView.selectedRange
-    let length = textView.attributedText?.length ?? 0
-    guard range.length > 0, range.location < length else {
-      return textView.typingAttributes
+    let text = textView.attributedText ?? NSAttributedString()
+    let storage = text.string as NSString
+    if range.length > 0, range.location < text.length {
+      return text.attributes(at: range.location, effectiveRange: nil)
     }
-    return textView.attributedText.attributes(at: range.location, effectiveRange: nil)
+    if range.location > 0, range.location <= storage.length {
+      let index = range.location - 1
+      let character = storage.substring(with: NSRange(location: index, length: 1))
+      if character != "\n", index < text.length {
+        return text.attributes(at: index, effectiveRange: nil)
+      }
+    }
+    if range.location < text.length {
+      let character = storage.substring(with: NSRange(location: range.location, length: 1))
+      if character != "\n" {
+        return text.attributes(at: range.location, effectiveRange: nil)
+      }
+    }
+    return textView.typingAttributes
   }
 }
 
 private enum NoteEditorFont {
-  static func base(pack: FontPack) -> UIFont {
-    let size = TypeStyle.lgRegular.size
+  static func font(pack: FontPack, size: CGFloat, bold: Bool, italic: Bool) -> UIFont {
+    let weight: UIFont.Weight = bold ? .bold : .regular
+    let base = make(pack: pack, size: size, weight: weight)
+    guard italic else { return base }
+    var traits = base.fontDescriptor.symbolicTraits
+    traits.insert(.traitItalic)
+    if bold { traits.insert(.traitBold) }
+    guard let descriptor = base.fontDescriptor.withSymbolicTraits(traits) else { return base }
+    return UIFont(descriptor: descriptor, size: size)
+  }
+
+  private static func make(pack: FontPack, size: CGFloat, weight: UIFont.Weight) -> UIFont {
     switch pack {
     case .default:
-      return .systemFont(ofSize: size, weight: .regular)
+      return .systemFont(ofSize: size, weight: weight)
     case .soft:
-      return designed(.rounded, size: size)
+      return designed(.rounded, size: size, weight: weight)
     case .editorial:
-      return designed(.serif, size: size)
+      return designed(.serif, size: size, weight: .regular)
     case .technical:
-      return .monospacedSystemFont(ofSize: size, weight: .regular)
+      return .monospacedSystemFont(ofSize: size, weight: weight)
     case .geometric:
-      return UIFont(name: FontPack.avenirPostScriptName(for: .regular), size: size)
-        ?? .systemFont(ofSize: size, weight: .regular)
+      let swiftWeight: Font.Weight = weight == .bold ? .bold : .regular
+      return UIFont(name: FontPack.avenirPostScriptName(for: swiftWeight), size: size)
+        ?? .systemFont(ofSize: size, weight: weight)
     case .nineteenTwentySeven:
       return UIFont(name: FontPack.futuraMediumPostScriptName, size: size)
-        ?? .systemFont(ofSize: size, weight: .regular)
+        ?? .systemFont(ofSize: size, weight: weight)
     }
   }
 
-  private static func designed(_ design: UIFontDescriptor.SystemDesign, size: CGFloat) -> UIFont {
-    let system = UIFont.systemFont(ofSize: size, weight: .regular)
+  private static func designed(_ design: UIFontDescriptor.SystemDesign, size: CGFloat, weight: UIFont.Weight) -> UIFont {
+    let system = UIFont.systemFont(ofSize: size, weight: weight)
     guard let descriptor = system.fontDescriptor.withDesign(design) else { return system }
     return UIFont(descriptor: descriptor, size: size)
   }

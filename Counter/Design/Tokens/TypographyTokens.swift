@@ -8,6 +8,10 @@ enum FontSizeToken {
   static let sm: CGFloat = 14
   static let md: CGFloat = 16
   static let lg: CGFloat = 18
+  /// Note paragraph scale, matched to the iOS Notes styles (subheading, heading, title).
+  static let noteSubheading: CGFloat = 20
+  static let noteHeading: CGFloat = 22
+  static let noteTitle: CGFloat = 28
   static let xxl: CGFloat = 24
   static let xxxl: CGFloat = 40
   static let x5xl: CGFloat = 80
@@ -174,6 +178,41 @@ enum TypeStyle {
     monospacedDigits: false
   )
 
+  static let noteTitle = TypeStyleDefinition(
+    size: FontSizeToken.noteTitle,
+    weight: FontWeightToken.bold,
+    lineHeight: FontSizeToken.noteTitle,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
+  static let noteHeading = TypeStyleDefinition(
+    size: FontSizeToken.noteHeading,
+    weight: FontWeightToken.bold,
+    lineHeight: FontSizeToken.noteHeading,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
+  static let noteSubheading = TypeStyleDefinition(
+    size: FontSizeToken.noteSubheading,
+    weight: FontWeightToken.bold,
+    lineHeight: FontSizeToken.noteSubheading,
+    trackingPercent: FontTrackingToken.tight2,
+    monospacedDigits: false
+  )
+
+}
+
+extension NoteParagraphStyle {
+  var definition: TypeStyleDefinition {
+    switch self {
+    case .title: TypeStyle.noteTitle
+    case .heading: TypeStyle.noteHeading
+    case .subheading: TypeStyle.noteSubheading
+    case .body: TypeStyle.lgRegular
+    }
+  }
 }
 
 // MARK: - Tier 3: Semantic use-case tokens

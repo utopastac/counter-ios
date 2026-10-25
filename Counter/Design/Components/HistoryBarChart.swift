@@ -13,6 +13,8 @@ struct HistoryBarChart: View {
   let period: HistoryPeriod
   @Binding var windowOffset: Int
   let maxWindowOffset: Int
+  /// Counter goal. The y-axis top is this target, or the next multiple of it.
+  var target: Double? = nil
   var onSelectBar: ((DailyValue) -> Void)?
 
   private var scrollPosition: Binding<Int?> {
@@ -94,8 +96,9 @@ struct HistoryBarChart: View {
   }
 
   private func chart(data: [DailyValue]) -> some View {
-    let yAxisMaximum = HistoryChartScale.niceMaximum(for: data.map(\.value))
-    let yAxisValues = HistoryChartScale.tickValues(maximum: yAxisMaximum)
+    let values = data.map(\.value)
+    let yAxisMaximum = HistoryChartScale.niceMaximum(for: values, target: target)
+    let yAxisValues = HistoryChartScale.tickValues(maximum: yAxisMaximum, target: target)
 
     return Chart(data) { item in
       BarMark(

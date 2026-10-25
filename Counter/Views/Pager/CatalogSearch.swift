@@ -32,10 +32,16 @@ enum CatalogNote {
 }
 
 enum CatalogSearchError: LocalizedError {
+  case missingMovieToken
   case failed
 
   var errorDescription: String? {
-    "Search didn’t go through."
+    switch self {
+    case .missingMovieToken:
+      "Movie search needs a TMDB read token in Info.plist."
+    case .failed:
+      "Search didn’t go through."
+    }
   }
 }
 
@@ -71,32 +77,43 @@ enum CatalogSearch {
   }
 
   static func movies(matching query: String) async throws -> [CatalogHit] {
-    let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-    guard let first = trimmed.first else { return [] }
-    var allowed = CharacterSet.urlPathAllowed
-    allowed.remove(charactersIn: "/")
-    let encoded = trimmed.addingPercentEncoding(withAllowedCharacters: allowed) ?? trimmed
-    guard let url = URL(string: "https://v3.sg.media-imdb.com/suggestion/\(first)/\(encoded).json") else {
-      throw CatalogSearchError.failed
+    let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !trimmed.isEmpty else { return [] }
+    let token = movieToken
+    guard !token.isEmpty else { throw CatalogSearchError.missingMovieToken }
+    var components = URLComponents(string: "https://api.themoviedb.org/3/search/movie")
+    var items = [
+      URLQueryItem(name: "query", value: trimmed),
+      URLQueryItem(name: "include_adult", value: "false"),
+      URLQueryItem(name: "language", value: Locale.current.identifier.replacingOccurrences(of: "_", with: "-")),
+    ]
+    var requestToken: String?
+    if token.contains(".") {
+      requestToken = token
+    } else {
+      items.append(URLQueryItem(name: "api_key", value: token))
     }
-    let (data, response) = try await session.data(from: url)
+    components?.queryItems = items
+    guard let url = components?.url else { throw CatalogSearchError.failed }
+    var request = URLRequest(url: url)
+    if let requestToken {
+      request.setValue("Bearer \(requestToken)", forHTTPHeaderField: "Authorization")
+    }
+    let (data, response) = try await session.data(for: request)
     guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
       throw CatalogSearchError.failed
     }
-    let decoded = try JSONDecoder().decode(IMDbSuggestionResponse.self, from: data)
-    return (decoded.d ?? []).compactMap { movie in
-      guard movie.qid == "movie" else { return nil }
-      guard let title = movie.l?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty else {
+    let decoded = try JSONDecoder().decode(TMDBResponse.self, from: data)
+    return decoded.results.prefix(8).compactMap { movie in
+      guard let title = movie.title?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty else {
         return nil
       }
-      let year = movie.y.map(String.init) ?? ""
-      let cast = movie.s?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-      let subtitle = [cast, year].filter { !$0.isEmpty }.joined(separator: " · ")
-      let imageURL = movie.i?.imageUrl.flatMap { URL(string: $0.replacingOccurrences(of: "._V1_.jpg", with: "._V1_SX400_.jpg")) }
-      return CatalogHit(id: movie.id ?? title, title: title, subtitle: subtitle, imageURL: imageURL)
+      let year = movie.release_date.flatMap { String($0.prefix(4)) } ?? ""
+      let imageURL = movie.poster_path.flatMap {
+        URL(string: "https://image.tmdb.org/t/p/w342\($0)")
+      }
+      return CatalogHit(id: String(movie.id), title: title, subtitle: year, imageURL: imageURL)
     }
-    .prefix(8)
-    .map { $0 }
   }
 
   static func jpegData(from url: URL) async -> Data? {
@@ -106,6 +123,11 @@ enum CatalogSearch {
           let image = UIImage(data: data)
     else { return nil }
     return image.jpegData(compressionQuality: 0.85) ?? data
+  }
+
+  private static var movieToken: String {
+    let raw = Bundle.main.object(forInfoDictionaryKey: "TMDBReadAccessToken") as? String ?? ""
+    return raw.trimmingCharacters(in: .whitespacesAndNewlines)
   }
 
   private static let session: URLSession = {
@@ -298,19 +320,13 @@ private struct OpenLibraryResponse: Decodable {
   let docs: [Doc]
 }
 
-private struct IMDbSuggestionResponse: Decodable {
-  struct Item: Decodable {
-    struct Image: Decodable {
-      let imageUrl: String?
-    }
-
-    let id: String?
-    let l: String?
-    let s: String?
-    let y: Int?
-    let qid: String?
-    let i: Image?
+private struct TMDBResponse: Decodable {
+  struct Movie: Decodable {
+    let id: Int
+    let title: String?
+    let release_date: String?
+    let poster_path: String?
   }
 
-  let d: [Item]?
+  let results: [Movie]
 }

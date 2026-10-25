@@ -226,6 +226,7 @@ struct CounterHistoryView: View {
         period: period,
         windowOffset: $windowOffset,
         maxWindowOffset: maxWindowOffset,
+        target: counter.effectiveGoal,
         onSelectBar: { selectedBucket = $0 }
       )
     }

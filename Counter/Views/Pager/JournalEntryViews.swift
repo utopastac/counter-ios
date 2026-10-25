@@ -379,16 +379,29 @@ struct JournalSavedRow: View {
 
 private enum NoteMarkupDisplay {
   static func attributed(_ source: String, pack: FontPack) -> AttributedString {
+    let lines = source.split(separator: "\n", omittingEmptySubsequences: false)
+    var text = AttributedString()
+    for (index, line) in lines.enumerated() {
+      let parsed = NoteParagraphStyle.strippingPrefix(String(line))
+      text.append(inline(parsed.text, style: parsed.style, pack: pack))
+      if index < lines.count - 1 {
+        text.append(AttributedString("\n"))
+      }
+    }
+    return text
+  }
+
+  private static func inline(_ source: String, style: NoteParagraphStyle, pack: FontPack) -> AttributedString {
     let options = AttributedString.MarkdownParsingOptions(
       interpretedSyntax: .inlineOnlyPreservingWhitespace,
       failurePolicy: .returnPartiallyParsedIfPossible
     )
     var text = (try? AttributedString(markdown: source, options: options)) ?? AttributedString(source)
-    let size = TypeStyle.lgRegular.size
+    let definition = style.definition
     for run in text.runs {
       let intent = run.inlinePresentationIntent ?? []
-      let weight: Font.Weight = intent.contains(.stronglyEmphasized) ? .bold : .regular
-      var font = pack.font(size: size, weight: weight)
+      let weight: Font.Weight = intent.contains(.stronglyEmphasized) ? .bold : definition.weight
+      var font = pack.font(size: definition.size, weight: weight)
       if intent.contains(.emphasized) {
         font = font.italic()
       }

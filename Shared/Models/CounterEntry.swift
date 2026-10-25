@@ -61,7 +61,72 @@ final class CounterEntry {
   }
 }
 
-/// Plain reading of a note stored with lightweight markup (`**bold**`, `*italic*`, `~~strike~~`, `- ` lists).
+/// Paragraph styles stored as Markdown ATX prefixes, matching Notes: Title, Heading, Subheading, Body.
+nonisolated enum NoteParagraphStyle: String, CaseIterable, Identifiable, Sendable {
+  case title
+  case heading
+  case subheading
+  case body
+
+  var id: String { rawValue }
+
+  var label: String {
+    switch self {
+    case .title: "Title"
+    case .heading: "Heading"
+    case .subheading: "Subheading"
+    case .body: "Body"
+    }
+  }
+
+  var markdownPrefix: String {
+    switch self {
+    case .title: "# "
+    case .heading: "## "
+    case .subheading: "### "
+    case .body: ""
+    }
+  }
+
+  /// Removes one leading heading marker from a single line.
+  static func strippingPrefix(_ line: String) -> (style: NoteParagraphStyle, text: String) {
+    if line.hasPrefix("### ") { return (.subheading, String(line.dropFirst(4))) }
+    if line.hasPrefix("## ") { return (.heading, String(line.dropFirst(3))) }
+    if line.hasPrefix("# ") { return (.title, String(line.dropFirst(2))) }
+    return (.body, line)
+  }
+}
+
+/// Return-key behavior for note lists and headings, matching the Notes app.
+nonisolated enum NoteListEditing {
+  enum ReturnAction: Equatable {
+    /// The caret is in a list item that has text. Insert another bullet.
+    case continueList
+    /// The list item is empty. Remove the bullet and leave a normal line.
+    case exitList
+    /// Return in a heading starts the next paragraph as body text.
+    case breakHeading
+    case passthrough
+  }
+
+  static let listMarker = "- "
+
+  static func returnAction(lineContent: String, style: NoteParagraphStyle) -> ReturnAction {
+    if lineContent.hasPrefix(listMarker) {
+      let body = String(lineContent.dropFirst(listMarker.count))
+      if body.trimmingCharacters(in: .whitespaces).isEmpty {
+        return .exitList
+      }
+      return .continueList
+    }
+    if style != .body {
+      return .breakHeading
+    }
+    return .passthrough
+  }
+}
+
+/// Plain reading of a note stored with lightweight markup (`**bold**`, `*italic*`, `~~strike~~`, `# ` headings, `- ` lists).
 nonisolated enum NoteMarkup {
   nonisolated static func plain(_ source: String) -> String {
     var text = source
@@ -69,9 +134,9 @@ nonisolated enum NoteMarkup {
       text = text.replacingOccurrences(of: marker, with: "")
     }
     let lines = text.split(separator: "\n", omittingEmptySubsequences: false).map { line -> String in
-      var value = String(line)
-      if value.hasPrefix("- ") {
-        value.removeFirst(2)
+      var value = NoteParagraphStyle.strippingPrefix(String(line)).text
+      if value.hasPrefix(NoteListEditing.listMarker) {
+        value.removeFirst(NoteListEditing.listMarker.count)
       }
       return value
     }

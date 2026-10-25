@@ -9,11 +9,15 @@ App Store “What’s New” text is generated from the `[Unreleased]` section w
 ## [Unreleased]
 
 ### Added
-- Counters with customizable quick-add buttons
-- Editable counter names, units, goals, and reset periods
-- History with daily, weekly, and monthly charts
-- Count-up and count-down goal modes with progress rings
-- Apple Watch companion for logging on the wrist
-- Home Screen widgets and Watch complication
-- Compact card mode and all-counters list
-- Local-first storage — data stays on device
+- Dayring keeps a private journal on the device: sketches, written notes, voice notes, photos, places, books, movies, and numbers
+- Draw a sketch on the page and keep it in that journal
+- Write a note with titles, headings, and lists
+- Record a voice note with the microphone. The recording stays on the device
+- Add photos to a photo journal
+- Save a place with its name and a small map
+- Search for a book and keep the cover, or a movie and keep the poster
+- A number journal still totals what you add, and the ring keeps going after the target
+- Page between journals, and drag one aside to see the rest
+- History charts the day, week, or month, scaled to that journal’s target
+- Log from Apple Watch or a Home Screen widget
+- No account and no ads. Notes, sketches, photos, voice, and places stay on your devices

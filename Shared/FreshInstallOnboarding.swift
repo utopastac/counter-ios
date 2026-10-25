@@ -61,10 +61,16 @@ enum FreshInstallOnboarding {
   }
 
   static func defaultDrafts() -> [FreshInstallStarterDraft] {
-    [
-      .journal(kind: .number, name: "Count", cap: JournalKind.number.defaultCap, paletteIndex: 0),
+    var calories = FreshInstallStarterDraft.default(for: .calories)
+    var protein = FreshInstallStarterDraft.default(for: .protein)
+    calories.paletteIndex = 3
+    protein.paletteIndex = 4
+    return [
+      .journal(kind: .sketch, name: JournalKind.sketch.defaultName, cap: JournalKind.sketch.defaultCap, paletteIndex: 0),
       .journal(kind: .note, name: JournalKind.note.defaultName, cap: JournalKind.note.defaultCap, paletteIndex: 1),
-      .journal(kind: .photo, name: JournalKind.photo.defaultName, cap: JournalKind.photo.defaultCap, paletteIndex: 2),
+      .journal(kind: .voice, name: JournalKind.voice.defaultName, cap: JournalKind.voice.defaultCap, paletteIndex: 2),
+      calories,
+      protein,
     ]
   }
 }

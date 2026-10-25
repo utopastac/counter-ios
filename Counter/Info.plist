@@ -17,6 +17,8 @@
   <string>Dayring uses the microphone when you record a voice note.</string>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>Dayring uses your location when you save a place.</string>
+  <key>TMDBReadAccessToken</key>
+  <string>eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyOTI1ZWVlMWE0NjUyNTY5ZWQzNTE4MTM3OTU1MmJiZCIsIm5iZiI6MTc5Mjk1NDA3Ni4xNjMsInN1YiI6IjZhZGU0ZWRjOWQwNTk5NGE0MWMxNzUwNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.C66U3gCF8FvH4kncIQIFQrSTUvIFvi9SAyBIof12Iu8</string>
   <key>ITSAppUsesNonExemptEncryption</key>
   <false/>
   <key>UISupportedInterfaceOrientations</key>

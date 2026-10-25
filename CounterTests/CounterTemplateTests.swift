@@ -39,10 +39,12 @@ struct CounterTemplateTests {
     }
   }
 
-  @Test func onboardingDefaultSelectionMatchesHistoricStarters() {
+  @Test func onboardingDefaultSelectionIsSketchesNotesVoiceThenCaloriesAndProtein() {
     let drafts = FreshInstallOnboarding.defaultDrafts()
-    #expect(drafts.filter(\.isSelected).map(\.name) == ["Count", "Note", "Photos"])
-    #expect(drafts.map(\.kind) == [.number, .note, .photo])
+    #expect(drafts.filter(\.isSelected).map(\.name) == ["Sketches", "Note", "Voice", "Calories", "Protein"])
+    #expect(drafts.map(\.kind) == [.sketch, .note, .voice, .number, .number])
+    #expect(drafts[3].unit == "kcal")
+    #expect(drafts[4].unit == "g")
   }
 
   @Test func draftGoalUsesAmountInputParsing() {
