@@ -229,6 +229,7 @@ struct CatalogSearchSheet: View {
       message = ""
       return
     }
+    message = ""
     searchTask = Task {
       try? await Task.sleep(for: .milliseconds(300))
       guard !Task.isCancelled else { return }
@@ -244,17 +245,26 @@ struct CatalogSearchSheet: View {
       } else {
         found = try await CatalogSearch.movies(matching: query)
       }
-      guard !Task.isCancelled else { return }
-      guard query == self.query.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+      guard isCurrent(query) else { return }
       hits = found
       message = found.isEmpty ? "Nothing matched." : ""
+    } catch is CancellationError {
+      return
+    } catch let error as URLError where error.code == .cancelled {
+      return
     } catch let error as CatalogSearchError {
+      guard isCurrent(query) else { return }
       hits = []
       message = error.localizedDescription
     } catch {
+      guard isCurrent(query) else { return }
       hits = []
       message = CatalogSearchError.failed.localizedDescription
     }
+  }
+
+  private func isCurrent(_ query: String) -> Bool {
+    !Task.isCancelled && query == self.query.trimmingCharacters(in: .whitespacesAndNewlines)
   }
 
   private var typedTitle: String {
