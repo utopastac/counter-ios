@@ -1,139 +1,6 @@
 import SwiftUI
 import UIKit
 
-/// Finger samples become an in-progress stroke. Spacing matches Doodleoop so fast strokes stay smooth.
-struct SketchLiveStroke {
-  static let minSpacing: CGFloat = 0.7
-  static let endMergeEpsilon = 0.0005
-
-  private(set) var currentStroke: SketchStroke?
-  private var lastSampleTime: TimeInterval?
-  private var lastSampleLocation: CGPoint?
-  private var smoothedPenWidth: Double?
-
-  var isLiveErasing: Bool { currentStroke?.tool.isEraser == true }
-
-  mutating func appendSample(
-    at location: CGPoint,
-    timestamp: TimeInterval,
-    in size: CGSize,
-    tool: SketchTool,
-    colorHex: String,
-    lineWidth: Double
-  ) {
-    let canvasWidth = max(size.width, 1)
-    let canvasHeight = max(size.height, 1)
-    let pointWidth = penPointWidth(
-      at: location,
-      now: timestamp,
-      canvasWidth: canvasWidth,
-      canvasHeight: canvasHeight,
-      tool: tool,
-      lineWidth: lineWidth
-    )
-    let point = SketchPoint(
-      x: location.x / canvasWidth,
-      y: location.y / canvasHeight,
-      lineWidth: pointWidth
-    )
-
-    if currentStroke == nil {
-      currentStroke = SketchStroke(
-        points: [point],
-        lineWidth: lineWidth,
-        tool: tool,
-        colorHex: colorHex
-      )
-      lastSampleTime = timestamp
-      lastSampleLocation = location
-      smoothedPenWidth = pointWidth
-      return
-    }
-
-    guard let last = currentStroke?.points.last else { return }
-    let dx = (point.x - last.x) * canvasWidth
-    let dy = (point.y - last.y) * canvasHeight
-    let distance = hypot(dx, dy)
-
-    if distance < Self.minSpacing {
-      if tool == .pen, var stroke = currentStroke, !stroke.points.isEmpty {
-        stroke.points[stroke.points.count - 1].lineWidth = pointWidth
-        currentStroke = stroke
-      }
-      lastSampleTime = timestamp
-      lastSampleLocation = location
-      return
-    }
-
-    currentStroke?.points.append(point)
-    lastSampleTime = timestamp
-    lastSampleLocation = location
-  }
-
-  mutating func finish(
-    at location: CGPoint,
-    in size: CGSize,
-    tool: SketchTool,
-    lineWidth: Double
-  ) -> SketchStroke? {
-    defer {
-      currentStroke = nil
-      lastSampleTime = nil
-      lastSampleLocation = nil
-      smoothedPenWidth = nil
-    }
-
-    guard var stroke = currentStroke else { return nil }
-
-    let canvasWidth = max(size.width, 1)
-    let canvasHeight = max(size.height, 1)
-    let endWidth: Double? = {
-      guard tool == .pen else { return nil }
-      return max(0.6, smoothedPenWidth ?? lineWidth)
-    }()
-    let end = SketchPoint(
-      x: location.x / canvasWidth,
-      y: location.y / canvasHeight,
-      lineWidth: endWidth
-    )
-    if let last = stroke.points.last,
-       abs(last.x - end.x) < Self.endMergeEpsilon,
-       abs(last.y - end.y) < Self.endMergeEpsilon {
-      stroke.points[stroke.points.count - 1].lineWidth = endWidth ?? last.lineWidth
-    } else {
-      stroke.points.append(end)
-    }
-    return stroke
-  }
-
-  private mutating func penPointWidth(
-    at location: CGPoint,
-    now: TimeInterval,
-    canvasWidth: CGFloat,
-    canvasHeight: CGFloat,
-    tool: SketchTool,
-    lineWidth: Double
-  ) -> Double? {
-    guard tool == .pen else { return nil }
-
-    let base = lineWidth
-    guard let lastTime = lastSampleTime, let lastLocation = lastSampleLocation else {
-      return base * 1.15
-    }
-
-    let dt = max(now - lastTime, 1.0 / 240.0)
-    let dx = location.x - lastLocation.x
-    let dy = location.y - lastLocation.y
-    let scale = 390 / max(min(canvasWidth, canvasHeight), 1)
-    let speed = Double(hypot(dx, dy) * scale) / dt
-    let target = SketchStrokeRenderer.penWidth(base: base, speedPointsPerSecond: speed)
-    let previous = smoothedPenWidth ?? base
-    let blended = previous * 0.72 + target * 0.28
-    smoothedPenWidth = blended
-    return blended
-  }
-}
-
 struct SketchCanvas: View {
   @Binding var drawing: SketchDrawing
   var tool: SketchTool
@@ -143,6 +10,7 @@ struct SketchCanvas: View {
   var onCanvasSizeChange: (CGSize) -> Void
 
   @Environment(\.displayScale) private var displayScale
+  @Environment(\.semanticColors) private var colors
 
   @State private var liveStroke = SketchLiveStroke()
   @State private var bakedImage: UIImage?
@@ -173,11 +41,7 @@ struct SketchCanvas: View {
         }
       }
     }
-    .background(SketchChrome.paper)
-    .overlay {
-      Rectangle()
-        .strokeBorder(SketchChrome.gridLine, lineWidth: SketchChrome.borderThin)
-    }
+    .background(colors.surfaceSheet)
     .background {
       GeometryReader { geo in
         Color.clear
@@ -187,6 +51,11 @@ struct SketchCanvas: View {
     }
     .onChange(of: drawing) { _, newDrawing in
       reconcileBake(with: newDrawing)
+    }
+    .onChange(of: colors.surfaceSheet) { _, _ in
+      bakedImage = nil
+      bakedStrokeCount = -1
+      reconcileBake(with: drawing)
     }
     .overlay {
       SketchTouchCapture(
@@ -214,6 +83,7 @@ struct SketchCanvas: View {
         }
       )
     }
+    .clipShape(RadiusToken.continuousListCard)
   }
 
   private func updateCanvasSize(_ size: CGSize) {
@@ -234,7 +104,12 @@ struct SketchCanvas: View {
       return
     }
     guard drawing.strokes.count != bakedStrokeCount || bakedImage == nil else { return }
-    bakedImage = SketchStrokeRenderer.bake(drawing, size: canvasSize, scale: displayScale)
+    bakedImage = SketchStrokeRenderer.bake(
+      drawing,
+      size: canvasSize,
+      scale: displayScale,
+      background: colors.surfaceSheet
+    )
     bakedStrokeCount = drawing.strokes.count
   }
 }

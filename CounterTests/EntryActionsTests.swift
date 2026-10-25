@@ -62,7 +62,7 @@ struct EntryActionsTests {
     #expect(counter.entries.first?.timestamp == timestamp)
   }
 
-  @Test func noteEntryCountsTowardTheCapAndThenStops() {
+  @Test func noteEntriesContinuePastTheCap() {
     let container = TestModelContainer.make()
     let context = ModelContext(container)
     let counter = CustomCounter(name: "Note", goal: 1, kind: .note)
@@ -72,10 +72,9 @@ struct EntryActionsTests {
     let second = EntryActions.addNoteEntry(text: "Again", counter: counter, in: context)
 
     #expect(first != nil)
-    #expect(second == nil)
-    #expect(counter.currentTotal() == 1)
-    #expect(counter.entries.first?.noteText == "Morning")
-    #expect(counter.entries.first?.previewText == "Morning")
+    #expect(second != nil)
+    #expect(counter.currentTotal() == 2)
+    #expect(counter.entries.contains { $0.noteText == "Morning" && $0.previewText == "Morning" })
   }
 
   @Test func placeEntryStoresCoordinates() {
@@ -88,7 +87,6 @@ struct EntryActionsTests {
 
     #expect(counter.entries.first?.latitude == 51.5)
     #expect(counter.entries.first?.previewText == "51.5000, -0.1200")
-    #expect(counter.acceptsAnotherEntry())
   }
 
   @Test func bookPreviewShowsTheTitleLine() {
@@ -104,7 +102,7 @@ struct EntryActionsTests {
     #expect(entry.previewText == "Beloved")
   }
 
-  @Test func mediaEntryStoresTheFileAndNoteThenStopsAtTheCap() throws {
+  @Test func mediaEntryStoresTheFileAndNotePastTheCap() throws {
     let container = TestModelContainer.make()
     let context = ModelContext(container)
     let counter = CustomCounter(name: "Books", goal: 1, kind: .book)
@@ -118,8 +116,11 @@ struct EntryActionsTests {
       noteText: "Beloved\nToni Morrison · 1987",
       in: context
     )
-    let savedPath = counter.entries.first?.mediaRelativePath ?? ""
-    defer { JournalMediaStore.delete(relativePath: savedPath) }
+    defer {
+      for entry in counter.entries {
+        JournalMediaStore.delete(relativePath: entry.mediaRelativePath)
+      }
+    }
 
     let entry = try #require(counter.entries.first)
     #expect(added?.entryID == entry.id)
@@ -134,8 +135,8 @@ struct EntryActionsTests {
       counter: counter,
       in: context
     )
-    #expect(second == nil)
-    #expect(counter.currentTotal() == 1)
-    #expect(counter.entries.count == 1)
+    #expect(second != nil)
+    #expect(counter.currentTotal() == 2)
+    #expect(counter.entries.count == 2)
   }
 }

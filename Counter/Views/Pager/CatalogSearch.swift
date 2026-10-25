@@ -32,16 +32,10 @@ enum CatalogNote {
 }
 
 enum CatalogSearchError: LocalizedError {
-  case missingMovieToken
   case failed
 
   var errorDescription: String? {
-    switch self {
-    case .missingMovieToken:
-      "Movies search needs a TMDB read token in Info.plist."
-    case .failed:
-      "Search didn’t go through."
-    }
+    "Search didn’t go through."
   }
 }
 
@@ -77,40 +71,32 @@ enum CatalogSearch {
   }
 
   static func movies(matching query: String) async throws -> [CatalogHit] {
-    let token = movieToken
-    guard !token.isEmpty else { throw CatalogSearchError.missingMovieToken }
-    var components = URLComponents(string: "https://api.themoviedb.org/3/search/movie")
-    var items = [
-      URLQueryItem(name: "query", value: query),
-      URLQueryItem(name: "include_adult", value: "false"),
-    ]
-    var requestToken: String?
-    if token.contains(".") {
-      requestToken = token
-    } else {
-      items.append(URLQueryItem(name: "api_key", value: token))
+    let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    guard let first = trimmed.first else { return [] }
+    var allowed = CharacterSet.urlPathAllowed
+    allowed.remove(charactersIn: "/")
+    let encoded = trimmed.addingPercentEncoding(withAllowedCharacters: allowed) ?? trimmed
+    guard let url = URL(string: "https://v3.sg.media-imdb.com/suggestion/\(first)/\(encoded).json") else {
+      throw CatalogSearchError.failed
     }
-    components?.queryItems = items
-    guard let url = components?.url else { throw CatalogSearchError.failed }
-    var request = URLRequest(url: url)
-    if let requestToken {
-      request.setValue("Bearer \(requestToken)", forHTTPHeaderField: "Authorization")
-    }
-    let (data, response) = try await session.data(for: request)
+    let (data, response) = try await session.data(from: url)
     guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
       throw CatalogSearchError.failed
     }
-    let decoded = try JSONDecoder().decode(TMDBResponse.self, from: data)
-    return decoded.results.compactMap { movie in
-      guard let title = movie.title?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty else {
+    let decoded = try JSONDecoder().decode(IMDbSuggestionResponse.self, from: data)
+    return (decoded.d ?? []).compactMap { movie in
+      guard movie.qid == "movie" else { return nil }
+      guard let title = movie.l?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty else {
         return nil
       }
-      let year = movie.release_date.flatMap { String($0.prefix(4)) } ?? ""
-      let imageURL = movie.poster_path.flatMap {
-        URL(string: "https://image.tmdb.org/t/p/w342\($0)")
-      }
-      return CatalogHit(id: String(movie.id), title: title, subtitle: year, imageURL: imageURL)
+      let year = movie.y.map(String.init) ?? ""
+      let cast = movie.s?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+      let subtitle = [cast, year].filter { !$0.isEmpty }.joined(separator: " · ")
+      let imageURL = movie.i?.imageUrl.flatMap { URL(string: $0.replacingOccurrences(of: "._V1_.jpg", with: "._V1_SX400_.jpg")) }
+      return CatalogHit(id: movie.id ?? title, title: title, subtitle: subtitle, imageURL: imageURL)
     }
+    .prefix(8)
+    .map { $0 }
   }
 
   static func jpegData(from url: URL) async -> Data? {
@@ -120,11 +106,6 @@ enum CatalogSearch {
           let image = UIImage(data: data)
     else { return nil }
     return image.jpegData(compressionQuality: 0.85) ?? data
-  }
-
-  private static var movieToken: String {
-    let raw = Bundle.main.object(forInfoDictionaryKey: "TMDBReadAccessToken") as? String ?? ""
-    return raw.trimmingCharacters(in: .whitespacesAndNewlines)
   }
 
   private static let session: URLSession = {
@@ -151,8 +132,12 @@ struct CatalogSearchSheet: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      CounterSheetHeader(title: kind.label) {
-        dismiss()
+      CounterSheetHeader(
+        title: kind == .book ? "Add book" : "Add movie",
+        trailingTitle: "Add",
+        isDoneEnabled: !typedTitle.isEmpty && savingID == nil
+      ) {
+        saveTyped()
       }
 
       TextField(kind == .book ? "Search books" : "Search movies", text: $query)
@@ -203,12 +188,6 @@ struct CatalogSearchSheet: View {
             .disabled(savingID != nil)
           }
 
-          if kind == .movie {
-            Text("This product uses the TMDB API but is not endorsed or certified by TMDB.")
-              .counterTextStyle(.listCardCaption)
-              .padding(.horizontal, SheetToken.horizontal)
-              .padding(.top, SpaceToken.u3)
-          }
         }
       }
     }
@@ -254,6 +233,17 @@ struct CatalogSearchSheet: View {
       hits = []
       message = CatalogSearchError.failed.localizedDescription
     }
+  }
+
+  private var typedTitle: String {
+    query.trimmingCharacters(in: .whitespacesAndNewlines)
+  }
+
+  private func saveTyped() {
+    guard !typedTitle.isEmpty, savingID == nil else { return }
+    savingID = "manual"
+    onSave(CatalogNote.stored(title: typedTitle, subtitle: ""), nil)
+    dismiss()
   }
 
   private func choose(_ hit: CatalogHit) async {
@@ -308,13 +298,19 @@ private struct OpenLibraryResponse: Decodable {
   let docs: [Doc]
 }
 
-private struct TMDBResponse: Decodable {
-  struct Movie: Decodable {
-    let id: Int
-    let title: String?
-    let release_date: String?
-    let poster_path: String?
+private struct IMDbSuggestionResponse: Decodable {
+  struct Item: Decodable {
+    struct Image: Decodable {
+      let imageUrl: String?
+    }
+
+    let id: String?
+    let l: String?
+    let s: String?
+    let y: Int?
+    let qid: String?
+    let i: Image?
   }
 
-  let results: [Movie]
+  let d: [Item]?
 }

@@ -13,26 +13,15 @@ struct JournalCaptureFooter: View {
   @Environment(\.modelContext) private var modelContext
 
   @Bindable var counter: CustomCounter
+  var buttonHeight: CGFloat = SizeToken.quickAddHeight
   let onAdded: (EntryActions.AddedEntry) -> Void
 
   @State private var showWriter = false
   @State private var showPlace = false
   @State private var showCatalog = false
 
-  private var isFull: Bool {
-    !counter.acceptsAnotherEntry()
-  }
-
   var body: some View {
-    Group {
-      if isFull {
-        Text(journalFullCaption(counter))
-          .counterTextStyle(.listCardCaption)
-          .frame(maxWidth: .infinity, alignment: .leading)
-      } else {
-        capture
-      }
-    }
+    capture
     .sheet(isPresented: $showWriter) {
       NoteWriterSheet { text in
         let added = EntryActions.addNoteEntry(text: text, counter: counter, in: modelContext)
@@ -91,18 +80,11 @@ struct JournalCaptureFooter: View {
         if let added { onAdded(added) }
       }
     case .book, .movie:
-      surfaceButton(counter.kind == .book ? "Search books" : "Search movies") {
+      CounterActionButton(
+        counter.kind == .book ? "Add book" : "Add movie",
+        height: buttonHeight
+      ) {
         showCatalog = true
-      } label: {
-        HStack(spacing: SpaceToken.u2) {
-          Image(systemName: "magnifyingglass")
-            .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
-            .foregroundStyle(colors.textPrimary)
-          Text(counter.kind == .book ? "Search books" : "Search movies")
-            .counterTextStyle(.listCardTitle)
-          Spacer(minLength: 0)
-        }
-        .frame(maxWidth: .infinity, minHeight: GridToken.units(8), alignment: .leading)
       }
     case .place:
       surfaceButton("Drop a pin") {
@@ -161,27 +143,15 @@ struct JournalMediaCapture: View {
     CounterPeriodCalculator.currentEntries(for: counter)
   }
 
-  private var canAdd: Bool {
-    counter.acceptsAnotherEntry()
-  }
-
   var body: some View {
-    VStack(alignment: .leading, spacing: SpaceToken.u1) {
-      JournalMediaStrip(
-        entries: entries,
-        showsAdd: canAdd,
-        addLabel: counter.kind == .sketch ? "Add a sketch" : "Add a photo",
-        entryLabel: counter.kind.entryNoun,
-        onAdd: openCapture,
-        onDelete: onDelete
-      )
-
-      if !canAdd {
-        Text(journalFullCaption(counter))
-          .counterTextStyle(.listCardCaption)
-          .frame(maxWidth: .infinity, alignment: .leading)
-      }
-    }
+    JournalMediaStrip(
+      entries: entries,
+      showsAdd: true,
+      addLabel: counter.kind == .sketch ? "Add a sketch" : "Add a photo",
+      entryLabel: counter.kind.entryNoun,
+      onAdd: openCapture,
+      onDelete: onDelete
+    )
     .photosPicker(isPresented: $showPicker, selection: $selection, matching: .images)
     .onChange(of: selection) { _, item in
       guard let item else { return }
@@ -219,10 +189,6 @@ struct JournalMediaCapture: View {
     ) else { return }
     onAdded(added)
   }
-}
-
-private func journalFullCaption(_ counter: CustomCounter) -> String {
-  "\(counter.resetPeriod.periodCaption.capitalized) is full."
 }
 
 private struct NoteWriterSheet: View {

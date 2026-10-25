@@ -1,7 +1,7 @@
 import Foundation
 
 /// What a journal records. Number journals keep quick-add totals. Every other kind
-/// records one entry at a time toward a required cap.
+/// records one entry at a time. The cap is the ring's target, and entries can pass it.
 nonisolated enum JournalKind: String, Codable, CaseIterable, Identifiable, Sendable {
   case number
   case note

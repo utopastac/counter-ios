@@ -1,22 +1,5 @@
 import SwiftUI
 
-/// Paper and ink from Doodleoop’s drawing page. The sketch sheet keeps this
-/// desk even when Dayring is in dark mode.
-enum SketchChrome {
-  static let paper = Color(red: 0.961, green: 0.945, blue: 0.910)
-  static let paperWhite = Color(red: 0.988, green: 0.980, blue: 0.961)
-  static let tan = Color(red: 0.863, green: 0.835, blue: 0.784)
-  static let ink = Color(red: 0.098, green: 0.086, blue: 0.071)
-  static let gridLine = ink.opacity(0.1)
-  static let placeholder = Color(red: 0.765, green: 0.737, blue: 0.698)
-  static let dot = Color(red: 0.804, green: 0.776, blue: 0.729)
-
-  static let pageInset: CGFloat = 24
-  static let controlRadius: CGFloat = 2
-  static let borderThin: CGFloat = 1
-  static let borderHeavy: CGFloat = 3
-}
-
 enum SketchTool: String, CaseIterable, Equatable {
   case pencil
   case pen
@@ -32,12 +15,12 @@ enum SketchTool: String, CaseIterable, Equatable {
     }
   }
 
-  var iconName: String {
+  var symbolName: String {
     switch self {
-    case .pen: "SketchIconPenNib"
-    case .pencil: "SketchIconPencil"
-    case .highlighter: "SketchIconPaintBrush"
-    case .eraser: "SketchIconEraser"
+    case .pen: "pencil.tip"
+    case .pencil: "pencil"
+    case .highlighter: "highlighter"
+    case .eraser: "eraser"
     }
   }
 
@@ -162,6 +145,139 @@ struct SketchUndoStack {
     if steps.count > limit {
       steps.removeFirst(steps.count - limit)
     }
+  }
+}
+
+/// Finger samples become an in-progress stroke. Close samples are dropped so a fast stroke stays smooth.
+struct SketchLiveStroke {
+  static let minSpacing: CGFloat = 0.7
+  static let endMergeEpsilon = 0.0005
+
+  private(set) var currentStroke: SketchStroke?
+  private var lastSampleTime: TimeInterval?
+  private var lastSampleLocation: CGPoint?
+  private var smoothedPenWidth: Double?
+
+  var isLiveErasing: Bool { currentStroke?.tool.isEraser == true }
+
+  mutating func appendSample(
+    at location: CGPoint,
+    timestamp: TimeInterval,
+    in size: CGSize,
+    tool: SketchTool,
+    colorHex: String,
+    lineWidth: Double
+  ) {
+    let canvasWidth = max(size.width, 1)
+    let canvasHeight = max(size.height, 1)
+    let pointWidth = penPointWidth(
+      at: location,
+      now: timestamp,
+      canvasWidth: canvasWidth,
+      canvasHeight: canvasHeight,
+      tool: tool,
+      lineWidth: lineWidth
+    )
+    let point = SketchPoint(
+      x: location.x / canvasWidth,
+      y: location.y / canvasHeight,
+      lineWidth: pointWidth
+    )
+
+    if currentStroke == nil {
+      currentStroke = SketchStroke(
+        points: [point],
+        lineWidth: lineWidth,
+        tool: tool,
+        colorHex: colorHex
+      )
+      lastSampleTime = timestamp
+      lastSampleLocation = location
+      smoothedPenWidth = pointWidth
+      return
+    }
+
+    guard let last = currentStroke?.points.last else { return }
+    let dx = (point.x - last.x) * canvasWidth
+    let dy = (point.y - last.y) * canvasHeight
+    let distance = hypot(dx, dy)
+
+    if distance < Self.minSpacing {
+      if tool == .pen, var stroke = currentStroke, !stroke.points.isEmpty {
+        stroke.points[stroke.points.count - 1].lineWidth = pointWidth
+        currentStroke = stroke
+      }
+      lastSampleTime = timestamp
+      lastSampleLocation = location
+      return
+    }
+
+    currentStroke?.points.append(point)
+    lastSampleTime = timestamp
+    lastSampleLocation = location
+  }
+
+  mutating func finish(
+    at location: CGPoint,
+    in size: CGSize,
+    tool: SketchTool,
+    lineWidth: Double
+  ) -> SketchStroke? {
+    defer {
+      currentStroke = nil
+      lastSampleTime = nil
+      lastSampleLocation = nil
+      smoothedPenWidth = nil
+    }
+
+    guard var stroke = currentStroke else { return nil }
+
+    let canvasWidth = max(size.width, 1)
+    let canvasHeight = max(size.height, 1)
+    let endWidth: Double? = {
+      guard tool == .pen else { return nil }
+      return max(0.6, smoothedPenWidth ?? lineWidth)
+    }()
+    let end = SketchPoint(
+      x: location.x / canvasWidth,
+      y: location.y / canvasHeight,
+      lineWidth: endWidth
+    )
+    if let last = stroke.points.last,
+       abs(last.x - end.x) < Self.endMergeEpsilon,
+       abs(last.y - end.y) < Self.endMergeEpsilon {
+      stroke.points[stroke.points.count - 1].lineWidth = endWidth ?? last.lineWidth
+    } else {
+      stroke.points.append(end)
+    }
+    return stroke
+  }
+
+  private mutating func penPointWidth(
+    at location: CGPoint,
+    now: TimeInterval,
+    canvasWidth: CGFloat,
+    canvasHeight: CGFloat,
+    tool: SketchTool,
+    lineWidth: Double
+  ) -> Double? {
+    guard tool == .pen else { return nil }
+
+    let base = lineWidth
+    guard let lastTime = lastSampleTime, let lastLocation = lastSampleLocation else {
+      return base * 1.15
+    }
+
+    let dt = max(now - lastTime, 1.0 / 240.0)
+    let dx = location.x - lastLocation.x
+    let dy = location.y - lastLocation.y
+    let scale = 390 / max(min(canvasWidth, canvasHeight), 1)
+    let speed = Double(hypot(dx, dy) * scale) / dt
+    let target = SketchStrokeRenderer.penWidth(base: base, speedPointsPerSecond: speed)
+    let previous = smoothedPenWidth ?? base
+    let blended = previous * 0.72 + target * 0.28
+    smoothedPenWidth = blended
+    return blended
   }
 }
 

@@ -352,12 +352,12 @@ struct CustomCounterPageContent: View {
     } else if isCompact {
       VStack(alignment: .leading, spacing: SpaceToken.u2) {
         if showsJournalComposer {
-          JournalCaptureFooter(counter: counter, onAdded: handleJournalAdd)
+          JournalCaptureFooter(counter: counter, buttonHeight: buttonHeight, onAdded: handleJournalAdd)
         }
         journalEntries(maxTextRows: 2)
       }
     } else if showsJournalComposer {
-      JournalCaptureFooter(counter: counter, onAdded: handleJournalAdd)
+      JournalCaptureFooter(counter: counter, buttonHeight: buttonHeight, onAdded: handleJournalAdd)
     }
   }
 

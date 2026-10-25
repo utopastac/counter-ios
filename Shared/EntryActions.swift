@@ -41,7 +41,7 @@ enum EntryActions {
     in context: ModelContext
   ) -> AddedEntry? {
     let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !trimmed.isEmpty, counter.acceptsAnotherEntry() else { return nil }
+    guard !trimmed.isEmpty else { return nil }
     let entry = CounterEntry(value: 1, counter: counter)
     entry.noteText = trimmed
     context.insert(entry)
@@ -58,7 +58,7 @@ enum EntryActions {
     noteText: String = "",
     in context: ModelContext
   ) -> AddedEntry? {
-    guard !data.isEmpty, counter.acceptsAnotherEntry() else { return nil }
+    guard !data.isEmpty else { return nil }
     let entry = CounterEntry(value: 1, counter: counter)
     let relative = JournalMediaStore.save(data: data, entryID: entry.id, fileExtension: fileExtension)
     guard !relative.isEmpty else { return nil }
@@ -77,7 +77,6 @@ enum EntryActions {
     counter: CustomCounter,
     in context: ModelContext
   ) -> AddedEntry? {
-    guard counter.acceptsAnotherEntry() else { return nil }
     let entry = CounterEntry(value: 1, counter: counter)
     entry.latitude = latitude
     entry.longitude = longitude

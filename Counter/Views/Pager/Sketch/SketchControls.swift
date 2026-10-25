@@ -1,15 +1,17 @@
 import SwiftUI
 
-/// Doodleoop drawing desk: square paper, clear, tool row, nib sizes, and swatches.
+/// Sketch sheet: Dayring glass controls, with pen, pencil, highlighter, eraser, nibs, and swatches.
 struct SketchSheet: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.displayScale) private var displayScale
-  @Environment(\.designSystem) private var designSystem
+  @Environment(\.semanticColors) private var colors
+  @Environment(\.colorScheme) private var colorScheme
 
   @State private var drawing = SketchDrawing.empty
   @State private var undoStack = SketchUndoStack()
   @State private var tool: SketchTool = .pen
   @State private var colorHex = SketchPalette.defaultHex
+  @State private var didPickInk = false
   @State private var widthByTool: [SketchTool: Double] = Dictionary(
     uniqueKeysWithValues: SketchTool.allCases.map { ($0, $0.defaultWidth) }
   )
@@ -19,13 +21,11 @@ struct SketchSheet: View {
   let onSave: (Data) -> Void
 
   var body: some View {
-    VStack(spacing: 0) {
+    VStack(spacing: SpaceToken.u2) {
       CounterSheetHeader(title: "Sketch", trailingTitle: "Keep", isDoneEnabled: !drawing.isEmpty) {
         keep()
         dismiss()
       }
-
-      Spacer(minLength: SpaceToken.u1)
 
       SketchCanvas(
         drawing: $drawing,
@@ -35,14 +35,11 @@ struct SketchSheet: View {
         onWillCommitStroke: { undoStack.registerStrokeAdded() },
         onCanvasSizeChange: { canvasSize = $0 }
       )
-      .aspectRatio(1, contentMode: .fit)
-      .frame(maxWidth: .infinity)
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
       .overlay(alignment: .topTrailing) {
         clearButton
       }
-      .padding(.horizontal, SketchChrome.pageInset)
-
-      Spacer(minLength: SpaceToken.u2)
+      .padding(.horizontal, SheetToken.horizontal)
 
       SketchToolbar(
         tool: $tool,
@@ -51,24 +48,13 @@ struct SketchSheet: View {
         canUndo: undoStack.canUndo,
         onUndo: { undoStack.undo(drawing: &drawing) }
       )
-      .padding(.horizontal, SketchChrome.pageInset)
+      .padding(.horizontal, SheetToken.horizontal)
       .padding(.bottom, SpaceToken.u2)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-    .background(SketchChrome.paper)
-    .environment(\.colorScheme, .light)
-    .counterDesignSystem(
-      CounterDesignSystem(
-        colorScheme: .light,
-        accent: designSystem.accent,
-        isTintEnabled: designSystem.isTintEnabled,
-        colorPackRaw: designSystem.colorPackRaw,
-        fontPackRaw: designSystem.fontPackRaw
-      )
-    )
     .counterSheetPresentation(.cornerRadiusGlass)
     .presentationDetents([.large])
-    .presentationBackground(SketchChrome.paper)
+    .onAppear(perform: pickInkIfNeeded)
     .onDisappear { keep() }
   }
 
@@ -77,20 +63,25 @@ struct SketchSheet: View {
       undoStack.registerClear(before: drawing)
       drawing = .empty
     } label: {
-      Image("SketchIconTrash")
-        .resizable()
-        .renderingMode(.template)
-        .scaledToFit()
-        .frame(width: 20, height: 20)
-        .foregroundStyle(SketchChrome.ink.opacity(drawing.isEmpty ? 0.35 : 1))
-        .frame(width: 40, height: 40)
-        .background(SketchChrome.paperWhite.opacity(drawing.isEmpty ? 0.35 : 1))
-        .clipShape(RoundedRectangle(cornerRadius: SketchChrome.controlRadius, style: .circular))
+      Image(systemName: "trash")
+        .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
+        .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
     }
     .buttonStyle(.plain)
+    .foregroundStyle(colors.textPrimary)
+    .glassEffect(.regular.interactive(), in: .circle)
     .disabled(drawing.isEmpty)
+    .opacity(drawing.isEmpty ? OpacityToken.disabledButton : 1)
     .accessibilityLabel("Clear")
     .padding(SpaceToken.u1)
+  }
+
+  private func pickInkIfNeeded() {
+    guard !didPickInk else { return }
+    didPickInk = true
+    if colorScheme == .dark {
+      colorHex = "#FFFFFF"
+    }
   }
 
   private func keep() {
@@ -99,89 +90,82 @@ struct SketchSheet: View {
     guard let data = SketchStrokeRenderer.pngData(
       of: drawing,
       size: canvasSize,
-      scale: displayScale
+      scale: displayScale,
+      background: colors.surfaceSheet
     ) else { return }
     onSave(data)
   }
 }
 
 private struct SketchToolbar: View {
+  @Environment(\.semanticColors) private var colors
+
   @Binding var tool: SketchTool
   @Binding var colorHex: String
   @Binding var widthByTool: [SketchTool: Double]
   var canUndo: Bool
   var onUndo: () -> Void
 
-  private let nibPreviewSizes: [CGFloat] = [12, 20, 28, 36]
+  private let nibPreviewSizes: [CGFloat] = [8, 12, 18, 24]
 
   private var selectedWidth: Double {
     widthByTool[tool] ?? tool.defaultWidth
   }
 
+  private var nibColor: Color {
+    tool.isEraser ? colors.textPrimary : Color(sketchHex: colorHex)
+  }
+
   var body: some View {
-    VStack(spacing: 0) {
-      Rectangle()
-        .fill(SketchChrome.gridLine)
-        .frame(height: SketchChrome.borderThin)
+    VStack(spacing: SpaceToken.u1) {
       toolsRow
       sizesRow
       swatchesRow
-      Rectangle()
-        .fill(SketchChrome.gridLine)
-        .frame(height: SketchChrome.borderThin)
     }
   }
 
   private var toolsRow: some View {
-    HStack(spacing: 0) {
-      ForEach(Array(SketchTool.toolbarOrder.enumerated()), id: \.element) { index, option in
-        if index > 0 { Spacer(minLength: 0) }
+    HStack(spacing: SpaceToken.u1) {
+      ForEach(SketchTool.toolbarOrder, id: \.self) { option in
         toolButton(option)
       }
-      Spacer(minLength: 0)
+      Spacer(minLength: SpaceToken.u1)
       undoButton
     }
-    .padding(.horizontal, SpaceToken.u1)
-    .padding(.vertical, SpaceToken.x1)
-    .frame(height: 56)
   }
 
   private var sizesRow: some View {
-    HStack(spacing: SpaceToken.x1) {
+    HStack(spacing: SpaceToken.u1) {
       ForEach(Array(tool.availableWidths.enumerated()), id: \.offset) { index, width in
+        let selected = selectedWidth == width
         Button {
           widthByTool[tool] = width
         } label: {
-          let preview = nibPreviewSizes[min(index, nibPreviewSizes.count - 1)]
-          ZStack {
-            RoundedRectangle(cornerRadius: SketchChrome.controlRadius, style: .circular)
-              .strokeBorder(
-                selectedWidth == width ? SketchChrome.ink : Color.clear,
-                lineWidth: SketchChrome.borderHeavy
-              )
-            Circle()
-              .fill(tool.isEraser ? SketchChrome.ink : Color(sketchHex: colorHex))
-              .frame(width: preview, height: preview)
-              .overlay {
-                if SketchPalette.isLightHex(colorHex) {
-                  Circle().strokeBorder(SketchChrome.dot, lineWidth: SketchChrome.borderThin)
-                }
+          Circle()
+            .fill(nibColor)
+            .frame(
+              width: nibPreviewSizes[min(index, nibPreviewSizes.count - 1)],
+              height: nibPreviewSizes[min(index, nibPreviewSizes.count - 1)]
+            )
+            .overlay {
+              if SketchPalette.isLightHex(colorHex), !tool.isEraser {
+                Circle().strokeBorder(colors.borderColourSwatch, lineWidth: BorderToken.colourSwatch)
               }
-          }
-          .frame(maxWidth: .infinity)
-          .frame(height: 48)
-          .contentShape(Rectangle())
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: SizeToken.iconButtonHitArea)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .glassEffect(glass(selected: selected), in: RadiusToken.continuousButton)
         .accessibilityLabel("Nib \(Int(width))")
+        .accessibilityAddTraits(selected ? .isSelected : [])
       }
     }
-    .padding(.horizontal, SpaceToken.u1)
-    .padding(.vertical, SpaceToken.x1)
   }
 
   private var swatchesRow: some View {
-    HStack {
+    HStack(spacing: SpaceToken.x1) {
       ForEach(SketchPalette.hexes, id: \.self) { hex in
         let selected = colorHex.caseInsensitiveCompare(hex) == .orderedSame
         Button {
@@ -189,23 +173,25 @@ private struct SketchToolbar: View {
         } label: {
           Circle()
             .fill(Color(sketchHex: hex))
-            .frame(width: selected ? 40 : 28, height: selected ? 40 : 28)
+            .frame(width: SizeToken.iconGlyph, height: SizeToken.iconGlyph)
             .overlay {
               Circle()
                 .strokeBorder(
-                  selected ? SketchChrome.ink : swatchEdge(for: hex),
-                  lineWidth: selected ? SketchChrome.borderHeavy : SketchChrome.borderThin
+                  selected
+                    ? ComponentColor.colourSwatchBorderSelected(colors)
+                    : ComponentColor.colourSwatchBorderDefault(colors),
+                  lineWidth: selected ? BorderToken.selectionSelected : BorderToken.colourSwatch
                 )
             }
+            .frame(maxWidth: .infinity)
+            .frame(height: SizeToken.iconButtonHitArea)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .frame(maxWidth: .infinity)
         .accessibilityLabel("Color \(hex)")
+        .accessibilityAddTraits(selected ? .isSelected : [])
       }
     }
-    .padding(.horizontal, SpaceToken.u1)
-    .padding(.vertical, SpaceToken.x1)
-    .frame(height: 56)
   }
 
   private func toolButton(_ option: SketchTool) -> some View {
@@ -213,41 +199,36 @@ private struct SketchToolbar: View {
     return Button {
       tool = option
     } label: {
-      Image(option.iconName)
-        .resizable()
-        .renderingMode(.template)
-        .scaledToFit()
-        .frame(width: 32, height: 32)
-        .foregroundStyle(selected ? SketchChrome.tan : SketchChrome.ink)
-        .frame(width: 48, height: 48)
-        .background(selected ? SketchChrome.ink : Color.clear)
-        .clipShape(RoundedRectangle(cornerRadius: SketchChrome.controlRadius, style: .circular))
+      Image(systemName: option.symbolName)
+        .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
+        .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
     }
     .buttonStyle(.plain)
+    .foregroundStyle(selected ? colors.interactivePrimaryForeground : colors.textPrimary)
+    .glassEffect(glass(selected: selected), in: .circle)
     .accessibilityLabel(option.displayName)
     .accessibilityAddTraits(selected ? .isSelected : [])
   }
 
   private var undoButton: some View {
     Button(action: onUndo) {
-      Image("SketchIconUndo")
-        .resizable()
-        .renderingMode(.template)
-        .scaledToFit()
-        .frame(width: 32, height: 32)
-        .foregroundStyle(canUndo ? SketchChrome.ink : SketchChrome.placeholder)
-        .frame(width: 48, height: 48)
-        .contentShape(Rectangle())
+      Image(systemName: "arrow.uturn.backward")
+        .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
+        .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
     }
     .buttonStyle(.plain)
+    .foregroundStyle(colors.textPrimary)
+    .glassEffect(.regular.interactive(), in: .circle)
     .disabled(!canUndo)
+    .opacity(canUndo ? 1 : OpacityToken.disabledButton)
     .accessibilityLabel("Undo")
   }
 
-  private func swatchEdge(for hex: String) -> Color {
-    if SketchPalette.isLightHex(hex) {
-      return SketchChrome.ink.opacity(0.25)
+  private func glass(selected: Bool) -> Glass {
+    if selected {
+      .regular.tint(colors.interactivePrimaryFill).interactive()
+    } else {
+      .regular.interactive()
     }
-    return Color(sketchHex: hex).opacity(0.55)
   }
 }

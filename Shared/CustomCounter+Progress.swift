@@ -24,13 +24,6 @@ extension CustomCounter {
     )
   }
 
-  /// Non-number journals stop accepting entries once the current period reaches the cap.
-  func acceptsAnotherEntry(on date: Date = .now, calendar: Calendar = .current) -> Bool {
-    guard kind.requiresCap else { return true }
-    guard let cap = effectiveGoal else { return false }
-    return currentTotal(on: date, calendar: calendar) < cap
-  }
-
   /// `nil` when the counter has no active goal — callers decide how to present that case.
   func currentProgress(on date: Date = .now, calendar: Calendar = .current) -> GoalProgress? {
     GoalProgressCalculator.progress(

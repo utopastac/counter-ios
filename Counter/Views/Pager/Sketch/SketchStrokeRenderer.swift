@@ -122,20 +122,32 @@ enum SketchStrokeRenderer {
   }
 
   @MainActor
-  static func pngData(of drawing: SketchDrawing, size: CGSize, scale: CGFloat) -> Data? {
+  static func pngData(
+    of drawing: SketchDrawing,
+    size: CGSize,
+    scale: CGFloat,
+    background: Color = .white
+  ) -> Data? {
     guard !drawing.isEmpty else { return nil }
     let resolved = size.width > 1 && size.height > 1
       ? size
       : CGSize(width: 320, height: 320)
-    guard let image = bake(drawing, size: resolved, scale: max(scale, 1)) else { return nil }
+    guard let image = bake(drawing, size: resolved, scale: max(scale, 1), background: background) else {
+      return nil
+    }
     return image.pngData()
   }
 
   @MainActor
-  static func bake(_ drawing: SketchDrawing, size: CGSize, scale: CGFloat) -> UIImage? {
+  static func bake(
+    _ drawing: SketchDrawing,
+    size: CGSize,
+    scale: CGFloat,
+    background: Color = .white
+  ) -> UIImage? {
     guard size.width > 1, size.height > 1 else { return nil }
     let content = ZStack {
-      SketchChrome.paper
+      background
       Canvas { context, canvasSize in
         drawDrawing(drawing, in: &context, size: canvasSize)
       }

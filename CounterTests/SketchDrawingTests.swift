@@ -11,10 +11,10 @@ struct SketchDrawingTests {
     #expect(SketchTool.toolbarOrder == [.pen, .pencil, .highlighter, .eraser])
     #expect(Set(SketchTool.toolbarOrder) == Set(SketchTool.allCases))
 
-    #expect(SketchTool.pen.iconName == "SketchIconPenNib")
-    #expect(SketchTool.pencil.iconName == "SketchIconPencil")
-    #expect(SketchTool.highlighter.iconName == "SketchIconPaintBrush")
-    #expect(SketchTool.eraser.iconName == "SketchIconEraser")
+    #expect(SketchTool.pen.symbolName == "pencil.tip")
+    #expect(SketchTool.pencil.symbolName == "pencil")
+    #expect(SketchTool.highlighter.symbolName == "highlighter")
+    #expect(SketchTool.eraser.symbolName == "eraser")
 
     #expect(SketchTool.pencil.displayName == "Pencil")
     #expect(SketchTool.pen.displayName == "Pen")

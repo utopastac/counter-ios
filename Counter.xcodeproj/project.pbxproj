@@ -195,7 +195,6 @@
 		SKTSTBFTEST01 /* SketchDrawingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKTSTFILEREF01 /* SketchDrawingTests.swift */; };
 		SKCHBFTESTS01 /* SketchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000001 /* SketchModels.swift */; };
 		SKCHBFTESTS02 /* SketchStrokeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000002 /* SketchStrokeRenderer.swift */; };
-		SKCHBFTESTS03 /* SketchCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000003 /* SketchCanvas.swift */; };
 		IW10000010000000000000001 /* CounterHomeWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */; };
 		IW10000010000000000000002 /* CounterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000002 /* CounterWidget.swift */; };
 		IW10000010000000000000003 /* AddCounterEntryIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000003 /* AddCounterEntryIntent.swift */; };
@@ -1407,7 +1406,6 @@
 				SKTSTBFTEST01 /* SketchDrawingTests.swift in Sources */,
 				SKCHBFTESTS01 /* SketchModels.swift in Sources */,
 				SKCHBFTESTS02 /* SketchStrokeRenderer.swift in Sources */,
-				SKCHBFTESTS03 /* SketchCanvas.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
