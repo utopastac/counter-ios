@@ -150,7 +150,7 @@ struct CustomCounterPageContent: View {
                   }
                 )
               } else {
-                journalEntries(maxTextRows: EntryLogPreviewLimit.count)
+                journalEntries()
               }
 
               Button {
@@ -310,17 +310,20 @@ struct CustomCounterPageContent: View {
   }
 
   @ViewBuilder
-  private func journalEntries(maxTextRows: Int) -> some View {
+  private func journalEntries() -> some View {
+    let limit = counter.kind.counterPagePreviewCount
     switch counter.kind {
     case .photo, .sketch:
       JournalMediaCapture(
         counter: counter,
+        showsAdd: false,
+        entryLimit: limit,
         onAdded: handleJournalAdd,
         onDelete: { deletePreviewEntry(id: $0) }
       )
     case .note, .voice, .place, .book, .movie:
       JournalEntryList(
-        entries: Array(periodEntries.prefix(maxTextRows)),
+        entries: Array(periodEntries.prefix(limit)),
         kind: counter.kind,
         truncates: true,
         onDelete: { deletePreviewEntry(id: $0) }
@@ -369,6 +372,14 @@ struct CustomCounterPageContent: View {
       }
     } else if isCompact {
       compactAddControl(buttonHeight: buttonHeight)
+    } else if counter.kind == .photo || counter.kind == .sketch {
+      JournalMediaCapture(
+        counter: counter,
+        showsEntries: false,
+        buttonHeight: buttonHeight,
+        onAdded: handleJournalAdd,
+        onDelete: { _ in }
+      )
     } else if showsJournalComposer {
       JournalCaptureFooter(counter: counter, buttonHeight: buttonHeight, onAdded: handleJournalAdd)
     }

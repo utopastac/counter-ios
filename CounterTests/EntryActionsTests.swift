@@ -77,6 +77,17 @@ struct EntryActionsTests {
     #expect(counter.entries.contains { $0.noteText == "Morning" && $0.previewText == "Morning" })
   }
 
+  @Test func notePreviewStripsMarkup() {
+    let container = TestModelContainer.make()
+    let context = ModelContext(container)
+    let counter = CustomCounter(name: "Note", goal: 1, kind: .note)
+    context.insert(counter)
+
+    _ = EntryActions.addNoteEntry(text: "**Morning**\n- *again*", counter: counter, in: context)
+
+    #expect(counter.entries.first?.previewText == "Morning\nagain")
+  }
+
   @Test func placeEntryStoresCoordinates() {
     let container = TestModelContainer.make()
     let context = ModelContext(container)
@@ -87,6 +98,56 @@ struct EntryActionsTests {
 
     #expect(counter.entries.first?.latitude == 51.5)
     #expect(counter.entries.first?.previewText == "51.5000, -0.1200")
+  }
+
+  @Test func placeEntryStoresTheNameAndMap() throws {
+    let container = TestModelContainer.make()
+    let context = ModelContext(container)
+    let counter = CustomCounter(name: "Places", goal: 3, kind: .place)
+    context.insert(counter)
+
+    let jpeg = Data("map".utf8)
+    _ = EntryActions.addPlaceEntry(
+      latitude: 51.5,
+      longitude: -0.12,
+      noteText: "Tate Modern\nBankside, London",
+      snapshot: jpeg,
+      counter: counter,
+      in: context
+    )
+    defer {
+      for entry in counter.entries {
+        JournalMediaStore.delete(relativePath: entry.mediaRelativePath)
+      }
+    }
+
+    let entry = try #require(counter.entries.first)
+    #expect(entry.previewText == "Tate Modern")
+    #expect(entry.noteText == "Tate Modern\nBankside, London")
+    let fileURL = try #require(JournalMediaStore.fileURL(relativePath: entry.mediaRelativePath))
+    #expect(try Data(contentsOf: fileURL) == jpeg)
+  }
+
+  @Test func placeLabelPrefersTheVenue() {
+    #expect(
+      PlaceLabel.stored(name: "Tate Modern", street: "Bankside", city: "London")
+        == "Tate Modern\nBankside, London"
+    )
+  }
+
+  @Test func placeLabelUsesTheStreetWhenTheNameRepeatsIt() {
+    #expect(PlaceLabel.stored(name: "Bankside", street: "Bankside", city: "London") == "Bankside\nLondon")
+  }
+
+  @Test func placeLabelSkipsACityAlreadyInTheStreet() {
+    #expect(
+      PlaceLabel.stored(name: "Tate Modern", street: "Bankside, London", city: "London")
+        == "Tate Modern\nBankside, London"
+    )
+  }
+
+  @Test func placeLabelIsEmptyWithoutAName() {
+    #expect(PlaceLabel.stored(name: " ", street: "", city: "") == "")
   }
 
   @Test func bookPreviewShowsTheTitleLine() {

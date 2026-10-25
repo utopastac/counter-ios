@@ -1,6 +1,6 @@
 import Foundation
 
-/// Audio, photo, and sketch files for journal entries. Paths stored on `CounterEntry`
+/// Audio, photo, sketch, and place-map files for journal entries. Paths stored on `CounterEntry`
 /// are relative to this directory inside the App Group so iPhone and Watch see the same files.
 enum JournalMediaStore {
   private static let rootFolder = "JournalMedia"

@@ -1,15 +1,12 @@
 import AVFoundation
-import CoreLocation
-import MapKit
 import PhotosUI
 import SwiftData
 import SwiftUI
+import UIKit
 
 /// Writing, recording, and place capture under the ring. Photos and sketches
-/// live in `JournalMediaCapture`, where the frames themselves are the control.
+/// use the same full-width add button from `JournalMediaCapture`.
 struct JournalCaptureFooter: View {
-  @Environment(\.semanticColors) private var colors
-  @Environment(\.counterRevealIsDragging) private var counterRevealIsDragging
   @Environment(\.modelContext) private var modelContext
 
   @Bindable var counter: CustomCounter
@@ -46,10 +43,12 @@ struct JournalCaptureFooter: View {
       }
     }
     .sheet(isPresented: $showPlace) {
-      PlaceSheet { coordinate in
+      PlaceSheet { coordinate, note, snapshot in
         let added = EntryActions.addPlaceEntry(
           latitude: coordinate.latitude,
           longitude: coordinate.longitude,
+          noteText: note,
+          snapshot: snapshot,
           counter: counter,
           in: modelContext
         )
@@ -62,12 +61,8 @@ struct JournalCaptureFooter: View {
   private var capture: some View {
     switch counter.kind {
     case .note:
-      surfaceButton("Write a note") {
+      CounterActionButton("Add note", height: buttonHeight) {
         showWriter = true
-      } label: {
-        Text("Write")
-          .counterTextStyle(.rowLight, color: .disabled)
-          .frame(maxWidth: .infinity, minHeight: JournalMediaMetrics.writingHeight, alignment: .topLeading)
       }
     case .voice:
       VoiceCapture { data in
@@ -87,52 +82,23 @@ struct JournalCaptureFooter: View {
         showCatalog = true
       }
     case .place:
-      surfaceButton("Drop a pin") {
+      CounterActionButton("Add place", height: buttonHeight) {
         showPlace = true
-      } label: {
-        HStack(spacing: SpaceToken.u2) {
-          Image(systemName: "mappin")
-            .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
-            .foregroundStyle(colors.textPrimary)
-          Text("Drop a pin")
-            .counterTextStyle(.listCardTitle)
-          Spacer(minLength: 0)
-        }
-        .frame(maxWidth: .infinity, minHeight: GridToken.units(8), alignment: .leading)
       }
     case .number, .photo, .sketch:
       EmptyView()
     }
   }
-
-  private func surfaceButton<Label: View>(
-    _ accessibilityLabel: String,
-    action: @escaping () -> Void,
-    @ViewBuilder label: () -> Label
-  ) -> some View {
-    Button {
-      guard !counterRevealIsDragging else { return }
-      action()
-    } label: {
-      label()
-        .padding(SpaceToken.u2)
-        .background(colors.interactiveSecondaryFill, in: RadiusToken.continuousListCard)
-        .overlay {
-          RadiusToken.continuousListCard
-            .strokeBorder(colors.borderSubtle, lineWidth: BorderToken.settingsDivider)
-        }
-    }
-    .buttonStyle(.noHighlight)
-    .accessibilityLabel(accessibilityLabel)
-  }
 }
 
-/// The period's photos or sketches, with an empty frame that opens the picker or the drawing sheet.
+/// The period's photos or sketches. The add control is the full-width button; the grid only shows what was saved.
 struct JournalMediaCapture: View {
   @Environment(\.modelContext) private var modelContext
 
   @Bindable var counter: CustomCounter
   var showsEntries = true
+  var showsAdd = true
+  var entryLimit: Int?
   var buttonHeight: CGFloat = SizeToken.quickAddHeight
   let onAdded: (EntryActions.AddedEntry) -> Void
   let onDelete: (UUID) -> Void
@@ -142,7 +108,9 @@ struct JournalMediaCapture: View {
   @State private var showSketch = false
 
   private var entries: [CounterEntry] {
-    CounterPeriodCalculator.currentEntries(for: counter)
+    let current = CounterPeriodCalculator.currentEntries(for: counter)
+    guard let entryLimit else { return current }
+    return Array(current.prefix(entryLimit))
   }
 
   var body: some View {
@@ -150,7 +118,7 @@ struct JournalMediaCapture: View {
       if showsEntries {
         JournalMediaStrip(
           entries: entries,
-          showsAdd: true,
+          showsAdd: showsAdd,
           addLabel: counter.kind == .sketch ? "Add a sketch" : "Add a photo",
           entryLabel: counter.kind.entryNoun,
           onAdd: openCapture,
@@ -207,26 +175,25 @@ struct JournalMediaCapture: View {
 private struct NoteWriterSheet: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.semanticColors) private var colors
+  @Environment(\.designSystem) private var designSystem
 
-  @State private var text = ""
+  @State private var session = NoteEditorSession()
   @State private var didKeep = false
-  @FocusState private var isFocused: Bool
 
   let onSave: (String) -> Void
 
-  private var trimmed: String {
-    text.trimmingCharacters(in: .whitespacesAndNewlines)
-  }
-
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      CounterSheetHeader(title: "Note", isDoneEnabled: !trimmed.isEmpty) {
+      CounterSheetHeader(title: "Note", isDoneEnabled: !session.isEmpty) {
         keep()
         dismiss()
       }
 
+      NoteFormatBar(session: session)
+        .padding(.horizontal, SheetToken.horizontal)
+
       ZStack(alignment: .topLeading) {
-        if text.isEmpty {
+        if session.isEmpty {
           Text("Write")
             .counterTextStyle(.rowLight, color: .disabled)
             .padding(.horizontal, SheetToken.horizontal)
@@ -234,25 +201,335 @@ private struct NoteWriterSheet: View {
             .allowsHitTesting(false)
         }
 
-        TextEditor(text: $text)
-          .counterTextStyle(.rowLight)
-          .scrollContentBackground(.hidden)
-          .focused($isFocused)
+        NoteTextEditor(session: session)
           .padding(.horizontal, SheetToken.horizontal)
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
     .counterSheetPresentation(.cornerRadiusGlass)
     .presentationDetents([.large])
-    .onAppear { isFocused = true }
+    .onAppear {
+      let pack = FontPack(rawValue: designSystem.fontPackRaw) ?? .default
+      session.configure(font: NoteEditorFont.base(pack: pack), color: UIColor(colors.textPrimary))
+      session.textView.becomeFirstResponder()
+    }
     .onDisappear { keep() }
   }
 
   private func keep() {
     guard !didKeep else { return }
     didKeep = true
-    guard !trimmed.isEmpty else { return }
-    onSave(trimmed)
+    let markdown = session.markdown()
+    guard !NoteMarkup.plain(markdown).isEmpty else { return }
+    onSave(markdown)
+  }
+}
+
+private struct NoteFormatBar: View {
+  @Environment(\.semanticColors) private var colors
+
+  let session: NoteEditorSession
+
+  var body: some View {
+    HStack(spacing: SpaceToken.u1) {
+      formatButton("bold", label: "Bold", isOn: session.boldOn) { session.toggleBold() }
+      formatButton("italic", label: "Italic", isOn: session.italicOn) { session.toggleItalic() }
+      formatButton("strikethrough", label: "Strikethrough", isOn: session.strikeOn) { session.toggleStrikethrough() }
+      formatButton("list.bullet", label: "List", isOn: session.listOn) { session.toggleList() }
+      Spacer(minLength: 0)
+    }
+    .padding(.bottom, SpaceToken.u1)
+  }
+
+  private func formatButton(
+    _ systemName: String,
+    label: String,
+    isOn: Bool,
+    action: @escaping () -> Void
+  ) -> some View {
+    Image(systemName: systemName)
+      .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
+      .foregroundStyle(isOn ? colors.interactivePrimaryForeground : colors.textPrimary)
+      .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
+      .background {
+        if isOn {
+          Circle().fill(colors.interactivePrimaryFill)
+        }
+      }
+      .contentShape(Circle())
+      .onTapGesture(perform: action)
+      .accessibilityLabel(label)
+      .accessibilityAddTraits(.isButton)
+      .accessibilityAddTraits(isOn ? .isSelected : [])
+  }
+}
+
+private struct NoteTextEditor: UIViewRepresentable {
+  let session: NoteEditorSession
+
+  func makeUIView(context: Context) -> UITextView {
+    session.textView
+  }
+
+  func updateUIView(_ uiView: UITextView, context: Context) {}
+}
+
+private final class NoteEditorDelegate: NSObject, UITextViewDelegate {
+  var onChange: () -> Void = {}
+
+  func textViewDidChange(_ textView: UITextView) {
+    onChange()
+  }
+
+  func textViewDidChangeSelection(_ textView: UITextView) {
+    onChange()
+  }
+}
+
+@MainActor
+@Observable
+private final class NoteEditorSession {
+  let textView = UITextView()
+  private let editorDelegate = NoteEditorDelegate()
+  private(set) var isEmpty = true
+  private(set) var boldOn = false
+  private(set) var italicOn = false
+  private(set) var strikeOn = false
+  private(set) var listOn = false
+
+  private var baseFont = UIFont.preferredFont(forTextStyle: .body)
+  private var textColor = UIColor.label
+
+  init() {
+    textView.delegate = editorDelegate
+    editorDelegate.onChange = { [weak self] in
+      self?.refresh()
+    }
+  }
+
+  func configure(font: UIFont, color: UIColor) {
+    baseFont = font
+    textColor = color
+    textView.backgroundColor = .clear
+    textView.font = font
+    textView.textColor = color
+    textView.tintColor = color
+    textView.typingAttributes = typingAttributes(font: font, strike: false)
+    textView.textContainerInset = UIEdgeInsets(top: SpaceToken.u2, left: 0, bottom: SpaceToken.u2, right: 0)
+    textView.textContainer.lineFragmentPadding = 0
+    textView.allowsEditingTextAttributes = true
+  }
+
+  func toggleBold() {
+    toggleTrait(.traitBold)
+  }
+
+  func toggleItalic() {
+    toggleTrait(.traitItalic)
+  }
+
+  func toggleStrikethrough() {
+    let range = textView.selectedRange
+    let turningOff = rangeHasStrikethrough(in: textView.attributedText ?? NSAttributedString(), range: range)
+    if range.length == 0 {
+      var attributes = textView.typingAttributes
+      if turningOff {
+        attributes.removeValue(forKey: .strikethroughStyle)
+      } else {
+        attributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
+      }
+      restoreCaret(range)
+      textView.typingAttributes = attributes
+      refresh()
+      return
+    }
+    editSelection { mutable, range in
+      if turningOff {
+        mutable.removeAttribute(.strikethroughStyle, range: range)
+      } else {
+        mutable.addAttribute(.strikethroughStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+      }
+      textView.attributedText = mutable
+    }
+  }
+
+  func toggleList() {
+    let storage = textView.text as NSString
+    let range = textView.selectedRange
+    let location = min(range.location, storage.length)
+    let lineRange = storage.lineRange(for: NSRange(location: location, length: 0))
+    let line = storage.substring(with: lineRange)
+    let mutable = NSMutableAttributedString(attributedString: textView.attributedText ?? NSAttributedString())
+    if line.hasPrefix("- ") {
+      mutable.replaceCharacters(in: NSRange(location: lineRange.location, length: 2), with: "")
+      textView.attributedText = mutable
+      textView.selectedRange = NSRange(location: max(lineRange.location, range.location - 2), length: 0)
+    } else {
+      let marker = NSAttributedString(string: "- ", attributes: typingAttributes(font: baseFont, strike: false))
+      mutable.insert(marker, at: lineRange.location)
+      textView.attributedText = mutable
+      textView.selectedRange = NSRange(location: range.location + 2, length: range.length)
+    }
+    textView.becomeFirstResponder()
+    refresh()
+  }
+
+  func markdown() -> String {
+    let attributed = textView.attributedText ?? NSAttributedString()
+    let source = attributed.string as NSString
+    var output = ""
+    attributed.enumerateAttributes(in: NSRange(location: 0, length: attributed.length)) { attributes, range, _ in
+      var chunk = source.substring(with: range)
+      let traits = (attributes[.font] as? UIFont)?.fontDescriptor.symbolicTraits ?? []
+      let strike = (attributes[.strikethroughStyle] as? Int ?? 0) != 0
+      let token: String? = switch (traits.contains(.traitBold), traits.contains(.traitItalic)) {
+      case (true, true): "***"
+      case (true, false): "**"
+      case (false, true): "*"
+      case (false, false): nil
+      }
+      if let token {
+        chunk = marked(chunk, token: token)
+      }
+      if strike {
+        chunk = marked(chunk, token: "~~")
+      }
+      output += chunk
+    }
+    return output.trimmingCharacters(in: .whitespacesAndNewlines)
+  }
+
+  private func toggleTrait(_ trait: UIFontDescriptor.SymbolicTraits) {
+    let range = textView.selectedRange
+    if range.length == 0 {
+      let current = textView.typingAttributes[.font] as? UIFont
+      let strike = (textView.typingAttributes[.strikethroughStyle] as? Int ?? 0) != 0
+      let attributes = typingAttributes(font: font(current, toggling: trait), strike: strike)
+      restoreCaret(range)
+      textView.typingAttributes = attributes
+      refresh()
+      return
+    }
+    editSelection { mutable, range in
+      mutable.enumerateAttribute(.font, in: range) { value, subrange, _ in
+        let updated = font(value as? UIFont, toggling: trait)
+        mutable.addAttribute(.font, value: updated, range: subrange)
+      }
+      textView.attributedText = mutable
+    }
+  }
+
+  private func marked(_ chunk: String, token: String) -> String {
+    chunk.components(separatedBy: "\n").map { part in
+      part.isEmpty ? "" : "\(token)\(part)\(token)"
+    }.joined(separator: "\n")
+  }
+
+  private func restoreCaret(_ range: NSRange) {
+    textView.becomeFirstResponder()
+    if range.location <= (textView.attributedText?.length ?? 0) {
+      textView.selectedRange = range
+    }
+  }
+
+  private func editSelection(
+    _ change: (_ mutable: NSMutableAttributedString, _ range: NSRange) -> Void
+  ) {
+    let range = textView.selectedRange
+    let mutable = NSMutableAttributedString(attributedString: textView.attributedText ?? NSAttributedString())
+    change(mutable, range)
+    textView.becomeFirstResponder()
+    if range.location <= textView.attributedText.length {
+      textView.selectedRange = range
+    }
+    refresh()
+  }
+
+  private func rangeHasStrikethrough(in text: NSAttributedString, range: NSRange) -> Bool {
+    if range.length == 0 {
+      return (textView.typingAttributes[.strikethroughStyle] as? Int ?? 0) != 0
+    }
+    var present = true
+    text.enumerateAttribute(.strikethroughStyle, in: range) { value, _, stop in
+      if (value as? Int ?? 0) == 0 {
+        present = false
+        stop.pointee = true
+      }
+    }
+    return present
+  }
+
+  private func font(_ current: UIFont?, toggling trait: UIFontDescriptor.SymbolicTraits) -> UIFont {
+    let font = current ?? baseFont
+    var traits = font.fontDescriptor.symbolicTraits
+    if traits.contains(trait) {
+      traits.remove(trait)
+    } else {
+      traits.insert(trait)
+    }
+    guard let descriptor = font.fontDescriptor.withSymbolicTraits(traits) else { return font }
+    return UIFont(descriptor: descriptor, size: font.pointSize)
+  }
+
+  private func typingAttributes(font: UIFont, strike: Bool) -> [NSAttributedString.Key: Any] {
+    var attributes: [NSAttributedString.Key: Any] = [
+      .font: font,
+      .foregroundColor: textColor,
+    ]
+    if strike {
+      attributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue
+    }
+    return attributes
+  }
+
+  private func refresh() {
+    isEmpty = NoteMarkup.plain(textView.text).isEmpty
+    let attributes = attributesAtSelection()
+    let traits = (attributes[.font] as? UIFont)?.fontDescriptor.symbolicTraits ?? []
+    boldOn = traits.contains(.traitBold)
+    italicOn = traits.contains(.traitItalic)
+    strikeOn = (attributes[.strikethroughStyle] as? Int ?? 0) != 0
+    let storage = textView.text as NSString
+    let location = min(textView.selectedRange.location, storage.length)
+    let line = storage.substring(with: storage.lineRange(for: NSRange(location: location, length: 0)))
+    listOn = line.hasPrefix("- ")
+  }
+
+  private func attributesAtSelection() -> [NSAttributedString.Key: Any] {
+    let range = textView.selectedRange
+    let length = textView.attributedText?.length ?? 0
+    guard range.length > 0, range.location < length else {
+      return textView.typingAttributes
+    }
+    return textView.attributedText.attributes(at: range.location, effectiveRange: nil)
+  }
+}
+
+private enum NoteEditorFont {
+  static func base(pack: FontPack) -> UIFont {
+    let size = TypeStyle.lgRegular.size
+    switch pack {
+    case .default:
+      return .systemFont(ofSize: size, weight: .regular)
+    case .soft:
+      return designed(.rounded, size: size)
+    case .editorial:
+      return designed(.serif, size: size)
+    case .technical:
+      return .monospacedSystemFont(ofSize: size, weight: .regular)
+    case .geometric:
+      return UIFont(name: FontPack.avenirPostScriptName(for: .regular), size: size)
+        ?? .systemFont(ofSize: size, weight: .regular)
+    case .nineteenTwentySeven:
+      return UIFont(name: FontPack.futuraMediumPostScriptName, size: size)
+        ?? .systemFont(ofSize: size, weight: .regular)
+    }
+  }
+
+  private static func designed(_ design: UIFontDescriptor.SystemDesign, size: CGFloat) -> UIFont {
+    let system = UIFont.systemFont(ofSize: size, weight: .regular)
+    guard let descriptor = system.fontDescriptor.withDesign(design) else { return system }
+    return UIFont(descriptor: descriptor, size: size)
   }
 }
 
@@ -341,70 +618,6 @@ private struct VoiceEqualizer: View {
     .frame(height: JournalMediaMetrics.record)
     .frame(maxWidth: .infinity)
     .accessibilityHidden(true)
-  }
-}
-
-private struct PlaceSheet: View {
-  @Environment(\.dismiss) private var dismiss
-  @Environment(\.semanticColors) private var colors
-
-  @State private var pin: CLLocationCoordinate2D?
-  @State private var position: MapCameraPosition = .automatic
-  @State private var locator = CurrentLocationReader()
-
-  let onSave: (CLLocationCoordinate2D) -> Void
-
-  var body: some View {
-    VStack(alignment: .leading, spacing: SpaceToken.u2) {
-      CounterSheetHeader(title: "Place", trailingTitle: "Save", isDoneEnabled: pin != nil) {
-        if let pin { onSave(pin) }
-        dismiss()
-      }
-
-      Text("Tap the map to drop a pin.")
-        .counterTextStyle(.listCardCaption)
-        .padding(.horizontal, SheetToken.horizontal)
-
-      MapReader { proxy in
-        Map(position: $position) {
-          if let pin {
-            Marker("Place", coordinate: pin)
-          }
-        }
-        .onTapGesture { point in
-          pin = proxy.convert(point, from: .local)
-        }
-      }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .clipShape(RadiusToken.continuousListCard)
-      .overlay(alignment: .bottomTrailing) {
-        Button {
-          locator.request { coordinate in
-            pin = coordinate
-            position = .camera(MapCamera(centerCoordinate: coordinate, distance: 1200))
-          }
-        } label: {
-          Image(systemName: "location.fill")
-            .font(.system(size: SizeToken.iconGlyph, weight: .semibold))
-            .foregroundStyle(colors.textPrimary)
-            .frame(width: SizeToken.iconButtonHitArea, height: SizeToken.iconButtonHitArea)
-            .background(colors.surfaceSheet, in: Circle())
-        }
-        .buttonStyle(.plain)
-        .padding(SpaceToken.u2)
-        .accessibilityLabel("Use current location")
-      }
-      .padding(.horizontal, SheetToken.horizontal)
-      .padding(.bottom, SpaceToken.u2)
-    }
-    .counterSheetPresentation(.cornerRadiusGlass)
-    .presentationDetents([.large])
-    .onAppear {
-      locator.request { coordinate in
-        guard pin == nil else { return }
-        position = .camera(MapCamera(centerCoordinate: coordinate, distance: 1200))
-      }
-    }
   }
 }
 
@@ -503,25 +716,4 @@ private final class VoiceNoteRecorder {
     let clamped = min(0, max(floor, power))
     return CGFloat((clamped - floor) / -floor)
   }
-}
-
-private final class CurrentLocationReader: NSObject, CLLocationManagerDelegate {
-  private let manager = CLLocationManager()
-  private var onUpdate: ((CLLocationCoordinate2D) -> Void)?
-
-  func request(onUpdate: @escaping (CLLocationCoordinate2D) -> Void) {
-    self.onUpdate = onUpdate
-    manager.delegate = self
-    manager.requestWhenInUseAuthorization()
-    manager.requestLocation()
-  }
-
-  nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    guard let coordinate = locations.last?.coordinate else { return }
-    Task { @MainActor in
-      onUpdate?(coordinate)
-    }
-  }
-
-  nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {}
 }

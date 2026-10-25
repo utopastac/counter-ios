@@ -66,4 +66,13 @@ nonisolated enum JournalKind: String, Codable, CaseIterable, Identifiable, Senda
   var requiresCap: Bool {
     self != .number
   }
+
+  /// Newest entries shown on the counter page. History lists the whole period.
+  var counterPagePreviewCount: Int {
+    switch self {
+    case .note, .voice, .place: 3
+    case .photo, .sketch: 6
+    case .number, .book, .movie: 5
+    }
+  }
 }

@@ -67,6 +67,9 @@
 		SKCHBF0000000000000004 /* SketchControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000004 /* SketchControls.swift */; };
 		JROWBFCOUNTER01 /* JournalEntryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = JROWFILE00000000000001 /* JournalEntryViews.swift */; };
 		CATSBFCOUNTER01 /* CatalogSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CATSFILE00000000000001 /* CatalogSearch.swift */; };
+		PLACBFCOUNTER01 /* PlaceCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = PLACFILE00000000000001 /* PlaceCapture.swift */; };
+		PLBLBFCOUNTER01 /* PlaceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = PLBLFILE00000000000001 /* PlaceLabel.swift */; };
+		PLBLBFTESTS01 /* PlaceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = PLBLFILE00000000000001 /* PlaceLabel.swift */; };
 		C10000010000000000000009 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		C10000010000000000000011 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
 		C10000010000000000000012 /* PreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000012 /* PreviewModel.swift */; };
@@ -399,6 +402,8 @@
 		SKCHFILE00000000000004 /* SketchControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchControls.swift; sourceTree = "<group>"; };
 		JROWFILE00000000000001 /* JournalEntryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntryViews.swift; sourceTree = "<group>"; };
 		CATSFILE00000000000001 /* CatalogSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSearch.swift; sourceTree = "<group>"; };
+		PLACFILE00000000000001 /* PlaceCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceCapture.swift; sourceTree = "<group>"; };
+		PLBLFILE00000000000001 /* PlaceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceLabel.swift; sourceTree = "<group>"; };
 		C20000010000000000000009 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
 		C20000010000000000000011 /* EntryActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActions.swift; sourceTree = "<group>"; };
 		C20000010000000000000012 /* PreviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModel.swift; sourceTree = "<group>"; };
@@ -715,6 +720,7 @@
 				IW20000010000000000000013 /* WidgetPalette.swift */,
 				IW20000010000000000000014 /* WidgetCounterLoader.swift */,
 				C20000010000000000000011 /* EntryActions.swift */,
+				PLBLFILE00000000000001 /* PlaceLabel.swift */,
 				WS20000010000000000000001 /* WatchSyncDTO.swift */,
 				WS20000010000000000000002 /* WatchSyncEngine.swift */,
 				WS20000010000000000000003 /* WatchSyncCoordinator.swift */,
@@ -922,6 +928,7 @@
 				P20000010000000000000002 /* ScrollPanDisabler.swift */,
 				G20000010000000000000004 /* CustomCounterPageContent.swift */,
 				JCAPFILE00000000000001 /* JournalCaptureView.swift */,
+				PLACFILE00000000000001 /* PlaceCapture.swift */,
 				JROWFILE00000000000001 /* JournalEntryViews.swift */,
 				SKCHGRP000000000000001 /* Sketch */,
 				CATSFILE00000000000001 /* CatalogSearch.swift */,
@@ -1193,6 +1200,8 @@
 				AH10000010000000000000001 /* AppHaptics.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
 				JCAPBFCOUNTER01 /* JournalCaptureView.swift in Sources */,
+				PLACBFCOUNTER01 /* PlaceCapture.swift in Sources */,
+				PLBLBFCOUNTER01 /* PlaceLabel.swift in Sources */,
 				SKCHBF0000000000000001 /* SketchModels.swift in Sources */,
 				SKCHBF0000000000000002 /* SketchStrokeRenderer.swift in Sources */,
 				SKCHBF0000000000000003 /* SketchCanvas.swift in Sources */,
@@ -1360,6 +1369,7 @@
 				CTGBFHistoryAggregator01 /* HistoryAggregator.swift in Sources */,
 				CTGBFQuickAddConfiguration01 /* QuickAddConfiguration.swift in Sources */,
 				CTGBFEntryActions01 /* EntryActions.swift in Sources */,
+				PLBLBFTESTS01 /* PlaceLabel.swift in Sources */,
 				CTGBFAppGroup01 /* AppGroup.swift in Sources */,
 				AP10000010000000000000005 /* AppAppearancePreference.swift in Sources */,
 				PRWBFTESTS01 /* ProgressRingWidth.swift in Sources */,

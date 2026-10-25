@@ -1,4 +1,5 @@
 import Observation
+import QuartzCore
 import SwiftData
 import SwiftUI
 import UIKit
@@ -82,20 +83,6 @@ private struct CounterModalScrimModifier: ViewModifier {
   }
 }
 
-/// Publishes sheet frame progress into the coordinator so the presenter can blur progressively.
-private struct CounterSheetScrimTrackingModifier: ViewModifier {
-  let coordinator: CounterSheetCoordinator
-
-  func body(content: Content) -> some View {
-    content
-      .onGeometryChange(for: CGRect.self) { proxy in
-        proxy.frame(in: .global)
-      } action: { _, frame in
-        coordinator.updateScrimProgress(sheetFrame: frame)
-      }
-  }
-}
-
 extension PresentationDetent {
   static let counterOffsetLarge = Self.custom(CounterOffsetLargeDetent.self)
 }
@@ -144,73 +131,228 @@ enum CounterSheetRoute: Identifiable, Equatable {
 final class CounterSheetCoordinator {
   var route: CounterSheetRoute? {
     didSet {
+      guard route != oldValue else { return }
+      // Swipe-to-dismiss clears the route while the sheet is still on screen.
       if route == nil {
-        tracksSheetGeometry = false
-        scrimProgress = 0
+        scrimSampler?.trackDismissal()
       }
     }
   }
 
-  /// 0…1 how far the active sheet has risen on screen.
-  /// Animates in on present; follows sheet geometry during interactive dismiss.
-  var scrimProgress: CGFloat = 0
+  /// 0…1 how far the active sheet has risen. Tracks the sheet's on-screen frame,
+  /// including present, drag, and dismiss — not a separate timed fade.
+  private(set) var scrimProgress: CGFloat = 0
   var onCounterCreated: ((CustomCounter) -> Void)?
 
-  /// Sheet content lays out at its final frame immediately, so geometry alone snaps
-  /// blur to 1 on present. Ignore those reports until the sheet starts moving down.
-  @ObservationIgnored private var tracksSheetGeometry = false
-
-  /// Scrim over the whole pager (list + counters) while any sheet is up.
+  /// Scrim over the whole pager (list + counters) while a sheet is moving or up.
   var pagerScrimProgress: CGFloat {
-    route == nil ? 0 : scrimProgress
+    scrimProgress
   }
 
+  @ObservationIgnored private var scrimSampler: SheetScrimSampler?
+
   func present(_ route: CounterSheetRoute) {
-    tracksSheetGeometry = false
+    setScrimProgress(0)
     self.route = route
-    scrimProgress = 0
-    withAnimation(MotionToken.sheetScrimPresent) {
-      scrimProgress = 1
-    }
+    sampler().trackPresentation()
   }
 
   func dismiss() {
     route = nil
   }
 
-  func updateScrimProgress(sheetFrame frame: CGRect) {
-    guard route != nil, frame.height > 1 else {
-      if scrimProgress != 0 { scrimProgress = 0 }
-      return
-    }
-    let screenHeight = Self.screenHeight
-    guard screenHeight > 1 else { return }
-    let next = min(max((screenHeight - frame.minY) / frame.height, 0), 1)
-
-    // Present: content geometry jumps to ~1 immediately — keep the animated ramp.
-    // Dismiss: progress drops as the sheet moves; switch to live tracking.
-    if !tracksSheetGeometry {
-      if next < 0.97 {
-        tracksSheetGeometry = true
-      } else {
-        return
-      }
-    }
-
-    guard abs(next - scrimProgress) > 0.002 else { return }
-    var transaction = Transaction()
-    transaction.disablesAnimations = true
-    withTransaction(transaction) {
-      scrimProgress = next
+  fileprivate func ingestSheetSample(_ sample: SheetScrimSample) {
+    switch sample {
+    case .noSheet:
+      guard route == nil else { return }
+      setScrimProgress(0)
+      scrimSampler?.stop()
+    case .waitingForMotion:
+      break
+    case .progress(let value):
+      setScrimProgress(value)
     }
   }
 
-  private static var screenHeight: CGFloat {
-    let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
-    if let height = scenes.first(where: { $0.activationState == .foregroundActive })?.screen.bounds.height {
-      return height
+  private func sampler() -> SheetScrimSampler {
+    if let scrimSampler { return scrimSampler }
+    let sampler = SheetScrimSampler()
+    sampler.coordinator = self
+    scrimSampler = sampler
+    return sampler
+  }
+
+  private func setScrimProgress(_ value: CGFloat) {
+    let clamped = min(max(value, 0), 1)
+    guard abs(clamped - scrimProgress) > 0.001 else { return }
+    var transaction = Transaction()
+    transaction.disablesAnimations = true
+    withTransaction(transaction) {
+      scrimProgress = clamped
     }
-    return scenes.first?.screen.bounds.height ?? 0
+  }
+}
+
+/// Where the presented sheet is, in scrim terms.
+private enum SheetScrimSample {
+  /// No presented sheet view is attached to a window.
+  case noSheet
+  /// The presentation layer is still parked on the final frame; keep the current scrim.
+  case waitingForMotion
+  /// 0 = sheet below the screen, 1 = sheet fully risen.
+  case progress(CGFloat)
+}
+
+/// Reads the sheet chrome's presentation layer each frame.
+///
+/// SwiftUI geometry inside a sheet is the resting layout frame as soon as the
+/// sheet appears, so a blur driven from that (or from a fixed present duration)
+/// snaps to fully blurred. The presentation layer is the frame actually on screen.
+@MainActor
+private final class SheetScrimSampler: NSObject {
+  weak var coordinator: CounterSheetCoordinator?
+
+  private var displayLink: CADisplayLink?
+  private weak var sheetChrome: UIView?
+  private var hasTrackedMotion = false
+  private var restSamplesBeforeMotion = 0
+
+  func trackPresentation() {
+    sheetChrome = nil
+    hasTrackedMotion = false
+    restSamplesBeforeMotion = 0
+    start()
+  }
+
+  func trackDismissal() {
+    start()
+  }
+
+  func stop() {
+    displayLink?.invalidate()
+    displayLink = nil
+    sheetChrome = nil
+  }
+
+  private func start() {
+    guard displayLink == nil else { return }
+    let link = CADisplayLink(target: self, selector: #selector(step))
+    link.add(to: .main, forMode: .common)
+    displayLink = link
+  }
+
+  @objc private func step() {
+    coordinator?.ingestSheetSample(currentSample())
+  }
+
+  private func currentSample() -> SheetScrimSample {
+    guard let chrome = resolveSheetChrome(), let window = chrome.window else {
+      return .noSheet
+    }
+    let frame = visualFrame(of: chrome, in: window)
+    let progress = Self.fraction(
+      sheetTop: frame.minY,
+      sheetHeight: frame.height,
+      containerHeight: window.bounds.height
+    )
+
+    // UIKit commits the resting frame for a frame or two before the present
+    // animation moves the presentation layer. Don't treat that as "fully open".
+    if !hasTrackedMotion {
+      if progress < 0.98 {
+        hasTrackedMotion = true
+      } else {
+        restSamplesBeforeMotion += 1
+        if restSamplesBeforeMotion < 3 {
+          return .waitingForMotion
+        }
+        hasTrackedMotion = true
+      }
+    }
+
+    return .progress(progress)
+  }
+
+  /// 0 when `sheetTop` is at the bottom of the container, 1 when the whole sheet has risen.
+  private static func fraction(sheetTop: CGFloat, sheetHeight: CGFloat, containerHeight: CGFloat) -> CGFloat {
+    guard sheetHeight > 1, containerHeight > 1 else { return 0 }
+    return min(max((containerHeight - sheetTop) / sheetHeight, 0), 1)
+  }
+
+  private func resolveSheetChrome() -> UIView? {
+    if let presented = foregroundPresentedSheetView(), let window = presented.window {
+      let chrome = movingSheetChrome(containing: presented, in: window)
+      sheetChrome = chrome
+      return chrome
+    }
+    if let sheetChrome, sheetChrome.window != nil {
+      return sheetChrome
+    }
+    return nil
+  }
+
+  /// Prefer the ancestor that is still lowest on screen. Sheet content often sits at its
+  /// resting frame immediately while a parent platter is the view actually sliding up.
+  private func movingSheetChrome(containing content: UIView, in window: UIWindow) -> UIView {
+    var best = sheetChromeView(containing: content, in: window)
+    var bestTop = visualFrame(of: best, in: window).minY
+    var current: UIView? = content
+    while let view = current, view !== window {
+      let frame = visualFrame(of: view, in: window)
+      let looksLikeSheet = frame.height > 200
+        && frame.height < window.bounds.height - 1
+        && frame.width > window.bounds.width * 0.5
+      if looksLikeSheet, frame.minY > bestTop + 1 {
+        best = view
+        bestTop = frame.minY
+      }
+      current = view.superview
+    }
+    return best
+  }
+
+  private func foregroundPresentedSheetView() -> UIView? {
+    let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+    let active = scenes.filter { $0.activationState == .foregroundActive }
+    for scene in active.isEmpty ? scenes : active {
+      for window in scene.windows {
+        if let view = window.rootViewController?.presentedViewController?.view, view.window != nil {
+          return view
+        }
+      }
+    }
+    return nil
+  }
+
+  /// Outermost view that is the sheet itself, not the full-screen transition container.
+  private func sheetChromeView(containing content: UIView, in window: UIWindow) -> UIView {
+    let fullScreen = window.bounds.height - 1
+    var chrome = content
+    if content.bounds.height >= fullScreen,
+       let platter = largestPartialSubview(of: content, shorterThan: fullScreen) {
+      chrome = platter
+    }
+    var current: UIView? = chrome.superview
+    while let view = current, view !== window {
+      if view.bounds.height >= fullScreen { break }
+      chrome = view
+      current = view.superview
+    }
+    return chrome
+  }
+
+  private func largestPartialSubview(of view: UIView, shorterThan fullScreen: CGFloat) -> UIView? {
+    view.subviews
+      .filter { $0.bounds.height > 200 && $0.bounds.height < fullScreen && $0.bounds.width > 200 }
+      .max { $0.bounds.height < $1.bounds.height }
+  }
+
+  private func visualFrame(of view: UIView, in window: UIWindow) -> CGRect {
+    let layer = view.layer.presentation() ?? view.layer
+    let target = window.layer.presentation() ?? window.layer
+    let frame = layer.convert(layer.bounds, to: target)
+    if frame.height > 1 { return frame }
+    return view.convert(view.bounds, to: window)
   }
 }
 
@@ -227,7 +369,6 @@ struct CounterSheetHost: View {
       .sheet(item: $coordinator.route) { route in
         sheetContent(for: route)
           .counterDesignSystemFromColorScheme()
-          .modifier(CounterSheetScrimTrackingModifier(coordinator: coordinator))
       }
   }
 

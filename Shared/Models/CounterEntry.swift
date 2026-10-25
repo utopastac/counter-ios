@@ -31,8 +31,8 @@ final class CounterEntry {
     case .number:
       return CounterFormatting.amount(amount)
     case .note:
-      let trimmed = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
-      return trimmed.isEmpty ? JournalKind.note.entryNoun : trimmed
+      let plain = NoteMarkup.plain(noteText)
+      return plain.isEmpty ? JournalKind.note.entryNoun : plain
     case .voice:
       return JournalKind.voice.entryNoun
     case .photo:
@@ -40,18 +40,41 @@ final class CounterEntry {
     case .sketch:
       return JournalKind.sketch.entryNoun
     case .place:
+      if !noteTitle.isEmpty { return noteTitle }
       if let latitude, let longitude {
         return String(format: "%.4f, %.4f", latitude, longitude)
       }
       return JournalKind.place.entryNoun
     case .book, .movie:
-      let title = noteText
-        .split(separator: "\n", maxSplits: 1)
-        .first
-        .map(String.init)?
-        .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
       let noun = counter?.kind.entryNoun ?? JournalKind.book.entryNoun
-      return title.isEmpty ? noun : title
+      return noteTitle.isEmpty ? noun : noteTitle
     }
+  }
+
+  /// First line of `noteText`. Books, movies, and places store a title there.
+  private var noteTitle: String {
+    noteText
+      .split(separator: "\n", maxSplits: 1)
+      .first
+      .map(String.init)?
+      .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+  }
+}
+
+/// Plain reading of a note stored with lightweight markup (`**bold**`, `*italic*`, `~~strike~~`, `- ` lists).
+nonisolated enum NoteMarkup {
+  nonisolated static func plain(_ source: String) -> String {
+    var text = source
+    for marker in ["***", "**", "~~", "*"] {
+      text = text.replacingOccurrences(of: marker, with: "")
+    }
+    let lines = text.split(separator: "\n", omittingEmptySubsequences: false).map { line -> String in
+      var value = String(line)
+      if value.hasPrefix("- ") {
+        value.removeFirst(2)
+      }
+      return value
+    }
+    return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
   }
 }

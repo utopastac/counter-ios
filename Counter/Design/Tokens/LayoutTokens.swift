@@ -176,15 +176,9 @@ enum MotionToken {
   static let revealSettleDuration: Double = 0.48
   static let revealSettleBounce: Double = 0.08
   static let reduceMotionDuration: Double = 0.22
-  /// Matches the system sheet present timing so backdrop blur eases in with the sheet.
-  static let sheetScrimPresentDuration: Double = 0.38
 
   static var revealSettle: Animation {
     .smooth(duration: revealSettleDuration, extraBounce: revealSettleBounce)
-  }
-
-  static var sheetScrimPresent: Animation {
-    .easeOut(duration: sheetScrimPresentDuration)
   }
 
   static var reduceMotionSettle: Animation {

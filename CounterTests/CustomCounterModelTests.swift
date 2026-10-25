@@ -150,4 +150,12 @@ struct CustomCounterModelTests {
     #expect(counter.headerDisplayRaw == nil)
     #expect(counter.overrideShowsStatsHeader == nil)
   }
+
+  @Test func counterPageShowsThreeTextEntriesAndSixMediaEntries() {
+    #expect(JournalKind.note.counterPagePreviewCount == 3)
+    #expect(JournalKind.voice.counterPagePreviewCount == 3)
+    #expect(JournalKind.place.counterPagePreviewCount == 3)
+    #expect(JournalKind.photo.counterPagePreviewCount == 6)
+    #expect(JournalKind.sketch.counterPagePreviewCount == 6)
+  }
 }

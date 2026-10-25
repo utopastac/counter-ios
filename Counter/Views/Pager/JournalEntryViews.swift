@@ -204,6 +204,7 @@ struct JournalEntryList: View {
 
 struct JournalSavedRow: View {
   @Environment(\.semanticColors) private var colors
+  @Environment(\.designSystem) private var designSystem
 
   let entry: CounterEntry
   let kind: JournalKind
@@ -223,10 +224,18 @@ struct JournalSavedRow: View {
     case .voice:
       voice
     case .note:
-      textBlock(noteBody, wraps: true)
+      noteBlock
     case .book, .movie:
-      catalog
-    case .place, .number:
+      mediaTitleRow(
+        title: catalogTitle,
+        subtitle: CatalogNote.subtitle(from: entry.noteText)
+      )
+    case .place:
+      mediaTitleRow(
+        title: entry.previewText,
+        subtitle: CatalogNote.subtitle(from: entry.noteText)
+      )
+    case .number:
       textBlock(entry.previewText, wraps: false)
     }
   }
@@ -236,16 +245,15 @@ struct JournalSavedRow: View {
     return title.isEmpty ? kind.entryNoun : title
   }
 
-  private var catalog: some View {
-    let subtitle = CatalogNote.subtitle(from: entry.noteText)
-    return HStack(alignment: .center, spacing: SpaceToken.u2) {
+  private func mediaTitleRow(title: String, subtitle: String) -> some View {
+    HStack(alignment: .center, spacing: SpaceToken.u2) {
       JournalMediaImage(relativePath: entry.mediaRelativePath)
         .frame(width: GridToken.units(8), height: GridToken.units(10))
         .background(colors.interactiveSecondaryFill, in: RadiusToken.continuousListCard)
         .clipShape(RadiusToken.continuousListCard)
 
       VStack(alignment: .leading, spacing: SpaceToken.u1) {
-        Text(catalogTitle)
+        Text(title)
           .counterTextStyle(.listCardTitle)
           .lineLimit(truncates ? 2 : nil)
           .frame(maxWidth: .infinity, alignment: .leading)
@@ -326,6 +334,26 @@ struct JournalSavedRow: View {
     }
   }
 
+  private var noteBlock: some View {
+    let lineLimit: Int? = truncates ? 4 : nil
+    let pack = FontPack(rawValue: designSystem.fontPackRaw) ?? .default
+    return HStack(alignment: .top, spacing: SpaceToken.u2) {
+      VStack(alignment: .leading, spacing: SpaceToken.u1) {
+        Text(NoteMarkupDisplay.attributed(noteBody, pack: pack))
+          .foregroundStyle(colors.textPrimary)
+          .lineLimit(lineLimit)
+          .frame(maxWidth: .infinity, alignment: .leading)
+        Text(entry.timestamp.formatted(EntryLogRowFormat.timestamp))
+          .counterTextStyle(.entryLogTimestamp)
+      }
+
+      if let onDelete {
+        JournalDeleteButton(action: onDelete)
+      }
+    }
+    .padding(.vertical, SpaceToken.u1)
+  }
+
   private func textBlock(_ text: String, wraps: Bool) -> some View {
     let lineLimit: Int? = {
       if !wraps { return 1 }
@@ -346,6 +374,30 @@ struct JournalSavedRow: View {
       }
     }
     .padding(.vertical, SpaceToken.u1)
+  }
+}
+
+private enum NoteMarkupDisplay {
+  static func attributed(_ source: String, pack: FontPack) -> AttributedString {
+    let options = AttributedString.MarkdownParsingOptions(
+      interpretedSyntax: .inlineOnlyPreservingWhitespace,
+      failurePolicy: .returnPartiallyParsedIfPossible
+    )
+    var text = (try? AttributedString(markdown: source, options: options)) ?? AttributedString(source)
+    let size = TypeStyle.lgRegular.size
+    for run in text.runs {
+      let intent = run.inlinePresentationIntent ?? []
+      let weight: Font.Weight = intent.contains(.stronglyEmphasized) ? .bold : .regular
+      var font = pack.font(size: size, weight: weight)
+      if intent.contains(.emphasized) {
+        font = font.italic()
+      }
+      text[run.range].font = font
+      if intent.contains(.strikethrough) {
+        text[run.range].strikethroughStyle = .single
+      }
+    }
+    return text
   }
 }
 

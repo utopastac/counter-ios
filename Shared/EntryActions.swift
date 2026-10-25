@@ -74,12 +74,22 @@ enum EntryActions {
   static func addPlaceEntry(
     latitude: Double,
     longitude: Double,
+    noteText: String = "",
+    snapshot: Data? = nil,
     counter: CustomCounter,
     in context: ModelContext
   ) -> AddedEntry? {
     let entry = CounterEntry(value: 1, counter: counter)
     entry.latitude = latitude
     entry.longitude = longitude
+    entry.noteText = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+    if let snapshot, !snapshot.isEmpty {
+      entry.mediaRelativePath = JournalMediaStore.save(
+        data: snapshot,
+        entryID: entry.id,
+        fileExtension: "jpg"
+      )
+    }
     context.insert(entry)
     WatchSyncEngine.publishEntryUpsert(entry)
     return AddedEntry(entryID: entry.id, value: entry.amount)
