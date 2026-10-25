@@ -14,13 +14,16 @@ enum ScreenshotDataSeeder {
 
   @MainActor
   static func replaceAll(in context: ModelContext) {
+    JournalMediaStore.removeAll()
     for counter in (try? context.fetch(FetchDescriptor<CustomCounter>())) ?? [] {
       context.delete(counter)
     }
     AppLog.attempt("Clear store for screenshot seed") { try context.save() }
 
-    let drafts = FreshInstallOnboarding.defaultDrafts().filter {
-      [.calories, .protein, .money].contains($0.template)
+    let drafts = [CounterTemplate.calories, .protein, .money].map { template in
+      var draft = FreshInstallStarterDraft.default(for: template)
+      draft.isSelected = true
+      return draft
     }
     SampleDataSeeder.seed(drafts: drafts, in: context)
 

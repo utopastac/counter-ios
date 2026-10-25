@@ -1,4 +1,4 @@
-# Numo
+# Dayring
 
 A simple iOS counter app (calories, custom metrics, and more).
 
@@ -23,7 +23,7 @@ A simple iOS counter app (calories, custom metrics, and more).
 2. Select the **Counter** and **CounterWatch** targets → **Signing & Capabilities**
 3. Set your **Team** on **Counter**, **CounterWatch**, and **CounterWatchWidgets** targets
 4. Enable **App Groups** (`group.com.archgrovehouse.numo`) on iPhone and Watch targets (entitlements are included)
-5. Build and run the **Counter** scheme (Numo) on your iPhone — the Watch app installs automatically when paired
+5. Build and run the **Counter** scheme (Dayring) on your iPhone — the Watch app installs automatically when paired
 
 ### Apple Watch
 
@@ -31,14 +31,14 @@ The Watch app lists all counters and lets you log entries from your wrist.
 
 Entries logged on Watch appear instantly on iPhone (and vice versa) via the shared SwiftData store.
 
-**Complication:** Long-press your watch face → Edit → add the Numo complication. It shows your default counter total.
+**Complication:** Long-press your watch face → Edit → add the Dayring complication. It shows your default counter total.
 
 **Undo:** Tap the ↩ button in the toolbar after logging an entry to remove your last add.
 
 ## Project structure
 
 ```
-Counter/             iOS app (Numo)
+Counter/             iOS app (Dayring)
 CounterWatch/        watchOS companion
 CounterWidgets/      Home screen widgets (WidgetKit + App Intents)
 CounterWatchWidgets/ Watch complication (WidgetKit)

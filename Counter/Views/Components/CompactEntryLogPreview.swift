@@ -73,12 +73,13 @@ struct EntryLogRow: View {
 struct EntryLogEditableRow: View {
   let value: Double
   let timestamp: Date
+  var displayText: String?
   var dateFormat: Date.FormatStyle = EntryLogRowFormat.timestamp
-  let onEdit: () -> Void
+  var onEdit: (() -> Void)?
 
   var body: some View {
     CounterValueDateRow(
-      valueText: CounterFormatting.amount(value),
+      valueText: displayText ?? CounterFormatting.amount(value),
       date: timestamp,
       dateFormat: dateFormat,
       onTap: onEdit

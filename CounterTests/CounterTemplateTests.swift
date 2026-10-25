@@ -41,7 +41,8 @@ struct CounterTemplateTests {
 
   @Test func onboardingDefaultSelectionMatchesHistoricStarters() {
     let drafts = FreshInstallOnboarding.defaultDrafts()
-    #expect(Set(drafts.filter(\.isSelected).map(\.template)) == [.calories, .protein, .money])
+    #expect(drafts.filter(\.isSelected).map(\.name) == ["Count", "Note", "Photos"])
+    #expect(drafts.map(\.kind) == [.number, .note, .photo])
   }
 
   @Test func draftGoalUsesAmountInputParsing() {

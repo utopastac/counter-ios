@@ -52,6 +52,21 @@
 		C10000010000000000000004 /* HistoryAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000004 /* HistoryAggregator.swift */; };
 		C10000010000000000000006 /* CustomCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000006 /* CustomCounter.swift */; };
 		C10000010000000000000007 /* CounterEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000007 /* CounterEntry.swift */; };
+		JKINDBFCOUNTER01 /* JournalKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = JKINDFILE0000000000001 /* JournalKind.swift */; };
+		JKINDBFWATCH01 /* JournalKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = JKINDFILE0000000000001 /* JournalKind.swift */; };
+		JKINDBFTESTS01 /* JournalKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = JKINDFILE0000000000001 /* JournalKind.swift */; };
+		JKINDBFWIDGET01 /* JournalKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = JKINDFILE0000000000001 /* JournalKind.swift */; };
+		JMEDABFCOUNTER01 /* JournalMediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = JMEDAFILE0000000000001 /* JournalMediaStore.swift */; };
+		JMEDABFWATCH01 /* JournalMediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = JMEDAFILE0000000000001 /* JournalMediaStore.swift */; };
+		JMEDABFTESTS01 /* JournalMediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = JMEDAFILE0000000000001 /* JournalMediaStore.swift */; };
+		JMEDABFWIDGET01 /* JournalMediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = JMEDAFILE0000000000001 /* JournalMediaStore.swift */; };
+		JCAPBFCOUNTER01 /* JournalCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = JCAPFILE00000000000001 /* JournalCaptureView.swift */; };
+		SKCHBF0000000000000001 /* SketchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000001 /* SketchModels.swift */; };
+		SKCHBF0000000000000002 /* SketchStrokeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000002 /* SketchStrokeRenderer.swift */; };
+		SKCHBF0000000000000003 /* SketchCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000003 /* SketchCanvas.swift */; };
+		SKCHBF0000000000000004 /* SketchControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000004 /* SketchControls.swift */; };
+		JROWBFCOUNTER01 /* JournalEntryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = JROWFILE00000000000001 /* JournalEntryViews.swift */; };
+		CATSBFCOUNTER01 /* CatalogSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CATSFILE00000000000001 /* CatalogSearch.swift */; };
 		C10000010000000000000009 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000009 /* WidgetSnapshot.swift */; };
 		C10000010000000000000011 /* EntryActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000011 /* EntryActions.swift */; };
 		C10000010000000000000012 /* PreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20000010000000000000012 /* PreviewModel.swift */; };
@@ -177,6 +192,10 @@
 		HATBFTEST01 /* HistoryAggregatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HATFILEREF01 /* HistoryAggregatorTests.swift */; };
 		HCS10000010000000000000001 /* HistoryChartScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCS20000010000000000000001 /* HistoryChartScale.swift */; };
 		HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HCTFILEREF01 /* HistoryChartScaleTests.swift */; };
+		SKTSTBFTEST01 /* SketchDrawingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKTSTFILEREF01 /* SketchDrawingTests.swift */; };
+		SKCHBFTESTS01 /* SketchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000001 /* SketchModels.swift */; };
+		SKCHBFTESTS02 /* SketchStrokeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000002 /* SketchStrokeRenderer.swift */; };
+		SKCHBFTESTS03 /* SketchCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = SKCHFILE00000000000003 /* SketchCanvas.swift */; };
 		IW10000010000000000000001 /* CounterHomeWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */; };
 		IW10000010000000000000002 /* CounterWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000002 /* CounterWidget.swift */; };
 		IW10000010000000000000003 /* AddCounterEntryIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = IW20000010000000000000003 /* AddCounterEntryIntent.swift */; };
@@ -372,6 +391,15 @@
 		C20000010000000000000004 /* HistoryAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAggregator.swift; sourceTree = "<group>"; };
 		C20000010000000000000006 /* CustomCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCounter.swift; sourceTree = "<group>"; };
 		C20000010000000000000007 /* CounterEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterEntry.swift; sourceTree = "<group>"; };
+		JKINDFILE0000000000001 /* JournalKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalKind.swift; sourceTree = "<group>"; };
+		JMEDAFILE0000000000001 /* JournalMediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalMediaStore.swift; sourceTree = "<group>"; };
+		JCAPFILE00000000000001 /* JournalCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalCaptureView.swift; sourceTree = "<group>"; };
+		SKCHFILE00000000000001 /* SketchModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchModels.swift; sourceTree = "<group>"; };
+		SKCHFILE00000000000002 /* SketchStrokeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchStrokeRenderer.swift; sourceTree = "<group>"; };
+		SKCHFILE00000000000003 /* SketchCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchCanvas.swift; sourceTree = "<group>"; };
+		SKCHFILE00000000000004 /* SketchControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchControls.swift; sourceTree = "<group>"; };
+		JROWFILE00000000000001 /* JournalEntryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalEntryViews.swift; sourceTree = "<group>"; };
+		CATSFILE00000000000001 /* CatalogSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSearch.swift; sourceTree = "<group>"; };
 		C20000010000000000000009 /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
 		C20000010000000000000011 /* EntryActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryActions.swift; sourceTree = "<group>"; };
 		C20000010000000000000012 /* PreviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModel.swift; sourceTree = "<group>"; };
@@ -453,6 +481,7 @@
 		HATFILEREF01 /* HistoryAggregatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAggregatorTests.swift; sourceTree = "<group>"; };
 		HCS20000010000000000000001 /* HistoryChartScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScale.swift; sourceTree = "<group>"; };
 		HCTFILEREF01 /* HistoryChartScaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryChartScaleTests.swift; sourceTree = "<group>"; };
+		SKTSTFILEREF01 /* SketchDrawingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchDrawingTests.swift; sourceTree = "<group>"; };
 		IW20000010000000000000001 /* CounterHomeWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterHomeWidgetsBundle.swift; sourceTree = "<group>"; };
 		IW20000010000000000000002 /* CounterWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterWidget.swift; sourceTree = "<group>"; };
 		IW20000010000000000000003 /* AddCounterEntryIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCounterEntryIntent.swift; sourceTree = "<group>"; };
@@ -714,6 +743,8 @@
 				CA20000010000000000000001 /* CounterAmount.swift */,
 				CT20000010000000000000001 /* CounterTemplate.swift */,
 				CE20000010000000000000001 /* CounterExport.swift */,
+				JKINDFILE0000000000001 /* JournalKind.swift */,
+				JMEDAFILE0000000000001 /* JournalMediaStore.swift */,
 				CFV20000010000000000000001 /* CounterFormValidation.swift */,
 				CDLFILEREF01 /* CounterDeepLink.swift */,
 				HCS20000010000000000000001 /* HistoryChartScale.swift */,
@@ -769,6 +800,7 @@
 				CFVTFILEREF01 /* CounterFormValidationTests.swift */,
 				CDLTFILEREF01 /* CounterDeepLinkTests.swift */,
 				HCTFILEREF01 /* HistoryChartScaleTests.swift */,
+				SKTSTFILEREF01 /* SketchDrawingTests.swift */,
 			);
 			path = CounterTests;
 			sourceTree = "<group>";
@@ -872,6 +904,17 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		SKCHGRP000000000000001 /* Sketch */ = {
+			isa = PBXGroup;
+			children = (
+				SKCHFILE00000000000001 /* SketchModels.swift */,
+				SKCHFILE00000000000002 /* SketchStrokeRenderer.swift */,
+				SKCHFILE00000000000003 /* SketchCanvas.swift */,
+				SKCHFILE00000000000004 /* SketchControls.swift */,
+			);
+			path = Sketch;
+			sourceTree = "<group>";
+		};
 		G50000010000000000000001 /* Pager */ = {
 			isa = PBXGroup;
 			children = (
@@ -879,6 +922,10 @@
 				P20000010000000000000001 /* CounterUnderlayReveal.swift */,
 				P20000010000000000000002 /* ScrollPanDisabler.swift */,
 				G20000010000000000000004 /* CustomCounterPageContent.swift */,
+				JCAPFILE00000000000001 /* JournalCaptureView.swift */,
+				JROWFILE00000000000001 /* JournalEntryViews.swift */,
+				SKCHGRP000000000000001 /* Sketch */,
+				CATSFILE00000000000001 /* CatalogSearch.swift */,
 				M20000010000000000000001 /* AllCountersListView.swift */,
 				G20000010000000000000002 /* CounterPageLayout.swift */,
 				G20000010000000000000007 /* CompactCounterCardLayout.swift */,
@@ -1146,6 +1193,13 @@
 				AP10000010000000000000002 /* AppAppearancePreference.swift in Sources */,
 				AH10000010000000000000001 /* AppHaptics.swift in Sources */,
 				G10000010000000000000004 /* CustomCounterPageContent.swift in Sources */,
+				JCAPBFCOUNTER01 /* JournalCaptureView.swift in Sources */,
+				SKCHBF0000000000000001 /* SketchModels.swift in Sources */,
+				SKCHBF0000000000000002 /* SketchStrokeRenderer.swift in Sources */,
+				SKCHBF0000000000000003 /* SketchCanvas.swift in Sources */,
+				SKCHBF0000000000000004 /* SketchControls.swift in Sources */,
+				JROWBFCOUNTER01 /* JournalEntryViews.swift in Sources */,
+				CATSBFCOUNTER01 /* CatalogSearch.swift in Sources */,
 				G10000010000000000000002 /* CounterPageLayout.swift in Sources */,
 				G10000010000000000000007 /* CompactCounterCardLayout.swift in Sources */,
 				DS10000010000000000000001 /* BaseColorTokens.swift in Sources */,
@@ -1194,6 +1248,8 @@
 				C10000010000000000000004 /* HistoryAggregator.swift in Sources */,
 				C10000010000000000000006 /* CustomCounter.swift in Sources */,
 				C10000010000000000000007 /* CounterEntry.swift in Sources */,
+				JKINDBFCOUNTER01 /* JournalKind.swift in Sources */,
+				JMEDABFCOUNTER01 /* JournalMediaStore.swift in Sources */,
 				C10000010000000000000009 /* WidgetSnapshot.swift in Sources */,
 				C10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */,
 				C10000010000000000000011 /* EntryActions.swift in Sources */,
@@ -1258,6 +1314,8 @@
 				D10000010000000000000004 /* HistoryAggregator.swift in Sources */,
 				D10000010000000000000006 /* CustomCounter.swift in Sources */,
 				D10000010000000000000007 /* CounterEntry.swift in Sources */,
+				JKINDBFWATCH01 /* JournalKind.swift in Sources */,
+				JMEDABFWATCH01 /* JournalMediaStore.swift in Sources */,
 				D10000010000000000000010 /* WidgetSnapshot.swift in Sources */,
 				D10000010000000000000013 /* WidgetSnapshotSync.swift in Sources */,
 				D10000010000000000000012 /* EntryActions.swift in Sources */,
@@ -1295,6 +1353,8 @@
 				QASTBFTEST01 /* QuickAddSessionStoreTests.swift in Sources */,
 				CTGBFCustomCounter01 /* CustomCounter.swift in Sources */,
 				CTGBFCounterEntry01 /* CounterEntry.swift in Sources */,
+				JKINDBFTESTS01 /* JournalKind.swift in Sources */,
+				JMEDABFTESTS01 /* JournalMediaStore.swift in Sources */,
 				CTGBFHistoryTypes01 /* HistoryTypes.swift in Sources */,
 				CTGBFCounterPeriod01 /* CounterPeriod.swift in Sources */,
 				CTGBFGoalDirection01 /* GoalDirection.swift in Sources */,
@@ -1344,6 +1404,10 @@
 				CFVTBFTEST01 /* CounterFormValidationTests.swift in Sources */,
 				CDLTBFTEST01 /* CounterDeepLinkTests.swift in Sources */,
 				HCTBFTEST01 /* HistoryChartScaleTests.swift in Sources */,
+				SKTSTBFTEST01 /* SketchDrawingTests.swift in Sources */,
+				SKCHBFTESTS01 /* SketchModels.swift in Sources */,
+				SKCHBFTESTS02 /* SketchStrokeRenderer.swift in Sources */,
+				SKCHBFTESTS03 /* SketchCanvas.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1380,6 +1444,8 @@
 				CTWIDGETBF001 /* CounterTemplate.swift in Sources */,
 				IW10000010000000000000012 /* CustomCounter.swift in Sources */,
 				IW10000010000000000000013 /* CounterEntry.swift in Sources */,
+				JKINDBFWIDGET01 /* JournalKind.swift in Sources */,
+				JMEDABFWIDGET01 /* JournalMediaStore.swift in Sources */,
 				IW10000010000000000000015 /* EntryActions.swift in Sources */,
 				WS10000010000000000000007 /* WatchSyncDTO.swift in Sources */,
 				WS10000010000000000000008 /* WatchSyncEngine.swift in Sources */,
@@ -1550,12 +1616,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Counter/Counter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Counter/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Numo;
+				INFOPLIST_KEY_CFBundleDisplayName = Dayring;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1578,12 +1644,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Counter/Counter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Counter/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Numo;
+				INFOPLIST_KEY_CFBundleDisplayName = Dayring;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1606,12 +1672,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CounterWatch/CounterWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatch/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Numo;
+				INFOPLIST_KEY_CFBundleDisplayName = Dayring;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.archgrovehouse.numo;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1637,12 +1703,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CounterWatch/CounterWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatch/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Numo;
+				INFOPLIST_KEY_CFBundleDisplayName = Dayring;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.archgrovehouse.numo;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1665,7 +1731,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -1683,7 +1749,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -1704,7 +1770,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = CounterWatchWidgets/CounterWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatchWidgets/Info.plist;
@@ -1733,7 +1799,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = CounterWatchWidgets/CounterWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWatchWidgets/Info.plist;
@@ -1762,7 +1828,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = CounterWidgets/CounterWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWidgets/Info.plist;
@@ -1790,7 +1856,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = CounterWidgets/CounterWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CounterWidgets/Info.plist;
@@ -1816,7 +1882,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -1840,7 +1906,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 2S5P26L7UP;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;

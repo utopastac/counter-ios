@@ -34,6 +34,7 @@ struct CounterSettingsView: View {
   let onSave: (CounterSettingsSave) -> Void
   let onPaletteChange: ((Int) -> Void)?
   let onDelete: (() -> Void)?
+  private let kind: JournalKind
 
   @Environment(\.dismiss) private var dismiss
   @State private var showDeleteConfirmation = false
@@ -59,6 +60,7 @@ struct CounterSettingsView: View {
       historyAverageActiveDaysChoice: counter.historyAverageActiveDaysOnlyChoice,
       historyPerPeriodChoice: counter.historyPerPeriodChoice,
       headerDisplayChoice: counter.headerDisplayChoice,
+      kind: counter.kind,
       defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
       onSave: onSave,
       onDelete: onDelete,
@@ -80,6 +82,7 @@ struct CounterSettingsView: View {
     historyAverageActiveDaysChoice: HistoryAverageActiveDaysChoice = .default,
     historyPerPeriodChoice: HistoryPerPeriodChoice = .default,
     headerDisplayChoice: CounterHeaderDisplayChoice = .default,
+    kind: JournalKind = .number,
     defaultPresets: [Double],
     onSave: @escaping (CounterSettingsSave) -> Void,
     onDelete: (() -> Void)? = nil,
@@ -99,6 +102,7 @@ struct CounterSettingsView: View {
     self._historyAverageActiveDaysChoice = State(initialValue: historyAverageActiveDaysChoice)
     self._historyPerPeriodChoice = State(initialValue: historyPerPeriodChoice)
     self._headerDisplayChoice = State(initialValue: headerDisplayChoice)
+    self.kind = kind
     self.onSave = onSave
     self.onPaletteChange = onPaletteChange
     self.onDelete = onDelete
@@ -118,7 +122,9 @@ struct CounterSettingsView: View {
             fieldsSection
             displaySection
             resetPeriodSection
-            quickAddSection
+            if kind == .number {
+              quickAddSection
+            }
             colourSection
             ringSection
             historySection
@@ -159,21 +165,23 @@ struct CounterSettingsView: View {
       VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
         SettingsLabeledField(label: "Title", text: $nameText)
 
-        SettingsLabeledField(
-          label: "Units",
-          text: $unitText,
-          placeholder: "e.g. kcal, g, $"
-        )
+        if kind == .number {
+          SettingsLabeledField(
+            label: "Units",
+            text: $unitText,
+            placeholder: "e.g. kcal, g, $"
+          )
+        }
 
         SettingsLabeledField(
-          label: "Target",
+          label: kind.requiresCap ? "Limit" : "Target",
           text: $goalText,
           keyboardType: .decimalPad,
           placeholder: "0"
         )
       }
 
-      if hasActiveGoal {
+      if kind == .number, hasActiveGoal {
         SettingsPickerRow(
           icon: .arrowUpToLine,
           label: "Direction",
@@ -314,7 +322,7 @@ struct CounterSettingsView: View {
   }
 
   private var canSave: Bool {
-    CounterFormValidation.canSave(name: nameText, goalText: goalText)
+    CounterFormValidation.canSave(name: nameText, goalText: goalText, requiresCap: kind.requiresCap)
   }
 
   private var parsedGoal: Double? {
@@ -327,10 +335,10 @@ struct CounterSettingsView: View {
         name: trimmedName,
         buttonValues: QuickAddConfiguration.normalizedPresets(values),
         goal: parsedGoal,
-        unit: CustomCounter.normalizedUnit(from: unitText),
+        unit: kind == .number ? CustomCounter.normalizedUnit(from: unitText) : "",
         resetPeriod: resetPeriod,
         resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
-        goalDirection: goalDirection,
+        goalDirection: kind.requiresCap ? .countUp : goalDirection,
         paletteIndex: paletteIndex,
         progressRingWidthRaw: ringWidthChoice.storedRaw,
         progressRingGlowRaw: ringGlowChoice.storedRaw,

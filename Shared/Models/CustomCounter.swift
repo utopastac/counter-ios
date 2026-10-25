@@ -28,6 +28,8 @@ final class CustomCounter {
   var resetPeriodRaw: String = CounterResetPeriod.daily.rawValue
   var resetAnchorDay: Int = 1
   var goalDirectionRaw: String = GoalDirection.countUp.rawValue
+  /// `JournalKind.rawValue`. Defaults to a number counter so existing rows stay valid.
+  var kindRaw: String = JournalKind.number.rawValue
   var paletteIndex: Int = 0
   /// `nil` inherits the app-wide ring width.
   var progressRingWidthRaw: String?
@@ -50,6 +52,7 @@ final class CustomCounter {
     resetPeriod: CounterResetPeriod = .daily,
     resetAnchorDay: Int = 1,
     goalDirection: GoalDirection = .countUp,
+    kind: JournalKind = .number,
     paletteIndex: Int = 0,
     progressRingWidthRaw: String? = nil,
     progressRingGlowRaw: String? = nil,
@@ -69,6 +72,7 @@ final class CustomCounter {
     self.resetPeriodRaw = resetPeriod.rawValue
     self.resetAnchorDay = resetAnchorDay
     self.goalDirectionRaw = goalDirection.rawValue
+    self.kindRaw = kind.rawValue
     self.paletteIndex = Self.normalizedPaletteIndex(paletteIndex)
     self.progressRingWidthRaw = ProgressRingWidthChoice(storedRaw: progressRingWidthRaw).storedRaw
     self.progressRingGlowRaw = ProgressRingGlowChoice(storedRaw: progressRingGlowRaw).storedRaw
@@ -152,6 +156,11 @@ final class CustomCounter {
   var goalDirection: GoalDirection {
     get { GoalDirection(rawValue: goalDirectionRaw) ?? .countUp }
     set { goalDirectionRaw = newValue.rawValue }
+  }
+
+  var kind: JournalKind {
+    get { JournalKind(rawValue: kindRaw) ?? .number }
+    set { kindRaw = newValue.rawValue }
   }
 
   var resetPeriod: CounterResetPeriod {

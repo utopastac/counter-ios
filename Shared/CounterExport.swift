@@ -21,13 +21,13 @@ nonisolated enum CounterExport {
       .replacingOccurrences(of: ", ", with: "_")
       .replacingOccurrences(of: ":", with: "")
       .replacingOccurrences(of: " ", with: "_")
-    return "Numo-export-\(safe).csv"
+    return "Dayring-export-\(safe).csv"
   }
 
   @MainActor
   static func csvString(counters: [CustomCounter]) -> String {
     var rows: [String] = [
-      "counter_id,counter_name,unit,goal,direction,reset_period,entry_id,entry_value,entry_timestamp"
+      "counter_id,counter_name,kind,unit,goal,direction,reset_period,entry_id,entry_value,entry_note,entry_latitude,entry_longitude,entry_timestamp"
     ]
 
     let sortedCounters = counters.sorted {
@@ -42,10 +42,14 @@ nonisolated enum CounterExport {
           csvRow([
             counter.id.uuidString,
             counter.name,
+            counter.kind.rawValue,
             counter.unit,
             counter.effectiveGoal.map(CounterFormatting.amount) ?? "",
             counter.goalDirection.rawValue,
             counter.resetPeriod.rawValue,
+            "",
+            "",
+            "",
             "",
             "",
             ""
@@ -59,12 +63,16 @@ nonisolated enum CounterExport {
           csvRow([
             counter.id.uuidString,
             counter.name,
+            counter.kind.rawValue,
             counter.unit,
             counter.effectiveGoal.map(CounterFormatting.amount) ?? "",
             counter.goalDirection.rawValue,
             counter.resetPeriod.rawValue,
             entry.id.uuidString,
             CounterFormatting.amount(entry.amount),
+            entry.noteText,
+            entry.latitude.map { String($0) } ?? "",
+            entry.longitude.map { String($0) } ?? "",
             iso8601String(from: entry.timestamp)
           ])
         )

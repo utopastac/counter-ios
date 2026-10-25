@@ -11,7 +11,7 @@ struct FreshInstallOnboardingView: View {
   @State private var step: Step = .colorPack
   @State private var selectedPack: CounterColorPack = AppAppearancePreference.colorPack
   @State private var drafts = FreshInstallOnboarding.defaultDrafts()
-  @State private var editingTemplate: CounterTemplate?
+  @State private var editingDraftID: OnboardingDraftID?
   @State private var uiTestingReady = false
 
   private enum Step: Hashable {
@@ -76,8 +76,8 @@ struct FreshInstallOnboardingView: View {
     .counterDesignSystemFromAppearancePreference()
     .preferredColorScheme(colorScheme)
     .animation(stepAnimation, value: step)
-    .sheet(item: $editingTemplate) { template in
-      starterSettingsSheet(for: template)
+    .sheet(item: $editingDraftID) { draftID in
+      starterSettingsSheet(for: draftID)
     }
     .background(alignment: .topLeading) {
       if UITesting.isEnabled {
@@ -220,20 +220,20 @@ struct FreshInstallOnboardingView: View {
     }
     .onForcePress {
       AppHaptics.impact()
-      openSettings(for: value.template)
+      openSettings(for: value.id)
     }
     .accessibilityAddTraits(value.isSelected ? .isSelected : [])
     .accessibilityLabel(title)
     .accessibilityValue(value.isSelected ? "Selected" : "Not selected")
     .accessibilityHint(value.subtitle)
     .accessibilityAction(named: "Edit") {
-      openSettings(for: value.template)
+      openSettings(for: value.id)
     }
   }
 
   @ViewBuilder
-  private func starterSettingsSheet(for template: CounterTemplate) -> some View {
-    if let index = drafts.firstIndex(where: { $0.template == template }) {
+  private func starterSettingsSheet(for draftID: OnboardingDraftID) -> some View {
+    if let index = drafts.firstIndex(where: { $0.id == draftID.id }) {
       let draft = drafts[index]
       CounterSettingsView(
         values: draft.buttonValues,
@@ -251,12 +251,15 @@ struct FreshInstallOnboardingView: View {
         ),
         historyPerPeriodChoice: HistoryPerPeriodChoice(storedRaw: draft.historyPerPeriodRaw),
         headerDisplayChoice: CounterHeaderDisplayChoice(storedRaw: draft.headerDisplayRaw),
-        defaultPresets: draft.template.defaultPresets,
+        kind: draft.kind,
+        defaultPresets: draft.kind == .number
+          ? draft.template.defaultPresets
+          : QuickAddConfiguration.defaultCounterPresets,
         onSave: { save in
-          applySettings(save, to: template)
+          applySettings(save, to: draftID.id)
         },
         onPaletteChange: { paletteIndex in
-          if let index = drafts.firstIndex(where: { $0.template == template }) {
+          if let index = drafts.firstIndex(where: { $0.id == draftID.id }) {
             drafts[index].paletteIndex = paletteIndex
           }
         }
@@ -296,19 +299,19 @@ struct FreshInstallOnboardingView: View {
   }
 
   private func goToColorPack() {
-    editingTemplate = nil
+    editingDraftID = nil
     withAnimation(stepAnimation) {
       step = .colorPack
     }
   }
 
-  private func openSettings(for template: CounterTemplate) {
+  private func openSettings(for draftID: String) {
     applySelectedPack()
-    editingTemplate = template
+    editingDraftID = OnboardingDraftID(id: draftID)
   }
 
-  private func applySettings(_ save: CounterSettingsSave, to template: CounterTemplate) {
-    guard let index = drafts.firstIndex(where: { $0.template == template }) else { return }
+  private func applySettings(_ save: CounterSettingsSave, to draftID: String) {
+    guard let index = drafts.firstIndex(where: { $0.id == draftID }) else { return }
     if let name = save.name {
       drafts[index].name = name
     }
@@ -356,7 +359,7 @@ struct FreshInstallOnboardingView: View {
   }
 
   private func finish(applySelection: Bool) {
-    editingTemplate = nil
+    editingDraftID = nil
 
     if isPreviewActive {
       if applySelection {
@@ -373,6 +376,10 @@ struct FreshInstallOnboardingView: View {
       in: modelContext
     )
   }
+}
+
+private struct OnboardingDraftID: Identifiable {
+  let id: String
 }
 
 #Preview {

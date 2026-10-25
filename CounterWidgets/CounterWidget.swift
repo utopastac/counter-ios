@@ -70,7 +70,7 @@ struct CounterWidget: Widget {
     ) { entry in
       CounterWidgetContainer(entry: entry)
     }
-    .configurationDisplayName("Numo")
+    .configurationDisplayName("Dayring")
     .description("Show a total and quick-add from your home or Lock Screen.")
     .supportedFamilies([
       .systemSmall,
@@ -247,9 +247,11 @@ struct CounterWidgetView: View {
     VStack(alignment: .leading, spacing: 0) {
       mediumHeader
 
-      quickAddGrid
-        .padding(.top, WidgetTheme.headerToQuickAddSpacing)
-        .layoutPriority(0)
+      if !entry.snapshot.buttonValues.isEmpty {
+        quickAddGrid
+          .padding(.top, WidgetTheme.headerToQuickAddSpacing)
+          .layoutPriority(0)
+      }
 
       Spacer(minLength: 0)
     }
@@ -260,8 +262,10 @@ struct CounterWidgetView: View {
     VStack(alignment: .leading, spacing: 0) {
       mediumHeader
 
-      quickAddGrid
-        .padding(.top, WidgetTheme.headerToQuickAddSpacing)
+      if !entry.snapshot.buttonValues.isEmpty {
+        quickAddGrid
+          .padding(.top, WidgetTheme.headerToQuickAddSpacing)
+      }
 
       Spacer(minLength: WidgetTheme.largeQuickAddToEntriesSpacing)
 

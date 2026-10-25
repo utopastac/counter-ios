@@ -30,7 +30,8 @@ enum WidgetCounterLoader {
 
     guard
       let uuid = UUID(uuidString: counterID),
-      let counter = fetchCounter(id: uuid, in: context)
+      let counter = fetchCounter(id: uuid, in: context),
+      counter.kind == .number
     else {
       return
     }
@@ -63,7 +64,7 @@ enum WidgetCounterLoader {
       .map { entry in
         CounterWidgetRecentEntry(
           id: entry.id,
-          valueText: CounterFormatting.amount(entry.amount),
+          valueText: entry.previewText,
           timestamp: entry.timestamp
         )
       }
@@ -80,7 +81,9 @@ enum WidgetCounterLoader {
       heroValue: progress?.heroValue ?? CounterFormatting.amount(total),
       heroSubtitle: progress?.displayHeroSubtitle ?? counter.resetPeriod.displayPeriodCaption,
       ringProgress: progress,
-      buttonValues: QuickAddConfiguration.widgetButtonValues(from: buttons),
+      buttonValues: counter.kind == .number
+        ? QuickAddConfiguration.widgetButtonValues(from: buttons)
+        : [],
       recentEntries: Array(recentEntries),
       lastUpdated: .now,
       isUnavailable: false

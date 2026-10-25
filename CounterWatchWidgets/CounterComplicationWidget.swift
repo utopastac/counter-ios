@@ -39,7 +39,7 @@ struct CounterComplicationWidget: Widget {
       CounterComplicationView(entry: entry)
         .containerBackground(.fill.tertiary, for: .widget)
     }
-    .configurationDisplayName("Numo")
+    .configurationDisplayName("Dayring")
     .description("Shows your default total.")
     .supportedFamilies([
       .accessoryCircular,

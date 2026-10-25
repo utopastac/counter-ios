@@ -126,6 +126,7 @@ enum WatchSyncEngine {
 
     case let .deleteCounter(id):
       if let counter = CounterSnapshot.fetchCounter(id: id, in: context) {
+        JournalMediaStore.deleteFiles(for: counter)
         context.delete(counter)
       }
 
@@ -134,6 +135,7 @@ enum WatchSyncEngine {
 
     case let .deleteEntry(id):
       if let entry = EntrySnapshot.fetchEntry(id: id, in: context) {
+        JournalMediaStore.delete(relativePath: entry.mediaRelativePath)
         context.delete(entry)
       }
 
@@ -148,6 +150,7 @@ enum WatchSyncEngine {
   @MainActor
   private static func deleteAllData(in context: ModelContext) {
     // Cascade delete clears entries — do not delete `CounterEntry` afterward.
+    JournalMediaStore.removeAll()
     for counter in (try? context.fetch(FetchDescriptor<CustomCounter>())) ?? [] {
       context.delete(counter)
     }

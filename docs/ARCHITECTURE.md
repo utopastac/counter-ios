@@ -1,9 +1,9 @@
 # Architecture
 
-Numo is a SwiftUI + SwiftData app for logging counters (calories, custom metrics)
+Dayring is a SwiftUI + SwiftData app for logging counters (calories, custom metrics)
 against a repeating goal period, with a watchOS companion and home-screen/watch-face
 widgets. Xcode targets and bundle IDs still use the historical `Counter` name; the
-product display name is Numo. This document describes how the pieces fit together and why.
+product display name is Dayring. This document describes how the pieces fit together and why.
 
 ## Module map
 
@@ -33,15 +33,15 @@ snapshot data rather than querying SwiftData directly — see "Two widget data p
 ```mermaid
 flowchart TB
   subgraph store ["App Group container (group.com.archgrovehouse.numo)"]
-    db["Counter-v7.store (SwiftData)"]
+    db["Counter-v8.store (SwiftData)"]
     defaults["UserDefaults (widget snapshot)"]
   end
 
-  iphone["Numo (iPhone)"] -->|ModelContainer| db
-  watch["Numo Watch"] -->|ModelContainer| db
-  homeWidget["Numo Widgets"] -->|ModelContainer, async query| db
+  iphone["Dayring (iPhone)"] -->|ModelContainer| db
+  watch["Dayring Watch"] -->|ModelContainer| db
+  homeWidget["Dayring Widgets"] -->|ModelContainer, async query| db
   iphone -->|WidgetSnapshot.publish| defaults
-  watchWidget["Numo Watch Widgets"] -->|read only| defaults
+  watchWidget["Dayring Watch Widgets"] -->|read only| defaults
 ```
 
 - `Shared/SharedModelContainer.swift` builds one `ModelContainer` backed by a file in the
@@ -49,7 +49,7 @@ flowchart TB
   directory if the group URL can't be resolved (e.g. entitlements misconfigured locally).
 - iPhone, Watch, and the home-screen widget extension all open that same container and can
   read/write `CustomCounter` / `CounterEntry` directly — SwiftData handles cross-process
-  consistency. Store file: `AppGroup.storeFilename` (`Counter-v7.store`).
+  consistency. Store file: `AppGroup.storeFilename` (`Counter-v8.store`).
 - The watch *complication* (`CounterWatchWidgets`) does **not** query SwiftData. It reads a
   small `title` / `heroValue` snapshot from shared `UserDefaults`
   (`Shared/WidgetSnapshot.swift`), published by the iPhone app (`WidgetSnapshotSync`)
@@ -153,7 +153,7 @@ class` that call sites hold explicitly:
 There is no `VersionedSchema` / migration plan. The live schema is
 `Schema([CustomCounter.self, CounterEntry.self])` in `SharedModelContainer`. Amounts are
 stored as `Double` (rounded to two decimal places via `CounterAmount.rounded`). Schema
-breaks bump `AppGroup.storeFilename` (currently `Counter-v7.store`) for a clean store; if
+breaks bump `AppGroup.storeFilename` (currently `Counter-v8.store`) for a clean store; if
 open still fails, `SharedModelContainer` deletes the store files and recreates an empty
 container.
 

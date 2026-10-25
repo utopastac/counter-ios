@@ -61,7 +61,7 @@ struct CustomCounterPageContent: View {
       EntryLogPreviewItem(
         id: entry.id,
         timestamp: entry.timestamp,
-        valueText: CounterFormatting.amount(entry.amount)
+        valueText: entry.previewText
       )
     }
   }
@@ -74,7 +74,7 @@ struct CustomCounterPageContent: View {
         CounterStatRow(
           id: "target",
           value: CounterFormatting.amount(goal),
-          label: "Target"
+          label: counter.kind.requiresCap ? "Limit" : "Target"
         )
       )
     }
@@ -83,7 +83,7 @@ struct CustomCounterPageContent: View {
       CounterStatRow(
         id: "added",
         value: CounterFormatting.amount(periodTotal),
-        label: "Added"
+          label: counter.kind == .number ? "Added" : "Logged"
       )
     )
 
@@ -119,18 +119,10 @@ struct CustomCounterPageContent: View {
           onShowHistory: onShowHistory,
           onShowButtonSettings: onShowButtonSettings
         ) {
-          CompactQuickAddGrid(
-            values: counter.presetAmounts,
-            defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
-            buttonHeight: CompactCardToken.quickAddHeight
-          ) { value in
-            addEntryQuick(value)
-          } onCustom: {
-            sheets.present(.customAmount(counterID: counter.id))
-          }
+          captureFooter(buttonHeight: CompactCardToken.quickAddHeight)
         } toast: {
           if let entryToast {
-            EntryAddedToast(value: entryToast.value, kind: entryToast.kind) {
+            EntryAddedToast(value: entryToast.value, kind: entryToast.kind, label: toastLabel(for: entryToast)) {
               undoToast(entryToast)
             }
             .transition(toastTransition)
@@ -147,15 +139,19 @@ struct CustomCounterPageContent: View {
             startsWithStatsHeader: startsWithStatsHeader
           ) {
             VStack(alignment: .leading, spacing: 0) {
-              CompactEntryLogPreview(
-                items: previewItems,
-                onEdit: { entryID in
-                  editPreviewEntry(id: entryID)
-                },
-                onDelete: { entryID in
-                  deletePreviewEntry(id: entryID)
-                }
-              )
+              if counter.kind == .number {
+                CompactEntryLogPreview(
+                  items: previewItems,
+                  onEdit: { entryID in
+                    editPreviewEntry(id: entryID)
+                  },
+                  onDelete: { entryID in
+                    deletePreviewEntry(id: entryID)
+                  }
+                )
+              } else {
+                journalEntries(maxTextRows: EntryLogPreviewLimit.count)
+              }
 
               Button {
                 guard !counterRevealIsDragging else { return }
@@ -168,17 +164,10 @@ struct CustomCounterPageContent: View {
               .buttonStyle(.noHighlight)
             }
           } footer: {
-            CompactQuickAddGrid(
-              values: counter.presetAmounts,
-              defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name)
-            ) { value in
-              addEntryQuick(value)
-            } onCustom: {
-              sheets.present(.customAmount(counterID: counter.id))
-            }
+            captureFooter()
           } toast: {
             if let entryToast {
-              EntryAddedToast(value: entryToast.value, kind: entryToast.kind) {
+              EntryAddedToast(value: entryToast.value, kind: entryToast.kind, label: toastLabel(for: entryToast)) {
                 undoToast(entryToast)
               }
               .transition(toastTransition)
@@ -194,15 +183,19 @@ struct CustomCounterPageContent: View {
       isHapticsEnabled
     }
     .onAppear {
+      guard counter.kind == .number else { return }
       migratePresetButtons(for: counter)
     }
     .onChange(of: periodTotal) { _, _ in
       syncWidgets()
     }
     .task(id: entryToast) {
-      guard entryToast != nil else { return }
+      guard let toast = entryToast else { return }
       try? await Task.sleep(for: .seconds(EntryActions.entryToastDuration))
       guard !Task.isCancelled else { return }
+      if case .removed(let record) = toast.kind {
+        JournalMediaStore.purge(relativePath: record.mediaRelativePath)
+      }
       withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
         entryToast = nil
       }
@@ -264,13 +257,12 @@ struct CustomCounterPageContent: View {
   }
 
   private func deletePreviewEntry(id: UUID) {
-    guard let entry = periodEntries.first(where: { $0.id == id }) else { return }
+    guard let record = EntryActions.removeCounterEntryForUndo(id: id, in: modelContext) else { return }
     let toast = EntryToastState(
-      entryID: entry.id,
-      value: entry.amount,
-      kind: .removed(timestamp: entry.timestamp)
+      entryID: record.entryID,
+      value: record.value,
+      kind: .removed(record)
     )
-    EntryActions.deleteCounterEntry(id: id, in: modelContext)
     impactHapticTrigger &+= 1
     AppSounds.log()
     withAnimation(MotionToken.entryInsert(reduceMotion: reduceMotion)) {
@@ -283,12 +275,20 @@ struct CustomCounterPageContent: View {
     switch toast.kind {
     case .added:
       EntryActions.deleteCounterEntry(id: toast.entryID, in: modelContext)
-    case .removed(let timestamp):
+    case .removed(let record):
+      let mediaPath = JournalMediaStore.restore(
+        trashedRelativePath: record.mediaRelativePath,
+        entryID: record.entryID
+      )
       _ = EntryActions.restoreCounterEntry(
-        id: toast.entryID,
-        value: toast.value,
-        timestamp: timestamp,
+        id: record.entryID,
+        value: record.value,
+        timestamp: record.timestamp,
         counter: counter,
+        noteText: record.noteText,
+        mediaRelativePath: mediaPath,
+        latitude: record.latitude,
+        longitude: record.longitude,
         in: modelContext
       )
     }
@@ -298,6 +298,75 @@ struct CustomCounterPageContent: View {
       entryToast = nil
     }
     syncWidgets()
+  }
+
+  private var showsJournalComposer: Bool {
+    switch counter.kind {
+    case .note, .voice, .place, .book, .movie:
+      true
+    case .number, .photo, .sketch:
+      false
+    }
+  }
+
+  @ViewBuilder
+  private func journalEntries(maxTextRows: Int) -> some View {
+    switch counter.kind {
+    case .photo, .sketch:
+      JournalMediaCapture(
+        counter: counter,
+        onAdded: handleJournalAdd,
+        onDelete: { deletePreviewEntry(id: $0) }
+      )
+    case .note, .voice, .place, .book, .movie:
+      JournalEntryList(
+        entries: Array(periodEntries.prefix(maxTextRows)),
+        kind: counter.kind,
+        truncates: true,
+        onDelete: { deletePreviewEntry(id: $0) }
+      )
+    case .number:
+      EmptyView()
+    }
+  }
+
+  private func handleJournalAdd(_ added: EntryActions.AddedEntry) {
+    impactHapticTrigger &+= 1
+    AppSounds.log()
+    presentToast(for: added)
+    syncWidgets()
+  }
+
+  @ViewBuilder
+  private func captureFooter(buttonHeight: CGFloat = SizeToken.quickAddHeight) -> some View {
+    if counter.kind == .number {
+      CompactQuickAddGrid(
+        values: counter.presetAmounts,
+        defaultPresets: QuickAddConfiguration.defaultPresets(forCounterNamed: counter.name),
+        buttonHeight: buttonHeight
+      ) { value in
+        addEntryQuick(value)
+      } onCustom: {
+        sheets.present(.customAmount(counterID: counter.id))
+      }
+    } else if isCompact {
+      VStack(alignment: .leading, spacing: SpaceToken.u2) {
+        if showsJournalComposer {
+          JournalCaptureFooter(counter: counter, onAdded: handleJournalAdd)
+        }
+        journalEntries(maxTextRows: 2)
+      }
+    } else if showsJournalComposer {
+      JournalCaptureFooter(counter: counter, onAdded: handleJournalAdd)
+    }
+  }
+
+  private func toastLabel(for toast: EntryToastState) -> String {
+    let verb = if case .added = toast.kind { "added" } else { "removed" }
+    if counter.kind == .number {
+      return "\(CounterFormatting.amount(toast.value)) \(verb)"
+    }
+    return "\(counter.kind.entryNoun) \(verb)"
   }
 
   private func syncWidgets() {

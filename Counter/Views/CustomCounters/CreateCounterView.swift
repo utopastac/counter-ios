@@ -8,6 +8,7 @@ struct CreateCounterView: View {
 
   var onCreated: ((CustomCounter) -> Void)?
 
+  @State private var kind: JournalKind = .number
   @State private var template: CounterTemplate = .blank
   @State private var name = ""
   @State private var unit = ""
@@ -29,10 +30,15 @@ struct CreateCounterView: View {
 
         ScrollView {
           VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
-            templateSection
+            kindSection
+            if kind == .number {
+              templateSection
+            }
             fieldsSection
             resetPeriodSection
-            quickAddSection
+            if kind == .number {
+              quickAddSection
+            }
             colourSection
           }
           .padding(.horizontal, SheetToken.horizontal)
@@ -52,7 +58,11 @@ struct CreateCounterView: View {
       .onChange(of: resetPeriod) { _, newPeriod in
         resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)
       }
+      .onChange(of: kind) { _, newKind in
+        applyKind(newKind)
+      }
       .onChange(of: template) { _, newTemplate in
+        guard kind == .number else { return }
         applyTemplate(newTemplate)
       }
       .onAppear {
@@ -64,6 +74,15 @@ struct CreateCounterView: View {
       .counterDesignSystemFromAppearancePreference()
     }
     .counterSheetPresentation()
+  }
+
+  private var kindSection: some View {
+    SettingsPickerRow(
+      icon: .rows3,
+      label: "Type",
+      selection: $kind,
+      options: JournalKind.allCases.map { ($0, $0.label) }
+    )
   }
 
   private var templateSection: some View {
@@ -80,21 +99,23 @@ struct CreateCounterView: View {
       VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
         SettingsLabeledField(label: "Title", text: $name, placeholder: CustomCounter.untitledName)
 
-        SettingsLabeledField(
-          label: "Unit",
-          text: $unit,
-          placeholder: "e.g. kcal, g, $"
-        )
+        if kind == .number {
+          SettingsLabeledField(
+            label: "Unit",
+            text: $unit,
+            placeholder: "e.g. kcal, g, $"
+          )
+        }
 
         SettingsLabeledField(
-          label: "Target",
+          label: kind.requiresCap ? "Limit" : "Target",
           text: $goalText,
           keyboardType: .decimalPad,
           placeholder: "0"
         )
       }
 
-      if hasActiveGoal {
+      if kind == .number, hasActiveGoal {
         SettingsPickerRow(
           icon: .arrowUpToLine,
           label: "Direction",
@@ -164,7 +185,7 @@ struct CreateCounterView: View {
   }
 
   private var canCreate: Bool {
-    CounterFormValidation.canSave(name: nil, goalText: goalText)
+    CounterFormValidation.canSave(name: nil, goalText: goalText, requiresCap: kind.requiresCap)
   }
 
   private var hasActiveGoal: Bool {
@@ -173,6 +194,19 @@ struct CreateCounterView: View {
 
   private var parsedGoal: Double? {
     AmountInput.parsePositiveAmount(goalText)
+  }
+
+  private func applyKind(_ kind: JournalKind) {
+    if kind == .number {
+      applyTemplate(template)
+      return
+    }
+    name = kind.defaultName
+    unit = ""
+    goalText = CounterFormatting.editingText(for: kind.defaultCap)
+    goalDirection = .countUp
+    resetPeriod = .daily
+    resetAnchorDay = CounterResetPeriod.daily.defaultAnchorDay()
   }
 
   private func applyTemplate(_ template: CounterTemplate) {
@@ -188,12 +222,13 @@ struct CreateCounterView: View {
   private func createCounter() {
     let counter = CustomCounter(
       name: CustomCounter.normalizedName(from: name),
-      unit: CustomCounter.normalizedUnit(from: unit),
+      unit: kind == .number ? CustomCounter.normalizedUnit(from: unit) : "",
       buttonValues: QuickAddConfiguration.normalizedPresets(buttonValues),
       goal: parsedGoal,
       resetPeriod: resetPeriod,
       resetAnchorDay: resetPeriod.normalizedAnchorDay(resetAnchorDay),
-      goalDirection: goalDirection,
+      goalDirection: kind.requiresCap ? .countUp : goalDirection,
+      kind: kind,
       paletteIndex: paletteIndex,
       sortOrder: CustomCounter.nextSortOrder(forExisting: counters)
     )

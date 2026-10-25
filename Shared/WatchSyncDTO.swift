@@ -18,6 +18,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
   let historyAverageActiveDaysOnlyRaw: String?
   let historyPerPeriodRaw: String?
   let headerDisplayRaw: String?
+  let kindRaw: String
 
   init(counter: CustomCounter) {
     id = counter.id
@@ -36,6 +37,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     historyAverageActiveDaysOnlyRaw = counter.historyAverageActiveDaysOnlyRaw
     historyPerPeriodRaw = counter.historyPerPeriodRaw
     headerDisplayRaw = counter.headerDisplayRaw
+    kindRaw = counter.kindRaw
   }
 
   @MainActor
@@ -55,6 +57,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
     counter.historyAverageActiveDaysOnlyRaw = historyAverageActiveDaysOnlyRaw
     counter.historyPerPeriodRaw = historyPerPeriodRaw
     counter.headerDisplayRaw = headerDisplayRaw
+    counter.kindRaw = kindRaw
   }
 
   @MainActor
@@ -81,6 +84,7 @@ struct CounterSnapshot: Codable, Sendable, Equatable {
       headerDisplayRaw: snapshot.headerDisplayRaw,
       sortOrder: snapshot.sortOrder
     )
+    counter.kindRaw = snapshot.kindRaw
     counter.id = snapshot.id
     counter.createdAt = snapshot.createdAt
     context.insert(counter)
@@ -102,12 +106,20 @@ struct EntrySnapshot: Codable, Sendable, Equatable {
   let counterID: UUID
   let value: Double
   let timestamp: Date
+  let noteText: String
+  let mediaRelativePath: String
+  let latitude: Double?
+  let longitude: Double?
 
   init(entry: CounterEntry, counterID: UUID) {
     id = entry.id
     self.counterID = counterID
     value = entry.amount
     timestamp = entry.timestamp
+    noteText = entry.noteText
+    mediaRelativePath = entry.mediaRelativePath
+    latitude = entry.latitude
+    longitude = entry.longitude
   }
 
   @MainActor
@@ -120,12 +132,20 @@ struct EntrySnapshot: Codable, Sendable, Equatable {
     if let existing = fetchEntry(id: snapshot.id, in: context) {
       existing.amount = snapshot.value
       existing.timestamp = snapshot.timestamp
+      existing.noteText = snapshot.noteText
+      existing.mediaRelativePath = snapshot.mediaRelativePath
+      existing.latitude = snapshot.latitude
+      existing.longitude = snapshot.longitude
       existing.counter = counter
       return existing
     }
 
     let entry = CounterEntry(value: snapshot.value, timestamp: snapshot.timestamp, counter: counter)
     entry.id = snapshot.id
+    entry.noteText = snapshot.noteText
+    entry.mediaRelativePath = snapshot.mediaRelativePath
+    entry.latitude = snapshot.latitude
+    entry.longitude = snapshot.longitude
     context.insert(entry)
     return entry
   }

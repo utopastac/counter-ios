@@ -22,9 +22,9 @@ struct CounterExportTests {
     let csv = CounterExport.csvString(counters: [counter])
     let lines = csv.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
 
-    #expect(lines.first == "counter_id,counter_name,unit,goal,direction,reset_period,entry_id,entry_value,entry_timestamp")
+    #expect(lines.first == "counter_id,counter_name,kind,unit,goal,direction,reset_period,entry_id,entry_value,entry_note,entry_latitude,entry_longitude,entry_timestamp")
     #expect(lines.contains {
-      $0.hasPrefix("AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE,Water,ml,2000,countUp,daily,,,")
+      $0.hasPrefix("AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE,Water,number,ml,2000,countUp,daily,,,")
     })
     #expect(csv.hasSuffix("\n"))
   }
@@ -68,9 +68,9 @@ struct CounterExportTests {
     #expect(dataLines[1].contains("Later"))
   }
 
-  @Test func csvFilenameUsesNumoPrefixAndCsvSuffix() {
+  @Test func csvFilenameUsesDayringPrefixAndCsvSuffix() {
     let name = CounterExport.csvFilename(date: fixedDate())
-    #expect(name.hasPrefix("Numo-export-"))
+    #expect(name.hasPrefix("Dayring-export-"))
     #expect(name.hasSuffix(".csv"))
     #expect(!name.contains("/"))
     #expect(!name.contains(":"))

@@ -169,12 +169,8 @@ struct AllCountersListView: View {
   private func deleteCounters(at offsets: IndexSet) {
     for index in offsets {
       let counter = counters[index]
-      let counterID = counter.id
-      modelContext.delete(counter)
-      WatchSyncEngine.publishCounterDelete(counterID)
+      EntryActions.deleteCounter(counter, in: modelContext)
     }
-    // Persist before the widget extension opens its own store context.
-    AppLog.attempt("Save counter delete") { try modelContext.save() }
     WidgetSnapshot.reloadTimelines()
   }
 

@@ -49,7 +49,8 @@ enum FreshInstallOnboarding {
     UserDefaults.standard.set(false, forKey: previewActiveKey)
   }
 
-  /// Templates offered during step 2 (excludes blank).
+  /// Templates offered when creating a number counter from the add sheet.
+  /// Fresh-install starters are `defaultDrafts()`, which mix journal kinds.
   static var starterTemplates: [CounterTemplate] {
     [.calories, .protein, .money, .water, .coffee, .workouts]
   }
@@ -60,7 +61,11 @@ enum FreshInstallOnboarding {
   }
 
   static func defaultDrafts() -> [FreshInstallStarterDraft] {
-    starterTemplates.map(FreshInstallStarterDraft.default(for:))
+    [
+      .journal(kind: .number, name: "Count", cap: JournalKind.number.defaultCap, paletteIndex: 0),
+      .journal(kind: .note, name: JournalKind.note.defaultName, cap: JournalKind.note.defaultCap, paletteIndex: 1),
+      .journal(kind: .photo, name: JournalKind.photo.defaultName, cap: JournalKind.photo.defaultCap, paletteIndex: 2),
+    ]
   }
 }
 
@@ -82,8 +87,11 @@ struct FreshInstallStarterDraft: Identifiable, Hashable {
   var historyAverageActiveDaysOnlyRaw: String? = nil
   var historyPerPeriodRaw: String? = nil
   var headerDisplayRaw: String? = nil
+  var kind: JournalKind = .number
 
-  var id: String { template.rawValue }
+  var id: String {
+    kind == .number ? template.rawValue : kind.rawValue
+  }
 
   /// Parsed goal for seeding. Uses the same positive-amount rules as create/settings forms.
   var goal: Double {
@@ -93,7 +101,13 @@ struct FreshInstallStarterDraft: Identifiable, Hashable {
 
   var subtitle: String {
     let amount = goal > 0 ? CounterFormatting.amount(goal) : goalText
-    return "\(amount) \(unit) \(resetPeriod.rawValue)"
+    if kind == .number, !unit.isEmpty {
+      return "\(amount) \(unit) \(resetPeriod.rawValue)"
+    }
+    if kind == .number {
+      return "\(amount) \(resetPeriod.periodCaption)"
+    }
+    return "\(amount) \(kind.entryNoun.lowercased()) \(resetPeriod.periodCaption)"
   }
 
   /// Builds a draft from `CounterTemplate` so create-form and onboarding starters can't drift.
@@ -111,7 +125,31 @@ struct FreshInstallStarterDraft: Identifiable, Hashable {
       resetAnchorDay: period.defaultAnchorDay(),
       goalDirection: template.defaultGoalDirection,
       buttonValues: template.defaultPresets,
-      paletteIndex: defaultPaletteIndex(for: template)
+      paletteIndex: defaultPaletteIndex(for: template),
+      kind: .number
+    )
+  }
+
+  /// A fresh-install journal that is not a calorie/protein-style number template.
+  static func journal(
+    kind: JournalKind,
+    name: String,
+    cap: Double,
+    paletteIndex: Int
+  ) -> FreshInstallStarterDraft {
+    let period = CounterResetPeriod.daily
+    return FreshInstallStarterDraft(
+      template: .blank,
+      isSelected: true,
+      name: name,
+      unit: "",
+      goalText: CounterFormatting.editingText(for: cap),
+      resetPeriod: period,
+      resetAnchorDay: period.defaultAnchorDay(),
+      goalDirection: .countUp,
+      buttonValues: QuickAddConfiguration.defaultCounterPresets,
+      paletteIndex: paletteIndex,
+      kind: kind
     )
   }
 

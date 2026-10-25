@@ -5,9 +5,11 @@ struct EntryAddedToast: View {
 
   let value: Double
   var kind: EntryToastState.Kind = .added
+  var label: String?
   let onUndo: () -> Void
 
   private var message: String {
+    if let label { return label }
     let amount = CounterFormatting.amount(value)
     switch kind {
     case .added:
@@ -46,7 +48,7 @@ struct EntryAddedToast: View {
 struct EntryToastState: Equatable {
   enum Kind: Equatable {
     case added
-    case removed(timestamp: Date)
+    case removed(EntryActions.RemovedEntryRecord)
   }
 
   let entryID: UUID

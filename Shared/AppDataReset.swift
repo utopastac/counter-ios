@@ -39,6 +39,7 @@ enum AppDataReset {
   private static func wipeStore(in context: ModelContext) {
     // Cascade delete clears entries — do not fetch/delete `CounterEntry` afterward
     // (those objects are already invalidated and will crash).
+    JournalMediaStore.removeAll()
     for counter in (try? context.fetch(FetchDescriptor<CustomCounter>())) ?? [] {
       context.delete(counter)
     }

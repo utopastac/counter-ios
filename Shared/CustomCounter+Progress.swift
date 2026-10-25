@@ -16,7 +16,19 @@ import Foundation
 @MainActor
 extension CustomCounter {
   func currentTotal(on date: Date = .now, calendar: Calendar = .current) -> Double {
-    CounterPeriodCalculator.total(from: entries, for: self, on: date, calendar: calendar)
+    if kind == .number {
+      return CounterPeriodCalculator.total(from: entries, for: self, on: date, calendar: calendar)
+    }
+    return Double(
+      CounterPeriodCalculator.currentEntries(for: self, on: date, calendar: calendar).count
+    )
+  }
+
+  /// Non-number journals stop accepting entries once the current period reaches the cap.
+  func acceptsAnotherEntry(on date: Date = .now, calendar: Calendar = .current) -> Bool {
+    guard kind.requiresCap else { return true }
+    guard let cap = effectiveGoal else { return false }
+    return currentTotal(on: date, calendar: calendar) < cap
   }
 
   /// `nil` when the counter has no active goal — callers decide how to present that case.

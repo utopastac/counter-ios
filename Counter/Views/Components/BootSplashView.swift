@@ -18,7 +18,7 @@ struct BootSplashView: View {
           .resizable()
           .scaledToFit()
           .frame(maxWidth: 180)
-          .accessibilityLabel("Numo")
+          .accessibilityLabel("Dayring")
       }
       .ignoresSafeArea()
   }

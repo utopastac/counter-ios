@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Numo for iOS are documented in this file.
+All notable changes to Dayring for iOS are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 App Store “What’s New” text is generated from the `[Unreleased]` section when you run

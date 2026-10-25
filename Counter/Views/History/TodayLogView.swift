@@ -7,6 +7,9 @@ struct CounterPeriodEntryLogContent: View {
 
   let entries: [CounterEntry]
   let emptyDescription: String
+  var valueText: (CounterEntry) -> String
+  var canEditValues: Bool
+  var kind: JournalKind
   let onDelete: (UUID) -> Void
   let onValueCommit: (UUID, Double) -> Void
 
@@ -15,11 +18,17 @@ struct CounterPeriodEntryLogContent: View {
   init(
     entries: [CounterEntry],
     emptyDescription: String = "No entries in this period.",
+    valueText: @escaping (CounterEntry) -> String = { CounterFormatting.amount($0.amount) },
+    canEditValues: Bool = true,
+    kind: JournalKind = .number,
     onDelete: @escaping (UUID) -> Void,
     onValueCommit: @escaping (UUID, Double) -> Void
   ) {
     self.entries = entries
     self.emptyDescription = emptyDescription
+    self.valueText = valueText
+    self.canEditValues = canEditValues
+    self.kind = kind
     self.onDelete = onDelete
     self.onValueCommit = onValueCommit
   }
@@ -49,13 +58,20 @@ struct CounterPeriodEntryLogContent: View {
                   .padding(.horizontal, SheetToken.horizontal)
               }
 
-              EntryLogEditableRow(
-                value: entry.amount,
-                timestamp: entry.timestamp,
-                onEdit: {
-                  editingEntry = EditingEntry(id: entry.id, value: entry.amount)
+              Group {
+                if kind == .number {
+                  EntryLogEditableRow(
+                    value: entry.amount,
+                    timestamp: entry.timestamp,
+                    displayText: valueText(entry),
+                    onEdit: canEditValues
+                      ? { editingEntry = EditingEntry(id: entry.id, value: entry.amount) }
+                      : nil
+                  )
+                } else {
+                  JournalSavedRow(entry: entry, kind: kind, truncates: false)
                 }
-              )
+              }
               .padding(.horizontal, SheetToken.horizontal)
             }
             .listRowInsets(EdgeInsets())

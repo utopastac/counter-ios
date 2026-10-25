@@ -137,6 +137,61 @@ struct WatchSyncTests {
     #expect(try context.fetch(FetchDescriptor<CounterEntry>()).isEmpty)
   }
 
+  @Test func journalSnapshotRoundTripsKindNoteMediaAndCoordinates() throws {
+    let (container, context) = makeStore()
+    defer { _ = container }
+
+    let counter = fixedCounter(
+      name: "Books",
+      goal: 3,
+      id: UUID(uuidString: "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE")!
+    )
+    counter.kind = .book
+    let entry = CounterEntry(
+      value: 1,
+      timestamp: Date(timeIntervalSince1970: 1_700_000_000),
+      counter: counter
+    )
+    entry.id = UUID(uuidString: "11111111-2222-3333-4444-555555555555")!
+    entry.noteText = "Beloved\nToni Morrison · 1987"
+    entry.mediaRelativePath = "entries/11111111-2222-3333-4444-555555555555.jpg"
+    entry.latitude = 51.5
+    entry.longitude = -0.25
+
+    let sentAt = Date(timeIntervalSince1970: 100)
+    let envelope = WatchSyncEnvelope(
+      payload: .fullSnapshot(
+        counters: [CounterSnapshot(counter: counter)],
+        entries: [EntrySnapshot(entry: entry, counterID: counter.id)]
+      ),
+      sentAt: sentAt
+    )
+    let encoded = try #require(WatchSyncCoding.encode(envelope))
+    let decoded = try #require(WatchSyncCoding.decode(encoded))
+    guard case let .fullSnapshot(counters, entries) = decoded.payload else {
+      Issue.record("Expected a full snapshot")
+      return
+    }
+    let counterSnapshot = try #require(counters.first)
+    let entrySnapshot = try #require(entries.first)
+    #expect(counterSnapshot.kindRaw == JournalKind.book.rawValue)
+    #expect(entrySnapshot.noteText == "Beloved\nToni Morrison · 1987")
+    #expect(entrySnapshot.mediaRelativePath == "entries/11111111-2222-3333-4444-555555555555.jpg")
+    #expect(entrySnapshot.latitude == 51.5)
+    #expect(entrySnapshot.longitude == -0.25)
+
+    CounterSnapshot.upsert(into: context, from: counterSnapshot)
+    let stored = EntrySnapshot.upsert(into: context, from: entrySnapshot)
+    try context.save()
+
+    #expect(stored?.counter?.kind == .book)
+    #expect(stored?.noteText == entry.noteText)
+    #expect(stored?.previewText == "Beloved")
+    #expect(stored?.mediaRelativePath == entry.mediaRelativePath)
+    #expect(stored?.latitude == 51.5)
+    #expect(stored?.longitude == -0.25)
+  }
+
   @Test func entrySnapshotUpsertInsertsAgainstExistingCounter() throws {
     let (container, context) = makeStore()
     defer { _ = container }

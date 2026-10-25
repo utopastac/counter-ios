@@ -188,7 +188,7 @@ platform :ios do
       export_method: "app-store",
       export_options: "./ExportOptionsAppStoreExport.plist",
       output_directory: "./build",
-      output_name: "Numo",
+      output_name: "Dayring",
       include_bitcode: false,
       xcargs: "-allowProvisioningUpdates",
       export_xcargs: "-allowProvisioningUpdates",
@@ -240,7 +240,7 @@ platform :ios do
     # 6) Promote Unreleased → dated version section now that upload succeeded
     prepare_release_notes(cut: version)
 
-    UI.success("Uploaded Numo #{version} (#{build})")
+    UI.success("Uploaded Dayring #{version} (#{build})")
     if submit
       UI.success("Submitted for App Review")
     else

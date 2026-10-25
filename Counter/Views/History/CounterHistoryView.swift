@@ -239,14 +239,18 @@ struct CounterHistoryView: View {
           SettingsDivider()
         }
 
-        EntryLogEditableRow(
-          value: entry.amount,
-          timestamp: entry.timestamp,
-          dateFormat: listDateFormat,
-          onEdit: {
-            editingEntry = HistoryEditingEntry(id: entry.id, value: entry.amount)
-          }
-        )
+        if counter.kind == .number {
+          EntryLogEditableRow(
+            value: entry.amount,
+            timestamp: entry.timestamp,
+            dateFormat: listDateFormat,
+            onEdit: {
+              editingEntry = HistoryEditingEntry(id: entry.id, value: entry.amount)
+            }
+          )
+        } else {
+          JournalSavedRow(entry: entry, kind: counter.kind, truncates: false)
+        }
       }
       .listRowInsets(EdgeInsets(
         top: 0,
@@ -352,6 +356,9 @@ private struct HistoryBucketDetailView: View {
       CounterPeriodEntryLogContent(
         entries: entries,
         emptyDescription: "No entries in this period.",
+        valueText: { $0.previewText },
+        canEditValues: counter.kind == .number,
+        kind: counter.kind,
         onDelete: { id in
           EntryActions.deleteCounterEntry(id: id, in: modelContext)
           WidgetSnapshotSync.publish(counter: counter, in: modelContext)

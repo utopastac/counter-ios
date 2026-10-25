@@ -119,16 +119,20 @@ struct WatchCounterPageView: View {
   }
 
   private var quickAddButton: some View {
-    NavigationLink {
-      WatchQuickAddView(counter: counter)
-    } label: {
-      Image(systemName: "plus")
-        .font(.system(size: 22, weight: .semibold))
-        .foregroundStyle(theme.foreground)
-        .frame(width: 44, height: 44)
-        .background(theme.foreground.opacity(0.18), in: Circle())
+    Group {
+      if counter.kind == .number {
+        NavigationLink {
+          WatchQuickAddView(counter: counter)
+        } label: {
+          Image(systemName: "plus")
+            .font(.system(size: 22, weight: .semibold))
+            .foregroundStyle(theme.foreground)
+            .frame(width: 44, height: 44)
+            .background(theme.foreground.opacity(0.18), in: Circle())
+        }
+        .buttonStyle(.plain)
+      }
     }
-    .buttonStyle(.plain)
   }
 
   private var heroValue: String {

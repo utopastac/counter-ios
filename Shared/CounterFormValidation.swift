@@ -7,9 +7,12 @@ import Foundation
 /// cleared or corrected.
 nonisolated enum CounterFormValidation {
   /// `name` is accepted for API compatibility but is not validated — blank titles are allowed.
-  static func canSave(name: String?, goalText: String) -> Bool {
+  static func canSave(name: String?, goalText: String, requiresCap: Bool = false) -> Bool {
     _ = name
     let trimmedGoal = goalText.trimmingCharacters(in: .whitespaces)
+    if requiresCap {
+      return AmountInput.parsePositiveAmount(goalText) != nil
+    }
     if !trimmedGoal.isEmpty, AmountInput.parsePositiveAmount(goalText) == nil {
       return false
     }

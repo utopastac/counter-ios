@@ -24,7 +24,9 @@ enum SampleDataSeeder {
   /// Inserts selected starter drafts (order preserved).
   @MainActor
   static func seed(drafts: [FreshInstallStarterDraft], in context: ModelContext) {
-    let selected = drafts.filter { $0.isSelected && $0.template != .blank }
+    let selected = drafts.filter { draft in
+      draft.isSelected && !draft.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
     guard !selected.isEmpty else { return }
 
     for (index, draft) in selected.enumerated() {
@@ -52,7 +54,13 @@ enum SampleDataSeeder {
       goalDirection: draft.goalDirection,
       sortOrder: sortOrder
     )
-    counter.createdAt = createdAt(for: template)
+    counter.kind = draft.kind
+    if draft.template != .blank {
+      counter.createdAt = createdAt(for: template)
+    }
+    if draft.kind.requiresCap {
+      counter.goalDirection = .countUp
+    }
     counter.paletteIndex = CustomCounter.normalizedPaletteIndex(draft.paletteIndex)
     counter.progressRingWidthRaw = draft.progressRingWidthRaw
     counter.progressRingGlowRaw = draft.progressRingGlowRaw
