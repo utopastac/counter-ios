@@ -33,36 +33,30 @@ struct AllCountersListView: View {
     editMode.isEditing
   }
 
+  private var gridColumns: [GridItem] {
+    Array(
+      repeating: GridItem(.flexible(), spacing: CountersListGridToken.spacing),
+      count: CountersListGridToken.columnCount
+    )
+  }
+
   var body: some View {
-    List {
-      ForEach(counters) { counter in
-        counterRow(for: counter)
-          .listRowInsets(EdgeInsets(
-            top: SpaceToken.u1 / 2,
-            leading: SpaceToken.pageMargin,
-            bottom: SpaceToken.u1 / 2,
-            trailing: SpaceToken.pageMargin
-          ))
-          .listRowSeparator(.hidden)
-          .listRowBackground(Color.clear)
+    ScrollView {
+      LazyVGrid(columns: gridColumns, spacing: CountersListGridToken.spacing) {
+        ForEach(counters) { counter in
+          gridCell(for: counter)
+        }
       }
-      .onDelete(perform: deleteCounters)
-      .onMove(perform: moveCounters)
+      .padding(.horizontal, SpaceToken.pageMargin)
+      .padding(.top, SpaceToken.u1 / 2)
 
       if let onAddCounter, !isEditing {
         NewCounterButton(action: onAddCounter)
-          .listRowInsets(EdgeInsets(
-            top: SpaceToken.u1 / 2,
-            leading: SpaceToken.pageMargin,
-            bottom: SpaceToken.u1 / 2,
-            trailing: SpaceToken.pageMargin
-          ))
-          .listRowSeparator(.hidden)
-          .listRowBackground(Color.clear)
+          .padding(.horizontal, SpaceToken.pageMargin)
+          .padding(.top, CountersListGridToken.spacing)
           .id("add-new-counter")
       }
     }
-    .listStyle(.plain)
     .scrollContentBackground(.hidden)
     // Gate the UIKit pan only — never toggle SwiftUI `.scrollDisabled` mid-reveal.
     // Toggling `.scrollDisabled` reconciles content offset and jumps (worst when scrolled
@@ -128,7 +122,28 @@ struct AllCountersListView: View {
   }
 
   @ViewBuilder
-  private func counterRow(for counter: CustomCounter) -> some View {
+  private func gridCell(for counter: CustomCounter) -> some View {
+    ZStack(alignment: .topTrailing) {
+      counterTile(for: counter)
+
+      if isEditing {
+        Button {
+          deleteCounter(counter)
+        } label: {
+          Image(systemName: "minus.circle.fill")
+            .symbolRenderingMode(.palette)
+            .foregroundStyle(.white, Color.red)
+            .font(.title2)
+        }
+        .buttonStyle(.plain)
+        .offset(x: SpaceToken.x1, y: -SpaceToken.x1)
+        .accessibilityLabel("Delete \(counter.name)")
+      }
+    }
+  }
+
+  @ViewBuilder
+  private func counterTile(for counter: CustomCounter) -> some View {
     let _ = (isMonoEnabled, monoPaletteIndex, isTintEnabled, colorPackRaw)
     let total = counter.currentTotal()
     let progress = counter.currentProgress()
@@ -166,21 +181,9 @@ struct AllCountersListView: View {
     progress?.displayHeroSubtitle ?? counter.resetPeriod.displayPeriodCaption
   }
 
-  private func deleteCounters(at offsets: IndexSet) {
-    for index in offsets {
-      let counter = counters[index]
-      EntryActions.deleteCounter(counter, in: modelContext)
-    }
+  private func deleteCounter(_ counter: CustomCounter) {
+    EntryActions.deleteCounter(counter, in: modelContext)
     WidgetSnapshot.reloadTimelines()
-  }
-
-  private func moveCounters(from source: IndexSet, to destination: Int) {
-    var ordered = counters
-    ordered.move(fromOffsets: source, toOffset: destination)
-    for (index, counter) in ordered.enumerated() {
-      counter.sortOrder = Double(index)
-    }
-    WatchSyncEngine.publishFullSnapshot(in: modelContext)
   }
 }
 

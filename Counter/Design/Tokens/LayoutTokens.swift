@@ -155,10 +155,30 @@ enum SizeToken {
     /// Mid-size ring for standard (non-compact) list cards.
     static let card: CGFloat = GridToken.units(8)
     static let cardStroke: CGFloat = ProgressRingWidth.balanced.strokeWidth(for: card)
+    /// Small-widget-scale ring for the full-size counters grid tiles.
+    static let gridTile: CGFloat = GridToken.units(6)
     static let `default`: CGFloat = display
     static let progressStroke: CGFloat = displayStroke
     static let overfillOutlineWidth: CGFloat = 2
   }
+}
+
+/// Counters underlay — 2-column tiles matching the small home-screen widget.
+enum CountersListGridToken {
+  static let columnCount = 2
+  static let spacing: CGFloat = SpaceToken.x1
+  /// Matches `WidgetTheme.smallRingToTitleSpacing`.
+  static let ringToTitleSpacing: CGFloat = 12
+  /// Tighter ring→title gap when the compact tile uses the smaller ring.
+  static let compactRingToTitleSpacing: CGFloat = SpaceToken.u1
+  /// Matches `WidgetTheme.smallTitleToValueSpacing`.
+  static let titleToValueSpacing: CGFloat = -4
+  /// Matches `WidgetTheme.smallValueToSubtitleSpacing`.
+  static let valueToSubtitleSpacing: CGFloat = -2
+  /// Home-screen small widget corner (~22pt).
+  static let cornerRadius: CGFloat = 22
+  /// Compact grid tile ring — same scale as the old compact list row.
+  static let compactRingSize: CGFloat = CompactCardToken.listRingSize
 }
 
 enum OpacityToken {
