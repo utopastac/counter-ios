@@ -315,16 +315,8 @@ private enum RevealMetrics {
   }
 }
 
-private enum RevealChrome {
-  /// Shared blur radius when a side is fully covered / fully peaking — list when closed,
-  /// card when the list is open.
-  static let peakBlur: CGFloat = 7
-  static let listHiddenScale: CGFloat = 0.94
-}
-
 private struct CardRevealTransform: ViewModifier {
   @Environment(\.semanticColors) private var colors
-  @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
   var state: RevealState
   let maxOffset: CGFloat
@@ -339,12 +331,6 @@ private struct CardRevealTransform: ViewModifier {
     1 - progress * maxScaleReduction
   }
 
-  /// Mirrors `ListRevealParallax`: the card blurs as the list is revealed.
-  private var blur: CGFloat {
-    guard !reduceMotion else { return 0 }
-    return RevealChrome.peakBlur * progress
-  }
-
   func body(content: Content) -> some View {
     content
       .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
@@ -353,7 +339,6 @@ private struct CardRevealTransform: ViewModifier {
           .strokeBorder(ComponentColor.revealCardStroke(colors, progress: progress), lineWidth: 1)
       }
       .scaleEffect(scale, anchor: .topTrailing)
-      .blur(radius: blur)
       .offset(x: state.cardOffset)
   }
 }
@@ -364,13 +349,16 @@ private struct ListRevealParallax: ViewModifier {
   let maxParallax: CGFloat
   let reduceMotion: Bool
 
+  private let hiddenScale: CGFloat = 0.94
+  private let hiddenBlur: CGFloat = 7
+
   private var progress: CGFloat {
     RevealMetrics.progress(for: state.cardOffset, maxOffset: maxOffset)
   }
 
   private var scale: CGFloat {
     guard !reduceMotion else { return 1 }
-    return RevealChrome.listHiddenScale + progress * (1 - RevealChrome.listHiddenScale)
+    return hiddenScale + progress * (1 - hiddenScale)
   }
 
   private var opacity: Double {
@@ -379,7 +367,7 @@ private struct ListRevealParallax: ViewModifier {
 
   private var blur: CGFloat {
     guard !reduceMotion else { return 0 }
-    return RevealChrome.peakBlur * (1 - progress)
+    return hiddenBlur * (1 - progress)
   }
 
   func body(content: Content) -> some View {
