@@ -394,11 +394,12 @@ enum SheetToken {
   static let cornerRadius: CGFloat = RadiusToken.lg
   /// Max backdrop blur when a sheet is fully risen (6pt).
   static let backdropBlurRadius: CGFloat = 6
+  /// Scroll distance over which the large sheet title collapses into the sticky compact title.
+  static let titleCollapseDistance: CGFloat = GridToken.units(5)
   static let handleWidth: CGFloat = 36
   static let handleHeight: CGFloat = 5
   static let contentTop: CGFloat = SpaceToken.componentPadding
   static let headerSpacing: CGFloat = SpaceToken.u1
-  static let headerIconSpacing: CGFloat = SpaceToken.u1
   static let amountTopSpacing: CGFloat = SpaceToken.u2
   static let actionTop: CGFloat = SpaceToken.u2
   static let amountInputHeight: CGFloat = FontSizeToken.x5xl

@@ -38,6 +38,7 @@ struct CounterSettingsView: View {
 
   @Environment(\.dismiss) private var dismiss
   @State private var showDeleteConfirmation = false
+  @State private var didDelete = false
 
   init(
     values: [Double],
@@ -110,35 +111,21 @@ struct CounterSettingsView: View {
 
   var body: some View {
     NavigationStack {
-      VStack(spacing: 0) {
-        CounterSheetHeader(
-          title: "Settings",
-          isDoneEnabled: canSave,
-          onDone: saveAndDismiss
-        )
-
-        ScrollView {
-          VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
-            fieldsSection
-            displaySection
-            resetPeriodSection
-            if kind == .number {
-              quickAddSection
-            }
-            colourSection
-            ringSection
-            historySection
-
-            if onDelete != nil {
-              deleteSection
-            }
-          }
-          .padding(.horizontal, SheetToken.horizontal)
-          .padding(.top, SpaceToken.u1)
-          .padding(.bottom, SpaceToken.u4)
+      CounterSheetScroll(title: "Settings") {
+        fieldsSection
+        generalSection
+        if kind == .number {
+          quickAddSection
         }
-        .settingsKeyboardDismissible()
+        colourSection
+
+        if onDelete != nil {
+          deleteSection
+        }
+
+        Color.clear.frame(height: SpaceToken.u4)
       }
+      .settingsKeyboardDismissible()
       .toolbar(.hidden, for: .navigationBar)
       .onChange(of: resetPeriod) { _, newPeriod in
         resetAnchorDay = newPeriod.normalizedAnchorDay(resetAnchorDay)
@@ -146,11 +133,18 @@ struct CounterSettingsView: View {
       .onChange(of: paletteIndex) { _, newValue in
         onPaletteChange?(newValue)
       }
+      .onDisappear {
+        // Swipe-to-dismiss replaces the old Done button — persist when the form is valid.
+        guard !didDelete, canSave else { return }
+        save()
+      }
+      .interactiveDismissDisabled(!canSave)
       .counterDesignSystemFromAppearancePreference()
     }
     .counterSheetPresentation()
     .alert("Delete?", isPresented: $showDeleteConfirmation) {
       Button("Delete", role: .destructive) {
+        didDelete = true
         onDelete?()
         dismiss()
       }
@@ -161,7 +155,7 @@ struct CounterSettingsView: View {
   }
 
   private var fieldsSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
       VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
         SettingsLabeledField(label: "Title", text: $nameText)
 
@@ -183,43 +177,32 @@ struct CounterSettingsView: View {
 
       if kind == .number, hasActiveGoal {
         SettingsPickerRow(
-          icon: .arrowUpToLine,
           label: "Direction",
           selection: $goalDirection,
           options: GoalDirection.allCases.map { ($0, $0.label) }
         )
-        .padding(.top, SpaceToken.x1)
       }
     }
+    .padding(.horizontal, SheetToken.horizontal)
   }
 
-  private var displaySection: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      SettingsSectionHeader(title: "Display")
-
+  /// Display, reset, ring, and history controls — one flat section, no subheadings.
+  private var generalSection: some View {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
       SettingsPickerRow(
-        icon: .tableProperties,
-        label: "Header",
+        label: "Header display",
         selection: $headerDisplayChoice,
         options: CounterHeaderDisplayChoice.allCases.map { ($0, $0.label) }
       )
-    }
-  }
-
-  private var resetPeriodSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      SettingsSectionHeader(title: "Reset period")
 
       SettingsPickerRow(
-        icon: .calendar,
-        label: "Period",
+        label: "Reset period",
         selection: $resetPeriod,
         options: CounterResetPeriod.allCases.map { ($0, $0.label) }
       )
 
       if resetPeriod == .weekly {
         SettingsPickerRow(
-          icon: .listRestart,
           label: "Resets on",
           selection: $resetAnchorDay,
           options: (1...7).map { ($0, Calendar.current.weekdaySymbols[$0 - 1]) }
@@ -228,7 +211,6 @@ struct CounterSettingsView: View {
 
       if resetPeriod == .monthly {
         SettingsPickerRow(
-          icon: .listRestart,
           label: "Resets on",
           selection: $resetAnchorDay,
           options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
@@ -237,76 +219,63 @@ struct CounterSettingsView: View {
 
       if resetPeriod == .yearly {
         SettingsPickerRow(
-          icon: .listRestart,
           label: "Resets in",
           selection: $resetAnchorDay,
           options: (1...12).map { ($0, Calendar.current.monthSymbols[$0 - 1]) }
         )
       }
-    }
-  }
-
-  private var quickAddSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      SettingsSectionHeader(title: "Quick add presets")
-      SettingsPresetGrid(values: $values, defaults: defaultPresets)
-    }
-  }
-
-  private var colourSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      SettingsSectionHeader(title: "Colour")
-      SettingsColorSwatchGrid(selection: $paletteIndex)
-    }
-  }
-
-  private var historySection: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      SettingsSectionHeader(title: "History")
 
       SettingsPickerRow(
-        icon: .calendarClock,
+        label: "Ring width",
+        selection: $ringWidthChoice,
+        options: ProgressRingWidthChoice.allCases.map { ($0, $0.label) }
+      )
+
+      SettingsPickerRow(
+        label: "Ring glow",
+        selection: $ringGlowChoice,
+        options: ProgressRingGlowChoice.allCases.map { ($0, $0.label) }
+      )
+
+      SettingsPickerRow(
         label: "Daily average",
         selection: $historyPerPeriodChoice,
         options: HistoryPerPeriodChoice.allCases.map { ($0, $0.label) }
       )
 
       SettingsPickerRow(
-        icon: .squareActivity,
         label: "Active days only",
         selection: $historyAverageActiveDaysChoice,
         options: HistoryAverageActiveDaysChoice.allCases.map { ($0, $0.label) }
       )
     }
+    .padding(.horizontal, SheetToken.horizontal)
   }
 
-  private var ringSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
-      SettingsSectionHeader(title: "Ring")
-
-      SettingsPickerRow(
-        icon: .ringDot,
-        label: "Width",
-        selection: $ringWidthChoice,
-        options: ProgressRingWidthChoice.allCases.map { ($0, $0.label) }
-      )
-
-      SettingsPickerRow(
-        icon: .sparkle,
-        label: "Glow",
-        selection: $ringGlowChoice,
-        options: ProgressRingGlowChoice.allCases.map { ($0, $0.label) }
-      )
+  private var quickAddSection: some View {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
+      SettingsSectionHeader(title: "Quick add presets")
+      SettingsPresetGrid(values: $values, defaults: defaultPresets)
     }
+    .padding(.horizontal, SheetToken.horizontal)
+  }
+
+  private var colourSection: some View {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
+      SettingsSectionHeader(title: "Colour")
+      SettingsColorSwatchGrid(selection: $paletteIndex)
+    }
+    .padding(.horizontal, SheetToken.horizontal)
   }
 
   private var deleteSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
       SettingsDivider()
       SettingsDestructiveRow(label: "Delete") {
         showDeleteConfirmation = true
       }
     }
+    .padding(.horizontal, SheetToken.horizontal)
   }
 
   private var displayName: String {
@@ -329,7 +298,7 @@ struct CounterSettingsView: View {
     AmountInput.parsePositiveAmount(goalText)
   }
 
-  private func saveAndDismiss() {
+  private func save() {
     onSave(
       CounterSettingsSave(
         name: trimmedName,
@@ -347,7 +316,6 @@ struct CounterSettingsView: View {
         headerDisplayRaw: headerDisplayChoice.storedRaw
       )
     )
-    dismiss()
   }
 }
 

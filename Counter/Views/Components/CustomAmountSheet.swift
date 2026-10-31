@@ -6,7 +6,6 @@ struct CustomAmountSheet: View {
   var body: some View {
     AmountEntrySheet(
       title: "Add amount",
-      headerIcon: .plus,
       actionTitle: "Add",
       onSubmit: onAdd
     )
@@ -22,7 +21,6 @@ struct EditAmountSheet: View {
   var body: some View {
     AmountEntrySheet(
       title: "Edit amount",
-      headerIcon: .squarePen,
       actionTitle: "Save",
       initialText: CounterFormatting.editingText(for: initialValue),
       onSubmit: onSave

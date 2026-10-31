@@ -173,7 +173,6 @@ struct JournalMediaCapture: View {
 }
 
 private struct NoteWriterSheet: View {
-  @Environment(\.dismiss) private var dismiss
   @Environment(\.semanticColors) private var colors
   @Environment(\.designSystem) private var designSystem
 
@@ -184,10 +183,7 @@ private struct NoteWriterSheet: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      CounterSheetHeader(title: "Note", isDoneEnabled: !session.isEmpty) {
-        keep()
-        dismiss()
-      }
+      CounterSheetHeader(title: "Note")
 
       NoteFormatBar(session: session)
         .padding(.horizontal, SheetToken.horizontal)

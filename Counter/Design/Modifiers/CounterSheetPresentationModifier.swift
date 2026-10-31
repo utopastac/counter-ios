@@ -7,16 +7,16 @@ import UIKit
 /// Controls how a modal sheet sizes itself.
 ///
 /// - `offsetPeek` uses a custom detent so the presenting content remains visible above
-///   the sheet, and keeps the system Liquid Glass sheet background.
-/// - `cornerRadiusOnly` only applies the shared corner radius, leaving detents/sizing to
-///   the caller, and keeps an opaque sheet fill.
-/// - `cornerRadiusGlass` is the same as `cornerRadiusOnly` but keeps the system Liquid
-///   Glass sheet background (used by `AmountEntrySheet`).
+///   the sheet.
+/// - `cornerRadiusOnly` / `cornerRadiusGlass` only apply the shared corner radius,
+///   leaving detents/sizing to the caller.
+///
+/// All styles use an opaque sheet fill (`surfaceSheet`) — solid white in light mode.
 enum CounterSheetPresentationStyle {
   case offsetPeek
-  /// Shared corner radius only; keeps the opaque sheet fill.
+  /// Shared corner radius only; opaque sheet fill.
   case cornerRadiusOnly
-  /// Shared corner radius with system Liquid Glass.
+  /// Legacy alias for `cornerRadiusOnly` (opaque fill; no longer translucent glass).
   case cornerRadiusGlass
 }
 
@@ -40,24 +40,18 @@ private struct CounterSheetPresentationModifier: ViewModifier {
   func body(content: Content) -> some View {
     switch style {
     case .offsetPeek:
-      // No `presentationBackground` — partial-height sheets get system Liquid Glass on iOS 26+.
       content
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .containerBackground(.clear, for: .navigation)
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationDetents([.counterOffsetLarge])
         .presentationContentInteraction(.scrolls)
         .presentationDragIndicator(.visible)
-    case .cornerRadiusOnly:
+        .presentationBackground(colors.surfaceSheet)
+    case .cornerRadiusOnly, .cornerRadiusGlass:
       content
         .presentationCornerRadius(SheetToken.cornerRadius)
         .presentationContentInteraction(.scrolls)
         .presentationBackground(colors.surfaceSheet)
-    case .cornerRadiusGlass:
-      content
-        .containerBackground(.clear, for: .navigation)
-        .presentationCornerRadius(SheetToken.cornerRadius)
-        .presentationContentInteraction(.scrolls)
     }
   }
 }

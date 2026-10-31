@@ -109,7 +109,6 @@ private struct KeypadKeyButton: View {
 
   return AmountEntrySheet(
     title: "Add amount",
-    headerIcon: .plus,
     actionTitle: "Add",
     initialText: amount,
     onSubmit: { _ in }

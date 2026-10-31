@@ -65,9 +65,7 @@ final class CrashSmokeUITests: XCTestCase {
     history.tap()
     assertAlive(app)
 
-    let dismiss = app.buttons["sheet-dismiss"]
-    XCTAssertTrue(dismiss.waitForExistence(timeout: 5), "Expected dismiss on history sheet")
-    dismiss.tap()
+    dismissPresentedSheet(in: app, titled: "Calories history")
     assertAlive(app)
   }
 
@@ -80,9 +78,7 @@ final class CrashSmokeUITests: XCTestCase {
     settings.tap()
     assertAlive(app)
 
-    let dismiss = app.buttons["sheet-dismiss"]
-    XCTAssertTrue(dismiss.waitForExistence(timeout: 5), "Expected dismiss on counter settings")
-    dismiss.tap()
+    dismissPresentedSheet(in: app, titled: "Settings")
     assertAlive(app)
   }
 
@@ -95,9 +91,7 @@ final class CrashSmokeUITests: XCTestCase {
     settings.tap()
     assertAlive(app)
 
-    let settingsDismiss = app.buttons["sheet-dismiss"]
-    XCTAssertTrue(settingsDismiss.waitForExistence(timeout: 5))
-    settingsDismiss.tap()
+    dismissPresentedSheet(in: app, titled: "Settings")
     assertAlive(app)
 
     let addNew = app.buttons["tab-add-new"]
@@ -105,9 +99,7 @@ final class CrashSmokeUITests: XCTestCase {
     addNew.tap()
     assertAlive(app)
 
-    let cancel = app.buttons["sheet-dismiss"]
-    XCTAssertTrue(cancel.waitForExistence(timeout: 5), "Expected Cancel on create sheet")
-    cancel.tap()
+    dismissPresentedSheet(in: app, titled: "Add new")
     assertAlive(app)
   }
 
@@ -185,9 +177,7 @@ final class CrashSmokeUITests: XCTestCase {
     tapWhenHittable(compact, in: app)
     assertAlive(app)
 
-    let dismiss = app.buttons["sheet-dismiss"]
-    XCTAssertTrue(dismiss.waitForExistence(timeout: 5))
-    dismiss.tap()
+    dismissPresentedSheet(in: app, titled: "Settings")
     assertAlive(app)
 
     // Toggle back so the path is exercised in both directions.
@@ -195,12 +185,19 @@ final class CrashSmokeUITests: XCTestCase {
     settings.tap()
     tapWhenHittable(app.buttons["toggle-compact"], in: app)
     assertAlive(app)
-    XCTAssertTrue(app.buttons["sheet-dismiss"].waitForExistence(timeout: 5))
-    app.buttons["sheet-dismiss"].tap()
+    dismissPresentedSheet(in: app, titled: "Settings")
     assertAlive(app)
   }
 
   // MARK: - Helpers
+
+  @MainActor
+  private func dismissPresentedSheet(in app: XCUIApplication, titled title: String) {
+    let header = app.staticTexts[title]
+    XCTAssertTrue(header.waitForExistence(timeout: 5), "Expected sheet titled \"\(title)\"")
+    header.swipeDown()
+  }
+
 
   private enum Scene: String {
     case pager = "01-pager"

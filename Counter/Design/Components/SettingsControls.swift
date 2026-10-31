@@ -9,8 +9,8 @@ import SwiftUI
 enum SettingsToken {
   /// Gap between settings sections when using space instead of a divider.
   static let sectionGap: CGFloat = SpaceToken.u5
-  /// Space from a section header/label to its content.
-  static let headerToContent: CGFloat = SpaceToken.u1
+  /// Vertical gap between rows inside a settings section.
+  static let rowGap: CGFloat = SpaceToken.u2 - 2
   /// Space from a field label to its text field.
   static let labelToField: CGFloat = SpaceToken.x1
   /// Vertical gap between stacked labeled fields (Title / Unit, etc.).
@@ -46,7 +46,6 @@ struct SettingsSectionHeader: View {
       .font(CounterTextStyle.settingsSectionHeader.font)
       .tracking(CounterTextStyle.settingsSectionHeader.tracking ?? 0)
       .foregroundStyle(colors.textPrimary)
-      .padding(.bottom, SettingsToken.headerToContent)
   }
 }
 
@@ -61,8 +60,8 @@ struct SettingsLabeledField: View {
   var body: some View {
     VStack(alignment: .leading, spacing: SettingsToken.labelToField) {
       Text(label)
-        .font(CounterTextStyle.settingsSectionHeader.font)
-        .tracking(CounterTextStyle.settingsSectionHeader.tracking ?? 0)
+        .font(CounterTextStyle.sectionTitle.font)
+        .tracking(CounterTextStyle.sectionTitle.tracking ?? 0)
         .foregroundStyle(colors.textPrimary)
 
       TextField(placeholder, text: $text)
@@ -225,7 +224,7 @@ struct SettingsColorPackPreview: View {
 struct SettingsPickerRow<Option: Hashable>: View {
   @Environment(\.semanticColors) private var colors
 
-  let icon: CounterLucideIconName
+  var icon: CounterLucideIconName? = nil
   let label: String
   @Binding var selection: Option
   let options: [(option: Option, title: String)]
@@ -237,7 +236,9 @@ struct SettingsPickerRow<Option: Hashable>: View {
   var body: some View {
     ZStack(alignment: .leading) {
       HStack(spacing: SpaceToken.u2) {
-        CounterLucideIcon(icon: icon, color: colors.textPrimary)
+        if let icon {
+          CounterLucideIcon(icon: icon, color: colors.textPrimary)
+        }
 
         Text(label)
           .counterTextStyle(.settingsRowLabel, compact: true)

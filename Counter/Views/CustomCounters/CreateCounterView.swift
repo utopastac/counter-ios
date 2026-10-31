@@ -22,13 +22,7 @@ struct CreateCounterView: View {
   var body: some View {
     NavigationStack {
       VStack(spacing: 0) {
-        CounterSheetHeader(
-          title: "Add new",
-          trailingTitle: "Cancel",
-          onDone: { dismiss() }
-        )
-
-        ScrollView {
+        CounterSheetScroll(title: "Add new") {
           VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
             kindSection
             if kind == .number {
@@ -42,7 +36,6 @@ struct CreateCounterView: View {
             colourSection
           }
           .padding(.horizontal, SheetToken.horizontal)
-          .padding(.top, SpaceToken.u1)
           .padding(.bottom, SpaceToken.u2)
         }
         .settingsKeyboardDismissible()
@@ -78,7 +71,6 @@ struct CreateCounterView: View {
 
   private var kindSection: some View {
     SettingsPickerRow(
-      icon: .rows3,
       label: "Type",
       selection: $kind,
       options: JournalKind.allCases.map { ($0, $0.label) }
@@ -87,7 +79,6 @@ struct CreateCounterView: View {
 
   private var templateSection: some View {
     SettingsPickerRow(
-      icon: .rows3,
       label: "Template",
       selection: $template,
       options: CounterTemplate.allCases.map { ($0, $0.label) }
@@ -95,7 +86,7 @@ struct CreateCounterView: View {
   }
 
   private var fieldsSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
       VStack(alignment: .leading, spacing: SettingsToken.fieldSpacing) {
         SettingsLabeledField(label: "Title", text: $name, placeholder: CustomCounter.untitledName)
 
@@ -117,22 +108,19 @@ struct CreateCounterView: View {
 
       if kind == .number, hasActiveGoal {
         SettingsPickerRow(
-          icon: .arrowUpToLine,
           label: "Direction",
           selection: $goalDirection,
           options: GoalDirection.allCases.map { ($0, $0.label) }
         )
-        .padding(.top, SpaceToken.x1)
       }
     }
   }
 
   private var resetPeriodSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
       SettingsSectionHeader(title: "Reset period")
 
       SettingsPickerRow(
-        icon: .calendar,
         label: "Period",
         selection: $resetPeriod,
         options: CounterResetPeriod.allCases.map { ($0, $0.label) }
@@ -140,7 +128,6 @@ struct CreateCounterView: View {
 
       if resetPeriod == .weekly {
         SettingsPickerRow(
-          icon: .listRestart,
           label: "Resets on",
           selection: $resetAnchorDay,
           options: (1...7).map { ($0, Calendar.current.weekdaySymbols[$0 - 1]) }
@@ -149,7 +136,6 @@ struct CreateCounterView: View {
 
       if resetPeriod == .monthly {
         SettingsPickerRow(
-          icon: .listRestart,
           label: "Resets on",
           selection: $resetAnchorDay,
           options: (1...28).map { ($0, CounterResetPeriod.ordinalDay($0)) }
@@ -158,7 +144,6 @@ struct CreateCounterView: View {
 
       if resetPeriod == .yearly {
         SettingsPickerRow(
-          icon: .listRestart,
           label: "Resets in",
           selection: $resetAnchorDay,
           options: (1...12).map { ($0, Calendar.current.monthSymbols[$0 - 1]) }
@@ -168,7 +153,7 @@ struct CreateCounterView: View {
   }
 
   private var quickAddSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
       SettingsSectionHeader(title: "Quick add presets")
       SettingsPresetGrid(
         values: $buttonValues,
@@ -178,7 +163,7 @@ struct CreateCounterView: View {
   }
 
   private var colourSection: some View {
-    VStack(alignment: .leading, spacing: 0) {
+    VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
       SettingsSectionHeader(title: "Colour")
       SettingsColorSwatchGrid(selection: $paletteIndex)
     }

@@ -248,6 +248,8 @@ enum CounterTextStyle: CaseIterable {
   case numericLarge
   case caption
   case sheetTitle
+  /// Compact sticky sheet title after scroll collapse.
+  case sheetTitleCompact
   case sheetSubtitle
   case sheetKeypadDigit
   case settingsSectionHeader
@@ -271,7 +273,12 @@ enum CounterTextStyle: CaseIterable {
       return TypeStyle.lgSemibold
     case .listCardCaption:
       return TypeStyle.smRegular
-    case .pageTitle, .sheetTitle:
+    case .pageTitle:
+      return TypeStyle.xxlMedium
+    case .sheetTitle:
+      // Large sheet chrome title — steps up from the former xxl (24) sheet title.
+      return TypeStyle.xxxlMedium
+    case .sheetTitleCompact:
       return TypeStyle.xxlMedium
     case .sectionTitle:
       return TypeStyle.lgSemibold
@@ -298,7 +305,8 @@ enum CounterTextStyle: CaseIterable {
     case .sheetKeypadDigit:
       return TypeStyle.xxlSemibold
     case .settingsSectionHeader:
-      return TypeStyle.lgSemibold
+      // Former sheet-title size so section labels sit under a much larger sheet title.
+      return TypeStyle.xxlMedium
     case .settingsFieldValue:
       return TypeStyle.xxxlMedium
     case .settingsRowLabel:

@@ -106,15 +106,9 @@ struct AppSettingsView: View {
   }
 
   var body: some View {
-    VStack(spacing: 0) {
-      CounterSheetHeader(
-        title: "Settings",
-        onDone: { dismiss() }
-      )
-
-      ScrollView {
-        VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
-          VStack(alignment: .leading, spacing: 0) {
+    CounterSheetScroll(title: "Settings") {
+      VStack(alignment: .leading, spacing: SettingsToken.sectionGap) {
+          VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
             SettingsSectionHeader(title: "General")
             SettingsToggleRow(icon: .vibrate, label: "Haptics", isOn: $isHapticsEnabled)
             SettingsPickerRow(
@@ -145,7 +139,7 @@ struct AppSettingsView: View {
             )
           }
 
-          VStack(alignment: .leading, spacing: 0) {
+          VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
             SettingsSectionHeader(title: "History")
             SettingsToggleRow(
               icon: .calendarClock,
@@ -159,7 +153,7 @@ struct AppSettingsView: View {
             )
           }
 
-          VStack(alignment: .leading, spacing: 0) {
+          VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
             SettingsSectionHeader(title: "Theme")
             SettingsDisclosureRow(
               icon: .palette,
@@ -190,13 +184,13 @@ struct AppSettingsView: View {
           }
 
           if isMonoEnabled {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
               SettingsSectionHeader(title: "Color")
               SettingsColorSwatchGrid(selection: $monoPaletteIndex)
             }
           }
 
-          VStack(alignment: .leading, spacing: 0) {
+          VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
             SettingsSectionHeader(title: "Data")
             if let exportURL {
               ShareLink(item: exportURL) {
@@ -206,7 +200,7 @@ struct AppSettingsView: View {
           }
 
 #if DEBUG
-          VStack(alignment: .leading, spacing: 0) {
+          VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
             SettingsSectionHeader(title: "Development")
             SettingsToggleRow(icon: .chartBar, label: "FPS counter", isOn: $isFPSCounterEnabled)
             SettingsActionRow(icon: .listRestart, label: "Preview fresh install") {
@@ -220,23 +214,21 @@ struct AppSettingsView: View {
           }
 #endif
 
-          VStack(alignment: .leading, spacing: 0) {
+          VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
             SettingsSectionHeader(title: "About")
             SettingsStaticRow(icon: .info, label: "Version", value: appVersionText)
             TMDBAttribution()
           }
 
-          VStack(alignment: .leading, spacing: 0) {
+          VStack(alignment: .leading, spacing: SettingsToken.rowGap) {
             SettingsDivider()
             SettingsDestructiveRow(label: "Reset all data") {
               showResetConfirmation = true
             }
           }
-        }
-        .padding(.horizontal, SheetToken.horizontal)
-        .padding(.top, SpaceToken.u2)
-        .padding(.bottom, SpaceToken.u4)
       }
+      .padding(.horizontal, SheetToken.horizontal)
+      .padding(.bottom, SpaceToken.u4)
     }
     .counterDesignSystemFromAppearancePreference()
     .counterSheetPresentation()

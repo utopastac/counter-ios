@@ -14,7 +14,6 @@ struct AmountEntrySheet: View {
 
   let title: String
   let subtitle: String?
-  let headerIcon: CounterLucideIconName
   let actionTitle: String
   let initialText: String
   let onSubmit: (Double) -> Void
@@ -27,14 +26,12 @@ struct AmountEntrySheet: View {
   init(
     title: String,
     subtitle: String? = nil,
-    headerIcon: CounterLucideIconName = .chartBar,
     actionTitle: String,
     initialText: String = "",
     onSubmit: @escaping (Double) -> Void
   ) {
     self.title = title
     self.subtitle = subtitle
-    self.headerIcon = headerIcon
     self.actionTitle = actionTitle
     self.initialText = initialText
     self.onSubmit = onSubmit
@@ -89,11 +86,8 @@ struct AmountEntrySheet: View {
 
   private var sheetHeader: some View {
     VStack(alignment: .leading, spacing: SheetToken.headerSpacing) {
-      HStack(spacing: SheetToken.headerIconSpacing) {
-        CounterLucideIcon(icon: headerIcon, color: colors.textPrimary)
-        Text(title)
-          .counterTextStyle(.sheetTitle)
-      }
+      Text(title)
+        .counterTextStyle(.sheetTitle)
 
       if let subtitle {
         Text(subtitle)
@@ -120,7 +114,6 @@ struct AmountEntrySheet: View {
     .sheet(isPresented: .constant(true)) {
       AmountEntrySheet(
         title: "Add amount",
-        headerIcon: .plus,
         actionTitle: "Add"
       ) { _ in }
       .environment(\.counterAccent, nil)

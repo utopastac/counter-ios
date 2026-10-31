@@ -3,17 +3,21 @@ import SwiftUI
 struct CounterHistoryView: View {
   let counter: CustomCounter
 
-  @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
   @State private var period: HistoryPeriod = .daily
   @State private var windowOffset = 0
   @State private var selectedBucket: DailyValue?
   @State private var editingEntry: HistoryEditingEntry?
   @State private var entryIndex: HistoryEntryIndex
+  @State private var titleCollapseProgress: CGFloat = 0
   @AppStorage(AppAppearancePreference.historyAverageActiveDaysOnlyKey)
   private var isHistoryAverageActiveDaysOnlyEnabled = false
   @AppStorage(AppAppearancePreference.historyPerPeriodEnabledKey)
   private var isHistoryPerPeriodEnabled = true
+
+  private var historyTitle: String {
+    "\(counter.name) history"
+  }
 
   init(counter: CustomCounter) {
     self.counter = counter
@@ -137,34 +141,45 @@ struct CounterHistoryView: View {
 
   var body: some View {
     NavigationStack {
-      VStack(spacing: 0) {
-        CounterSheetHeader(
-          title: "\(counter.name) history",
-          onDone: { dismiss() }
-        )
-
-        List {
-          Section {
-            historyChrome
-              .listRowInsets(EdgeInsets(
-                top: SpaceToken.u2,
-                leading: SheetToken.horizontal,
-                bottom: HistoryToken.sectionSpacing,
-                trailing: SheetToken.horizontal
-              ))
-              .listRowSeparator(.hidden)
-              .listRowBackground(Color.clear)
-          }
-
-          if period == .daily {
-            dayEntryRows
-          } else if !listItems.isEmpty {
-            aggregateRows
-          }
+      List {
+        Section {
+          CounterSheetHeader(title: historyTitle, collapseProgress: titleCollapseProgress)
+            .listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .scrollEdgeEffectHidden(true, for: .top)
+
+        Section {
+          historyChrome
+            .listRowInsets(EdgeInsets(
+              top: SpaceToken.u2,
+              leading: SheetToken.horizontal,
+              bottom: HistoryToken.sectionSpacing,
+              trailing: SheetToken.horizontal
+            ))
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+        }
+
+        if period == .daily {
+          dayEntryRows
+        } else if !listItems.isEmpty {
+          aggregateRows
+        }
+      }
+      .listStyle(.plain)
+      .scrollContentBackground(.hidden)
+      .scrollEdgeEffectHidden(true, for: .top)
+      .onScrollGeometryChange(for: CGFloat.self) { geometry in
+        geometry.contentOffset.y + geometry.contentInsets.top
+      } action: { _, offset in
+        let next = min(max(offset / SheetToken.titleCollapseDistance, 0), 1)
+        if abs(next - titleCollapseProgress) > 0.01 {
+          titleCollapseProgress = next
+        }
+      }
+      .overlay(alignment: .top) {
+        CounterSheetStickyTitle(title: historyTitle, collapseProgress: titleCollapseProgress)
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
       .toolbar(.hidden, for: .navigationBar)
